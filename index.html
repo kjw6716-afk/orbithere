@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbit Here</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #0F172A; /* 딥 미드나잇 블루 */
+            color: #E2E8F0; /* 소프트 실버 */
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            text-align: center;
+        }
+        .logo {
+            font-size: 3.5rem;
+            color: #4FD1C5; /* 민트 글로우 별똥별 */
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+        .title {
+            font-size: 2.5rem;
+            font-weight: 200;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            font-weight: 300;
+            color: #94A3B8;
+        }
+        .status {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            border: 1px solid #4FD1C5;
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: #4FD1C5;
+        }
+        /* 별똥별이 둥둥 떠다니는 애니메이션 효과 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">✦</div>
+    <h1 class="title">orbithere.com</h1>
+    <p class="subtitle">Meet you in orbit</p>
+    <div class="status">현재 궤도를 준비 중입니다</div>
+</body>
+</html>
