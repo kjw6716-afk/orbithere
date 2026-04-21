@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orbit Here</title>
+    <title>Orbit</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         body {
@@ -78,24 +78,23 @@
             text-align: center;
         }
 
-        /* 지우 님의 새로운 영감: 4각 네온 스파클 아이콘 */
-        .neon-sparkle-star {
-            width: 55px;
-            height: 55px;
-            background-color: #4FD1C5; /* 민트색 유지 */
+        /* 듬직하고 통통해진 '슈퍼 플럼프' 아이콘 */
+        .plump-sparkle-star {
+            width: 60px;
+            height: 60px;
+            background-color: #4FD1C5;
             margin-bottom: 30px;
             display: inline-block;
-            /* 지우 님이 제공한 이미지의 '날카롭고 든든한' 비율을 3D 칼각으로 구현 */
-            clip-path: polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%);
-            animation: star-glow-cycle 12s infinite linear;
-            /* 사용자가 좋아하시는 네온 글로우 유지 및 강화 */
-            box-shadow: 0 0 25px #4FD1C5;
-            filter: drop-shadow(0 0 8px #4FD1C5);
+            /* 안쪽 지점을 68%와 32%까지 밖으로 밀어내어 허리를 두껍게 성형 */
+            clip-path: polygon(50% 0%, 68% 32%, 100% 50%, 68% 68%, 50% 100%, 32% 68%, 0% 50%, 32% 32%);
+            animation: star-cycle 12s infinite linear;
+            box-shadow: 0 0 30px #4FD1C5;
+            filter: drop-shadow(0 0 10px #4FD1C5);
         }
 
-        @keyframes star-glow-cycle {
+        @keyframes star-cycle {
             0% { transform: rotate(0deg) scale(1); opacity: 0.8; }
-            50% { transform: rotate(180deg) scale(1.15); opacity: 1; filter: brightness(1.2); }
+            50% { transform: rotate(180deg) scale(1.15); opacity: 1; }
             100% { transform: rotate(360deg) scale(1); opacity: 0.8; }
         }
 
@@ -114,22 +113,21 @@
         }
 
         @media (max-width: 768px) {
-            .title { font-size: 1.2rem; }
-            .neon-sparkle-star { width: 45px; height: 45px; }
+            .title { font-size: 1.25rem; }
+            .plump-sparkle-star { width: 48px; height: 48px; }
         }
     </style>
 </head>
 <body>
     <div class="starfield">
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
-        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor).</div>
-        <div class="meteor"></div>
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
     </div>
     
     <div class="content">
-        <div class="neon-sparkle-star"></div>
+        <div class="plump-sparkle-star"></div>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
 </body>
