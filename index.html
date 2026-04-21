@@ -34,7 +34,7 @@
             position: absolute;
             top: -100px;
             width: 1px;
-            height: 80px;
+            height: 90px;
             background: linear-gradient(to bottom, rgba(79, 209, 197, 0), #4FD1C5);
             border-radius: 999px;
             transform: rotate(45deg);
@@ -43,34 +43,35 @@
             filter: drop-shadow(0 0 4px #4FD1C5);
         }
 
-        /* 유성 배치: 시작 지점을 -20%부터 140%까지 넓게 퍼뜨려 모바일 쏠림 방지 */
-        .meteor:nth-child(1) { left: -10%; animation-duration: 3s; }
-        .meteor:nth-child(2) { left: 10%; animation-duration: 4.5s; animation-delay: 1s; }
-        .meteor:nth-child(3) { left: 30%; animation-duration: 3.5s; animation-delay: 0.5s; }
-        .meteor:nth-child(4) { left: 50%; animation-duration: 5s; animation-delay: 2s; }
-        .meteor:nth-child(5) { left: 70%; animation-duration: 2.8s; animation-delay: 1.5s; }
-        .meteor:nth-child(6) { left: 90%; animation-duration: 4s; animation-delay: 0.2s; }
-        .meteor:nth-child(7) { left: 110%; animation-duration: 5.5s; animation-delay: 3s; }
-        .meteor:nth-child(8) { left: 130%; animation-duration: 3.2s; animation-delay: 2.5s; }
-        .meteor:nth-child(9) { left: 20%; animation-duration: 4.2s; animation-delay: 4s; }
-        .meteor:nth-child(10) { left: 40%; animation-duration: 3.8s; animation-delay: 1.2s; }
-        .meteor:nth-child(11) { left: 60%; animation-duration: 4.8s; animation-delay: 2.2s; }
-        .meteor:nth-child(12) { left: 80%; animation-duration: 3.1s; animation-delay: 0.8s; }
-        .meteor:nth-child(13) { left: 100%; animation-duration: 4s; animation-delay: 1.8s; }
-        .meteor:nth-child(14) { left: 120%; animation-duration: 5.2s; animation-delay: 3.3s; }
-        .meteor:nth-child(15) { left: 140%; animation-duration: 3.6s; animation-delay: 0.7s; }
-        .meteor:nth-child(16) { left: 5%; animation-duration: 4.4s; animation-delay: 2.5s; }
-        .meteor:nth-child(17) { left: 25%; animation-duration: 2.9s; animation-delay: 1.9s; }
-        .meteor:nth-child(18) { left: 45%; animation-duration: 5.8s; animation-delay: 0.3s; }
-        .meteor:nth-child(19) { left: 65%; animation-duration: 3.4s; animation-delay: 3.9s; }
-        .meteor:nth-child(20) { left: 85%; animation-duration: 4.1s; animation-delay: 2.1s; }
+        /* 속도를 늦추기 위해 animation-duration을 6s~12s 사이로 대폭 증가 */
+        /* 모바일 쏠림 방지를 위해 시작점(left)을 30%~160% 사이 우측 영역으로 집중 배치 */
+        .meteor:nth-child(1) { left: 30%; animation-duration: 7s; }
+        .meteor:nth-child(2) { left: 50%; animation-duration: 10s; animation-delay: 1.5s; }
+        .meteor:nth-child(3) { left: 70%; animation-duration: 8s; animation-delay: 0.8s; }
+        .meteor:nth-child(4) { left: 90%; animation-duration: 12s; animation-delay: 3s; }
+        .meteor:nth-child(5) { left: 110%; animation-duration: 6s; animation-delay: 2s; height: 120px; }
+        .meteor:nth-child(6) { left: 130%; animation-duration: 9s; animation-delay: 4.5s; }
+        .meteor:nth-child(7) { left: 40%; animation-duration: 11s; animation-delay: 1s; }
+        .meteor:nth-child(8) { left: 60%; animation-duration: 7.5s; animation-delay: 5s; }
+        .meteor:nth-child(9) { left: 85%; animation-duration: 10.5s; animation-delay: 2.5s; }
+        .meteor:nth-child(10) { left: 140%; animation-duration: 8.5s; animation-delay: 0.5s; }
+        .meteor:nth-child(11) { left: 160%; animation-duration: 11.5s; animation-delay: 6s; }
+        .meteor:nth-child(12) { left: 20%; animation-duration: 9.5s; animation-delay: 3.5s; }
+        .meteor:nth-child(13) { left: 75%; animation-duration: 7.2s; animation-delay: 1.2s; }
+        .meteor:nth-child(14) { left: 95%; animation-duration: 10.2s; animation-delay: 4.8s; }
+        .meteor:nth-child(15) { left: 120%; animation-duration: 8.8s; animation-delay: 2.2s; }
+        .meteor:nth-child(16) { left: 150%; animation-duration: 12.5s; animation-delay: 0.3s; }
+        .meteor:nth-child(17) { left: 45%; animation-duration: 6.5s; animation-delay: 5.5s; }
+        .meteor:nth-child(18) { left: 105%; animation-duration: 9.2s; animation-delay: 1.9s; }
+        .meteor:nth-child(19) { left: 135%; animation-duration: 11s; animation-delay: 3.1s; }
+        .meteor:nth-child(20) { left: 80%; animation-duration: 7.8s; animation-delay: 0.9s; }
 
+        /* v3.3의 안정적인 45도 직선 각도 복구 */
         @keyframes fall {
             0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
-            10% { opacity: 0.8; }
+            10% { opacity: 0.7; }
             80% { opacity: 0.3; }
-            /* 이동 거리를 100vw(화면너비), 100vh(화면높이) 단위로 변경하여 모든 기기 대응 */
-            100% { transform: translate(-100vw, 100vh) rotate(45deg); opacity: 0; }
+            100% { transform: translate(-1200px, 1200px) rotate(45deg); opacity: 0; }
         }
 
         .content {
@@ -79,35 +80,52 @@
             text-align: center;
         }
 
-        /* 브랜드 아이콘: 심플한 궤도 별 아이콘 */
+        /* 원을 제거한 고품격 '나침반 별' 아이콘 */
         .brand-icon {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 20px;
+            width: 60px;
+            height: 60px;
+            margin-bottom: 25px;
             display: inline-block;
-            border: 1px solid rgba(79, 209, 197, 0.4);
-            border-radius: 50%;
             position: relative;
-            animation: pulse 3s infinite ease-in-out;
+            animation: float 4s infinite ease-in-out;
         }
 
-        .brand-icon::after {
-            content: '✦';
+        /* 십자 모양의 빛나는 별 */
+        .brand-icon::before, .brand-icon::after {
+            content: '';
+            position: absolute;
+            background-color: #4FD1C5;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 999px;
+            filter: drop-shadow(0 0 8px #4FD1C5);
+        }
+
+        .brand-icon::before { width: 2px; height: 100%; } /* 세로축 */
+        .brand-icon::after { width: 100%; height: 2px; }  /* 가로축 */
+
+        /* 중앙의 반짝이는 점 */
+        .brand-icon-inner {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: #4FD1C5;
-            font-size: 1.2rem;
+            width: 10px;
+            height: 10px;
+            background-color: #E2E8F0;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #4FD1C5;
+            z-index: 2;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 15px rgba(79, 209, 197, 0.3); }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); opacity: 0.9; }
+            50% { transform: translateY(-10px); opacity: 1; }
         }
 
         .title {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 200;
             letter-spacing: -0.05em;
             color: #E2E8F0;
@@ -120,9 +138,9 @@
             font-weight: 500;
         }
 
-        /* 모바일용 폰트 사이즈 조정 */
         @media (max-width: 768px) {
-            .title { font-size: 1.2rem; }
+            .title { font-size: 1.25rem; }
+            .brand-icon { width: 45px; height: 45px; }
         }
     </style>
 </head>
@@ -135,7 +153,9 @@
     </div>
     
     <div class="content">
-        <div class="brand-icon"></div>
+        <div class="brand-icon">
+            <div class="brand-icon-inner"></div>
+        </div>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
 </body>
