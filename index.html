@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orbit</title>
+    <title>Orbit Here</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         body {
@@ -78,21 +78,24 @@
             text-align: center;
         }
 
-        /* 통통한 볼륨감 + 부드러운 선의 SVG 별 */
-        .plump-soft-star {
-            width: 65px;
-            height: 65px;
+        /* 지우 님의 새로운 영감: 4각 네온 스파클 아이콘 */
+        .neon-sparkle-star {
+            width: 55px;
+            height: 55px;
+            background-color: #4FD1C5; /* 민트색 유지 */
             margin-bottom: 30px;
             display: inline-block;
-            fill: #4FD1C5;
-            /* 지우 님이 원하신 은은한 글로우 */
-            filter: drop-shadow(0 0 8px rgba(79, 209, 197, 0.6));
-            animation: star-cycle 12s infinite linear;
+            /* 지우 님이 제공한 이미지의 '날카롭고 든든한' 비율을 3D 칼각으로 구현 */
+            clip-path: polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%);
+            animation: star-glow-cycle 12s infinite linear;
+            /* 사용자가 좋아하시는 네온 글로우 유지 및 강화 */
+            box-shadow: 0 0 25px #4FD1C5;
+            filter: drop-shadow(0 0 8px #4FD1C5);
         }
 
-        @keyframes star-cycle {
+        @keyframes star-glow-cycle {
             0% { transform: rotate(0deg) scale(1); opacity: 0.8; }
-            50% { transform: rotate(180deg) scale(1.1); opacity: 1; }
+            50% { transform: rotate(180deg) scale(1.15); opacity: 1; filter: brightness(1.2); }
             100% { transform: rotate(360deg) scale(1); opacity: 0.8; }
         }
 
@@ -112,27 +115,21 @@
 
         @media (max-width: 768px) {
             .title { font-size: 1.2rem; }
-            .plump-soft-star { width: 50px; height: 50px; }
+            .neon-sparkle-star { width: 45px; height: 45px; }
         }
     </style>
 </head>
 <body>
     <div class="starfield">
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
-        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor).</div>
+        <div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
     </div>
     
     <div class="content">
-        <svg class="plump-soft-star" viewBox="0 0 100 100">
-            <!-- 좌표를 다시 통통하게(32) 조정하고, 선을 굵고 부드럽게 마감 -->
-            <path d="M50 12 L60 40 L88 50 L60 60 L50 88 L40 60 L12 50 L40 40 Z" 
-                  stroke="#4FD1C5" 
-                  stroke-width="8" 
-                  stroke-linejoin="round" 
-                  stroke-linecap="round" />
-        </svg>
+        <div class="neon-sparkle-star"></div>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
 </body>
