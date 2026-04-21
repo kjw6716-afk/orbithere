@@ -43,7 +43,7 @@
             filter: drop-shadow(0 0 4px #4FD1C5);
         }
 
-        /* 150% 확장 레이아웃 유지 */
+        /* 150% 확장 및 황금 밸런스 속도 유지 */
         .meteor:nth-child(1) { left: 10%; animation-duration: 5s; }
         .meteor:nth-child(2) { left: 25%; animation-duration: 7.5s; animation-delay: 1s; }
         .meteor:nth-child(3) { left: 45%; animation-duration: 6s; animation-delay: 0.5s; }
@@ -78,63 +78,49 @@
             text-align: center;
         }
 
-        /* 아이콘 메인 컨테이너 */
+        /* 아이콘 컨테이너 */
         .brand-icon-wrapper {
             position: relative;
             width: 80px;
-            height: 50px;
-            margin-bottom: 30px;
+            height: 60px;
+            margin-bottom: 25px;
             display: inline-block;
             animation: float 4s infinite ease-in-out;
         }
 
-        /* 궤도 뒤쪽 라인 (별 뒤로 숨음) */
-        .orbit-back {
+        /* 통통한 오각별 */
+        .plump-five-star {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 70px;
-            height: 25px;
-            border: 1.5px solid rgba(79, 209, 197, 0.2); /* 뒤쪽은 흐릿하게 */
-            border-bottom: 0;
-            border-radius: 50% 50% 0 0;
-            transform: translate(-50%, -50%) rotate(-20deg);
-            z-index: 1;
-        }
-
-        /* 통통한 스파클 별 */
-        .plump-star {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 22px;
-            height: 22px;
+            width: 28px;
+            height: 28px;
             background-color: #4FD1C5;
-            /* 비율 조정을 통해 더 통통한(Plump) 느낌 구현 */
-            clip-path: polygon(50% 0%, 63% 37%, 100% 50%, 63% 63%, 50% 100%, 37% 63%, 0% 50%, 37% 37%);
+            /* 통통한 느낌의 오각별 수치 조정 */
+            clip-path: polygon(50% 0%, 63% 38%, 100% 38%, 69% 59%, 82% 100%, 50% 75%, 18% 100%, 31% 59%, 0% 38%, 37% 38%);
             transform: translate(-50%, -50%);
-            z-index: 2;
-            box-shadow: 0 0 20px #4FD1C5;
-            filter: drop-shadow(0 0 8px #4FD1C5);
+            z-index: 1;
+            filter: drop-shadow(0 0 10px rgba(79, 209, 197, 0.6));
         }
 
-        /* 궤도 앞쪽 라인 (별 앞으로 나옴) */
-        .orbit-front {
+        /* 심플한 전면 궤도 라인 */
+        .orbit-line-front {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 70px;
-            height: 25px;
-            border: 1.5px solid #4FD1C5; /* 앞쪽은 선명하게 */
-            border-top: 0;
+            width: 60px;
+            height: 20px;
+            border: 1.5px solid #4FD1C5;
+            border-top: 0; /* 위쪽을 없애서 심플한 라인 처리 */
             border-radius: 0 0 50% 50%;
-            transform: translate(-50%, -50%) rotate(-20deg);
-            z-index: 3;
+            transform: translate(-50%, -10%) rotate(-15deg); /* 별 앞을 살짝 걸치게 배치 */
+            z-index: 2;
+            opacity: 0.9;
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-8px); }
         }
 
         .title {
@@ -152,24 +138,23 @@
         }
 
         @media (max-width: 768px) {
-            .title { font-size: 1.25rem; }
-            .brand-icon-wrapper { width: 60px; height: 40px; }
+            .title { font-size: 1.2rem; }
+            .brand-icon-wrapper { width: 70px; height: 50px; }
         }
     </style>
 </head>
 <body>
     <div class="starfield">
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
-        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor).</div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
     </div>
     
     <div class="content">
         <div class="brand-icon-wrapper">
-            <div class="orbit-back"></div>
-            <div class="plump-star"></div>
-            <div class="orbit-front"></div>
+            <div class="plump-five-star"></div>
+            <div class="orbit-line-front"></div>
         </div>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
