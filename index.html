@@ -43,7 +43,7 @@
             filter: drop-shadow(0 0 4px #4FD1C5);
         }
 
-        /* 150% 확장 및 속도 최적화 (4s ~ 9s 사이로 아주 살짝 빠르게 튜닝) */
+        /* 150% 확장 및 황금 밸런스 속도 유지 */
         .meteor:nth-child(1) { left: 10%; animation-duration: 5s; }
         .meteor:nth-child(2) { left: 25%; animation-duration: 7.5s; animation-delay: 1s; }
         .meteor:nth-child(3) { left: 45%; animation-duration: 6s; animation-delay: 0.5s; }
@@ -78,36 +78,38 @@
             text-align: center;
         }
 
-        /* 세련된 '오비탈(Orbital)' 브랜드 아이콘 */
+        /* 궤도 링 컨테이너 */
         .brand-icon {
-            width: 64px;
-            height: 32px; /* 타원형 궤도 비율 */
-            margin-bottom: 30px;
+            width: 70px;
+            height: 30px;
+            margin-bottom: 35px;
             display: inline-block;
-            border: 1px solid rgba(79, 209, 197, 0.4); /* 얇은 민트색 궤도 링 */
+            border: 1px solid rgba(79, 209, 197, 0.5);
             border-radius: 50%;
             position: relative;
-            transform: rotate(-20deg); /* 세련되게 살짝 기울임 */
+            transform: rotate(-20deg);
             animation: orbit-float 4s infinite ease-in-out;
         }
 
-        /* 궤도 중앙의 별 */
+        /* 궤도 중앙의 세련된 스파클 별 */
         .brand-icon::after {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 8px;
-            height: 8px;
+            width: 16px;
+            height: 16px;
             background-color: #4FD1C5;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
+            /* 세련된 4각 별 모양 (Sparkle) */
+            clip-path: polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%);
+            transform: translate(-50%, -50%) rotate(20deg); /* 링과 반대로 돌려 직립시킴 */
             box-shadow: 0 0 15px #4FD1C5;
+            filter: drop-shadow(0 0 5px #4FD1C5);
         }
 
         @keyframes orbit-float {
             0%, 100% { transform: rotate(-20deg) translateY(0); opacity: 0.8; }
-            50% { transform: rotate(-20deg) translateY(-8px); opacity: 1; box-shadow: 0 10px 20px rgba(15, 23, 42, 0.5); }
+            50% { transform: rotate(-20deg) translateY(-10px); opacity: 1; }
         }
 
         .title {
@@ -126,7 +128,7 @@
 
         @media (max-width: 768px) {
             .title { font-size: 1.25rem; }
-            .brand-icon { width: 50px; height: 25px; }
+            .brand-icon { width: 56px; height: 24px; }
         }
     </style>
 </head>
