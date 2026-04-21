@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>궤도</title>
+    <title>Orbit</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         body {
             margin: 0;
@@ -13,68 +14,82 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #0F172A; /* 미드나잇 블루 */
+            background-color: #0F172A; /* 지우 님의 미드나잇 블루 */
             color: #E2E8F0;
-            font-family: 'Pretendard', sans-serif;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
             overflow: hidden;
         }
 
-        /* 유성우 아이콘 컨테이너 */
-        .meteor-shower {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            margin-bottom: 30px;
+        /* 유성우 배경 */
+        .starfield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
         }
 
-        /* 유성우 개별 입자 */
         .meteor {
             position: absolute;
+            top: -50px;
             width: 2px;
-            height: 40px;
-            background: linear-gradient(to bottom, rgba(79, 209, 197, 0), #4FD1C5); /* 민트색 그라데이션 */
+            height: 60px;
+            background: linear-gradient(to bottom, rgba(79, 209, 197, 0), #4FD1C5);
             border-radius: 999px;
-            transform: rotate(135deg);
-            animation: fall 2s linear infinite;
+            /* 오른쪽 위에서 왼쪽 아래로 떨어지는 각도 */
+            transform: rotate(45deg);
+            animation: fall linear infinite;
             opacity: 0;
+            /* 유성 머리 부분 빛남 효과 */
+            filter: drop-shadow(0 0 5px #4FD1C5);
         }
 
-        /* 여러 개의 유성우 위치와 속도 조절 */
-        .meteor:nth-child(1) { left: 20%; animation-delay: 0s; }
-        .meteor:nth-child(2) { left: 50%; animation-delay: 0.7s; }
-        .meteor:nth-child(3) { left: 80%; animation-delay: 1.4s; }
+        /* 각 유성들의 위치와 속도 랜덤 설정 */
+        .meteor:nth-child(1) { left: 80%; animation-duration: 3s; animation-delay: 0s; }
+        .meteor:nth-child(2) { left: 40%; animation-duration: 4s; animation-delay: 1.5s; width: 1px; height: 40px; }
+        .meteor:nth-child(3) { left: 95%; animation-duration: 2.5s; animation-delay: 3s; }
+        .meteor:nth-child(4) { left: 20%; animation-duration: 5s; animation-delay: 0.5s; width: 1px; }
+        .meteor:nth-child(5) { left: 60%; animation-duration: 3.5s; animation-delay: 2s; }
 
         @keyframes fall {
-            0% { transform: translate(50px, -50px) rotate(135deg); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translate(-50px, 50px) rotate(135deg); opacity: 0; }
+            0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
+            30% { opacity: 0.8; }
+            60% { opacity: 0.4; }
+            100% { transform: translate(-400px, 400px) rotate(45deg); opacity: 0; }
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
         }
 
         .title {
-            font-size: 1.8rem;
-            font-weight: 300;
-            letter-spacing: -0.5px;
-            margin-top: 20px;
+            font-size: 1.6rem;
+            font-weight: 200; /* 아주 얇게 설정해서 고급스러움 강조 */
+            letter-spacing: -0.05em; /* 자간을 좁혀서 세련되게 */
+            color: #E2E8F0;
+            margin: 0;
         }
 
-        .status-box {
-            margin-top: 30px;
-            padding: 10px 24px;
-            border: 1px solid rgba(79, 209, 197, 0.4);
-            border-radius: 30px;
-            font-size: 0.95rem;
+        .highlight {
             color: #4FD1C5;
-            background-color: rgba(79, 209, 197, 0.05);
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
-    <div class="meteor-shower">
+    <div class="starfield">
         <div class="meteor"></div>
+        <div class="meteor"></div>
+        <div class="meteor)</div>
         <div class="meteor"></div>
         <div class="meteor"></div>
     </div>
     
-    <div class="title">현재 궤도를 만드는 중입니다.</div>
+    <div class="content">
+        <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
+    </div>
 </body>
 </html>
