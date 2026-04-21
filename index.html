@@ -43,7 +43,7 @@
             filter: drop-shadow(0 0 4px #4FD1C5);
         }
 
-        /* 150% 확장 레이아웃 유지 */
+        /* 150% 확장 레이아웃 및 속도 유지 */
         .meteor:nth-child(1) { left: 10%; animation-duration: 5s; }
         .meteor:nth-child(2) { left: 25%; animation-duration: 7.5s; animation-delay: 1s; }
         .meteor:nth-child(3) { left: 45%; animation-duration: 6s; animation-delay: 0.5s; }
@@ -78,15 +78,14 @@
             text-align: center;
         }
 
-        /* 모든 라인이 곡선으로 처리된 최종 별 아이콘 */
-        .final-soft-star {
-            width: 70px;
-            height: 70px;
+        /* 부드러운 곡선의 오각별 아이콘 */
+        .final-five-star {
+            width: 75px;
+            height: 75px;
             margin-bottom: 30px;
             display: inline-block;
             fill: #4FD1C5;
-            /* 얇고 정교한 글로우 유지 */
-            filter: drop-shadow(0 0 7px rgba(79, 209, 197, 0.9));
+            filter: drop-shadow(0 0 8px rgba(79, 209, 197, 0.9));
             animation: star-cycle 12s infinite linear;
         }
 
@@ -111,27 +110,28 @@
         }
 
         @media (max-width: 768px) {
-            .title { font-size: 1.2rem; }
-            .final-soft-star { width: 55px; height: 55px; }
+            .title { font-size: 1.25rem; }
+            .final-five-star { width: 60px; height: 60px; }
         }
     </style>
 </head>
 <body>
     <div class="starfield">
-        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor).</div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
-        <div class="meteor"></div><div class="meteor).</div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor).</div>
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor).</div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
-        <div class="meteor"></div>
     </div>
     
     <div class="content">
-        <svg class="final-soft-star" viewBox="0 0 100 100">
+        <svg class="final-five-star" viewBox="0 0 100 100">
+            <!-- 5각 곡선별: 67% 볼륨감을 유지하면서 모든 연결을 부드러운 곡선(Q)으로 처리 -->
             <path d="M50 10 
-                     Q55 45 90 50 
-                     Q55 55 50 90 
-                     Q45 55 10 50 
-                     Q45 45 50 10 Z" />
+                     Q58 40 88 38
+                     Q65 58 75 88
+                     Q50 72 25 88
+                     Q35 58 12 38
+                     Q42 40 50 10 Z" />
         </svg>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
