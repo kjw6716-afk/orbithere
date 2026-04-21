@@ -43,34 +43,36 @@
             filter: drop-shadow(0 0 4px #4FD1C5);
         }
 
-        /* 화면 전체 균형 배치: 유성이 대각선으로 이동하므로 시작점을 우측으로 더 확장 */
+        /* 140% 확장: 우측 끝에서부터 여유롭게 떨어지도록 간격 재조정 */
         .meteor:nth-child(1) { left: 10%; animation-duration: 3s; }
-        .meteor:nth-child(2) { left: 30%; animation-duration: 4.5s; animation-delay: 1s; }
-        .meteor:nth-child(3) { left: 50%; animation-duration: 3.5s; animation-delay: 0.5s; }
-        .meteor:nth-child(4) { left: 70%; animation-duration: 5s; animation-delay: 2s; }
-        .meteor:nth-child(5) { left: 90%; animation-duration: 2.8s; animation-delay: 1.5s; }
-        .meteor:nth-child(6) { left: 110%; animation-duration: 4s; animation-delay: 0.2s; } /* 화면 밖 우측 시작 */
-        .meteor:nth-child(7) { left: 20%; animation-duration: 5.5s; animation-delay: 3s; }
-        .meteor:nth-child(8) { left: 40%; animation-duration: 3.2s; animation-delay: 2.5s; }
-        .meteor:nth-child(9) { left: 60%; animation-duration: 4.2s; animation-delay: 4s; }
-        .meteor:nth-child(10) { left: 80%; animation-duration: 3.8s; animation-delay: 1.2s; }
-        .meteor:nth-child(11) { left: 100%; animation-duration: 4.8s; animation-delay: 2.2s; }
-        .meteor:nth-child(12) { left: 120%; animation-duration: 3.1s; animation-delay: 0.8s; }
-        .meteor:nth-child(13) { left: 15%; animation-duration: 4s; animation-delay: 1.8s; }
-        .meteor:nth-child(14) { left: 35%; animation-duration: 5.2s; animation-delay: 3.3s; }
-        .meteor:nth-child(15) { left: 55%; animation-duration: 3.6s; animation-delay: 0.7s; }
-        .meteor:nth-child(16) { left: 75%; animation-duration: 4.4s; animation-delay: 2.5s; }
-        .meteor:nth-child(17) { left: 95%; animation-duration: 2.9s; animation-delay: 1.9s; }
-        .meteor:nth-child(18) { left: 115%; animation-duration: 5.8s; animation-delay: 0.3s; }
-        .meteor:nth-child(19) { left: 25%; animation-duration: 3.4s; animation-delay: 3.9s; }
-        .meteor:nth-child(20) { left: 85%; animation-duration: 4.1s; animation-delay: 2.1s; }
+        .meteor:nth-child(2) { left: 25%; animation-duration: 4.5s; animation-delay: 1s; }
+        .meteor:nth-child(3) { left: 40%; animation-duration: 3.5s; animation-delay: 0.5s; }
+        .meteor:nth-child(4) { left: 55%; animation-duration: 5s; animation-delay: 2s; }
+        .meteor:nth-child(5) { left: 70%; animation-duration: 2.8s; animation-delay: 1.5s; }
+        .meteor:nth-child(6) { left: 85%; animation-duration: 4s; animation-delay: 0.2s; }
+        .meteor:nth-child(7) { left: 100%; animation-duration: 5.5s; animation-delay: 3s; } /* 화면 끝 경계 */
+        .meteor:nth-child(8) { left: 115%; animation-duration: 3.2s; animation-delay: 2.5s; } /* 화면 밖 시작 */
+        .meteor:nth-child(9) { left: 130%; animation-duration: 4.2s; animation-delay: 4s; }
+        .meteor:nth-child(10) { left: 140%; animation-duration: 3.8s; animation-delay: 1.2s; } /* 140% 최대치 */
+        
+        /* 11~20번 유성: 화면 전체 랜덤 배치로 입체감 추가 */
+        .meteor:nth-child(11) { left: 15%; animation-duration: 4.8s; animation-delay: 2.2s; }
+        .meteor:nth-child(12) { left: 35%; animation-duration: 3.1s; animation-delay: 0.8s; }
+        .meteor:nth-child(13) { left: 50%; animation-duration: 4s; animation-delay: 1.8s; }
+        .meteor:nth-child(14) { left: 65%; animation-duration: 5.2s; animation-delay: 3.3s; }
+        .meteor:nth-child(15) { left: 80%; animation-duration: 3.6s; animation-delay: 0.7s; }
+        .meteor:nth-child(16) { left: 95%; animation-duration: 4.4s; animation-delay: 2.5s; }
+        .meteor:nth-child(17) { left: 105%; animation-duration: 2.9s; animation-delay: 1.9s; }
+        .meteor:nth-child(18) { left: 125%; animation-duration: 5.8s; animation-delay: 0.3s; }
+        .meteor:nth-child(19) { left: 45%; animation-duration: 3.4s; animation-delay: 3.9s; }
+        .meteor:nth-child(20) { left: 135%; animation-duration: 4.1s; animation-delay: 2.1s; }
 
-        /* v3.0의 안정적인 낙하 궤적 복구 */
         @keyframes fall {
             0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
             10% { opacity: 0.8; }
             80% { opacity: 0.3; }
-            100% { transform: translate(-1000px, 1000px) rotate(45deg); opacity: 0; }
+            /* 유성이 화면 왼쪽 아래로 충분히 빠져나가도록 이동 거리 증가 */
+            100% { transform: translate(-1200px, 1200px) rotate(45deg); opacity: 0; }
         }
 
         .content {
