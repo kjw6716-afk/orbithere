@@ -78,22 +78,22 @@
             text-align: center;
         }
 
-        /* 부드러운 선을 가진 SVG 별 스타일 */
-        .soft-star-svg {
-            width: 70px; /* 살짝 더 키웠습니다 */
-            height: 70px;
+        /* 글로우를 줄이고 선을 얇게 뺀 슬림 스타 */
+        .slim-star-svg {
+            width: 60px;
+            height: 60px;
             margin-bottom: 30px;
             display: inline-block;
             fill: #4FD1C5;
-            filter: drop-shadow(0 0 15px #4FD1C5);
-            /* 회전과 숨쉬는 효과 유지 */
+            /* 글로우 강도를 15px에서 6px로 대폭 축소 */
+            filter: drop-shadow(0 0 6px rgba(79, 209, 197, 0.8));
             animation: star-cycle 12s infinite linear;
         }
 
         @keyframes star-cycle {
-            0% { transform: rotate(0deg) scale(1); opacity: 0.9; }
-            50% { transform: rotate(180deg) scale(1.15); opacity: 1; }
-            100% { transform: rotate(360deg) scale(1); opacity: 0.9; }
+            0% { transform: rotate(0deg) scale(1); opacity: 0.8; }
+            50% { transform: rotate(180deg) scale(1.1); opacity: 1; }
+            100% { transform: rotate(360deg) scale(1); opacity: 0.8; }
         }
 
         .title {
@@ -112,7 +112,7 @@
 
         @media (max-width: 768px) {
             .title { font-size: 1.25rem; }
-            .soft-star-svg { width: 55px; height: 55px; }
+            .slim-star-svg { width: 50px; height: 50px; }
         }
     </style>
 </head>
@@ -125,10 +125,11 @@
     </div>
     
     <div class="content">
-        <svg class="soft-star-svg" viewBox="0 0 100 100">
-            <path d="M50 5 L64 36 L95 50 L64 64 L50 95 L36 64 L5 50 L36 36 Z" 
+        <svg class="slim-star-svg" viewBox="0 0 100 100">
+            <!-- 좌표를 수정하여 '허리'를 더 가늘게(Slim) 만들고 stroke 두께를 줄였습니다 -->
+            <path d="M50 10 L58 42 L90 50 L58 58 L50 90 L42 58 L10 50 L42 42 Z" 
                   stroke="#4FD1C5" 
-                  stroke-width="6" 
+                  stroke-width="3" 
                   stroke-linejoin="round" 
                   stroke-linecap="round" />
         </svg>
