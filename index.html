@@ -78,49 +78,23 @@
             text-align: center;
         }
 
-        /* 아이콘 컨테이너 */
-        .brand-icon-wrapper {
-            position: relative;
-            width: 80px;
-            height: 60px;
-            margin-bottom: 25px;
-            display: inline-block;
-            animation: float 4s infinite ease-in-out;
-        }
-
-        /* 통통한 오각별 */
-        .plump-five-star {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 28px;
-            height: 28px;
+        /* 독특한 '모던 노스 스타' 아이콘 */
+        .unique-star {
+            width: 50px;
+            height: 50px;
             background-color: #4FD1C5;
-            /* 통통한 느낌의 오각별 수치 조정 */
-            clip-path: polygon(50% 0%, 63% 38%, 100% 38%, 69% 59%, 82% 100%, 50% 75%, 18% 100%, 31% 59%, 0% 38%, 37% 38%);
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            filter: drop-shadow(0 0 10px rgba(79, 209, 197, 0.6));
+            margin-bottom: 30px;
+            display: inline-block;
+            /* 통통하면서도 날렵한 4각 스파클 형태 */
+            clip-path: polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%);
+            animation: star-glow 3s infinite ease-in-out;
+            box-shadow: 0 0 30px #4FD1C5;
+            filter: drop-shadow(0 0 10px #4FD1C5);
         }
 
-        /* 심플한 전면 궤도 라인 */
-        .orbit-line-front {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 60px;
-            height: 20px;
-            border: 1.5px solid #4FD1C5;
-            border-top: 0; /* 위쪽을 없애서 심플한 라인 처리 */
-            border-radius: 0 0 50% 50%;
-            transform: translate(-50%, -10%) rotate(-15deg); /* 별 앞을 살짝 걸치게 배치 */
-            z-index: 2;
-            opacity: 0.9;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+        @keyframes star-glow {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; filter: brightness(1); }
+            50% { transform: scale(1.15) rotate(5deg); opacity: 1; filter: brightness(1.3); }
         }
 
         .title {
@@ -138,24 +112,21 @@
         }
 
         @media (max-width: 768px) {
-            .title { font-size: 1.2rem; }
-            .brand-icon-wrapper { width: 70px; height: 50px; }
+            .title { font-size: 1.25rem; }
+            .unique-star { width: 40px; height: 40px; }
         }
     </style>
 </head>
 <body>
     <div class="starfield">
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
-        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor).</div>
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
     </div>
     
     <div class="content">
-        <div class="brand-icon-wrapper">
-            <div class="plump-five-star"></div>
-            <div class="orbit-line-front"></div>
-        </div>
+        <div class="unique-star"></div>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
 </body>
