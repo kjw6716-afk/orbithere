@@ -78,23 +78,25 @@
             text-align: center;
         }
 
-        /* 지우 님 취향 저격: 더 두껍고 든든해진 '플럼프 스파클' 아이콘 */
-        .plump-star {
-            width: 55px; /* 크기를 살짝 더 키움 */
+        /* 회전 효과가 추가된 통통한 별 */
+        .rotating-star {
+            width: 55px;
             height: 55px;
             background-color: #4FD1C5;
             margin-bottom: 30px;
             display: inline-block;
-            /* 안쪽 각도를 35%로 조정해서 팔을 훨씬 두껍게(Plump) 만듦 */
             clip-path: polygon(50% 0%, 65% 35%, 100% 50%, 65% 65%, 50% 100%, 35% 65%, 0% 50%, 35% 35%);
-            animation: star-breathe 4s infinite ease-in-out;
+            /* 회전과 커졌다 작아졌다 하는 효과를 동시에 적용 */
+            animation: star-cycle 12s infinite linear;
             box-shadow: 0 0 35px #4FD1C5;
             filter: drop-shadow(0 0 12px #4FD1C5);
         }
 
-        @keyframes star-breathe {
-            0%, 100% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.1); opacity: 1; filter: brightness(1.2); }
+        /* 웅장함을 위해 12초 동안 천천히 회전하며 숨쉬는 애니메이션 */
+        @keyframes star-cycle {
+            0% { transform: rotate(0deg) scale(1); opacity: 0.9; }
+            50% { transform: rotate(180deg) scale(1.15); opacity: 1; }
+            100% { transform: rotate(360deg) scale(1); opacity: 0.9; }
         }
 
         .title {
@@ -113,7 +115,7 @@
 
         @media (max-width: 768px) {
             .title { font-size: 1.25rem; }
-            .plump-star { width: 45px; height: 45px; }
+            .rotating-star { width: 45px; height: 45px; }
         }
     </style>
 </head>
@@ -122,11 +124,12 @@
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
-        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor).</div>
+        <div class="meteor"></div>
     </div>
     
     <div class="content">
-        <div class="plump-star"></div>
+        <div class="rotating-star"></div>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
 </body>
