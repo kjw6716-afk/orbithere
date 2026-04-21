@@ -78,21 +78,18 @@
             text-align: center;
         }
 
-        /* 회전 효과가 추가된 통통한 별 */
-        .rotating-star {
-            width: 55px;
-            height: 55px;
-            background-color: #4FD1C5;
+        /* 부드러운 선을 가진 SVG 별 스타일 */
+        .soft-star-svg {
+            width: 70px; /* 살짝 더 키웠습니다 */
+            height: 70px;
             margin-bottom: 30px;
             display: inline-block;
-            clip-path: polygon(50% 0%, 65% 35%, 100% 50%, 65% 65%, 50% 100%, 35% 65%, 0% 50%, 35% 35%);
-            /* 회전과 커졌다 작아졌다 하는 효과를 동시에 적용 */
+            fill: #4FD1C5;
+            filter: drop-shadow(0 0 15px #4FD1C5);
+            /* 회전과 숨쉬는 효과 유지 */
             animation: star-cycle 12s infinite linear;
-            box-shadow: 0 0 35px #4FD1C5;
-            filter: drop-shadow(0 0 12px #4FD1C5);
         }
 
-        /* 웅장함을 위해 12초 동안 천천히 회전하며 숨쉬는 애니메이션 */
         @keyframes star-cycle {
             0% { transform: rotate(0deg) scale(1); opacity: 0.9; }
             50% { transform: rotate(180deg) scale(1.15); opacity: 1; }
@@ -115,7 +112,7 @@
 
         @media (max-width: 768px) {
             .title { font-size: 1.25rem; }
-            .rotating-star { width: 45px; height: 45px; }
+            .soft-star-svg { width: 55px; height: 55px; }
         }
     </style>
 </head>
@@ -124,12 +121,17 @@
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
-        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor).</div>
-        <div class="meteor"></div>
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
     </div>
     
     <div class="content">
-        <div class="rotating-star"></div>
+        <svg class="soft-star-svg" viewBox="0 0 100 100">
+            <path d="M50 5 L64 36 L95 50 L64 64 L50 95 L36 64 L5 50 L36 36 Z" 
+                  stroke="#4FD1C5" 
+                  stroke-width="6" 
+                  stroke-linejoin="round" 
+                  stroke-linecap="round" />
+        </svg>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
 </body>
