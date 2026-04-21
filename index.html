@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orbit Here</title>
+    <title>궤도</title>
     <style>
         body {
             margin: 0;
@@ -13,50 +13,68 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #0F172A; /* 딥 미드나잇 블루 */
-            color: #E2E8F0; /* 소프트 실버 */
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            text-align: center;
+            background-color: #0F172A; /* 지우 님의 미드나잇 블루 */
+            color: #E2E8F0;
+            font-family: 'Pretendard', sans-serif;
+            overflow: hidden;
         }
-        .logo {
-            font-size: 3.5rem;
-            color: #4FD1C5; /* 민트 글로우 별똥별 */
-            margin-bottom: 10px;
-            animation: float 3s ease-in-out infinite;
+
+        /* 유성우 아이콘 컨테이너 */
+        .meteor-shower {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 30px;
         }
+
+        /* 유성우 개별 입자 */
+        .meteor {
+            position: absolute;
+            width: 2px;
+            height: 40px;
+            background: linear-gradient(to bottom, rgba(79, 209, 197, 0), #4FD1C5); /* 민트색 그라데이션 */
+            border-radius: 999px;
+            transform: rotate(135deg);
+            animation: fall 2s linear infinite;
+            opacity: 0;
+        }
+
+        /* 여러 개의 유성우 위치와 속도 조절 */
+        .meteor:nth-child(1) { left: 20%; animation-delay: 0s; }
+        .meteor:nth-child(2) { left: 50%; animation-delay: 0.7s; }
+        .meteor:nth-child(3) { left: 80%; animation-delay: 1.4s; }
+
+        @keyframes fall {
+            0% { transform: translate(50px, -50px) rotate(135deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translate(-50px, 50px) rotate(135deg); opacity: 0; }
+        }
+
         .title {
-            font-size: 2.5rem;
-            font-weight: 200;
-            letter-spacing: 2px;
-            margin: 0;
-        }
-        .subtitle {
-            font-size: 1.2rem;
-            margin-top: 10px;
+            font-size: 1.8rem;
             font-weight: 300;
-            color: #94A3B8;
+            letter-spacing: -0.5px;
+            margin-top: 20px;
         }
-        .status {
-            margin-top: 40px;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            border: 1px solid #4FD1C5;
-            padding: 8px 16px;
-            border-radius: 20px;
+
+        .status-box {
+            margin-top: 30px;
+            padding: 10px 24px;
+            border: 1px solid rgba(79, 209, 197, 0.4);
+            border-radius: 30px;
+            font-size: 0.95rem;
             color: #4FD1C5;
-        }
-        /* 별똥별이 둥둥 떠다니는 애니메이션 효과 */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+            background-color: rgba(79, 209, 197, 0.05);
         }
     </style>
 </head>
 <body>
-    <div class="logo">✦</div>
-    <h1 class="title">orbithere.com</h1>
-    <p class="subtitle">Meet you in orbit</p>
-    <div class="status">현재 궤도를 준비 중입니다</div>
+    <div class="meteor-shower">
+        <div class="meteor"></div>
+        <div class="meteor"></div>
+        <div class="meteor"></div>
+    </div>
+    
+    <div class="title">현재 궤도를 만드는 중입니다.</div>
 </body>
 </html>
