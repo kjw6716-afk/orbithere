@@ -50,7 +50,7 @@
         .meteor:nth-child(4) { left: 60%; animation-duration: 9s; animation-delay: 2.2s; }
         .meteor:nth-child(5) { left: 80%; animation-duration: 4.5s; animation-delay: 1.5s; height: 110px; }
         .meteor:nth-child(6) { left: 100%; animation-duration: 7s; animation-delay: 0.2s; }
-        .meteor:nth-child(1) { left: 120%; animation-duration: 8.5s; animation-delay: 3s; }
+        .meteor:nth-child(7) { left: 120%; animation-duration: 8.5s; animation-delay: 3s; }
         .meteor:nth-child(8) { left: 140%; animation-duration: 5.5s; animation-delay: 2.5s; }
         .meteor:nth-child(9) { left: 150%; animation-duration: 7.2s; animation-delay: 4s; }
         .meteor:nth-child(10) { left: 15%; animation-duration: 6.8s; animation-delay: 1.2s; }
@@ -78,18 +78,16 @@
             text-align: center;
         }
 
-        /* 67% 황금비율 + 최적화된 글로우 */
-        .final-orbit-star {
-            width: 58px;
-            height: 58px;
-            background-color: #4FD1C5;
+        /* 모든 라인이 곡선으로 처리된 최종 별 아이콘 */
+        .final-soft-star {
+            width: 70px;
+            height: 70px;
             margin-bottom: 30px;
             display: inline-block;
-            /* 지우 님의 픽: 안쪽 67%, 바깥 33%로 구현된 완벽한 두께 */
-            clip-path: polygon(50% 0%, 67% 33%, 100% 50%, 67% 67%, 50% 100%, 33% 67%, 0% 50%, 33% 33%);
+            fill: #4FD1C5;
+            /* 얇고 정교한 글로우 유지 */
+            filter: drop-shadow(0 0 7px rgba(79, 209, 197, 0.9));
             animation: star-cycle 12s infinite linear;
-            /* 존재감이 확실하면서도 정갈한 글로우 */
-            filter: drop-shadow(0 0 8px rgba(79, 209, 197, 0.9));
         }
 
         @keyframes star-cycle {
@@ -114,20 +112,27 @@
 
         @media (max-width: 768px) {
             .title { font-size: 1.2rem; }
-            .final-orbit-star { width: 46px; height: 46px; }
+            .final-soft-star { width: 55px; height: 55px; }
         }
     </style>
 </head>
 <body>
     <div class="starfield">
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor).</div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
+        <div class="meteor"></div><div class="meteor).</div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
-        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
-        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
+        <div class="meteor"></div>
     </div>
     
     <div class="content">
-        <div class="final-orbit-star"></div>
+        <svg class="final-soft-star" viewBox="0 0 100 100">
+            <path d="M50 10 
+                     Q55 45 90 50 
+                     Q55 55 50 90 
+                     Q45 55 10 50 
+                     Q45 45 50 10 Z" />
+        </svg>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
 </body>
