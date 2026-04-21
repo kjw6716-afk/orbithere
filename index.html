@@ -78,15 +78,15 @@
             text-align: center;
         }
 
-        /* 글로우를 줄이고 선을 얇게 뺀 슬림 스타 */
-        .slim-star-svg {
-            width: 60px;
-            height: 60px;
+        /* 통통한 볼륨감 + 부드러운 선의 SVG 별 */
+        .plump-soft-star {
+            width: 65px;
+            height: 65px;
             margin-bottom: 30px;
             display: inline-block;
             fill: #4FD1C5;
-            /* 글로우 강도를 15px에서 6px로 대폭 축소 */
-            filter: drop-shadow(0 0 6px rgba(79, 209, 197, 0.8));
+            /* 지우 님이 원하신 은은한 글로우 */
+            filter: drop-shadow(0 0 8px rgba(79, 209, 197, 0.6));
             animation: star-cycle 12s infinite linear;
         }
 
@@ -111,8 +111,8 @@
         }
 
         @media (max-width: 768px) {
-            .title { font-size: 1.25rem; }
-            .slim-star-svg { width: 50px; height: 50px; }
+            .title { font-size: 1.2rem; }
+            .plump-soft-star { width: 50px; height: 50px; }
         }
     </style>
 </head>
@@ -125,11 +125,11 @@
     </div>
     
     <div class="content">
-        <svg class="slim-star-svg" viewBox="0 0 100 100">
-            <!-- 좌표를 수정하여 '허리'를 더 가늘게(Slim) 만들고 stroke 두께를 줄였습니다 -->
-            <path d="M50 10 L58 42 L90 50 L58 58 L50 90 L42 58 L10 50 L42 42 Z" 
+        <svg class="plump-soft-star" viewBox="0 0 100 100">
+            <!-- 좌표를 다시 통통하게(32) 조정하고, 선을 굵고 부드럽게 마감 -->
+            <path d="M50 12 L60 40 L88 50 L60 60 L50 88 L40 60 L12 50 L40 40 Z" 
                   stroke="#4FD1C5" 
-                  stroke-width="3" 
+                  stroke-width="8" 
                   stroke-linejoin="round" 
                   stroke-linecap="round" />
         </svg>
