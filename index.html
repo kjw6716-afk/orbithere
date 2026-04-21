@@ -43,7 +43,7 @@
             filter: drop-shadow(0 0 4px #4FD1C5);
         }
 
-        /* 150% 확장 레이아웃 유지 */
+        /* 유성우 배치 및 속도 최적화 유지 */
         .meteor:nth-child(1) { left: 10%; animation-duration: 5s; }
         .meteor:nth-child(2) { left: 25%; animation-duration: 7.5s; animation-delay: 1s; }
         .meteor:nth-child(3) { left: 45%; animation-duration: 6s; animation-delay: 0.5s; }
@@ -78,23 +78,23 @@
             text-align: center;
         }
 
-        /* 듬직하고 통통해진 '슈퍼 플럼프' 아이콘 */
-        .plump-sparkle-star {
-            width: 60px;
-            height: 60px;
+        /* 65% 정밀 조정 및 얇은 글로우가 적용된 별 */
+        .refined-plump-star {
+            width: 58px;
+            height: 58px;
             background-color: #4FD1C5;
             margin-bottom: 30px;
             display: inline-block;
-            /* 안쪽 지점을 68%와 32%까지 밖으로 밀어내어 허리를 두껍게 성형 */
-            clip-path: polygon(50% 0%, 68% 32%, 100% 50%, 68% 68%, 50% 100%, 32% 68%, 0% 50%, 32% 32%);
+            /* 안쪽 깊이를 65%와 35%로 정밀 조정 (v4.7의 68%보다 아주 살짝 더 깊어짐) */
+            clip-path: polygon(50% 0%, 65% 35%, 100% 50%, 65% 65%, 50% 100%, 35% 65%, 0% 50%, 35% 35%);
             animation: star-cycle 12s infinite linear;
-            box-shadow: 0 0 30px #4FD1C5;
-            filter: drop-shadow(0 0 10px #4FD1C5);
+            /* 지우 님이 요청하신 '얇은' 글로우 효과 (box-shadow 대신 drop-shadow로 선명하게) */
+            filter: drop-shadow(0 0 5px rgba(79, 209, 197, 0.8));
         }
 
         @keyframes star-cycle {
             0% { transform: rotate(0deg) scale(1); opacity: 0.8; }
-            50% { transform: rotate(180deg) scale(1.15); opacity: 1; }
+            50% { transform: rotate(180deg) scale(1.1); opacity: 1; }
             100% { transform: rotate(360deg) scale(1); opacity: 0.8; }
         }
 
@@ -113,8 +113,8 @@
         }
 
         @media (max-width: 768px) {
-            .title { font-size: 1.25rem; }
-            .plump-sparkle-star { width: 48px; height: 48px; }
+            .title { font-size: 1.2rem; }
+            .refined-plump-star { width: 46px; height: 46px; }
         }
     </style>
 </head>
@@ -127,7 +127,7 @@
     </div>
     
     <div class="content">
-        <div class="plump-sparkle-star"></div>
+        <div class="refined-plump-star"></div>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
 </body>
