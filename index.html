@@ -58,4 +58,89 @@
         .meteor:nth-child(12) { left: 55%; animation-duration: 5.8s; animation-delay: 0.8s; }
         .meteor:nth-child(13) { left: 75%; animation-duration: 7.5s; animation-delay: 1.8s; }
         .meteor:nth-child(14) { left: 95%; animation-duration: 8.8s; animation-delay: 3.3s; }
-        .meteor:nth-child(15) { left: 115%; animation-duration: 6.2s; animation-delay:
+        .meteor:nth-child(15) { left: 115%; animation-duration: 6.2s; animation-delay: 0.7s; }
+        .meteor:nth-child(16) { left: 135%; animation-duration: 7.8s; animation-delay: 2.5s; }
+        .meteor:nth-child(17) { left: 50%; animation-duration: 5.2s; animation-delay: 1.9s; }
+        .meteor:nth-child(18) { left: 130%; animation-duration: 8.4s; animation-delay: 0.3s; }
+        .meteor:nth-child(19) { left: 145%; animation-duration: 7s; animation-delay: 3.9s; }
+        .meteor:nth-child(20) { left: 5%; animation-duration: 6.5s; animation-delay: 2.1s; }
+
+        @keyframes fall {
+            0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            80% { opacity: 0.3; }
+            100% { transform: translate(-1200px, 1200px) rotate(45deg); opacity: 0; }
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        /* 세련된 '오비탈(Orbital)' 브랜드 아이콘 */
+        .brand-icon {
+            width: 64px;
+            height: 32px; /* 타원형 궤도 비율 */
+            margin-bottom: 30px;
+            display: inline-block;
+            border: 1px solid rgba(79, 209, 197, 0.4); /* 얇은 민트색 궤도 링 */
+            border-radius: 50%;
+            position: relative;
+            transform: rotate(-20deg); /* 세련되게 살짝 기울임 */
+            animation: orbit-float 4s infinite ease-in-out;
+        }
+
+        /* 궤도 중앙의 별 */
+        .brand-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background-color: #4FD1C5;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px #4FD1C5;
+        }
+
+        @keyframes orbit-float {
+            0%, 100% { transform: rotate(-20deg) translateY(0); opacity: 0.8; }
+            50% { transform: rotate(-20deg) translateY(-8px); opacity: 1; box-shadow: 0 10px 20px rgba(15, 23, 42, 0.5); }
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: 200;
+            letter-spacing: -0.05em;
+            color: #E2E8F0;
+            margin: 0;
+            text-shadow: 0 0 30px rgba(15, 23, 42, 1);
+        }
+
+        .highlight {
+            color: #4FD1C5;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 1.25rem; }
+            .brand-icon { width: 50px; height: 25px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield">
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
+    </div>
+    
+    <div class="content">
+        <div class="brand-icon"></div>
+        <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
+    </div>
+</body>
+</html>
