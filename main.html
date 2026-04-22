@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbit | Archive</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        :root {
+            --bg-color: #0F172A;
+            --mint: #4FD1C5;
+            --text-main: #E2E8F0;
+            --card-bg: rgba(30, 41, 59, 0.5);
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Pretendard', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 네비게이션 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--mint);
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-size: 0.9rem;
+            font-weight: 300;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--mint); }
+
+        /* 메인 컨테이너 */
+        .container {
+            max-width: 1100px;
+            margin: 120px auto;
+            padding: 0 20px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 200;
+            margin-bottom: 1rem;
+        }
+
+        header h1 span { font-weight: 600; color: var(--mint); }
+
+        /* 포트폴리오 그리드 (Bento Style) */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(79, 209, 197, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--mint);
+            box-shadow: 0 10px 30px rgba(79, 209, 197, 0.1);
+        }
+
+        .card-tag {
+            font-size: 0.7rem;
+            color: var(--mint);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: #94A3B8;
+        }
+
+        /* 인트로의 무드를 잇는 배경 장치 */
+        .bg-glow {
+            position: fixed;
+            top: 20%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(79, 209, 197, 0.05) 0%, rgba(15, 23, 42, 0) 70%);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="logo">ORBIT.</div>
+        <div class="nav-links">
+            <a href="#archive">Archive</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header>
+            <h1>Selectively <span>Planned</span><br>Archive</h1>
+            <p style="color: #94A3B8;">지우의 궤도 위에서 만들어진 프로젝트 기록들입니다.</p>
+        </header>
+
+        <section class="grid">
+            <!-- 카드 1 -->
+            <div class="card">
+                <span class="card-tag">Web Automation</span>
+                <h3 class="card-title">Customized Payroll System</h3>
+                <p class="card-desc">Excel과 자동화 로직을 활용한 사회복지시설 맞춤형 급여 관리 시스템.</p>
+            </div>
+            <!-- 카드 2 -->
+            <div class="card" style="grid-row: span 2;">
+                <span class="card-tag">UI/UX Design</span>
+                <h3 class="card-title">Brand Identity Orbit</h3>
+                <p class="card-desc">개인 브랜드의 정체성을 담은 3D 궤도 인터렉티브 웹 디자인.</p>
+            </div>
+            <!-- 카드 3 -->
+            <div class="card">
+                <span class="card-tag">Side Project</span>
+                <h3 class="card-title">Japanese Study Log</h3>
+                <p class="card-desc">언어 학습 효율을 높이기 위한 개인용 대시보드 구축.</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
