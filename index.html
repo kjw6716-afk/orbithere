@@ -78,34 +78,34 @@
             text-align: center;
         }
 
-        /* 3D 시스템을 감싸는 컨테이너 */
+        /* 넓어진 궤도를 품기 위해 컨테이너 크기 확장 */
         .star-system {
             position: relative;
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            width: 150px;
+            width: 220px; 
             height: 100px;
             margin-bottom: 30px;
         }
 
-        /* 공통 고리 설정: 얇고 선명한 2px 라인 */
+        /* 더 얇고(1px) 훨씬 커진 궤도 */
         .saturn-ring {
             position: absolute;
-            width: 140px;
-            height: 36px;
-            border: 2px solid #4FD1C5;
+            width: 200px; /* 기존 140px에서 대폭 확장 */
+            height: 55px; /* 비율에 맞춰 타원 확장 */
+            border: 1px solid #4FD1C5; /* 가장 얇고 예리한 선 */
             border-radius: 50%;
             box-sizing: border-box;
             transform: rotate(-20deg);
         }
 
-        /* 1. 뒤쪽 고리: 별 뒤에 위치 */
+        /* 1. 뒤쪽 고리 */
         .ring-back {
             z-index: 1;
         }
 
-        /* 2. 중앙의 플랫 별사탕 아이콘 */
+        /* 2. 중앙의 별사탕 */
         .gummy-star {
             width: 75px;
             height: 75px;
@@ -115,14 +115,13 @@
             stroke-linejoin: round;
             stroke-linecap: round;
             position: relative;
-            z-index: 2; /* 뒤쪽 고리(1)와 앞쪽 고리(3) 사이 */
+            z-index: 2;
             animation: star-rotate 12s infinite linear;
         }
 
-        /* 3. 앞쪽 고리: 별 앞으로 튀어나오게 덮음 */
+        /* 3. 앞쪽 고리 (3D 관통 효과 유지) */
         .ring-front {
             z-index: 3;
-            /* 위쪽 절반은 잘라내고, 아래쪽 절반만 보이게 해서 별을 감싸는 착시를 만듭니다 */
             clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
         }
 
@@ -145,12 +144,14 @@
             font-weight: 500;
         }
 
-        /* 모바일 최적화 (v5.9 완벽 적용) */
+        /* 모바일 최적화 */
         @media (max-width: 768px) {
             .title { font-size: 1.2rem; }
             .gummy-star { width: 60px; height: 60px; }
-            /* 모바일에 맞게 고리 크기도 축소 */
-            .saturn-ring { width: 110px; height: 30px; }
+            
+            /* 모바일에서도 궤도의 '와이드함'을 느낄 수 있도록 비율 조정 */
+            .star-system { width: 180px; }
+            .saturn-ring { width: 160px; height: 42px; border-width: 1px; }
             
             .meteor {
                 animation-name: fall-mobile;
@@ -196,10 +197,7 @@
     
     <div class="content">
         <div class="star-system">
-            <!-- 1. 뒤쪽으로 넘어가는 고리 -->
             <div class="saturn-ring ring-back"></div>
-            
-            <!-- 2. 중앙의 별 -->
             <svg class="gummy-star" viewBox="0 0 100 100">
                 <path d="M 50 15 
                          L 62 34 
@@ -212,8 +210,6 @@
                          L 17 39 
                          L 38 34 Z" />
             </svg>
-            
-            <!-- 3. 앞으로 튀어나오는 고리 (하단부만 노출) -->
             <div class="saturn-ring ring-front"></div>
         </div>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
