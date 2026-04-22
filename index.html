@@ -38,7 +38,6 @@
             background: linear-gradient(to bottom, rgba(79, 209, 197, 0), #4FD1C5);
             border-radius: 999px;
             transform: rotate(45deg);
-            /* 기본 PC 애니메이션 적용 */
             animation: fall linear infinite;
             opacity: 0;
             filter: drop-shadow(0 0 4px #4FD1C5);
@@ -66,7 +65,6 @@
         .meteor:nth-child(19) { left: 145%; animation-duration: 7s; animation-delay: 3.9s; }
         .meteor:nth-child(20) { left: 5%; animation-duration: 6.5s; animation-delay: 2.1s; }
 
-        /* PC 전용 궤도 (원래의 우아한 속도 복구) */
         @keyframes fall {
             0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
             10% { opacity: 0.8; }
@@ -80,17 +78,42 @@
             text-align: center;
         }
 
-        /* 글로우 없는 깔끔한 플랫 별사탕 아이콘 */
+        /* 별과 고리를 묶어주는 래퍼 컨테이너 */
+        .star-system {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 150px;
+            height: 100px;
+            margin-bottom: 30px;
+        }
+
+        /* 얇은 선으로 만든 토성 고리 */
+        .saturn-ring {
+            position: absolute;
+            width: 140px;
+            height: 40px;
+            border: 2px solid #4FD1C5;
+            border-radius: 50%;
+            /* 플랫 디자인에 맞춰 투명도를 살짝 줘서 별을 방해하지 않게 합니다 */
+            opacity: 0.5; 
+            /* 행성 고리처럼 20도 정도 기울여줍니다 */
+            transform: rotate(-20deg);
+            z-index: 1;
+        }
+
+        /* 기존의 완벽한 플랫 별사탕 아이콘 */
         .gummy-star {
             width: 75px;
             height: 75px;
-            margin-bottom: 30px;
-            display: inline-block;
             fill: #4FD1C5;
             stroke: #4FD1C5;
             stroke-width: 14; 
             stroke-linejoin: round;
             stroke-linecap: round;
+            position: relative;
+            z-index: 2; /* 별이 고리 위에 오도록 설정 */
             animation: star-rotate 12s infinite linear;
         }
 
@@ -113,12 +136,13 @@
             font-weight: 500;
         }
 
-        /* 모바일 최적화 세팅 */
+        /* 모바일 최적화 세팅 (v5.9 완벽 적용) */
         @media (max-width: 768px) {
             .title { font-size: 1.2rem; }
             .gummy-star { width: 60px; height: 60px; }
+            /* 모바일에선 고리도 비율에 맞게 살짝 작게 */
+            .saturn-ring { width: 110px; height: 32px; } 
             
-            /* 모바일에서는 모바일 전용 애니메이션을 타도록 변경 */
             .meteor {
                 animation-name: fall-mobile;
             }
@@ -145,7 +169,6 @@
             .meteor:nth-child(20) { left: 10%; }
         }
 
-        /* 모바일 전용 긴 궤도 */
         @keyframes fall-mobile {
             0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
             10% { opacity: 0.8; }
@@ -163,18 +186,22 @@
     </div>
     
     <div class="content">
-        <svg class="gummy-star" viewBox="0 0 100 100">
-            <path d="M 50 15 
-                     L 62 34 
-                     L 83 39 
-                     L 69 56 
-                     L 71 78 
-                     L 50 70 
-                     L 29 78 
-                     L 31 56 
-                     L 17 39 
-                     L 38 34 Z" />
-        </svg>
+        <!-- 별과 고리를 감싸는 시스템 -->
+        <div class="star-system">
+            <div class="saturn-ring"></div>
+            <svg class="gummy-star" viewBox="0 0 100 100">
+                <path d="M 50 15 
+                         L 62 34 
+                         L 83 39 
+                         L 69 56 
+                         L 71 78 
+                         L 50 70 
+                         L 29 78 
+                         L 31 56 
+                         L 17 39 
+                         L 38 34 Z" />
+            </svg>
+        </div>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
 </body>
