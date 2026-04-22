@@ -78,7 +78,7 @@
             text-align: center;
         }
 
-        /* 별과 고리를 묶어주는 래퍼 컨테이너 */
+        /* 3D 시스템을 감싸는 컨테이너 */
         .star-system {
             position: relative;
             display: inline-flex;
@@ -89,21 +89,23 @@
             margin-bottom: 30px;
         }
 
-        /* 얇은 선으로 만든 토성 고리 */
+        /* 공통 고리 설정: 얇고 선명한 2px 라인 */
         .saturn-ring {
             position: absolute;
             width: 140px;
-            height: 40px;
+            height: 36px;
             border: 2px solid #4FD1C5;
             border-radius: 50%;
-            /* 플랫 디자인에 맞춰 투명도를 살짝 줘서 별을 방해하지 않게 합니다 */
-            opacity: 0.5; 
-            /* 행성 고리처럼 20도 정도 기울여줍니다 */
+            box-sizing: border-box;
             transform: rotate(-20deg);
+        }
+
+        /* 1. 뒤쪽 고리: 별 뒤에 위치 */
+        .ring-back {
             z-index: 1;
         }
 
-        /* 기존의 완벽한 플랫 별사탕 아이콘 */
+        /* 2. 중앙의 플랫 별사탕 아이콘 */
         .gummy-star {
             width: 75px;
             height: 75px;
@@ -113,8 +115,15 @@
             stroke-linejoin: round;
             stroke-linecap: round;
             position: relative;
-            z-index: 2; /* 별이 고리 위에 오도록 설정 */
+            z-index: 2; /* 뒤쪽 고리(1)와 앞쪽 고리(3) 사이 */
             animation: star-rotate 12s infinite linear;
+        }
+
+        /* 3. 앞쪽 고리: 별 앞으로 튀어나오게 덮음 */
+        .ring-front {
+            z-index: 3;
+            /* 위쪽 절반은 잘라내고, 아래쪽 절반만 보이게 해서 별을 감싸는 착시를 만듭니다 */
+            clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
         }
 
         @keyframes star-rotate {
@@ -136,12 +145,12 @@
             font-weight: 500;
         }
 
-        /* 모바일 최적화 세팅 (v5.9 완벽 적용) */
+        /* 모바일 최적화 (v5.9 완벽 적용) */
         @media (max-width: 768px) {
             .title { font-size: 1.2rem; }
             .gummy-star { width: 60px; height: 60px; }
-            /* 모바일에선 고리도 비율에 맞게 살짝 작게 */
-            .saturn-ring { width: 110px; height: 32px; } 
+            /* 모바일에 맞게 고리 크기도 축소 */
+            .saturn-ring { width: 110px; height: 30px; }
             
             .meteor {
                 animation-name: fall-mobile;
@@ -186,9 +195,11 @@
     </div>
     
     <div class="content">
-        <!-- 별과 고리를 감싸는 시스템 -->
         <div class="star-system">
-            <div class="saturn-ring"></div>
+            <!-- 1. 뒤쪽으로 넘어가는 고리 -->
+            <div class="saturn-ring ring-back"></div>
+            
+            <!-- 2. 중앙의 별 -->
             <svg class="gummy-star" viewBox="0 0 100 100">
                 <path d="M 50 15 
                          L 62 34 
@@ -201,6 +212,9 @@
                          L 17 39 
                          L 38 34 Z" />
             </svg>
+            
+            <!-- 3. 앞으로 튀어나오는 고리 (하단부만 노출) -->
+            <div class="saturn-ring ring-front"></div>
         </div>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
