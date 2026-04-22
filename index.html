@@ -273,4 +273,14 @@
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
 </body>
+<script>
+    // 1. 화면 전체 어디든 클릭하면 이동하게 만들기
+    document.body.style.cursor = 'pointer'; // 마우스 커서를 손가락 모양으로
+    document.body.addEventListener('click', () => {
+        window.location.href = 'main.html';
+    });
+
+    // 2. (선택사항) 8초 뒤에 자동으로 이동시키고 싶다면?
+    // setTimeout(() => { window.location.href = 'main.html'; }, 8000);
+</script>
 </html>
