@@ -43,7 +43,7 @@
             filter: drop-shadow(0 0 4px #4FD1C5);
         }
 
-        /* 150% 확장 레이아웃 유지 */
+        /* PC 유성우 유지 */
         .meteor:nth-child(1) { left: 10%; animation-duration: 5s; }
         .meteor:nth-child(2) { left: 25%; animation-duration: 7.5s; animation-delay: 1s; }
         .meteor:nth-child(3) { left: 45%; animation-duration: 6s; animation-delay: 0.5s; }
@@ -83,52 +83,96 @@
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            /* 궤도가 작아진 만큼 래퍼 크기도 살짝 줄임 */
-            width: 190px; 
+            width: 220px; 
             height: 100px;
             margin-bottom: 30px;
         }
 
-        /* 크기를 살짝 줄여서 쫀쫀하게 만든 궤도 */
-        .saturn-ring {
+        /* 새롭게 추가된 기울기/위치 컨트롤 래퍼 */
+        .tilt-wrapper {
+            position: relative;
+            /* 가로비 3.3 유지 (200 / 60) */
+            width: 200px; 
+            height: 60px;
+            /* 지우님 세팅: 기울기 -25도 */
+            transform: rotate(-25deg);
+            /* v6.5에서 잡았던 완벽한 하이앵글 안착감 오프셋 유지 */
+            margin-top: 30px; 
+            margin-left: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .orbit-ring {
             position: absolute;
-            /* Width: 200px -> 170px, Height: 55px -> 48px 로 약 15% 축소 */
-            width: 170px;
-            height: 48px;
+            width: 100%;
+            height: 100%;
             border: 1px solid #4FD1C5; 
             border-radius: 50%;
             box-sizing: border-box;
-            /* 크기가 줄어든 만큼 위치(하이앵글 관통점) 재조정 */
-            margin-top: 30px; 
-            margin-left: 8px;
-            transform: rotate(-20deg);
         }
 
-        .ring-back {
-            z-index: 1;
+        .ring-back { z-index: 2; }
+        .ring-front {
+            z-index: 4;
+            clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
         }
 
+        /* 작아지고 궤도를 도는 별사탕 */
         .gummy-star {
-            width: 75px;
-            height: 75px;
+            position: absolute;
+            /* 크기 11 세팅 (26px로 축소하여 귀여움 극대화) */
+            width: 26px;
+            height: 26px;
+            top: 50%;
+            left: 50%;
+            margin-top: -13px;
+            margin-left: -13px;
             fill: #4FD1C5;
             stroke: #4FD1C5;
             stroke-width: 14; 
             stroke-linejoin: round;
             stroke-linecap: round;
-            position: relative;
-            z-index: 2;
-            animation: star-rotate 12s infinite linear;
+            
+            /* 궤도 수학 변수 설정 (Width/2, Height/2) */
+            --rx: 100px;
+            --ry: 30px;
+            
+            /* 속도 1.3에 맞춘 7.5초의 경쾌한 애니메이션 */
+            animation: star-orbit 7.5s linear infinite;
         }
 
-        .ring-front {
-            z-index: 3;
-            clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
-        }
-
-        @keyframes star-rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        /* 24프레임 수학적 타원 궤도 엔진 + 3D 원근감 + Z-index 교차 */
+        @keyframes star-orbit {
+            0%    { transform: translate(calc(var(--rx) * 1), calc(var(--ry) * 0)) rotate(0deg) scale(1); z-index: 1; }
+            4.16% { transform: translate(calc(var(--rx) * 0.966), calc(var(--ry) * -0.259)) rotate(-15deg) scale(0.98); z-index: 1; }
+            8.33% { transform: translate(calc(var(--rx) * 0.866), calc(var(--ry) * -0.5)) rotate(-30deg) scale(0.96); z-index: 1; }
+            12.5% { transform: translate(calc(var(--rx) * 0.707), calc(var(--ry) * -0.707)) rotate(-45deg) scale(0.92); z-index: 1; }
+            16.66%{ transform: translate(calc(var(--rx) * 0.5), calc(var(--ry) * -0.866)) rotate(-60deg) scale(0.89); z-index: 1; }
+            20.83%{ transform: translate(calc(var(--rx) * 0.259), calc(var(--ry) * -0.966)) rotate(-75deg) scale(0.86); z-index: 1; }
+            25%   { transform: translate(0px, calc(var(--ry) * -1)) rotate(-90deg) scale(0.85); z-index: 1; } /* 가장 먼 곳 (작아짐) */
+            29.16%{ transform: translate(calc(var(--rx) * -0.259), calc(var(--ry) * -0.966)) rotate(-105deg) scale(0.86); z-index: 1; }
+            33.33%{ transform: translate(calc(var(--rx) * -0.5), calc(var(--ry) * -0.866)) rotate(-120deg) scale(0.89); z-index: 1; }
+            37.5% { transform: translate(calc(var(--rx) * -0.707), calc(var(--ry) * -0.707)) rotate(-135deg) scale(0.92); z-index: 1; }
+            41.66%{ transform: translate(calc(var(--rx) * -0.866), calc(var(--ry) * -0.5)) rotate(-150deg) scale(0.96); z-index: 1; }
+            45.83%{ transform: translate(calc(var(--rx) * -0.966), calc(var(--ry) * -0.259)) rotate(-165deg) scale(0.98); z-index: 1; }
+            49.99%{ transform: translate(calc(var(--rx) * -1), 0px) rotate(-180deg) scale(1); z-index: 1; }
+            /* 50% 지점에서 앞쪽 궤도로 진입하며 z-index 교차 */
+            50%   { transform: translate(calc(var(--rx) * -1), 0px) rotate(-180deg) scale(1); z-index: 5; }
+            54.16%{ transform: translate(calc(var(--rx) * -0.966), calc(var(--ry) * 0.259)) rotate(-195deg) scale(1.02); z-index: 5; }
+            58.33%{ transform: translate(calc(var(--rx) * -0.866), calc(var(--ry) * 0.5)) rotate(-210deg) scale(1.04); z-index: 5; }
+            62.5% { transform: translate(calc(var(--rx) * -0.707), calc(var(--ry) * 0.707)) rotate(-225deg) scale(1.08); z-index: 5; }
+            66.66%{ transform: translate(calc(var(--rx) * -0.5), calc(var(--ry) * 0.866)) rotate(-240deg) scale(1.11); z-index: 5; }
+            70.83%{ transform: translate(calc(var(--rx) * -0.259), calc(var(--ry) * 0.966)) rotate(-255deg) scale(1.14); z-index: 5; }
+            75%   { transform: translate(0px, calc(var(--ry) * 1)) rotate(-270deg) scale(1.15); z-index: 5; } /* 가장 가까운 곳 (커짐) */
+            79.16%{ transform: translate(calc(var(--rx) * 0.259), calc(var(--ry) * 0.966)) rotate(-285deg) scale(1.14); z-index: 5; }
+            83.33%{ transform: translate(calc(var(--rx) * 0.5), calc(var(--ry) * 0.866)) rotate(-300deg) scale(1.11); z-index: 5; }
+            87.5% { transform: translate(calc(var(--rx) * 0.707), calc(var(--ry) * 0.707)) rotate(-315deg) scale(1.08); z-index: 5; }
+            91.66%{ transform: translate(calc(var(--rx) * 0.866), calc(var(--ry) * 0.5)) rotate(-330deg) scale(1.04); z-index: 5; }
+            95.83%{ transform: translate(calc(var(--rx) * 0.966), calc(var(--ry) * 0.259)) rotate(-345deg) scale(1.02); z-index: 5; }
+            99.99%{ transform: translate(calc(var(--rx) * 1), 0px) rotate(-360deg) scale(1); z-index: 5; }
+            100%  { transform: translate(calc(var(--rx) * 1), 0px) rotate(-360deg) scale(1); z-index: 1; }
         }
 
         .title {
@@ -148,22 +192,26 @@
         /* 모바일 최적화 */
         @media (max-width: 768px) {
             .title { font-size: 1.2rem; }
-            .gummy-star { width: 60px; height: 60px; }
+            .star-system { width: 170px; }
             
-            .star-system { width: 150px; }
-            /* 모바일 궤도 크기도 비율에 맞춰서 타이트하게 축소 (160px -> 135px) */
-            .saturn-ring { 
-                width: 135px; 
-                height: 38px; 
-                border-width: 1px; 
+            /* 모바일에서도 비율 3.3 유지 (150/45) */
+            .tilt-wrapper {
+                width: 150px; 
+                height: 45px; 
                 margin-top: 24px; 
                 margin-left: 6px; 
             }
-            
-            .meteor {
-                animation-name: fall-mobile;
+            .gummy-star { 
+                width: 20px; 
+                height: 20px; 
+                margin-top: -10px; 
+                margin-left: -10px; 
+                /* 모바일용 궤도 반경 업데이트 */
+                --rx: 75px; 
+                --ry: 22.5px; 
             }
             
+            .meteor { animation-name: fall-mobile; }
             .meteor:nth-child(1) { left: 20%; }
             .meteor:nth-child(2) { left: 50%; }
             .meteor:nth-child(3) { left: 90%; }
@@ -204,20 +252,23 @@
     
     <div class="content">
         <div class="star-system">
-            <div class="saturn-ring ring-back"></div>
-            <svg class="gummy-star" viewBox="0 0 100 100">
-                <path d="M 50 15 
-                         L 62 34 
-                         L 83 39 
-                         L 69 56 
-                         L 71 78 
-                         L 50 70 
-                         L 29 78 
-                         L 31 56 
-                         L 17 39 
-                         L 38 34 Z" />
-            </svg>
-            <div class="saturn-ring ring-front"></div>
+            <!-- 기울기를 전담하는 래퍼 추가 -->
+            <div class="tilt-wrapper">
+                <div class="orbit-ring ring-back"></div>
+                <svg class="gummy-star" viewBox="0 0 100 100">
+                    <path d="M 50 15 
+                             L 62 34 
+                             L 83 39 
+                             L 69 56 
+                             L 71 78 
+                             L 50 70 
+                             L 29 78 
+                             L 31 56 
+                             L 17 39 
+                             L 38 34 Z" />
+                </svg>
+                <div class="orbit-ring ring-front"></div>
+            </div>
         </div>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
