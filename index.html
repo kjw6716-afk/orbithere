@@ -88,7 +88,7 @@
             margin-bottom: 30px;
         }
 
-        /* 궤도 위치 조정! */
+        /* 궤도 최종 미세 조정 (우측 약간, 아래 약간 더) */
         .saturn-ring {
             position: absolute;
             width: 200px;
@@ -96,8 +96,9 @@
             border: 1px solid #4FD1C5; 
             border-radius: 50%;
             box-sizing: border-box;
-            /* 지우님의 요청: 고리를 전체적으로 아래로 내려서 위쪽 라인이 별 중앙을 지나게 합니다 */
-            margin-top: 25px; 
+            /* 아래로 조금 더(32px), 우측으로 아주 살짝(10px) 이동 */
+            margin-top: 32px; 
+            margin-left: 10px;
             transform: rotate(-20deg);
         }
 
@@ -120,7 +121,6 @@
 
         .ring-front {
             z-index: 3;
-            /* 고리가 아래로 내려갔어도, 앞쪽 절반만 자르는 이 트릭은 완벽하게 작동합니다 */
             clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
         }
 
@@ -149,8 +149,14 @@
             .gummy-star { width: 60px; height: 60px; }
             
             .star-system { width: 180px; }
-            /* 모바일 비율에 맞춰 고리 내림폭도 살짝 줄여서 최적화합니다 */
-            .saturn-ring { width: 160px; height: 42px; border-width: 1px; margin-top: 20px; }
+            /* 모바일 비율에 맞춘 최종 궤도 위치 */
+            .saturn-ring { 
+                width: 160px; 
+                height: 42px; 
+                border-width: 1px; 
+                margin-top: 26px; 
+                margin-left: 8px; 
+            }
             
             .meteor {
                 animation-name: fall-mobile;
