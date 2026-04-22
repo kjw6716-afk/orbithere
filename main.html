@@ -1,32 +1,186 @@
-<main class="container">
-    <header>
-        <h1>Connect in <span>Orbit</span></h1>
-        <p style="color: #94A3B8;">우리의 관심사가 교차하고 새로운 궤도가 만들어지는 곳</p>
-    </header>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbit | Community</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        :root {
+            --bg-color: #0F172A; /* 미드나잇 블루 */
+            --mint: #4FD1C5;    /* 트렌디 민트 */
+            --text-main: #E2E8F0;
+            --card-bg: rgba(30, 41, 59, 0.7);
+        }
 
-    <section class="grid">
-        <div class="card" style="grid-column: span 2;">
-            <span class="card-tag">Notice</span>
-            <h3 class="card-title">🚀 새로운 궤도에 합류하신 것을 환영합니다!</h3>
-            <p class="card-desc">orbithere는 서로의 성장을 응원하는 커뮤니티입니다. 가이드라인을 확인하고 첫 인사를 남겨보세요.</p>
-        </div>
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Pretendard', sans-serif;
+            overflow-x: hidden;
+        }
 
-        <div class="card">
-            <span class="card-tag">Trending</span>
-            <h3 class="card-title">이번 주 가장 뜨거운 궤도</h3>
-            <p class="card-desc">"효율적인 업무 자동화를 위한 노하우 공유" 글이 조회수 1,000회를 돌파했습니다.</p>
-        </div>
+        /* 배경 유성우 느낌의 글로우 */
+        .bg-glow {
+            position: fixed;
+            top: -10%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(79, 209, 197, 0.08) 0%, rgba(15, 23, 42, 0) 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
 
-        <div class="card">
-            <span class="card-tag">Lounge</span>
-            <h3 class="card-title">자유로운 대화 광장</h3>
-            <p class="card-desc">지금 12명의 멤버가 광장에서 실시간으로 대화 중입니다.</p>
-        </div>
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(15px);
+            box-sizing: border-box;
+            border-bottom: 1px solid rgba(79, 209, 197, 0.1);
+        }
 
-        <div class="card" style="border: 1px dashed var(--mint);">
-            <span class="card-tag" style="color: var(--mint);">+ New Orbit</span>
-            <h3 class="card-title">새로운 모임 만들기</h3>
-            <p class="card-desc">직접 주제를 정하고 함께 공전할 동료들을 찾아보세요.</p>
-        </div>
-    </section>
-</main>
+        .logo { font-weight: 700; letter-spacing: 2px; color: var(--mint); cursor: pointer; }
+
+        .container {
+            max-width: 1100px;
+            margin: 140px auto 80px;
+            padding: 0 20px;
+        }
+
+        header { margin-bottom: 50px; text-align: left; }
+        header h1 { font-size: 2.8rem; font-weight: 200; margin: 0; line-height: 1.2; }
+        header h1 span { color: var(--mint); font-weight: 700; }
+        header p { color: #94A3B8; margin-top: 15px; font-size: 1.1rem; }
+
+        /* 벤토 그리드 레이아웃 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: minmax(200px, auto);
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(79, 209, 197, 0.15);
+            border-radius: 24px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            border-color: var(--mint);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(79, 209, 197, 0.1);
+        }
+
+        .card-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(79, 209, 197, 0.1);
+            color: var(--mint);
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .card-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+        .card-desc { color: #94A3B8; font-size: 0.95rem; line-height: 1.6; }
+
+        /* 가로로 긴 카드 (공지) */
+        .wide { grid-column: span 2; }
+
+        /* 참여 폼 스타일 */
+        .join-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .join-form input {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(79, 209, 197, 0.3);
+            border-radius: 12px;
+            padding: 12px 15px;
+            color: white;
+            font-family: 'Pretendard';
+            outline: none;
+        }
+
+        .join-form input:focus { border-color: var(--mint); }
+
+        .btn-mint {
+            background: var(--mint);
+            color: #0F172A;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-mint:hover { opacity: 0.9; transform: scale(0.98); }
+
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            .wide { grid-column: span 1; }
+            header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="logo" onclick="location.href='index.html'">ORBIT.</div>
+    </nav>
+
+    <main class="container">
+        <header>
+            <h1>Connect in <span>Orbit</span></h1>
+            <p>우리의 관심사가 교차하고 새로운 궤도가 만들어지는 곳</p>
+        </header>
+
+        <section class="grid">
+            <div class="card wide">
+                <span class="card-tag">Notice</span>
+                <h3 class="card-title">🚀 새로운 궤도에 합류하신 것을 환영합니다!</h3>
+                <p class="card-desc">orbithere는 서로의 성장을 응원하고 지식을 공유하는 커뮤니티입니다.<br>가이드라인을 확인하고 지우님의 첫 번째 궤적을 남겨보세요.</p>
+            </div>
+
+            <div class="card">
+                <span class="card-tag">Join Us</span>
+                <h3 class="card-title">궤도 진입하기</h3>
+                <div class="join-form">
+                    <input type="text" placeholder="닉네임을 입력하세요">
+                    <button class="btn-mint">참여 신청</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag">Trending</span>
+                <h3 class="card-title">가장 뜨거운 궤도</h3>
+                <p class="card-desc">"효율적인 업무 자동화를 위한 노하우 공유" 글이 현재 인기 순위 1위입니다.</p>
+            </div>
+
+            <div class="card wide">
+                <span class="card-tag">Lounge</span>
+                <h3 class="card-title">자유로운 대화 광장</h3>
+                <p class="card-desc">지금 12명의 멤버가 광장에서 실시간으로 이야기를 나누고 있습니다. 당신의 의견을 들려주세요!</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
