@@ -38,12 +38,13 @@
             background: linear-gradient(to bottom, rgba(79, 209, 197, 0), #4FD1C5);
             border-radius: 999px;
             transform: rotate(45deg);
+            /* 기본 PC 애니메이션 적용 */
             animation: fall linear infinite;
             opacity: 0;
             filter: drop-shadow(0 0 4px #4FD1C5);
         }
 
-        /* 기본 PC 레이아웃 (150% 확장) */
+        /* 150% 확장 레이아웃 유지 */
         .meteor:nth-child(1) { left: 10%; animation-duration: 5s; }
         .meteor:nth-child(2) { left: 25%; animation-duration: 7.5s; animation-delay: 1s; }
         .meteor:nth-child(3) { left: 45%; animation-duration: 6s; animation-delay: 0.5s; }
@@ -65,12 +66,12 @@
         .meteor:nth-child(19) { left: 145%; animation-duration: 7s; animation-delay: 3.9s; }
         .meteor:nth-child(20) { left: 5%; animation-duration: 6.5s; animation-delay: 2.1s; }
 
+        /* PC 전용 궤도 (원래의 우아한 속도 복구) */
         @keyframes fall {
             0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
             10% { opacity: 0.8; }
             80% { opacity: 0.3; }
-            /* px 대신 vmax(화면 긴 쪽 기준)를 써서 모바일에서도 끝까지 떨어지게 수정 */
-            100% { transform: translate(-200vmax, 200vmax) rotate(45deg); opacity: 0; }
+            100% { transform: translate(-1200px, 1200px) rotate(45deg); opacity: 0; }
         }
 
         .content {
@@ -79,7 +80,7 @@
             text-align: center;
         }
 
-        /* 깔끔한 플랫 별사탕 아이콘 */
+        /* 글로우 없는 깔끔한 플랫 별사탕 아이콘 */
         .gummy-star {
             width: 75px;
             height: 75px;
@@ -112,12 +113,16 @@
             font-weight: 500;
         }
 
-        /* 모바일 최적화 세팅 (여기가 핵심입니다!) */
+        /* 모바일 최적화 세팅 */
         @media (max-width: 768px) {
             .title { font-size: 1.2rem; }
             .gummy-star { width: 60px; height: 60px; }
             
-            /* 모바일은 가로가 좁으므로 시작점을 300%까지 넓혀서 바닥 끝까지 닿게 설계 */
+            /* 모바일에서는 모바일 전용 애니메이션을 타도록 변경 */
+            .meteor {
+                animation-name: fall-mobile;
+            }
+            
             .meteor:nth-child(1) { left: 20%; }
             .meteor:nth-child(2) { left: 50%; }
             .meteor:nth-child(3) { left: 90%; }
@@ -138,6 +143,14 @@
             .meteor:nth-child(18) { left: 260%; }
             .meteor:nth-child(19) { left: 290%; }
             .meteor:nth-child(20) { left: 10%; }
+        }
+
+        /* 모바일 전용 긴 궤도 */
+        @keyframes fall-mobile {
+            0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            80% { opacity: 0.3; }
+            100% { transform: translate(-1600px, 1600px) rotate(45deg); opacity: 0; }
         }
     </style>
 </head>
