@@ -78,7 +78,6 @@
             text-align: center;
         }
 
-        /* 넓어진 궤도를 품기 위해 컨테이너 크기 확장 */
         .star-system {
             position: relative;
             display: inline-flex;
@@ -89,23 +88,23 @@
             margin-bottom: 30px;
         }
 
-        /* 더 얇고(1px) 훨씬 커진 궤도 */
+        /* 궤도 위치 조정! */
         .saturn-ring {
             position: absolute;
-            width: 200px; /* 기존 140px에서 대폭 확장 */
-            height: 55px; /* 비율에 맞춰 타원 확장 */
-            border: 1px solid #4FD1C5; /* 가장 얇고 예리한 선 */
+            width: 200px;
+            height: 55px;
+            border: 1px solid #4FD1C5; 
             border-radius: 50%;
             box-sizing: border-box;
+            /* 지우님의 요청: 고리를 전체적으로 아래로 내려서 위쪽 라인이 별 중앙을 지나게 합니다 */
+            margin-top: 25px; 
             transform: rotate(-20deg);
         }
 
-        /* 1. 뒤쪽 고리 */
         .ring-back {
             z-index: 1;
         }
 
-        /* 2. 중앙의 별사탕 */
         .gummy-star {
             width: 75px;
             height: 75px;
@@ -119,9 +118,9 @@
             animation: star-rotate 12s infinite linear;
         }
 
-        /* 3. 앞쪽 고리 (3D 관통 효과 유지) */
         .ring-front {
             z-index: 3;
+            /* 고리가 아래로 내려갔어도, 앞쪽 절반만 자르는 이 트릭은 완벽하게 작동합니다 */
             clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
         }
 
@@ -149,9 +148,9 @@
             .title { font-size: 1.2rem; }
             .gummy-star { width: 60px; height: 60px; }
             
-            /* 모바일에서도 궤도의 '와이드함'을 느낄 수 있도록 비율 조정 */
             .star-system { width: 180px; }
-            .saturn-ring { width: 160px; height: 42px; border-width: 1px; }
+            /* 모바일 비율에 맞춰 고리 내림폭도 살짝 줄여서 최적화합니다 */
+            .saturn-ring { width: 160px; height: 42px; border-width: 1px; margin-top: 20px; }
             
             .meteor {
                 animation-name: fall-mobile;
