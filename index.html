@@ -78,22 +78,58 @@
             text-align: center;
         }
 
-        /* 모든 라인이 곡선으로 처리된 최종 별 아이콘 */
-        .final-soft-star {
-            width: 70px;
-            height: 70px;
-            margin-bottom: 30px;
-            display: inline-block;
-            fill: #4FD1C5;
-            /* 얇고 정교한 글로우 유지 */
-            filter: drop-shadow(0 0 7px rgba(79, 209, 197, 0.9));
-            animation: star-cycle 12s infinite linear;
+        /* 궤도 시스템 컨테이너 */
+        .orbit-system {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        @keyframes star-cycle {
-            0% { transform: rotate(0deg) scale(1); opacity: 0.8; }
-            50% { transform: rotate(180deg) scale(1.1); opacity: 1; }
-            100% { transform: rotate(360deg) scale(1); opacity: 0.8; }
+        /* 중앙 메인 스타 */
+        .main-star {
+            width: 50px;
+            height: 50px;
+            fill: #4FD1C5;
+            filter: drop-shadow(0 0 8px rgba(79, 209, 197, 0.8));
+            animation: pulse 4s infinite ease-in-out;
+            z-index: 2;
+        }
+
+        /* 공전하는 작은 별의 궤도 */
+        .orbit-path {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            /* 궤도 라인을 보고 싶다면 아래 border 주석을 해제하세요 */
+            /* border: 1px solid rgba(79, 209, 197, 0.1); */
+            animation: rotate-orbit 8s infinite linear;
+        }
+
+        /* 궤도 위를 도는 작은 별 */
+        .small-star {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 15px;
+            fill: #4FD1C5;
+            filter: drop-shadow(0 0 5px #4FD1C5);
+        }
+
+        @keyframes rotate-orbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.1); opacity: 1; }
         }
 
         .title {
@@ -112,27 +148,32 @@
 
         @media (max-width: 768px) {
             .title { font-size: 1.2rem; }
-            .final-soft-star { width: 55px; height: 55px; }
+            .orbit-system { width: 100px; height: 100px; }
+            .main-star { width: 40px; height: 40px; }
         }
     </style>
 </head>
 <body>
     <div class="starfield">
-        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor).</div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
-        <div class="meteor"></div><div class="meteor).</div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
-        <div class="meteor"></div>
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
+        <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
     </div>
     
     <div class="content">
-        <svg class="final-soft-star" viewBox="0 0 100 100">
-            <path d="M50 10 
-                     Q55 45 90 50 
-                     Q55 55 50 90 
-                     Q45 55 10 50 
-                     Q45 45 50 10 Z" />
-        </svg>
+        <div class="orbit-system">
+            <!-- 중앙 별 -->
+            <svg class="main-star" viewBox="0 0 100 100">
+                <path d="M50 10 Q55 45 90 50 Q55 55 50 90 Q45 55 10 50 Q45 45 50 10 Z" />
+            </svg>
+            <!-- 공전 궤도와 작은 별 -->
+            <div class="orbit-path">
+                <svg class="small-star" viewBox="0 0 100 100">
+                    <path d="M50 10 Q55 45 90 50 Q55 55 50 90 Q45 55 10 50 Q45 45 50 10 Z" />
+                </svg>
+            </div>
+        </div>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
 </body>
