@@ -1,167 +1,32 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orbit | Archive</title>
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-    <style>
-        :root {
-            --bg-color: #0F172A;
-            --mint: #4FD1C5;
-            --text-main: #E2E8F0;
-            --card-bg: rgba(30, 41, 59, 0.5);
-        }
+<main class="container">
+    <header>
+        <h1>Connect in <span>Orbit</span></h1>
+        <p style="color: #94A3B8;">우리의 관심사가 교차하고 새로운 궤도가 만들어지는 곳</p>
+    </header>
 
-        body {
-            margin: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Pretendard', sans-serif;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* 네비게이션 */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            box-sizing: border-box;
-        }
-
-        .logo {
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--mint);
-        }
-
-        .nav-links a {
-            color: var(--text-main);
-            text-decoration: none;
-            margin-left: 2rem;
-            font-size: 0.9rem;
-            font-weight: 300;
-            transition: 0.3s;
-        }
-
-        .nav-links a:hover { color: var(--mint); }
-
-        /* 메인 컨테이너 */
-        .container {
-            max-width: 1100px;
-            margin: 120px auto;
-            padding: 0 20px;
-        }
-
-        header h1 {
-            font-size: 3rem;
-            font-weight: 200;
-            margin-bottom: 1rem;
-        }
-
-        header h1 span { font-weight: 600; color: var(--mint); }
-
-        /* 포트폴리오 그리드 (Bento Style) */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 4rem;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid rgba(79, 209, 197, 0.1);
-            border-radius: 20px;
-            padding: 2rem;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            border-color: var(--mint);
-            box-shadow: 0 10px 30px rgba(79, 209, 197, 0.1);
-        }
-
-        .card-tag {
-            font-size: 0.7rem;
-            color: var(--mint);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .card-desc {
-            font-size: 0.9rem;
-            color: #94A3B8;
-        }
-
-        /* 인트로의 무드를 잇는 배경 장치 */
-        .bg-glow {
-            position: fixed;
-            top: 20%;
-            right: -10%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(79, 209, 197, 0.05) 0%, rgba(15, 23, 42, 0) 70%);
-            pointer-events: none;
-        }
-    </style>
-</head>
-<body>
-    <div class="bg-glow"></div>
-
-    <nav>
-        <div class="logo">ORBIT.</div>
-        <div class="nav-links">
-            <a href="#archive">Archive</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+    <section class="grid">
+        <div class="card" style="grid-column: span 2;">
+            <span class="card-tag">Notice</span>
+            <h3 class="card-title">🚀 새로운 궤도에 합류하신 것을 환영합니다!</h3>
+            <p class="card-desc">orbithere는 서로의 성장을 응원하는 커뮤니티입니다. 가이드라인을 확인하고 첫 인사를 남겨보세요.</p>
         </div>
-    </nav>
 
-    <main class="container">
-        <header>
-            <h1>Selectively <span>Planned</span><br>Archive</h1>
-            <p style="color: #94A3B8;">지우의 궤도 위에서 만들어진 프로젝트 기록들입니다.</p>
-        </header>
+        <div class="card">
+            <span class="card-tag">Trending</span>
+            <h3 class="card-title">이번 주 가장 뜨거운 궤도</h3>
+            <p class="card-desc">"효율적인 업무 자동화를 위한 노하우 공유" 글이 조회수 1,000회를 돌파했습니다.</p>
+        </div>
 
-        <section class="grid">
-            <!-- 카드 1 -->
-            <div class="card">
-                <span class="card-tag">Web Automation</span>
-                <h3 class="card-title">Customized Payroll System</h3>
-                <p class="card-desc">Excel과 자동화 로직을 활용한 사회복지시설 맞춤형 급여 관리 시스템.</p>
-            </div>
-            <!-- 카드 2 -->
-            <div class="card" style="grid-row: span 2;">
-                <span class="card-tag">UI/UX Design</span>
-                <h3 class="card-title">Brand Identity Orbit</h3>
-                <p class="card-desc">개인 브랜드의 정체성을 담은 3D 궤도 인터렉티브 웹 디자인.</p>
-            </div>
-            <!-- 카드 3 -->
-            <div class="card">
-                <span class="card-tag">Side Project</span>
-                <h3 class="card-title">Japanese Study Log</h3>
-                <p class="card-desc">언어 학습 효율을 높이기 위한 개인용 대시보드 구축.</p>
-            </div>
-        </section>
-    </main>
-</body>
-</html>
+        <div class="card">
+            <span class="card-tag">Lounge</span>
+            <h3 class="card-title">자유로운 대화 광장</h3>
+            <p class="card-desc">지금 12명의 멤버가 광장에서 실시간으로 대화 중입니다.</p>
+        </div>
+
+        <div class="card" style="border: 1px dashed var(--mint);">
+            <span class="card-tag" style="color: var(--mint);">+ New Orbit</span>
+            <h3 class="card-title">새로운 모임 만들기</h3>
+            <p class="card-desc">직접 주제를 정하고 함께 공전할 동료들을 찾아보세요.</p>
+        </div>
+    </section>
+</main>
