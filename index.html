@@ -78,21 +78,26 @@
             text-align: center;
         }
 
-        /* 뭉툭하고 귀여운 회전 오각별 아이콘 */
-        .cute-plump-star {
+        /* 대칭적이고 뭉툭한 오각별 아이콘 */
+        .gummy-star {
             width: 75px;
             height: 75px;
             margin-bottom: 30px;
             display: inline-block;
             fill: #4FD1C5;
-            filter: drop-shadow(0 0 8px rgba(79, 209, 197, 0.8));
+            /* 귀여운 젤리 느낌을 내기 위해 선을 엄청 두껍게 주고 모서리를 완전히 둥글립니다 */
+            stroke: #4FD1C5;
+            stroke-width: 14; 
+            stroke-linejoin: round;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 8px rgba(79, 209, 197, 0.7));
             animation: star-cycle 12s infinite linear;
         }
 
         @keyframes star-cycle {
-            0% { transform: rotate(0deg) scale(1); opacity: 0.8; }
-            50% { transform: rotate(180deg) scale(1.1); opacity: 1; }
-            100% { transform: rotate(360deg) scale(1); opacity: 0.8; }
+            0% { transform: rotate(0deg) scale(1); opacity: 0.9; }
+            50% { transform: rotate(180deg) scale(1.1); opacity: 1; filter: brightness(1.1); }
+            100% { transform: rotate(360deg) scale(1); opacity: 0.9; }
         }
 
         .title {
@@ -111,7 +116,7 @@
 
         @media (max-width: 768px) {
             .title { font-size: 1.2rem; }
-            .cute-plump-star { width: 60px; height: 60px; }
+            .gummy-star { width: 60px; height: 60px; }
         }
     </style>
 </head>
@@ -124,14 +129,18 @@
     </div>
     
     <div class="content">
-        <svg class="cute-plump-star" viewBox="0 0 100 100">
-            <!-- 뭉툭한 오각별을 구현하기 위한 베지어 곡선 경로 -->
-            <path d="M50 12 
-                     Q55 38 82 38 
-                     Q62 55 72 85 
-                     Q50 72 28 85 
-                     Q38 55 18 38 
-                     Q45 38 50 12 Z" />
+        <svg class="gummy-star" viewBox="0 0 100 100">
+            <!-- 수학적으로 완벽하게 대칭인 통통한 오각별 좌표 -->
+            <path d="M 50 15 
+                     L 62 34 
+                     L 83 39 
+                     L 69 56 
+                     L 71 78 
+                     L 50 70 
+                     L 29 78 
+                     L 31 56 
+                     L 17 39 
+                     L 38 34 Z" />
         </svg>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
