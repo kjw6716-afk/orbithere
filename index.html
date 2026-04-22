@@ -78,15 +78,14 @@
             text-align: center;
         }
 
-        /* 모든 라인이 곡선으로 처리된 최종 별 아이콘 */
-        .final-soft-star {
-            width: 70px;
-            height: 70px;
+        /* 뭉툭하고 귀여운 회전 오각별 아이콘 */
+        .cute-plump-star {
+            width: 75px;
+            height: 75px;
             margin-bottom: 30px;
             display: inline-block;
             fill: #4FD1C5;
-            /* 얇고 정교한 글로우 유지 */
-            filter: drop-shadow(0 0 7px rgba(79, 209, 197, 0.9));
+            filter: drop-shadow(0 0 8px rgba(79, 209, 197, 0.8));
             animation: star-cycle 12s infinite linear;
         }
 
@@ -112,7 +111,7 @@
 
         @media (max-width: 768px) {
             .title { font-size: 1.2rem; }
-            .final-soft-star { width: 55px; height: 55px; }
+            .cute-plump-star { width: 60px; height: 60px; }
         }
     </style>
 </head>
@@ -125,12 +124,14 @@
     </div>
     
     <div class="content">
-        <svg class="final-soft-star" viewBox="0 0 100 100">
-            <path d="M50 10 
-                     Q55 45 90 50 
-                     Q55 55 50 90 
-                     Q45 55 10 50 
-                     Q45 45 50 10 Z" />
+        <svg class="cute-plump-star" viewBox="0 0 100 100">
+            <!-- 뭉툭한 오각별을 구현하기 위한 베지어 곡선 경로 -->
+            <path d="M50 12 
+                     Q55 38 82 38 
+                     Q62 55 72 85 
+                     Q50 72 28 85 
+                     Q38 55 18 38 
+                     Q45 38 50 12 Z" />
         </svg>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
