@@ -83,22 +83,24 @@
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            width: 220px; 
+            /* 궤도가 작아진 만큼 래퍼 크기도 살짝 줄임 */
+            width: 190px; 
             height: 100px;
             margin-bottom: 30px;
         }
 
-        /* 궤도 최종 미세 조정 (우측 약간, 아래 약간 더) */
+        /* 크기를 살짝 줄여서 쫀쫀하게 만든 궤도 */
         .saturn-ring {
             position: absolute;
-            width: 200px;
-            height: 55px;
+            /* Width: 200px -> 170px, Height: 55px -> 48px 로 약 15% 축소 */
+            width: 170px;
+            height: 48px;
             border: 1px solid #4FD1C5; 
             border-radius: 50%;
             box-sizing: border-box;
-            /* 아래로 조금 더(32px), 우측으로 아주 살짝(10px) 이동 */
-            margin-top: 32px; 
-            margin-left: 10px;
+            /* 크기가 줄어든 만큼 위치(하이앵글 관통점) 재조정 */
+            margin-top: 30px; 
+            margin-left: 8px;
             transform: rotate(-20deg);
         }
 
@@ -148,14 +150,14 @@
             .title { font-size: 1.2rem; }
             .gummy-star { width: 60px; height: 60px; }
             
-            .star-system { width: 180px; }
-            /* 모바일 비율에 맞춘 최종 궤도 위치 */
+            .star-system { width: 150px; }
+            /* 모바일 궤도 크기도 비율에 맞춰서 타이트하게 축소 (160px -> 135px) */
             .saturn-ring { 
-                width: 160px; 
-                height: 42px; 
+                width: 135px; 
+                height: 38px; 
                 border-width: 1px; 
-                margin-top: 26px; 
-                margin-left: 8px; 
+                margin-top: 24px; 
+                margin-left: 6px; 
             }
             
             .meteor {
