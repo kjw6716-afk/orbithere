@@ -227,26 +227,28 @@
             100% { transform: translate(-1600px, 1600px) rotate(45deg); opacity: 0; }
         }
 
-        /* ✨ 새롭게 추가된 부분: 텍스트 셀렉션 색상 ✨ */
+
+        /* ✨ 텍스트 드래그 시 색상 변경 (연한 주황색) ✨ */
         ::selection {
-            background-color: #4FD1C5; 
-            color: #0F172A; 
+            background-color: #FFB74D; /* 연한 주황색 */
+            color: #0F172A; /* 글씨는 어두운 미드나잇 블루 유지 */
         }
         ::-moz-selection {
-            background-color: #4FD1C5;
+            background-color: #FFB74D;
             color: #0F172A;
-        }
 
-        /* ✨ 새롭게 추가된 부분: 클릭 파티클 스타일 ✨ */
-        .click-particle {
-            position: fixed;
-            border-radius: 50%;
-            background-color: #4FD1C5;
-            pointer-events: none;
-            box-shadow: 0 0 8px #4FD1C5;
-            z-index: 9999;
-            animation: particle-burst 0.5s cubic-bezier(0, .9, .57, 1) forwards;
         }
+     /* ✨ 클릭 파티클 스타일 (흰색 & 천천히 퍼지게) ✨ */
+.click-particle {
+    position: fixed;
+    border-radius: 50%;
+    background-color: #FFFFFF; /* 흰색으로 변경 */
+    pointer-events: none;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); /* 은은한 흰색 빛 번짐 */
+    z-index: 9999;
+    /* 0.5s에서 0.9s로 늘려서 훨씬 부드럽고 천천히 퍼지게 만듦 */
+    animation: particle-burst 0.9s cubic-bezier(0, .9, .57, 1) forwards;
+}
 
         @keyframes particle-burst {
             0% {
@@ -325,10 +327,16 @@
             }, 500);
         }
 
-        // 2. 파티클이 예쁘게 터지는 걸 감상할 수 있도록 0.8초(800ms) 대기 후 이동!
+      // 파티클이 사라지는 시간도 애니메이션에 맞춰 900ms로 연장!
+            setTimeout(() => {
+                particle.remove();
+            }, 900);
+        }
+
+        // 파티클이 천천히 퍼지는 걸 다 보고 넘어갈 수 있게 1.1초(1100ms) 대기 후 이동!
         setTimeout(() => { 
             window.location.href = 'main.html'; 
-        }, 800);
+        }, 1100);
     });
 </script>
 </body>
