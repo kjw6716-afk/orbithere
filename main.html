@@ -241,11 +241,12 @@
                 
                 document.body.appendChild(particle);
                 
-                setTimeout(() => {
-                    particle.remove();
-                }, 500);
-            }
-        });
-    </script>
+            // 여기도 동일하게 900ms로 연장!
+            setTimeout(() => {
+                particle.remove();
+            }, 900);
+        }
+    });
+</script>
 </body>
 </html>
