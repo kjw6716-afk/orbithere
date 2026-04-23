@@ -97,7 +97,6 @@
         .card-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
         .card-desc { color: #94A3B8; font-size: 0.95rem; line-height: 1.6; }
 
-        /* 가로로 긴 카드 (공지) */
         .wide { grid-column: span 2; }
 
         /* 참여 폼 스타일 */
@@ -137,6 +136,42 @@
             .grid { grid-template-columns: 1fr; }
             .wide { grid-column: span 1; }
             header h1 { font-size: 2rem; }
+        }
+
+        /* ✨ 텍스트 드래그 시 색상 변경 ✨ */
+        ::selection {
+            background-color: var(--mint); 
+            color: var(--bg-color); 
+        }
+        ::-moz-selection {
+            background-color: var(--mint);
+            color: var(--bg-color);
+        }
+
+        /* ✨ 클릭 파티클 스타일 ✨ */
+        .click-particle {
+            position: fixed;
+            border-radius: 50%;
+            background-color: var(--mint);
+            pointer-events: none;
+            box-shadow: 0 0 8px var(--mint);
+            z-index: 9999;
+            animation: particle-burst 0.5s cubic-bezier(0, .9, .57, 1) forwards;
+        }
+
+        @keyframes particle-burst {
+            0% {
+                width: 6px;
+                height: 6px;
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                width: 0px;
+                height: 0px;
+                opacity: 0;
+                transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
+            }
         }
     </style>
 </head>
@@ -182,5 +217,35 @@
             </div>
         </section>
     </main>
+
+    <!-- ✨ 클릭 이펙트 자바스크립트 (페이지 이동 없음) ✨ -->
+    <script>
+        document.addEventListener('click', (e) => {
+            const particleCount = Math.floor(Math.random() * 4) + 5;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('click-particle');
+                
+                particle.style.left = `${e.clientX}px`;
+                particle.style.top = `${e.clientY}px`;
+                
+                const angle = Math.random() * 2 * Math.PI;
+                const distance = Math.random() * 40 + 20; 
+                
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 500);
+            }
+        });
+    </script>
 </body>
 </html>
