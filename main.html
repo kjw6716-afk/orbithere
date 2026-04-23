@@ -138,25 +138,25 @@
             header h1 { font-size: 2rem; }
         }
 
-        /* ✨ 텍스트 드래그 시 색상 변경 ✨ */
+        /* ✨ 텍스트 드래그 시 색상 변경 (연한 주황색 업데이트 완료!) ✨ */
         ::selection {
-            background-color: var(--mint); 
-            color: var(--bg-color); 
+            background-color: #FFB74D; 
+            color: #0F172A; 
         }
         ::-moz-selection {
-            background-color: var(--mint);
-            color: var(--bg-color);
+            background-color: #FFB74D;
+            color: #0F172A;
         }
 
-        /* ✨ 클릭 파티클 스타일 ✨ */
+        /* ✨ 클릭 파티클 스타일 (하얀색 & 0.9초 업데이트 완료!) ✨ */
         .click-particle {
             position: fixed;
             border-radius: 50%;
-            background-color: var(--mint);
+            background-color: #FFFFFF;
             pointer-events: none;
-            box-shadow: 0 0 8px var(--mint);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
             z-index: 9999;
-            animation: particle-burst 0.5s cubic-bezier(0, .9, .57, 1) forwards;
+            animation: particle-burst 0.9s cubic-bezier(0, .9, .57, 1) forwards;
         }
 
         @keyframes particle-burst {
@@ -241,12 +241,12 @@
                 
                 document.body.appendChild(particle);
                 
-            // 여기도 동일하게 900ms로 연장!
-            setTimeout(() => {
-                particle.remove();
-            }, 900);
-        }
-    });
-</script>
+                // 파티클 지우기 (900ms)
+                setTimeout(() => {
+                    particle.remove();
+                }, 900);
+            }
+        });
+    </script>
 </body>
 </html>
