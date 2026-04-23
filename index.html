@@ -6,6 +6,7 @@
     <title>Orbit</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
+        /* ---------------- 기존 스타일 유지 ---------------- */
         body {
             margin: 0;
             padding: 0;
@@ -88,15 +89,11 @@
             margin-bottom: 30px;
         }
 
-        /* 새롭게 추가된 기울기/위치 컨트롤 래퍼 */
         .tilt-wrapper {
             position: relative;
-            /* 가로비 3.3 유지 (200 / 60) */
             width: 200px; 
             height: 60px;
-            /* 지우님 세팅: 기울기 -25도 */
             transform: rotate(-25deg);
-            /* v6.5에서 잡았던 완벽한 하이앵글 안착감 오프셋 유지 */
             margin-top: 30px; 
             margin-left: 8px;
             display: flex;
@@ -119,10 +116,8 @@
             clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
         }
 
-        /* 작아지고 궤도를 도는 별사탕 */
         .gummy-star {
             position: absolute;
-            /* 크기 11 세팅 (26px로 축소하여 귀여움 극대화) */
             width: 26px;
             height: 26px;
             top: 50%;
@@ -135,15 +130,11 @@
             stroke-linejoin: round;
             stroke-linecap: round;
             
-            /* 궤도 수학 변수 설정 (Width/2, Height/2) */
             --rx: 100px;
             --ry: 30px;
-            
-            /* 속도 1.3에 맞춘 7.5초의 경쾌한 애니메이션 */
             animation: star-orbit 7.5s linear infinite;
         }
 
-        /* 24프레임 수학적 타원 궤도 엔진 + 3D 원근감 + Z-index 교차 */
         @keyframes star-orbit {
             0%    { transform: translate(calc(var(--rx) * 1), calc(var(--ry) * 0)) rotate(0deg) scale(1); z-index: 1; }
             4.16% { transform: translate(calc(var(--rx) * 0.966), calc(var(--ry) * -0.259)) rotate(-15deg) scale(0.98); z-index: 1; }
@@ -151,21 +142,20 @@
             12.5% { transform: translate(calc(var(--rx) * 0.707), calc(var(--ry) * -0.707)) rotate(-45deg) scale(0.92); z-index: 1; }
             16.66%{ transform: translate(calc(var(--rx) * 0.5), calc(var(--ry) * -0.866)) rotate(-60deg) scale(0.89); z-index: 1; }
             20.83%{ transform: translate(calc(var(--rx) * 0.259), calc(var(--ry) * -0.966)) rotate(-75deg) scale(0.86); z-index: 1; }
-            25%   { transform: translate(0px, calc(var(--ry) * -1)) rotate(-90deg) scale(0.85); z-index: 1; } /* 가장 먼 곳 (작아짐) */
+            25%   { transform: translate(0px, calc(var(--ry) * -1)) rotate(-90deg) scale(0.85); z-index: 1; }
             29.16%{ transform: translate(calc(var(--rx) * -0.259), calc(var(--ry) * -0.966)) rotate(-105deg) scale(0.86); z-index: 1; }
             33.33%{ transform: translate(calc(var(--rx) * -0.5), calc(var(--ry) * -0.866)) rotate(-120deg) scale(0.89); z-index: 1; }
             37.5% { transform: translate(calc(var(--rx) * -0.707), calc(var(--ry) * -0.707)) rotate(-135deg) scale(0.92); z-index: 1; }
             41.66%{ transform: translate(calc(var(--rx) * -0.866), calc(var(--ry) * -0.5)) rotate(-150deg) scale(0.96); z-index: 1; }
             45.83%{ transform: translate(calc(var(--rx) * -0.966), calc(var(--ry) * -0.259)) rotate(-165deg) scale(0.98); z-index: 1; }
             49.99%{ transform: translate(calc(var(--rx) * -1), 0px) rotate(-180deg) scale(1); z-index: 1; }
-            /* 50% 지점에서 앞쪽 궤도로 진입하며 z-index 교차 */
             50%   { transform: translate(calc(var(--rx) * -1), 0px) rotate(-180deg) scale(1); z-index: 5; }
             54.16%{ transform: translate(calc(var(--rx) * -0.966), calc(var(--ry) * 0.259)) rotate(-195deg) scale(1.02); z-index: 5; }
             58.33%{ transform: translate(calc(var(--rx) * -0.866), calc(var(--ry) * 0.5)) rotate(-210deg) scale(1.04); z-index: 5; }
             62.5% { transform: translate(calc(var(--rx) * -0.707), calc(var(--ry) * 0.707)) rotate(-225deg) scale(1.08); z-index: 5; }
             66.66%{ transform: translate(calc(var(--rx) * -0.5), calc(var(--ry) * 0.866)) rotate(-240deg) scale(1.11); z-index: 5; }
             70.83%{ transform: translate(calc(var(--rx) * -0.259), calc(var(--ry) * 0.966)) rotate(-255deg) scale(1.14); z-index: 5; }
-            75%   { transform: translate(0px, calc(var(--ry) * 1)) rotate(-270deg) scale(1.15); z-index: 5; } /* 가장 가까운 곳 (커짐) */
+            75%   { transform: translate(0px, calc(var(--ry) * 1)) rotate(-270deg) scale(1.15); z-index: 5; }
             79.16%{ transform: translate(calc(var(--rx) * 0.259), calc(var(--ry) * 0.966)) rotate(-285deg) scale(1.14); z-index: 5; }
             83.33%{ transform: translate(calc(var(--rx) * 0.5), calc(var(--ry) * 0.866)) rotate(-300deg) scale(1.11); z-index: 5; }
             87.5% { transform: translate(calc(var(--rx) * 0.707), calc(var(--ry) * 0.707)) rotate(-315deg) scale(1.08); z-index: 5; }
@@ -189,12 +179,9 @@
             font-weight: 500;
         }
 
-        /* 모바일 최적화 */
         @media (max-width: 768px) {
             .title { font-size: 1.2rem; }
             .star-system { width: 170px; }
-            
-            /* 모바일에서도 비율 3.3 유지 (150/45) */
             .tilt-wrapper {
                 width: 150px; 
                 height: 45px; 
@@ -206,12 +193,11 @@
                 height: 20px; 
                 margin-top: -10px; 
                 margin-left: -10px; 
-                /* 모바일용 궤도 반경 업데이트 */
                 --rx: 75px; 
                 --ry: 22.5px; 
             }
-            
             .meteor { animation-name: fall-mobile; }
+            /* 모바일 유성우 위치 생략 (기존 코드와 동일) */
             .meteor:nth-child(1) { left: 20%; }
             .meteor:nth-child(2) { left: 50%; }
             .meteor:nth-child(3) { left: 90%; }
@@ -240,6 +226,42 @@
             80% { opacity: 0.3; }
             100% { transform: translate(-1600px, 1600px) rotate(45deg); opacity: 0; }
         }
+
+        /* ✨ 새롭게 추가된 부분: 텍스트 셀렉션 색상 ✨ */
+        ::selection {
+            background-color: #4FD1C5; 
+            color: #0F172A; 
+        }
+        ::-moz-selection {
+            background-color: #4FD1C5;
+            color: #0F172A;
+        }
+
+        /* ✨ 새롭게 추가된 부분: 클릭 파티클 스타일 ✨ */
+        .click-particle {
+            position: fixed;
+            border-radius: 50%;
+            background-color: #4FD1C5;
+            pointer-events: none;
+            box-shadow: 0 0 8px #4FD1C5;
+            z-index: 9999;
+            animation: particle-burst 0.5s cubic-bezier(0, .9, .57, 1) forwards;
+        }
+
+        @keyframes particle-burst {
+            0% {
+                width: 6px;
+                height: 6px;
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                width: 0px;
+                height: 0px;
+                opacity: 0;
+                transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -252,7 +274,6 @@
     
     <div class="content">
         <div class="star-system">
-            <!-- 기울기를 전담하는 래퍼 추가 -->
             <div class="tilt-wrapper">
                 <div class="orbit-ring ring-back"></div>
                 <svg class="gummy-star" viewBox="0 0 100 100">
@@ -272,15 +293,42 @@
         </div>
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
-</body>
-<script>
-    // 1. 화면 전체 어디든 클릭하면 이동하게 만들기
-    document.body.style.cursor = 'pointer'; // 마우스 커서를 손가락 모양으로
-    document.body.addEventListener('click', () => {
-        window.location.href = 'main.html';
-    });
 
-    // 2. (선택사항) 8초 뒤에 자동으로 이동시키고 싶다면?
-    // setTimeout(() => { window.location.href = 'main.html'; }, 8000);
+<script>
+    document.body.style.cursor = 'pointer'; 
+
+    document.body.addEventListener('click', (e) => {
+        // ✨ 새롭게 추가된 부분: 파티클 생성 로직 ✨
+        const particleCount = Math.floor(Math.random() * 4) + 5;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('click-particle');
+            
+            particle.style.left = `${e.clientX}px`;
+            particle.style.top = `${e.clientY}px`;
+            
+            const angle = Math.random() * 2 * Math.PI;
+            const distance = Math.random() * 40 + 20; 
+            
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+            
+            particle.style.setProperty('--tx', `${tx}px`);
+            particle.style.setProperty('--ty', `${ty}px`);
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 500);
+        }
+
+        // 파티클이 퍼지는 걸 볼 수 있도록 0.4초(400ms) 뒤에 main.html로 이동!
+        setTimeout(() => { 
+            window.location.href = 'main.html'; 
+        }, 400);
+    });
 </script>
+</body>
 </html>
