@@ -294,11 +294,12 @@
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
 
+<!-- 이전에 있던 <script> 태그들은 전부 지우고 이것 하나만 넣어주세요! -->
 <script>
     document.body.style.cursor = 'pointer'; 
 
     document.body.addEventListener('click', (e) => {
-        // ✨ 새롭게 추가된 부분: 파티클 생성 로직 ✨
+        // 1. 파티클(별가루) 생성
         const particleCount = Math.floor(Math.random() * 4) + 5;
         
         for (let i = 0; i < particleCount; i++) {
@@ -324,10 +325,10 @@
             }, 500);
         }
 
-        // 파티클이 퍼지는 걸 볼 수 있도록 0.4초(400ms) 뒤에 main.html로 이동!
+        // 2. 파티클이 예쁘게 터지는 걸 감상할 수 있도록 0.8초(800ms) 대기 후 이동!
         setTimeout(() => { 
             window.location.href = 'main.html'; 
-        }, 400);
+        }, 800);
     });
 </script>
 </body>
