@@ -296,7 +296,6 @@
         <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
     </div>
 
-<!-- 이전에 있던 <script> 태그들은 전부 지우고 이것 하나만 넣어주세요! -->
 <script>
     document.body.style.cursor = 'pointer'; 
 
@@ -322,12 +321,7 @@
             
             document.body.appendChild(particle);
             
-            setTimeout(() => {
-                particle.remove();
-            }, 500);
-        }
-
-      // 파티클이 사라지는 시간도 애니메이션에 맞춰 900ms로 연장!
+            // 파티클이 사라지는 시간 (반복문 안쪽에 있어야 합니다!)
             setTimeout(() => {
                 particle.remove();
             }, 900);
