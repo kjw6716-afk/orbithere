@@ -6,7 +6,6 @@
     <title>Orbit</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
-        /* ---------------- 기존 스타일 유지 ---------------- */
         body {
             margin: 0;
             padding: 0;
@@ -15,12 +14,12 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #0F172A; /* 미드나잇 블루 */
+            background-color: #0F172A;
             color: #E2E8F0;
             font-family: 'Pretendard', sans-serif;
             overflow: hidden;
         }
-
+ 
         .starfield {
             position: absolute;
             top: 0;
@@ -30,7 +29,7 @@
             z-index: 0;
             pointer-events: none;
         }
-
+ 
         .meteor {
             position: absolute;
             top: -100px;
@@ -43,8 +42,7 @@
             opacity: 0;
             filter: drop-shadow(0 0 4px #4FD1C5);
         }
-
-        /* PC 유성우 유지 */
+ 
         .meteor:nth-child(1) { left: 10%; animation-duration: 5s; }
         .meteor:nth-child(2) { left: 25%; animation-duration: 7.5s; animation-delay: 1s; }
         .meteor:nth-child(3) { left: 45%; animation-duration: 6s; animation-delay: 0.5s; }
@@ -65,20 +63,20 @@
         .meteor:nth-child(18) { left: 130%; animation-duration: 8.4s; animation-delay: 0.3s; }
         .meteor:nth-child(19) { left: 145%; animation-duration: 7s; animation-delay: 3.9s; }
         .meteor:nth-child(20) { left: 5%; animation-duration: 6.5s; animation-delay: 2.1s; }
-
+ 
         @keyframes fall {
             0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
             10% { opacity: 0.8; }
             80% { opacity: 0.3; }
             100% { transform: translate(-1200px, 1200px) rotate(45deg); opacity: 0; }
         }
-
+ 
         .content {
             position: relative;
             z-index: 1;
             text-align: center;
         }
-
+ 
         .star-system {
             position: relative;
             display: inline-flex;
@@ -88,7 +86,7 @@
             height: 100px;
             margin-bottom: 30px;
         }
-
+ 
         .tilt-wrapper {
             position: relative;
             width: 200px; 
@@ -100,7 +98,7 @@
             justify-content: center;
             align-items: center;
         }
-
+ 
         .orbit-ring {
             position: absolute;
             width: 100%;
@@ -109,13 +107,13 @@
             border-radius: 50%;
             box-sizing: border-box;
         }
-
+ 
         .ring-back { z-index: 2; }
         .ring-front {
             z-index: 4;
             clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
         }
-
+ 
         .gummy-star {
             position: absolute;
             width: 26px;
@@ -134,7 +132,7 @@
             --ry: 30px;
             animation: star-orbit 7.5s linear infinite;
         }
-
+ 
         @keyframes star-orbit {
             0%    { transform: translate(calc(var(--rx) * 1), calc(var(--ry) * 0)) rotate(0deg) scale(1); z-index: 1; }
             4.16% { transform: translate(calc(var(--rx) * 0.966), calc(var(--ry) * -0.259)) rotate(-15deg) scale(0.98); z-index: 1; }
@@ -164,7 +162,7 @@
             99.99%{ transform: translate(calc(var(--rx) * 1), 0px) rotate(-360deg) scale(1); z-index: 5; }
             100%  { transform: translate(calc(var(--rx) * 1), 0px) rotate(-360deg) scale(1); z-index: 1; }
         }
-
+ 
         .title {
             font-size: 1.5rem;
             font-weight: 200;
@@ -173,14 +171,25 @@
             margin: 0;
             text-shadow: 0 0 30px rgba(15, 23, 42, 1);
         }
-
+ 
         .highlight {
             color: #4FD1C5;
             font-weight: 500;
         }
-
+ 
+        /* ✨ 서브타이틀 추가 ✨ */
+        .subtitle {
+            font-size: 0.8rem;
+            color: #4FD1C5;
+            opacity: 0.5;
+            margin-top: 10px;
+            letter-spacing: 0.08em;
+            font-weight: 300;
+        }
+ 
         @media (max-width: 768px) {
             .title { font-size: 1.2rem; }
+            .subtitle { font-size: 0.72rem; }
             .star-system { width: 170px; }
             .tilt-wrapper {
                 width: 150px; 
@@ -197,7 +206,6 @@
                 --ry: 22.5px; 
             }
             .meteor { animation-name: fall-mobile; }
-            /* 모바일 유성우 위치 생략 (기존 코드와 동일) */
             .meteor:nth-child(1) { left: 20%; }
             .meteor:nth-child(2) { left: 50%; }
             .meteor:nth-child(3) { left: 90%; }
@@ -219,37 +227,33 @@
             .meteor:nth-child(19) { left: 290%; }
             .meteor:nth-child(20) { left: 10%; }
         }
-
+ 
         @keyframes fall-mobile {
             0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
             10% { opacity: 0.8; }
             80% { opacity: 0.3; }
             100% { transform: translate(-1600px, 1600px) rotate(45deg); opacity: 0; }
         }
-
-
-        /* ✨ 텍스트 드래그 시 색상 변경 (연한 주황색) ✨ */
+ 
         ::selection {
-            background-color: #FFB74D; /* 연한 주황색 */
-            color: #0F172A; /* 글씨는 어두운 미드나잇 블루 유지 */
+            background-color: #FFB74D;
+            color: #0F172A;
         }
         ::-moz-selection {
             background-color: #FFB74D;
             color: #0F172A;
-
         }
-     /* ✨ 클릭 파티클 스타일 (흰색 & 천천히 퍼지게) ✨ */
-.click-particle {
-    position: fixed;
-    border-radius: 50%;
-    background-color: #FFFFFF; /* 흰색으로 변경 */
-    pointer-events: none;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); /* 은은한 흰색 빛 번짐 */
-    z-index: 9999;
-    /* 0.5s에서 0.9s로 늘려서 훨씬 부드럽고 천천히 퍼지게 만듦 */
-    animation: particle-burst 0.9s cubic-bezier(0, .9, .57, 1) forwards;
-}
-
+ 
+        .click-particle {
+            position: fixed;
+            border-radius: 50%;
+            background-color: #FFFFFF;
+            pointer-events: none;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            animation: particle-burst 0.9s cubic-bezier(0, .9, .57, 1) forwards;
+        }
+ 
         @keyframes particle-burst {
             0% {
                 width: 6px;
@@ -293,14 +297,14 @@
                 <div class="orbit-ring ring-front"></div>
             </div>
         </div>
-        <h1 class="title">현재 <span class="highlight">궤도</span>를 만드는 중입니다.</h1>
+        <h1 class="title">궤도에서 <span class="highlight">너를</span> 만나다</h1>
+        <p class="subtitle">현재 궤도를 만드는 중입니다</p>
     </div>
-
+ 
 <script>
     document.body.style.cursor = 'pointer'; 
-
+ 
     document.body.addEventListener('click', (e) => {
-        // 1. 파티클(별가루) 생성
         const particleCount = Math.floor(Math.random() * 4) + 5;
         
         for (let i = 0; i < particleCount; i++) {
@@ -321,13 +325,11 @@
             
             document.body.appendChild(particle);
             
-            // 파티클이 사라지는 시간 (반복문 안쪽에 있어야 합니다!)
             setTimeout(() => {
                 particle.remove();
             }, 900);
         }
-
-        // 파티클이 천천히 퍼지는 걸 다 보고 넘어갈 수 있게 1.1초(1100ms) 대기 후 이동!
+ 
         setTimeout(() => { 
             window.location.href = 'main.html'; 
         }, 1100);
