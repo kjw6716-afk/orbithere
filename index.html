@@ -19,22 +19,18 @@
             font-family: 'Pretendard', sans-serif;
             overflow: hidden;
         }
- 
+
         .starfield {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0; pointer-events: none;
         }
- 
+
         .meteor {
             position: absolute;
             top: -100px;
-            width: 1px;
-            height: 85px;
+            width: 1px; height: 85px;
             background: linear-gradient(to bottom, rgba(79, 209, 197, 0), #4FD1C5);
             border-radius: 999px;
             transform: rotate(45deg);
@@ -42,126 +38,112 @@
             opacity: 0;
             filter: drop-shadow(0 0 4px #4FD1C5);
         }
- 
-        .meteor:nth-child(1) { left: 10%; animation-duration: 5s; }
-        .meteor:nth-child(2) { left: 25%; animation-duration: 7.5s; animation-delay: 1s; }
-        .meteor:nth-child(3) { left: 45%; animation-duration: 6s; animation-delay: 0.5s; }
-        .meteor:nth-child(4) { left: 60%; animation-duration: 9s; animation-delay: 2.2s; }
-        .meteor:nth-child(5) { left: 80%; animation-duration: 4.5s; animation-delay: 1.5s; height: 110px; }
-        .meteor:nth-child(6) { left: 100%; animation-duration: 7s; animation-delay: 0.2s; }
-        .meteor:nth-child(7) { left: 120%; animation-duration: 8.5s; animation-delay: 3s; }
-        .meteor:nth-child(8) { left: 140%; animation-duration: 5.5s; animation-delay: 2.5s; }
-        .meteor:nth-child(9) { left: 150%; animation-duration: 7.2s; animation-delay: 4s; }
-        .meteor:nth-child(10) { left: 15%; animation-duration: 6.8s; animation-delay: 1.2s; }
-        .meteor:nth-child(11) { left: 35%; animation-duration: 8.2s; animation-delay: 2.5s; }
-        .meteor:nth-child(12) { left: 55%; animation-duration: 5.8s; animation-delay: 0.8s; }
-        .meteor:nth-child(13) { left: 75%; animation-duration: 7.5s; animation-delay: 1.8s; }
-        .meteor:nth-child(14) { left: 95%; animation-duration: 8.8s; animation-delay: 3.3s; }
+
+        .meteor:nth-child(1)  { left: 10%;  animation-duration: 5s; }
+        .meteor:nth-child(2)  { left: 25%;  animation-duration: 7.5s; animation-delay: 1s; }
+        .meteor:nth-child(3)  { left: 45%;  animation-duration: 6s;   animation-delay: 0.5s; }
+        .meteor:nth-child(4)  { left: 60%;  animation-duration: 9s;   animation-delay: 2.2s; }
+        .meteor:nth-child(5)  { left: 80%;  animation-duration: 4.5s; animation-delay: 1.5s; height: 110px; }
+        .meteor:nth-child(6)  { left: 100%; animation-duration: 7s;   animation-delay: 0.2s; }
+        .meteor:nth-child(7)  { left: 120%; animation-duration: 8.5s; animation-delay: 3s; }
+        .meteor:nth-child(8)  { left: 140%; animation-duration: 5.5s; animation-delay: 2.5s; }
+        .meteor:nth-child(9)  { left: 150%; animation-duration: 7.2s; animation-delay: 4s; }
+        .meteor:nth-child(10) { left: 15%;  animation-duration: 6.8s; animation-delay: 1.2s; }
+        .meteor:nth-child(11) { left: 35%;  animation-duration: 8.2s; animation-delay: 2.5s; }
+        .meteor:nth-child(12) { left: 55%;  animation-duration: 5.8s; animation-delay: 0.8s; }
+        .meteor:nth-child(13) { left: 75%;  animation-duration: 7.5s; animation-delay: 1.8s; }
+        .meteor:nth-child(14) { left: 95%;  animation-duration: 8.8s; animation-delay: 3.3s; }
         .meteor:nth-child(15) { left: 115%; animation-duration: 6.2s; animation-delay: 0.7s; }
         .meteor:nth-child(16) { left: 135%; animation-duration: 7.8s; animation-delay: 2.5s; }
-        .meteor:nth-child(17) { left: 50%; animation-duration: 5.2s; animation-delay: 1.9s; }
+        .meteor:nth-child(17) { left: 50%;  animation-duration: 5.2s; animation-delay: 1.9s; }
         .meteor:nth-child(18) { left: 130%; animation-duration: 8.4s; animation-delay: 0.3s; }
-        .meteor:nth-child(19) { left: 145%; animation-duration: 7s; animation-delay: 3.9s; }
-        .meteor:nth-child(20) { left: 5%; animation-duration: 6.5s; animation-delay: 2.1s; }
- 
+        .meteor:nth-child(19) { left: 145%; animation-duration: 7s;   animation-delay: 3.9s; }
+        .meteor:nth-child(20) { left: 5%;   animation-duration: 6.5s; animation-delay: 2.1s; }
+
         @keyframes fall {
-            0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
-            10% { opacity: 0.8; }
-            80% { opacity: 0.3; }
+            0%   { transform: translate(0, 0) rotate(45deg); opacity: 0; }
+            10%  { opacity: 0.8; }
+            80%  { opacity: 0.3; }
             100% { transform: translate(-1200px, 1200px) rotate(45deg); opacity: 0; }
         }
- 
+
         .content {
             position: relative;
             z-index: 1;
             text-align: center;
         }
- 
+
         .star-system {
             position: relative;
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            width: 220px;
-            height: 100px;
+            width: 220px; height: 100px;
             margin-bottom: 30px;
         }
- 
+
         .tilt-wrapper {
             position: relative;
-            width: 200px;
-            height: 60px;
+            width: 200px; height: 60px;
             transform: rotate(-25deg);
-            margin-top: 30px;
-            margin-left: 8px;
+            margin-top: 30px; margin-left: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
- 
+
         .orbit-ring {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             border: 1px solid #4FD1C5;
             border-radius: 50%;
             box-sizing: border-box;
         }
- 
-        .ring-back { z-index: 2; }
-        .ring-front {
-            z-index: 4;
-            clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
-        }
- 
+
+        .ring-back  { z-index: 2; }
+        .ring-front { z-index: 4; clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%); }
+
         .gummy-star {
             position: absolute;
-            width: 26px;
-            height: 26px;
-            top: 50%;
-            left: 50%;
-            margin-top: -13px;
-            margin-left: -13px;
-            fill: #4FD1C5;
-            stroke: #4FD1C5;
-            stroke-width: 14;
-            stroke-linejoin: round;
-            stroke-linecap: round;
-            --rx: 100px;
-            --ry: 30px;
+            width: 26px; height: 26px;
+            top: 50%; left: 50%;
+            margin-top: -13px; margin-left: -13px;
+            fill: #4FD1C5; stroke: #4FD1C5;
+            stroke-width: 14; stroke-linejoin: round; stroke-linecap: round;
+            --rx: 100px; --ry: 30px;
             animation: star-orbit 7.5s linear infinite;
         }
- 
+
         @keyframes star-orbit {
-            0%    { transform: translate(calc(var(--rx) * 1), calc(var(--ry) * 0)) rotate(0deg) scale(1); z-index: 1; }
-            4.16% { transform: translate(calc(var(--rx) * 0.966), calc(var(--ry) * -0.259)) rotate(-15deg) scale(0.98); z-index: 1; }
-            8.33% { transform: translate(calc(var(--rx) * 0.866), calc(var(--ry) * -0.5)) rotate(-30deg) scale(0.96); z-index: 1; }
-            12.5% { transform: translate(calc(var(--rx) * 0.707), calc(var(--ry) * -0.707)) rotate(-45deg) scale(0.92); z-index: 1; }
-            16.66%{ transform: translate(calc(var(--rx) * 0.5), calc(var(--ry) * -0.866)) rotate(-60deg) scale(0.89); z-index: 1; }
-            20.83%{ transform: translate(calc(var(--rx) * 0.259), calc(var(--ry) * -0.966)) rotate(-75deg) scale(0.86); z-index: 1; }
-            25%   { transform: translate(0px, calc(var(--ry) * -1)) rotate(-90deg) scale(0.85); z-index: 1; }
-            29.16%{ transform: translate(calc(var(--rx) * -0.259), calc(var(--ry) * -0.966)) rotate(-105deg) scale(0.86); z-index: 1; }
-            33.33%{ transform: translate(calc(var(--rx) * -0.5), calc(var(--ry) * -0.866)) rotate(-120deg) scale(0.89); z-index: 1; }
-            37.5% { transform: translate(calc(var(--rx) * -0.707), calc(var(--ry) * -0.707)) rotate(-135deg) scale(0.92); z-index: 1; }
-            41.66%{ transform: translate(calc(var(--rx) * -0.866), calc(var(--ry) * -0.5)) rotate(-150deg) scale(0.96); z-index: 1; }
-            45.83%{ transform: translate(calc(var(--rx) * -0.966), calc(var(--ry) * -0.259)) rotate(-165deg) scale(0.98); z-index: 1; }
-            49.99%{ transform: translate(calc(var(--rx) * -1), 0px) rotate(-180deg) scale(1); z-index: 1; }
-            50%   { transform: translate(calc(var(--rx) * -1), 0px) rotate(-180deg) scale(1); z-index: 5; }
-            54.16%{ transform: translate(calc(var(--rx) * -0.966), calc(var(--ry) * 0.259)) rotate(-195deg) scale(1.02); z-index: 5; }
-            58.33%{ transform: translate(calc(var(--rx) * -0.866), calc(var(--ry) * 0.5)) rotate(-210deg) scale(1.04); z-index: 5; }
-            62.5% { transform: translate(calc(var(--rx) * -0.707), calc(var(--ry) * 0.707)) rotate(-225deg) scale(1.08); z-index: 5; }
-            66.66%{ transform: translate(calc(var(--rx) * -0.5), calc(var(--ry) * 0.866)) rotate(-240deg) scale(1.11); z-index: 5; }
-            70.83%{ transform: translate(calc(var(--rx) * -0.259), calc(var(--ry) * 0.966)) rotate(-255deg) scale(1.14); z-index: 5; }
-            75%   { transform: translate(0px, calc(var(--ry) * 1)) rotate(-270deg) scale(1.15); z-index: 5; }
-            79.16%{ transform: translate(calc(var(--rx) * 0.259), calc(var(--ry) * 0.966)) rotate(-285deg) scale(1.14); z-index: 5; }
-            83.33%{ transform: translate(calc(var(--rx) * 0.5), calc(var(--ry) * 0.866)) rotate(-300deg) scale(1.11); z-index: 5; }
-            87.5% { transform: translate(calc(var(--rx) * 0.707), calc(var(--ry) * 0.707)) rotate(-315deg) scale(1.08); z-index: 5; }
-            91.66%{ transform: translate(calc(var(--rx) * 0.866), calc(var(--ry) * 0.5)) rotate(-330deg) scale(1.04); z-index: 5; }
-            95.83%{ transform: translate(calc(var(--rx) * 0.966), calc(var(--ry) * 0.259)) rotate(-345deg) scale(1.02); z-index: 5; }
-            99.99%{ transform: translate(calc(var(--rx) * 1), 0px) rotate(-360deg) scale(1); z-index: 5; }
-            100%  { transform: translate(calc(var(--rx) * 1), 0px) rotate(-360deg) scale(1); z-index: 1; }
+            0%    { transform: translate(calc(var(--rx)*1),   calc(var(--ry)*0))    rotate(0deg)    scale(1);    z-index:1; }
+            4.16% { transform: translate(calc(var(--rx)*0.966),calc(var(--ry)*-0.259)) rotate(-15deg)  scale(0.98); z-index:1; }
+            8.33% { transform: translate(calc(var(--rx)*0.866),calc(var(--ry)*-0.5))   rotate(-30deg)  scale(0.96); z-index:1; }
+            12.5% { transform: translate(calc(var(--rx)*0.707),calc(var(--ry)*-0.707)) rotate(-45deg)  scale(0.92); z-index:1; }
+            16.66%{ transform: translate(calc(var(--rx)*0.5),  calc(var(--ry)*-0.866)) rotate(-60deg)  scale(0.89); z-index:1; }
+            20.83%{ transform: translate(calc(var(--rx)*0.259),calc(var(--ry)*-0.966)) rotate(-75deg)  scale(0.86); z-index:1; }
+            25%   { transform: translate(0px,                  calc(var(--ry)*-1))     rotate(-90deg)  scale(0.85); z-index:1; }
+            29.16%{ transform: translate(calc(var(--rx)*-0.259),calc(var(--ry)*-0.966)) rotate(-105deg) scale(0.86); z-index:1; }
+            33.33%{ transform: translate(calc(var(--rx)*-0.5),  calc(var(--ry)*-0.866)) rotate(-120deg) scale(0.89); z-index:1; }
+            37.5% { transform: translate(calc(var(--rx)*-0.707),calc(var(--ry)*-0.707)) rotate(-135deg) scale(0.92); z-index:1; }
+            41.66%{ transform: translate(calc(var(--rx)*-0.866),calc(var(--ry)*-0.5))   rotate(-150deg) scale(0.96); z-index:1; }
+            45.83%{ transform: translate(calc(var(--rx)*-0.966),calc(var(--ry)*-0.259)) rotate(-165deg) scale(0.98); z-index:1; }
+            49.99%{ transform: translate(calc(var(--rx)*-1),   0px)                     rotate(-180deg) scale(1);    z-index:1; }
+            50%   { transform: translate(calc(var(--rx)*-1),   0px)                     rotate(-180deg) scale(1);    z-index:5; }
+            54.16%{ transform: translate(calc(var(--rx)*-0.966),calc(var(--ry)*0.259))  rotate(-195deg) scale(1.02); z-index:5; }
+            58.33%{ transform: translate(calc(var(--rx)*-0.866),calc(var(--ry)*0.5))    rotate(-210deg) scale(1.04); z-index:5; }
+            62.5% { transform: translate(calc(var(--rx)*-0.707),calc(var(--ry)*0.707))  rotate(-225deg) scale(1.08); z-index:5; }
+            66.66%{ transform: translate(calc(var(--rx)*-0.5),  calc(var(--ry)*0.866))  rotate(-240deg) scale(1.11); z-index:5; }
+            70.83%{ transform: translate(calc(var(--rx)*-0.259),calc(var(--ry)*0.966))  rotate(-255deg) scale(1.14); z-index:5; }
+            75%   { transform: translate(0px,                   calc(var(--ry)*1))       rotate(-270deg) scale(1.15); z-index:5; }
+            79.16%{ transform: translate(calc(var(--rx)*0.259), calc(var(--ry)*0.966))  rotate(-285deg) scale(1.14); z-index:5; }
+            83.33%{ transform: translate(calc(var(--rx)*0.5),   calc(var(--ry)*0.866))  rotate(-300deg) scale(1.11); z-index:5; }
+            87.5% { transform: translate(calc(var(--rx)*0.707), calc(var(--ry)*0.707))  rotate(-315deg) scale(1.08); z-index:5; }
+            91.66%{ transform: translate(calc(var(--rx)*0.866), calc(var(--ry)*0.5))    rotate(-330deg) scale(1.04); z-index:5; }
+            95.83%{ transform: translate(calc(var(--rx)*0.966), calc(var(--ry)*0.259))  rotate(-345deg) scale(1.02); z-index:5; }
+            99.99%{ transform: translate(calc(var(--rx)*1),     0px)                     rotate(-360deg) scale(1);    z-index:5; }
+            100%  { transform: translate(calc(var(--rx)*1),     0px)                     rotate(-360deg) scale(1);    z-index:1; }
         }
- 
+
         .title {
             font-size: 1.5rem;
             font-weight: 200;
@@ -170,12 +152,9 @@
             margin: 0;
             text-shadow: 0 0 30px rgba(15, 23, 42, 1);
         }
- 
-        .highlight {
-            color: #4FD1C5;
-            font-weight: 500;
-        }
- 
+
+        .highlight { color: #4FD1C5; font-weight: 500; }
+
         .subtitle {
             font-size: 0.8rem;
             color: #4FD1C5;
@@ -184,23 +163,39 @@
             letter-spacing: 0.08em;
             font-weight: 300;
         }
- 
+
+        /* 클릭 힌트 */
+        .click-hint {
+            margin-top: 40px;
+            font-size: 0.72rem;
+            color: #4FD1C5;
+            opacity: 0;
+            letter-spacing: 0.2em;
+            font-weight: 300;
+            animation: hint-pulse 2.5s ease-in-out 1.2s infinite;
+        }
+
+        @keyframes hint-pulse {
+            0%,100% { opacity: 0.2; }
+            50%      { opacity: 0.6; }
+        }
+
         @media (max-width: 768px) {
-            .title { font-size: 1.2rem; }
+            .title    { font-size: 1.2rem; }
             .subtitle { font-size: 0.72rem; }
-            .star-system { width: 170px; }
+            .star-system  { width: 170px; }
             .tilt-wrapper { width: 150px; height: 45px; margin-top: 24px; margin-left: 6px; }
-            .gummy-star { width: 20px; height: 20px; margin-top: -10px; margin-left: -10px; --rx: 75px; --ry: 22.5px; }
+            .gummy-star   { width: 20px; height: 20px; margin-top: -10px; margin-left: -10px; --rx: 75px; --ry: 22.5px; }
             .meteor { animation-name: fall-mobile; }
-            .meteor:nth-child(1) { left: 20%; }
-            .meteor:nth-child(2) { left: 50%; }
-            .meteor:nth-child(3) { left: 90%; }
-            .meteor:nth-child(4) { left: 120%; }
-            .meteor:nth-child(5) { left: 160%; }
-            .meteor:nth-child(6) { left: 200%; }
-            .meteor:nth-child(7) { left: 240%; }
-            .meteor:nth-child(8) { left: 280%; }
-            .meteor:nth-child(9) { left: 300%; }
+            .meteor:nth-child(1)  { left: 20%; }
+            .meteor:nth-child(2)  { left: 50%; }
+            .meteor:nth-child(3)  { left: 90%; }
+            .meteor:nth-child(4)  { left: 120%; }
+            .meteor:nth-child(5)  { left: 160%; }
+            .meteor:nth-child(6)  { left: 200%; }
+            .meteor:nth-child(7)  { left: 240%; }
+            .meteor:nth-child(8)  { left: 280%; }
+            .meteor:nth-child(9)  { left: 300%; }
             .meteor:nth-child(10) { left: 30%; }
             .meteor:nth-child(11) { left: 70%; }
             .meteor:nth-child(12) { left: 110%; }
@@ -213,48 +208,37 @@
             .meteor:nth-child(19) { left: 290%; }
             .meteor:nth-child(20) { left: 10%; }
         }
- 
+
         @keyframes fall-mobile {
-            0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
-            10% { opacity: 0.8; }
-            80% { opacity: 0.3; }
+            0%   { transform: translate(0, 0) rotate(45deg); opacity: 0; }
+            10%  { opacity: 0.8; }
+            80%  { opacity: 0.3; }
             100% { transform: translate(-1600px, 1600px) rotate(45deg); opacity: 0; }
         }
- 
-        ::selection { background-color: #FFB74D; color: #0F172A; }
+
+        ::selection      { background-color: #FFB74D; color: #0F172A; }
         ::-moz-selection { background-color: #FFB74D; color: #0F172A; }
- 
-        /* ✨ 링 ripple ✨ */
+
         .click-ripple {
-            position: fixed;
-            border-radius: 50%;
-            border: 1.5px solid #4FD1C5;
-            pointer-events: none;
-            z-index: 9998;
-            box-shadow: 0 0 8px rgba(79, 209, 197, 0.4), inset 0 0 8px rgba(79, 209, 197, 0.1);
-            animation: ripple-expand 0.8s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+            position: fixed; border-radius: 50%;
+            border: 1.5px solid #4FD1C5; pointer-events: none; z-index: 9998;
+            box-shadow: 0 0 8px rgba(79,209,197,0.4), inset 0 0 8px rgba(79,209,197,0.1);
+            animation: ripple-expand 0.8s cubic-bezier(0.2,0.8,0.4,1) forwards;
         }
- 
         @keyframes ripple-expand {
-            0%   { width: 10px; height: 10px; opacity: 0.9; transform: translate(-50%, -50%) scale(0); }
-            100% { width: 130px; height: 130px; opacity: 0; transform: translate(-50%, -50%) scale(1); }
+            0%   { width:10px; height:10px; opacity:0.9; transform:translate(-50%,-50%) scale(0); }
+            100% { width:130px; height:130px; opacity:0; transform:translate(-50%,-50%) scale(1); }
         }
- 
-        /* ✨ 별 모양 파티클 ✨ */
+
         .click-star {
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            color: #4FD1C5;
-            filter: drop-shadow(0 0 4px #4FD1C5);
-            animation: star-burst 0.9s cubic-bezier(0, .9, .57, 1) forwards;
-            user-select: none;
-            line-height: 1;
+            position: fixed; pointer-events: none; z-index: 9999;
+            color: #4FD1C5; filter: drop-shadow(0 0 4px #4FD1C5);
+            animation: star-burst 0.9s cubic-bezier(0,.9,.57,1) forwards;
+            user-select: none; line-height: 1;
         }
- 
         @keyframes star-burst {
-            0%   { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-            100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0) rotate(var(--rot)); }
+            0%   { opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0deg); }
+            100% { opacity:0; transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(0) rotate(var(--rot)); }
         }
     </style>
 </head>
@@ -265,73 +249,56 @@
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
         <div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div><div class="meteor"></div>
     </div>
- 
-   <div class="content">
+
+    <div class="content">
         <div class="star-system">
             <div class="tilt-wrapper">
                 <div class="orbit-ring ring-back"></div>
                 <svg class="gummy-star" viewBox="0 0 100 100">
-                    <path d="M 50 15 
-                             L 62 34 
-                             L 83 39 
-                             L 69 56 
-                             L 71 78 
-                             L 50 70 
-                             L 29 78 
-                             L 31 56 
-                             L 17 39 
-                             L 38 34 Z" />
+                    <path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" />
                 </svg>
                 <div class="orbit-ring ring-front"></div>
             </div>
         </div>
         <h1 class="title">궤도에서 <span class="highlight">너를</span> 만나다</h1>
         <p class="subtitle">현재 궤도를 만드는 중입니다</p>
+        <p class="click-hint">아무곳이나 클릭</p>
     </div>
- 
-<script>
-    document.body.style.cursor = 'pointer';
- 
-    document.body.addEventListener('click', (e) => {
- 
-        // ✨ 링 ripple
-        const ripple = document.createElement('div');
-        ripple.classList.add('click-ripple');
-        ripple.style.left = `${e.clientX}px`;
-        ripple.style.top = `${e.clientY}px`;
-        document.body.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 800);
- 
-        // ✨ 별 모양 파티클
-        const starCount = Math.floor(Math.random() * 4) + 5;
-        for (let i = 0; i < starCount; i++) {
-            const star = document.createElement('div');
-            star.classList.add('click-star');
-            star.innerHTML = '★';
-            star.style.left = `${e.clientX}px`;
-            star.style.top = `${e.clientY}px`;
- 
-            const angle = Math.random() * 2 * Math.PI;
-            const distance = Math.random() * 60 + 30;
-            const tx = Math.cos(angle) * distance;
-            const ty = Math.sin(angle) * distance;
-            const rot = (Math.random() - 0.5) * 360 + 'deg';
-            const size = Math.random() * 8 + 8;
- 
-            star.style.setProperty('--tx', `${tx}px`);
-            star.style.setProperty('--ty', `${ty}px`);
-            star.style.setProperty('--rot', rot);
-            star.style.fontSize = `${size}px`;
- 
-            document.body.appendChild(star);
-            setTimeout(() => star.remove(), 900);
-        }
- 
-        // 페이지 이동
-        setTimeout(() => {
-            window.location.href = 'main.html';
-        }, 1100);
-    });
-</script>
+
+    <script>
+        document.body.style.cursor = 'pointer';
+
+        document.body.addEventListener('click', (e) => {
+
+            const ripple = document.createElement('div');
+            ripple.classList.add('click-ripple');
+            ripple.style.left = `${e.clientX}px`;
+            ripple.style.top  = `${e.clientY}px`;
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 800);
+
+            const starCount = Math.floor(Math.random() * 4) + 5;
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('click-star');
+                star.innerHTML = '★';
+                star.style.left = `${e.clientX}px`;
+                star.style.top  = `${e.clientY}px`;
+                const angle    = Math.random() * 2 * Math.PI;
+                const distance = Math.random() * 60 + 30;
+                star.style.setProperty('--tx',  `${Math.cos(angle)*distance}px`);
+                star.style.setProperty('--ty',  `${Math.sin(angle)*distance}px`);
+                star.style.setProperty('--rot', `${(Math.random()-0.5)*360}deg`);
+                star.style.fontSize = `${Math.random()*8+8}px`;
+                document.body.appendChild(star);
+                setTimeout(() => star.remove(), 900);
+            }
+
+            // 700ms 딜레이로 단축
+            setTimeout(() => {
+                window.location.href = 'main.html';
+            }, 700);
+        });
+    </script>
 </body>
 </html>
