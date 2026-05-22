@@ -188,6 +188,7 @@
         .jo-cell.dim { background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.18); }
         .jo-cell.hot { background: rgba(79,209,197,0.15); color: var(--mint); }
         .jo-cell.done { background: var(--mint); color: #0F172A; border-color: var(--mint); }
+        #joAll.dim:hover { background: rgba(79,209,197,0.1); color: var(--mint); border-color: rgba(79,209,197,0.4); }
 
         /* 번호 셀 */
         .ycell {
@@ -456,7 +457,7 @@
                                 <span class="legend-chip" style="background:#63B3ED;color:#04342C;">5줄</span>
                                 <span style="font-size:10px;color:#334155;">중복=파이분할</span>
                             </div>
-                            <canvas id="lottoCanvas" width="420" height="260" style="width:100%;display:block;border-radius:10px;background:#080d1a;"></canvas>
+                            <canvas id="lottoCanvas" width="420" height="320" style="width:100%;display:block;border-radius:10px;background:#080d1a;"></canvas>
                         </div>
 
                         <!-- 컨트롤 -->
@@ -560,8 +561,7 @@
     function setNumHot(n){resetNumCells();document.getElementById('yn'+n).className='ycell hot';yCurNum=n;}
     function confirmJo(j){
         resetJoCells();
-        document.getElementById('joAll').className='jo-cell done';
-        document.getElementById('joAll').textContent='✦ 모든 조';
+        // joAll은 건드리지 않음 — 해당 조만 확정
         document.getElementById('jo'+j).className='jo-cell done';
     }
 
@@ -615,7 +615,7 @@
     var lc=document.getElementById('lottoCanvas');
     var lctx=lc.getContext('2d');
     var LW=lc.width,LH=lc.height;
-    var GCOLS=9,GCW=Math.floor(LW/GCOLS),GCH=Math.floor(LH/5);
+    var GCOLS=9,GCW=Math.floor(LW/GCOLS),GCH=Math.floor(LH/5); // LH 자동 반영
 
     function getLineIndices(n){var idxs=[];lLines.forEach(function(l,i){if(l.indexOf(n)>=0)idxs.push(i);});return idxs;}
     function drawLottoCell(n,isHot){
