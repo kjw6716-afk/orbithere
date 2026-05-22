@@ -472,7 +472,7 @@
 
                     <!-- 우: 결과 패널 -->
                     <div class="result-panel">
-                        <div class="section-label">확정 번호</div>
+                        <div class="section-label" style="color:#94A3B8;letter-spacing:0.08em;">확정 번호</div>
                         <div id="yeonResult" class="yeon-result-grid"></div>
                         <div id="lottoResult" class="lotto-result" style="display:none;"></div>
                     </div>
@@ -532,16 +532,15 @@
     var yJo=null, yNums=[], yStage='jo', yCurJo=1, yCurNum=0;
     var lLines=[], lCurHot=[];
     var tickTimer=null, running=false;
-    var prevJo=-1, prevNum=-1, prevHot=[];
+    // prev 변수 제거 — 완전 독립 랜덤
 
     var _seed=Date.now()^Math.floor(Math.random()*0xFFFFFFFF);
     function _reseed(){_seed=(_seed^Math.floor(performance.now()*1000))^Math.floor(Math.random()*0xFFFFFFFF)^Date.now();}
     function _rand(){_reseed();_seed^=_seed<<13;_seed^=_seed>>17;_seed^=_seed<<5;return Math.abs(_seed)/0x7FFFFFFF;}
-    function randInt(max,exclude){var v,t=0;do{v=Math.floor(_rand()*max);t++;}while(v===exclude&&t<20);return v;}
-    function randPick(pool,n,prevArr){
+    function randInt(max){return Math.floor(_rand()*max);}
+    function randPick(pool,n){
         var arr=pool.slice();
         for(var i=arr.length-1;i>0;i--){var j=Math.floor(_rand()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}
-        arr.sort(function(a,b){return(prevArr.indexOf(a)>=0?1:0)-(prevArr.indexOf(b)>=0?1:0);});
         return arr.slice(0,n).sort(function(a,b){return a-b;});
     }
 
@@ -573,15 +572,18 @@
         resetJoCells();
         document.getElementById('joAll').className='jo-cell done';
         document.getElementById('joAll').textContent='모든 조';
-        yStage='num'; prevNum=-1;
+        yStage='num';
         renderYeonResult();
         setMsg('모든 조 선택! 이제 6자리 번호를 포착하세요','#4FD1C5');
         setTimeout(startTick, 300);
     });
     function confirmYNum(n){document.getElementById('yn'+n).className='ycell done';}
+    var canCatch=false; // tick이 최소 한 번 실행된 후에만 포착 가능
+
     function tickYeon(){
-        if(yStage==='jo'){var j=randInt(5,prevJo-1)+1;setJoHot(j);prevJo=j-1;}
-        else{var n=randInt(10,prevNum);setNumHot(n);prevNum=n;}
+        if(yStage==='jo'){var j=randInt(5)+1;setJoHot(j);}
+        else{var n=randInt(10);setNumHot(n);}
+        canCatch=true; // tick 실행됐으니 포착 가능
     }
     function renderYeonResult(){
         var area=document.getElementById('yeonResult');area.innerHTML='';
@@ -593,10 +595,10 @@
         PL.forEach(function(lbl,i){
             var wrap=document.createElement('div');wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:2px;';
             var l=document.createElement('div');l.style.cssText='font-size:9px;color:#334155;font-weight:600;letter-spacing:0.04em;';l.textContent=lbl;
-            var b=document.createElement('div');b.style.cssText='width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;';
+            var b=document.createElement('div');b.style.cssText='width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;box-sizing:border-box;flex-shrink:0;';
             if(i<yNums.length){b.style.background='var(--mint)';b.style.color='#0F172A';b.textContent=yNums[i];}
             else if(i===yNums.length&&running){b.style.border='1.5px solid var(--mint)';b.style.color='var(--mint)';b.textContent='?';}
-            else{b.style.border='1.5px dashed rgba(79,209,197,0.15)';b.style.color='#1E293B';b.textContent='-';}
+            else{b.style.border='1.5px dashed rgba(79,209,197,0.15)';b.style.color='transparent';b.textContent='-';}
             wrap.appendChild(l);wrap.appendChild(b);area.appendChild(wrap);
         });
         if(yJo&&yNums.length===6){
@@ -639,22 +641,22 @@
         for(var n=1;n<=45;n++)drawLottoCell(n,hotNums&&hotNums.indexOf(n)>=0);
         lctx.textAlign='left';lctx.textBaseline='alphabetic';
     }
-    function pickSixRandom(){var pool=[];for(var i=1;i<=45;i++)pool.push(i);return randPick(pool,6,prevHot);}
-    function tickLotto(){lCurHot=pickSixRandom();prevHot=lCurHot.slice();drawLottoGrid(lCurHot);}
+    function pickSixRandom(){var pool=[];for(var i=1;i<=45;i++)pool.push(i);return randPick(pool,6);}
+    function tickLotto(){lCurHot=pickSixRandom();drawLottoGrid(lCurHot);canCatch=true;}
     function renderLottoResult(){
         var area=document.getElementById('lottoResult');area.innerHTML='';
         for(var i=0;i<5;i++){
             var row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:5px;';
-            var l=document.createElement('span');l.style.cssText='font-size:10px;color:#334155;min-width:20px;font-weight:600;';l.textContent=(i+1)+'줄';row.appendChild(l);
+            var l=document.createElement('span');l.style.cssText='font-size:9px;color:#0F172A;background:'+BCOLS[i]+';padding:2px 7px;border-radius:6px;font-weight:700;flex-shrink:0;';l.textContent=(i+1)+'줄';row.appendChild(l);
             var balls=document.createElement('div');balls.style.cssText='display:flex;gap:3px;flex-wrap:wrap;';
             if(i<lLines.length){
                 lLines[i].forEach(function(n){
                     var b=document.createElement('div');
-                    b.style.cssText='width:26px;height:26px;border-radius:50%;background:'+BCOLS[i]+';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:'+TCOLS[i]+';flex-shrink:0;';
+                    b.style.cssText='width:28px;height:28px;border-radius:50%;background:'+BCOLS[i]+';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:'+TCOLS[i]+';flex-shrink:0;box-sizing:border-box;';
                     b.textContent=n;balls.appendChild(b);
                 });
             } else {
-                for(var j=0;j<6;j++){var e=document.createElement('div');e.style.cssText='width:26px;height:26px;border-radius:50%;border:1px dashed rgba(79,209,197,0.15);flex-shrink:0;';balls.appendChild(e);}
+                for(var j=0;j<6;j++){var e=document.createElement('div');e.style.cssText='width:28px;height:28px;border-radius:50%;border:1px dashed rgba(79,209,197,0.15);flex-shrink:0;box-sizing:border-box;';balls.appendChild(e);}
             }
             row.appendChild(balls);
             if(i<lLines.length){var p=document.createElement('span');p.style.cssText='font-size:9px;color:var(--mint);font-weight:500;';p.textContent='1,000원';row.appendChild(p);}
@@ -676,16 +678,16 @@
             scheduleTick();
         },getInterval());
     }
-    function startTick(){running=true;scheduleTick();}
+    function startTick(){running=true;canCatch=false;scheduleTick();}
     function stopTick(){running=false;if(tickTimer){clearTimeout(tickTimer);tickTimer=null;}}
     function setMsg(t,c){var e=document.getElementById('msg');e.textContent=t;e.style.color=c||'#475569';}
 
     document.getElementById('btnCatch').addEventListener('click',function(){
-        if(done||!running)return;
+        if(done||!running||!canCatch)return;
         stopTick();
         if(mode==='yeon'){
             if(yStage==='jo'){
-                yJo=yCurJo;confirmJo(yJo);yStage='num';prevNum=-1;
+                yJo=yCurJo;confirmJo(yJo);yStage='num';
                 renderYeonResult();
                 setMsg('조 확정! 이제 6자리 번호를 포착하세요','#4FD1C5');
                 setTimeout(startTick,300);
@@ -722,7 +724,7 @@
 
     function resetAll(){
         stopTick();done=false;yJo=null;yNums=[];yStage='jo';yCurJo=1;yCurNum=0;
-        lLines=[];lCurHot=[];prevJo=-1;prevNum=-1;prevHot=[];
+        lLines=[];lCurHot=[];canCatch=false;
         _seed=Date.now()^Math.floor(Math.random()*0xFFFFFFFF);
         resetJoCells();resetNumCells();
         document.getElementById('joAll').textContent='모든 조 선택';
