@@ -410,7 +410,7 @@
                                 <div>
                                     <div class="section-label">조 선택</div>
                                     <div style="display:flex;flex-direction:column;gap:5px;">
-                                        <div class="jo-cell dim" id="joAll" style="padding:9px;font-size:11px;min-height:34px;cursor:pointer;">✦ 모든 조 선택</div>
+                                        <div class="jo-cell dim" id="joAll" style="padding:9px;font-size:11px;min-height:34px;cursor:pointer;">모든 조 선택</div>
                                         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;">
                                             <div class="jo-cell dim" id="jo1" style="padding:8px;min-height:30px;">1조</div>
                                             <div class="jo-cell dim" id="jo2" style="padding:8px;min-height:30px;">2조</div>
@@ -511,7 +511,7 @@
 
     // 카오스 복권
     var SL=['느림','보통','빠름','매우 빠름','미침 ㅋㅋ'];
-    var SI=[150,80,40,18,7];
+    var SI=[150,80,40,18,25]; // 미침: 25ms (모바일에서도 점등 보이게)
     var curSpeed=3; // 기본 빠름(index 2 = 40ms)
 
     document.getElementById('spdNormal').addEventListener('click',function(){
@@ -572,7 +572,7 @@
         yJo='모든';
         resetJoCells();
         document.getElementById('joAll').className='jo-cell done';
-        document.getElementById('joAll').textContent='✦ 모든 조';
+        document.getElementById('joAll').textContent='모든 조';
         yStage='num'; prevNum=-1;
         renderYeonResult();
         setMsg('모든 조 선택! 이제 6자리 번호를 포착하세요','#4FD1C5');
@@ -588,7 +588,7 @@
         if(yJo){
             var jb=document.createElement('div');
             jb.style.cssText='padding:4px 12px;border-radius:99px;background:var(--mint);color:#0F172A;font-size:11px;font-weight:700;';
-            jb.textContent=yJo==='모든'?'✦ 모든 조':yJo+'조';area.appendChild(jb);
+            jb.textContent=yJo==='모든'?'모든 조':yJo+'조';area.appendChild(jb);
         }
         PL.forEach(function(lbl,i){
             var wrap=document.createElement('div');wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:2px;';
@@ -603,7 +603,7 @@
             var note=document.createElement('div');
             note.style.cssText='width:100%;margin-top:10px;font-size:11px;color:var(--mint);font-weight:600;line-height:1.5;';
             var joText=yJo==='모든'?'모든 조':yJo+'조';
-            note.textContent='✦ '+joText+' '+yNums.join('')+'\n이번주에도 행운을 빌어요!';
+            note.textContent=joText+' '+yNums.join('')+' — 이번주에도 행운을 빌어요!';
             area.appendChild(note);
         }
     }
@@ -650,20 +650,20 @@
             if(i<lLines.length){
                 lLines[i].forEach(function(n){
                     var b=document.createElement('div');
-                    b.style.cssText='width:24px;height:24px;border-radius:50%;background:'+BCOLS[i]+';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:'+TCOLS[i]+';';
+                    b.style.cssText='width:26px;height:26px;border-radius:50%;background:'+BCOLS[i]+';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:'+TCOLS[i]+';flex-shrink:0;';
                     b.textContent=n;balls.appendChild(b);
                 });
             } else {
-                for(var j=0;j<6;j++){var e=document.createElement('div');e.style.cssText='width:24px;height:24px;border-radius:50%;border:1px dashed rgba(79,209,197,0.12);';balls.appendChild(e);}
+                for(var j=0;j<6;j++){var e=document.createElement('div');e.style.cssText='width:26px;height:26px;border-radius:50%;border:1px dashed rgba(79,209,197,0.15);flex-shrink:0;';balls.appendChild(e);}
             }
             row.appendChild(balls);
-            if(i<lLines.length){var p=document.createElement('span');p.style.cssText='font-size:9px;color:#1E293B;';p.textContent='1,000원';row.appendChild(p);}
+            if(i<lLines.length){var p=document.createElement('span');p.style.cssText='font-size:9px;color:var(--mint);font-weight:500;';p.textContent='1,000원';row.appendChild(p);}
             area.appendChild(row);
         }
         if(lLines.length===5){
             var n=document.createElement('div');
             n.style.cssText='font-size:11px;color:var(--mint);margin-top:6px;font-weight:600;';
-            n.textContent='✦ 총 5,000원\n이번주에도 행운을 빌어요!';
+            n.textContent='총 5,000원 — 이번주에도 행운을 빌어요!';
             area.appendChild(n);
         }
     }
@@ -692,12 +692,12 @@
             } else {
                 yNums.push(yCurNum);confirmYNum(yCurNum);
                 renderYeonResult();
-                if(yNums.length>=6){done=true;setMsg('✦ 완성! 오늘의 행운 번호가 확정됐어요','#4FD1C5');}
+                if(yNums.length>=6){done=true;setMsg('완성! 오늘의 행운 번호가 확정됐어요','#4FD1C5');}
                 else{setMsg((6-yNums.length)+'자리 남았어요!','#4FD1C5');setTimeout(startTick,200);}
             }
         } else {
             lLines.push(lCurHot.slice());drawLottoGrid([]);renderLottoResult();
-            if(lLines.length>=5){done=true;setMsg('✦ 5줄 완성! 오늘의 행운 번호가 확정됐어요','#4FD1C5');}
+            if(lLines.length>=5){done=true;setMsg('5줄 완성! 오늘의 행운 번호가 확정됐어요','#4FD1C5');}
             else{setMsg((5-lLines.length)+'줄 남았어요!','#4FD1C5');setTimeout(startTick,300);}
         }
     });
@@ -725,7 +725,7 @@
         lLines=[];lCurHot=[];prevJo=-1;prevNum=-1;prevHot=[];
         _seed=Date.now()^Math.floor(Math.random()*0xFFFFFFFF);
         resetJoCells();resetNumCells();
-        document.getElementById('joAll').textContent='✦ 모든 조 선택';
+        document.getElementById('joAll').textContent='모든 조 선택';
         if(mode==='lotto')drawLottoGrid([]);
         renderYeonResult();renderLottoResult();
         setMsg('포착 버튼을 눌러 번호를 확정하세요');
