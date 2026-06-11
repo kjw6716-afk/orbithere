@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orbit | 프로필</title>
+    <meta name="description" content="나의 궤도 프로필 — 레벨, 궤적, 연결된 별을 확인하세요.">
+    <meta name="theme-color" content="#0F172A">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Orbit">
+    <meta property="og:title" content="Orbit | 프로필">
+    <meta property="og:description" content="나의 궤도 프로필 — 레벨, 궤적, 연결된 별을 확인하세요.">
+    <meta property="og:image" content="https://orbithere.com/images/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://orbithere.com/profile.html">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         :root {
@@ -246,7 +260,7 @@
 
             <div class="stats">
                 <div class="stat-item">
-                    <div class="stat-val">1</div>
+                    <div class="stat-val" id="orbitDays">1</div>
                     <div class="stat-label">궤도 일수</div>
                 </div>
                 <div class="stat-item">
@@ -289,6 +303,17 @@
             localStorage.setItem('orbit_joindate', joinDate);
         }
         document.getElementById('joinDateText').textContent = joinDate + ' 궤도 진입';
+
+        // 궤도 일수 — 가입 시점부터 실제 경과일 계산
+        var jointime = parseInt(localStorage.getItem('orbit_jointime'), 10);
+        if(!jointime){
+            // 기존 가입자: 한국어 가입일 문자열에서 날짜 복원
+            var m = joinDate.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
+            jointime = m ? new Date(+m[1], m[2]-1, +m[3]).getTime() : Date.now();
+            localStorage.setItem('orbit_jointime', jointime);
+        }
+        var orbitDays = Math.max(1, Math.floor((Date.now() - jointime) / 86400000) + 1);
+        document.getElementById('orbitDays').textContent = orbitDays;
 
         // 아바타 이모지 — 닉네임 첫 글자 기반으로 배정
         var emojis = ['🌟','⭐','🪐','🌙','☄️','🔭','🛸','💫','🌌','✨'];
