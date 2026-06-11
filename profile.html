@@ -312,14 +312,14 @@
         setTimeout(function(){ ripple.remove(); }, 800);
 
         var count = Math.floor(Math.random()*4)+4;
-        for(var i=0;i<count;i++){
-            var star = document.createElement('div');
+        for(let i=0;i<count;i++){
+            const star = document.createElement('div');
             star.classList.add('click-star');
             star.innerHTML = '★';
             star.style.left = e.clientX + 'px';
             star.style.top  = e.clientY + 'px';
-            var angle = Math.random()*2*Math.PI;
-            var dist  = Math.random()*60+30;
+            const angle = Math.random()*2*Math.PI;
+            const dist  = Math.random()*60+30;
             star.style.setProperty('--tx', Math.cos(angle)*dist + 'px');
             star.style.setProperty('--ty', Math.sin(angle)*dist + 'px');
             star.style.setProperty('--rot', (Math.random()-0.5)*360 + 'deg');

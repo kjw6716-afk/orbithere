@@ -483,7 +483,7 @@
 
     var _seed=Date.now()^Math.floor(Math.random()*0xFFFFFFFF);
     function _reseed(){_seed=(_seed^Math.floor(performance.now()*1000))^Math.floor(Math.random()*0xFFFFFFFF)^Date.now();}
-    function _rand(){_reseed();_seed^=_seed<<13;_seed^=_seed>>17;_seed^=_seed<<5;return Math.abs(_seed)/0x7FFFFFFF;}
+    function _rand(){_reseed();_seed^=_seed<<13;_seed^=_seed>>>17;_seed^=_seed<<5;return (_seed>>>0)/0x100000000;}
     function randInt(max){return Math.floor(_rand()*max);}
     function randPick(pool,n){var arr=pool.slice();for(var i=arr.length-1;i>0;i--){var j=Math.floor(_rand()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr.slice(0,n).sort(function(a,b){return a-b;});}
 
@@ -522,6 +522,15 @@
 
     var lc=document.getElementById('lottoCanvas');
     var lctx=lc.getContext('2d');
+    if(!lctx.roundRect){
+        // Safari 16 미만 등 roundRect 미지원 브라우저 폴백
+        CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+            this.moveTo(x+r,y);
+            this.arcTo(x+w,y,x+w,y+h,r);this.arcTo(x+w,y+h,x,y+h,r);
+            this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);
+            this.closePath();return this;
+        };
+    }
     var LW=lc.width,LH=lc.height;
     var GCOLS=9,GCW=Math.floor(LW/GCOLS),GCH=Math.floor(LH/5);
     function getLineIndices(n){var idxs=[];lLines.forEach(function(l,i){if(l.indexOf(n)>=0)idxs.push(i);});return idxs;}
