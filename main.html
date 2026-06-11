@@ -8,7 +8,7 @@
     <style>
         :root {
             --bg-color: #0F172A;
-            --mint: #4FD1C5;
+            --accent: #FF9F43;
             --text-main: #E2E8F0;
             --card-bg: rgba(30, 41, 59, 0.7);
         }
@@ -26,7 +26,7 @@
             position: fixed;
             top: -10%; right: -10%;
             width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(79,209,197,0.08) 0%, rgba(15,23,42,0) 70%);
+            background: radial-gradient(circle, rgba(255,159,67,0.08) 0%, rgba(15,23,42,0) 70%);
             pointer-events: none; z-index: -1;
         }
 
@@ -35,15 +35,15 @@
             padding: 1.5rem 2rem;
             display: flex; justify-content: space-between; align-items: center;
             z-index: 100; backdrop-filter: blur(15px); box-sizing: border-box;
-            border-bottom: 1px solid rgba(79,209,197,0.1);
+            border-bottom: 1px solid rgba(255,159,67,0.1);
         }
-        .logo { font-weight: 700; letter-spacing: 2px; color: var(--mint); cursor: pointer; }
+        .logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); cursor: pointer; }
 
         .container { max-width: 1100px; margin: 140px auto 80px; padding: 0 20px; }
 
         header { margin-bottom: 50px; }
         header h1 { font-size: 2.8rem; font-weight: 200; margin: 0; line-height: 1.2; }
-        header h1 span { color: var(--mint); font-weight: 700; }
+        header h1 span { color: var(--accent); font-weight: 700; }
         header p { color: #94A3B8; margin-top: 15px; font-size: 1.1rem; }
 
         .grid {
@@ -55,18 +55,18 @@
 
         .card {
             background: var(--card-bg);
-            border: 1px solid rgba(79,209,197,0.15);
+            border: 1px solid rgba(255,159,67,0.15);
             border-radius: 24px; padding: 30px;
             transition: all 0.3s ease; position: relative;
         }
         .card:hover {
-            border-color: rgba(79,209,197,0.5);
+            border-color: rgba(255,159,67,0.5);
             transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(79,209,197,0.1);
+            box-shadow: 0 10px 30px rgba(255,159,67,0.1);
         }
         .card-tag {
             display: inline-block; padding: 4px 12px;
-            background: rgba(79,209,197,0.1); color: var(--mint);
+            background: rgba(255,159,67,0.1); color: var(--accent);
             border-radius: 99px; font-size: 0.75rem; font-weight: 600; margin-bottom: 20px;
         }
         .card-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
@@ -76,19 +76,19 @@
         .join-form { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
         .join-form input {
             background: rgba(15,23,42,0.5);
-            border: 1px solid rgba(79,209,197,0.3);
+            border: 1px solid rgba(255,159,67,0.3);
             border-radius: 12px; padding: 12px 15px;
             color: white; font-family: 'Pretendard'; outline: none;
             transition: border-color 0.2s;
         }
-        .join-form input:focus { border-color: var(--mint); }
+        .join-form input:focus { border-color: var(--accent); }
         .join-form input.error { border-color: #FC8181; }
         .join-error {
             font-size: 11px; color: #FC8181;
             display: none; margin-top: -6px;
         }
         .btn-mint {
-            background: var(--mint); color: #0F172A;
+            background: var(--accent); color: #0F172A;
             border: none; border-radius: 12px; padding: 12px;
             font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Pretendard';
         }
@@ -101,45 +101,45 @@
         .joined-badge {
             display: inline-flex; align-items: center; gap: 8px;
             padding: 10px 14px;
-            background: rgba(79,209,197,0.08);
-            border: 1px solid rgba(79,209,197,0.2);
+            background: rgba(255,159,67,0.08);
+            border: 1px solid rgba(255,159,67,0.2);
             border-radius: 12px;
-            font-size: 13px; color: var(--mint); font-weight: 600;
+            font-size: 13px; color: var(--accent); font-weight: 600;
         }
         .btn-outline {
-            background: transparent; color: var(--mint);
-            border: 1.5px solid rgba(79,209,197,0.3);
+            background: transparent; color: var(--accent);
+            border: 1.5px solid rgba(255,159,67,0.3);
             border-radius: 12px; padding: 11px;
             font-weight: 600; cursor: pointer; transition: 0.2s;
             font-family: 'Pretendard'; font-size: 13px;
         }
-        .btn-outline:hover { background: rgba(79,209,197,0.08); border-color: var(--mint); }
+        .btn-outline:hover { background: rgba(255,159,67,0.08); border-color: var(--accent); }
 
         /* 업데이트 노트 */
         .update-card {
             grid-column: span 1;
             background: var(--card-bg);
-            border: 1px solid rgba(79,209,197,0.15);
+            border: 1px solid rgba(255,159,67,0.15);
             border-radius: 24px; padding: 28px;
             position: relative; overflow: hidden;
         }
-        .update-card:hover { border-color: rgba(79,209,197,0.4); box-shadow: 0 8px 24px rgba(79,209,197,0.08); }
+        .update-card:hover { border-color: rgba(255,159,67,0.4); box-shadow: 0 8px 24px rgba(255,159,67,0.08); }
         .timeline { display: flex; flex-direction: column; gap: 0; margin-top: 16px; }
         .tl-item { display: flex; gap: 14px; padding-bottom: 20px; position: relative; }
         .tl-item:last-child { padding-bottom: 0; }
         .tl-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
-        .tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--mint); flex-shrink: 0; margin-top: 3px; box-shadow: 0 0 8px rgba(79,209,197,0.5); }
+        .tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 3px; box-shadow: 0 0 8px rgba(255,159,67,0.5); }
         .tl-dot.old { background: #334155; box-shadow: none; }
-        .tl-line { width: 1px; flex: 1; margin-top: 4px; background: linear-gradient(to bottom, rgba(79,209,197,0.3), rgba(79,209,197,0.05)); }
+        .tl-line { width: 1px; flex: 1; margin-top: 4px; background: linear-gradient(to bottom, rgba(255,159,67,0.3), rgba(255,159,67,0.05)); }
         .tl-item:last-child .tl-line { display: none; }
         .tl-content { flex: 1; }
-        .tl-version { font-size: 11px; font-weight: 700; color: var(--mint); letter-spacing: 0.08em; margin-bottom: 3px; }
+        .tl-version { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 3px; }
         .tl-version.old { color: #475569; }
         .tl-date { font-size: 10px; color: #334155; margin-bottom: 6px; }
         .tl-title { font-size: 13px; font-weight: 600; color: #CBD5E1; margin-bottom: 4px; }
         .tl-desc { font-size: 11px; color: #64748B; line-height: 1.5; }
         .tl-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
-        .tl-tag { font-size: 10px; padding: 2px 7px; border-radius: 6px; background: rgba(79,209,197,0.08); color: #4FD1C5; font-weight: 500; }
+        .tl-tag { font-size: 10px; padding: 2px 7px; border-radius: 6px; background: rgba(255,159,67,0.08); color: #FF9F43; font-weight: 500; }
         .tl-tag.purple { background: rgba(159,122,234,0.1); color: #9F7AEA; }
         .tl-tag.gray { background: rgba(100,116,139,0.15); color: #64748B; }
 
@@ -147,39 +147,39 @@
         .lottery-card {
             grid-column: span 2;
             background: var(--card-bg);
-            border: 1px solid rgba(79,209,197,0.15);
+            border: 1px solid rgba(255,159,67,0.15);
             border-radius: 24px; padding: 28px;
             position: relative; overflow: hidden;
         }
-        .lottery-card::before { content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px; background:radial-gradient(circle,rgba(79,209,197,0.05) 0%,transparent 70%); pointer-events:none; }
-        .lottery-card:hover { border-color:rgba(79,209,197,0.4); box-shadow:0 8px 24px rgba(79,209,197,0.08); }
+        .lottery-card::before { content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px; background:radial-gradient(circle,rgba(255,159,67,0.05) 0%,transparent 70%); pointer-events:none; }
+        .lottery-card:hover { border-color:rgba(255,159,67,0.4); box-shadow:0 8px 24px rgba(255,159,67,0.08); }
         .game-inner { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:16px; }
         .ltab-row { display:flex; gap:8px; margin-bottom:16px; }
-        .ltab { font-size:12px; padding:5px 16px; border-radius:20px; border:1.5px solid rgba(79,209,197,0.25); background:transparent; cursor:pointer; color:#94A3B8; transition:all 0.2s; font-family:'Pretendard'; font-weight:500; }
-        .ltab.on { background:var(--mint); border-color:var(--mint); color:#0F172A; font-weight:700; }
+        .ltab { font-size:12px; padding:5px 16px; border-radius:20px; border:1.5px solid rgba(255,159,67,0.25); background:transparent; cursor:pointer; color:#94A3B8; transition:all 0.2s; font-family:'Pretendard'; font-weight:500; }
+        .ltab.on { background:var(--accent); border-color:var(--accent); color:#0F172A; font-weight:700; }
         .section-label { font-size:10px; color:#475569; font-weight:600; margin-bottom:8px; letter-spacing:0.06em; text-transform:uppercase; }
         .jo-cell { display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:600; cursor:default; border:1.5px solid rgba(255,255,255,0.06); transition:background 0.08s,color 0.08s; font-family:'Pretendard'; font-size:12px; }
         .jo-cell.dim { background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.18); }
-        .jo-cell.hot { background:rgba(79,209,197,0.15); color:var(--mint); }
-        .jo-cell.done { background:var(--mint); color:#0F172A; border-color:var(--mint); }
-        #joAll.dim:hover { background:rgba(79,209,197,0.1); color:var(--mint); border-color:rgba(79,209,197,0.4); }
+        .jo-cell.hot { background:rgba(255,159,67,0.15); color:var(--accent); }
+        .jo-cell.done { background:var(--accent); color:#0F172A; border-color:var(--accent); }
+        #joAll.dim:hover { background:rgba(255,159,67,0.1); color:var(--accent); border-color:rgba(255,159,67,0.4); }
         .ycell { display:flex; align-items:center; justify-content:center; border-radius:6px; font-weight:600; cursor:default; border:1px solid rgba(255,255,255,0.06); transition:background 0.08s,color 0.08s; font-family:'Pretendard'; }
         .ycell.dim { background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.18); }
-        .ycell.hot { background:rgba(79,209,197,0.18); color:var(--mint); }
-        .ycell.done { background:var(--mint); color:#0F172A; border-color:var(--mint); }
-        .result-panel { display:flex; flex-direction:column; gap:12px; padding-left:16px; border-left:1px solid rgba(79,209,197,0.08); }
+        .ycell.hot { background:rgba(255,159,67,0.18); color:var(--accent); }
+        .ycell.done { background:var(--accent); color:#0F172A; border-color:var(--accent); }
+        .result-panel { display:flex; flex-direction:column; gap:12px; padding-left:16px; border-left:1px solid rgba(255,159,67,0.08); }
         .yeon-result-grid { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:4px; }
         .lotto-result { display:flex; flex-direction:column; gap:5px; margin-top:4px; }
         .legend-row { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px; align-items:center; }
         .legend-chip { font-size:10px; padding:2px 7px; border-radius:8px; font-weight:600; }
-        .lottery-controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:16px; padding-top:14px; border-top:1px solid rgba(79,209,197,0.08); }
-        .spd-btn { font-size:11px; padding:6px 14px; border-radius:8px; border:1.5px solid rgba(79,209,197,0.2); background:rgba(255,255,255,0.03); color:#64748B; cursor:pointer; transition:all 0.2s; font-family:'Pretendard'; font-weight:600; }
-        .spd-btn:hover { border-color:rgba(79,209,197,0.4); color:#94A3B8; }
-        .spd-btn.on { background:rgba(79,209,197,0.12); border-color:var(--mint); color:var(--mint); }
-        .btn-catch { background:var(--mint); color:#0F172A; border:none; border-radius:8px; padding:8px 18px; font-weight:700; cursor:pointer; transition:0.2s; font-family:'Pretendard'; font-size:12px; }
+        .lottery-controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,159,67,0.08); }
+        .spd-btn { font-size:11px; padding:6px 14px; border-radius:8px; border:1.5px solid rgba(255,159,67,0.2); background:rgba(255,255,255,0.03); color:#64748B; cursor:pointer; transition:all 0.2s; font-family:'Pretendard'; font-weight:600; }
+        .spd-btn:hover { border-color:rgba(255,159,67,0.4); color:#94A3B8; }
+        .spd-btn.on { background:rgba(255,159,67,0.12); border-color:var(--accent); color:var(--accent); }
+        .btn-catch { background:var(--accent); color:#0F172A; border:none; border-radius:8px; padding:8px 18px; font-weight:700; cursor:pointer; transition:0.2s; font-family:'Pretendard'; font-size:12px; }
         .btn-catch:hover { opacity:0.88; transform:scale(0.98); }
         .btn-reset { background:rgba(255,255,255,0.04); color:#64748B; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:8px 12px; cursor:pointer; transition:0.2s; font-family:'Pretendard'; font-size:11px; }
-        .btn-reset:hover { border-color:rgba(79,209,197,0.3); color:var(--mint); }
+        .btn-reset:hover { border-color:rgba(255,159,67,0.3); color:var(--accent); }
         .lottery-msg { font-size:11px; color:#475569; }
         .tip-icon { display:inline-flex; align-items:center; justify-content:center; width:12px; height:12px; border-radius:50%; border:1.5px solid currentColor; font-size:7px; font-weight:700; flex-shrink:0; margin-top:1px; }
 
@@ -188,13 +188,13 @@
             .wide, .lottery-card, .update-card { grid-column: span 1; }
             header h1 { font-size: 2rem; }
             .game-inner { grid-template-columns: 1fr; }
-            .result-panel { padding-left:0; border-left:none; border-top:1px solid rgba(79,209,197,0.08); padding-top:12px; }
+            .result-panel { padding-left:0; border-left:none; border-top:1px solid rgba(255,159,67,0.08); padding-top:12px; }
         }
 
-        ::selection { background-color: #FFB74D; color: #0F172A; }
-        .click-ripple { position:fixed; border-radius:50%; border:1.5px solid #4FD1C5; pointer-events:none; z-index:9998; box-shadow:0 0 8px rgba(79,209,197,0.4),inset 0 0 8px rgba(79,209,197,0.1); animation:ripple-expand 0.8s cubic-bezier(0.2,0.8,0.4,1) forwards; }
+        ::selection { background-color: #4FD1C5; color: #0F172A; }
+        .click-ripple { position:fixed; border-radius:50%; border:1.5px solid #FF9F43; pointer-events:none; z-index:9998; box-shadow:0 0 8px rgba(255,159,67,0.4),inset 0 0 8px rgba(255,159,67,0.1); animation:ripple-expand 0.8s cubic-bezier(0.2,0.8,0.4,1) forwards; }
         @keyframes ripple-expand { 0%{width:10px;height:10px;opacity:0.9;transform:translate(-50%,-50%) scale(0);}100%{width:130px;height:130px;opacity:0;transform:translate(-50%,-50%) scale(1);} }
-        .click-star { position:fixed; pointer-events:none; z-index:9999; color:#4FD1C5; filter:drop-shadow(0 0 4px #4FD1C5); animation:star-burst 0.9s cubic-bezier(0,.9,.57,1) forwards; user-select:none; line-height:1; }
+        .click-star { position:fixed; pointer-events:none; z-index:9999; color:#FF9F43; filter:drop-shadow(0 0 4px #FF9F43); animation:star-burst 0.9s cubic-bezier(0,.9,.57,1) forwards; user-select:none; line-height:1; }
         @keyframes star-burst { 0%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0deg);}100%{opacity:0;transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(0) rotate(var(--rot));} }
     </style>
 </head>
@@ -247,10 +247,11 @@
                 <p class="card-desc">"직장 다니면서 몰래 굴린 3년 — 퇴사 결심하게 만든 수익률 공개합니다" 글이 현재 인기 순위 1위입니다.</p>
             </div>
 
-            <div class="card wide">
+            <div class="card wide" onclick="location.href='lounge.html'" style="cursor:pointer;">
                 <span class="card-tag">Lounge</span>
                 <h3 class="card-title">자유로운 대화 광장</h3>
                 <p class="card-desc">지금 12명의 멤버가 광장에서 실시간으로 이야기를 나누고 있습니다. 당신의 의견을 들려주세요!</p>
+                <p style="font-size:12px;color:var(--accent);font-weight:600;margin-top:14px;margin-bottom:0;">광장 들어가기 →</p>
             </div>
 
             <!-- 업데이트 노트 -->
@@ -357,9 +358,9 @@
                         </div>
                         <div id="lottoUI" style="display:none;">
                             <div class="legend-row">
-                                <span class="legend-chip" style="background:#4FD1C5;color:#04342C;">1줄</span>
+                                <span class="legend-chip" style="background:#FF9F43;color:#3A2410;">1줄</span>
                                 <span class="legend-chip" style="background:#9F7AEA;color:#fff;">2줄</span>
-                                <span class="legend-chip" style="background:#F6AD55;color:#04342C;">3줄</span>
+                                <span class="legend-chip" style="background:#4FD1C5;color:#04342C;">3줄</span>
                                 <span class="legend-chip" style="background:#FC8181;color:#fff;">4줄</span>
                                 <span class="legend-chip" style="background:#63B3ED;color:#04342C;">5줄</span>
                                 <span style="font-size:10px;color:#334155;">중복=파이분할</span>
@@ -473,8 +474,8 @@
     document.getElementById('spdCrazy').addEventListener('click',function(){curSpeed=5;this.classList.add('on');document.getElementById('spdNormal').classList.remove('on');});
     function getBaseInterval(){return SI[curSpeed-1];}
     function getInterval(){return Math.floor(getBaseInterval()*(0.7+_rand()*0.6));}
-    var BCOLS=['#4FD1C5','#9F7AEA','#F6AD55','#FC8181','#63B3ED'];
-    var TCOLS=['#04342C','#fff','#04342C','#fff','#04342C'];
+    var BCOLS=['#FF9F43','#9F7AEA','#4FD1C5','#FC8181','#63B3ED'];
+    var TCOLS=['#3A2410','#fff','#04342C','#fff','#04342C'];
     var PL=['십만','만','천','백','십','일'];
     var mode='yeon',done=false;
     var yJo=null,yNums=[],yStage='jo',yCurJo=1,yCurNum=0;
@@ -499,24 +500,24 @@
         document.getElementById('joAll').className='jo-cell done';
         document.getElementById('joAll').textContent='모든 조';
         yStage='num';renderYeonResult();
-        setMsg('모든 조 선택! 이제 6자리 번호를 포착하세요','#4FD1C5');
+        setMsg('모든 조 선택! 이제 6자리 번호를 포착하세요','#FF9F43');
         setTimeout(startTick,300);
     });
     function confirmYNum(n){document.getElementById('yn'+n).className='ycell done';}
     function tickYeon(){if(yStage==='jo'){var j=randInt(5)+1;setJoHot(j);}else{var n=randInt(10);setNumHot(n);}canCatch=true;}
     function renderYeonResult(){
         var area=document.getElementById('yeonResult');area.innerHTML='';
-        if(yJo){var jb=document.createElement('div');jb.style.cssText='padding:4px 12px;border-radius:99px;background:var(--mint);color:#0F172A;font-size:11px;font-weight:700;';jb.textContent=yJo==='모든'?'모든 조':yJo+'조';area.appendChild(jb);}
+        if(yJo){var jb=document.createElement('div');jb.style.cssText='padding:4px 12px;border-radius:99px;background:var(--accent);color:#0F172A;font-size:11px;font-weight:700;';jb.textContent=yJo==='모든'?'모든 조':yJo+'조';area.appendChild(jb);}
         PL.forEach(function(lbl,i){
             var wrap=document.createElement('div');wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:2px;';
             var l=document.createElement('div');l.style.cssText='font-size:9px;color:#334155;font-weight:600;letter-spacing:0.04em;';l.textContent=lbl;
             var b=document.createElement('div');b.style.cssText='width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;box-sizing:border-box;flex-shrink:0;';
-            if(i<yNums.length){b.style.background='var(--mint)';b.style.color='#0F172A';b.textContent=yNums[i];}
-            else if(i===yNums.length&&running){b.style.border='1.5px solid var(--mint)';b.style.color='var(--mint)';b.textContent='?';}
-            else{b.style.border='1.5px dashed rgba(79,209,197,0.15)';b.style.color='transparent';b.textContent='-';}
+            if(i<yNums.length){b.style.background='var(--accent)';b.style.color='#0F172A';b.textContent=yNums[i];}
+            else if(i===yNums.length&&running){b.style.border='1.5px solid var(--accent)';b.style.color='var(--accent)';b.textContent='?';}
+            else{b.style.border='1.5px dashed rgba(255,159,67,0.15)';b.style.color='transparent';b.textContent='-';}
             wrap.appendChild(l);wrap.appendChild(b);area.appendChild(wrap);
         });
-        if(yJo&&yNums.length===6){var note=document.createElement('div');note.style.cssText='width:100%;margin-top:10px;font-size:11px;color:var(--mint);font-weight:600;line-height:1.5;';note.textContent=(yJo==='모든'?'모든 조':yJo+'조')+' '+yNums.join('')+' — 이번주에도 행운을 빌어요!';area.appendChild(note);}
+        if(yJo&&yNums.length===6){var note=document.createElement('div');note.style.cssText='width:100%;margin-top:10px;font-size:11px;color:var(--accent);font-weight:600;line-height:1.5;';note.textContent=(yJo==='모든'?'모든 조':yJo+'조')+' '+yNums.join('')+' — 이번주에도 행운을 빌어요!';area.appendChild(note);}
     }
     function renderYeonResultVisible(isLotto){document.getElementById('yeonResult').style.display=isLotto?'none':'flex';document.getElementById('lottoResult').style.display=isLotto?'flex':'none';}
 
@@ -539,14 +540,14 @@
         var x=col*GCW+2,y=row*GCH+2,w=GCW-4,h=GCH-4,cx=x+w/2,cy=y+h/2,r=3;
         var li=getLineIndices(n);
         lctx.save();lctx.beginPath();lctx.roundRect(x,y,w,h,r);lctx.clip();
-        if(li.length===0){lctx.fillStyle=isHot?'rgba(79,209,197,0.22)':'rgba(255,255,255,0.03)';lctx.fillRect(x,y,w,h);}
+        if(li.length===0){lctx.fillStyle=isHot?'rgba(255,159,67,0.22)':'rgba(255,255,255,0.03)';lctx.fillRect(x,y,w,h);}
         else if(li.length===1){lctx.fillStyle=BCOLS[li[0]];lctx.fillRect(x,y,w,h);}
         else{var step=(Math.PI*2)/li.length;for(var i=0;i<li.length;i++){lctx.beginPath();lctx.moveTo(cx,cy);lctx.arc(cx,cy,Math.max(w,h),step*i-Math.PI/2,step*(i+1)-Math.PI/2);lctx.closePath();lctx.fillStyle=BCOLS[li[i]];lctx.fill();}}
         lctx.restore();
         lctx.beginPath();lctx.roundRect(x,y,w,h,r);
-        lctx.strokeStyle=li.length>0?'rgba(0,0,0,0.25)':isHot?'#4FD1C5':'rgba(255,255,255,0.06)';
+        lctx.strokeStyle=li.length>0?'rgba(0,0,0,0.25)':isHot?'#FF9F43':'rgba(255,255,255,0.06)';
         lctx.lineWidth=isHot&&li.length===0?1.5:0.8;lctx.stroke();
-        lctx.fillStyle=li.length===0?(isHot?'#4FD1C5':'rgba(255,255,255,0.22)'):li.length===1?TCOLS[li[0]]:'#fff';
+        lctx.fillStyle=li.length===0?(isHot?'#FF9F43':'rgba(255,255,255,0.22)'):li.length===1?TCOLS[li[0]]:'#fff';
         lctx.font=(li.length>0?'600 ':'')+'10px Pretendard,sans-serif';
         lctx.textAlign='center';lctx.textBaseline='middle';lctx.fillText(String(n),cx,cy);
     }
@@ -560,12 +561,12 @@
             var l=document.createElement('span');l.style.cssText='font-size:9px;color:#0F172A;background:'+BCOLS[i]+';padding:2px 7px;border-radius:6px;font-weight:700;flex-shrink:0;';l.textContent=(i+1)+'줄';row.appendChild(l);
             var balls=document.createElement('div');balls.style.cssText='display:flex;gap:3px;flex-wrap:wrap;';
             if(i<lLines.length){lLines[i].forEach(function(n){var b=document.createElement('div');b.style.cssText='width:28px;height:28px;border-radius:50%;background:'+BCOLS[i]+';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:'+TCOLS[i]+';flex-shrink:0;box-sizing:border-box;';b.textContent=n;balls.appendChild(b);});}
-            else{for(var j=0;j<6;j++){var e=document.createElement('div');e.style.cssText='width:28px;height:28px;border-radius:50%;border:1px dashed rgba(79,209,197,0.15);flex-shrink:0;box-sizing:border-box;';balls.appendChild(e);}}
+            else{for(var j=0;j<6;j++){var e=document.createElement('div');e.style.cssText='width:28px;height:28px;border-radius:50%;border:1px dashed rgba(255,159,67,0.15);flex-shrink:0;box-sizing:border-box;';balls.appendChild(e);}}
             row.appendChild(balls);
-            if(i<lLines.length){var p=document.createElement('span');p.style.cssText='font-size:9px;color:var(--mint);font-weight:500;';p.textContent='1,000원';row.appendChild(p);}
+            if(i<lLines.length){var p=document.createElement('span');p.style.cssText='font-size:9px;color:var(--accent);font-weight:500;';p.textContent='1,000원';row.appendChild(p);}
             area.appendChild(row);
         }
-        if(lLines.length===5){var n=document.createElement('div');n.style.cssText='font-size:11px;color:var(--mint);margin-top:6px;font-weight:600;';n.textContent='총 5,000원 — 이번주에도 행운을 빌어요!';area.appendChild(n);}
+        if(lLines.length===5){var n=document.createElement('div');n.style.cssText='font-size:11px;color:var(--accent);margin-top:6px;font-weight:600;';n.textContent='총 5,000원 — 이번주에도 행운을 빌어요!';area.appendChild(n);}
     }
     function scheduleTick(){if(!running)return;tickTimer=setTimeout(function(){if(!running)return;mode==='yeon'?tickYeon():tickLotto();scheduleTick();},getInterval());}
     function startTick(){running=true;canCatch=false;scheduleTick();}
@@ -574,9 +575,9 @@
     document.getElementById('btnCatch').addEventListener('click',function(){
         if(done||!running||!canCatch)return;stopTick();
         if(mode==='yeon'){
-            if(yStage==='jo'){yJo=yCurJo;confirmJo(yJo);yStage='num';renderYeonResult();setMsg('조 확정! 이제 6자리 번호를 포착하세요','#4FD1C5');setTimeout(startTick,300);}
-            else{yNums.push(yCurNum);confirmYNum(yCurNum);renderYeonResult();if(yNums.length>=6){done=true;setMsg('완성! 오늘의 행운 번호가 확정됐어요','#4FD1C5');}else{setMsg((6-yNums.length)+'자리 남았어요!','#4FD1C5');setTimeout(startTick,200);}}
-        }else{lLines.push(lCurHot.slice());drawLottoGrid([]);renderLottoResult();if(lLines.length>=5){done=true;setMsg('5줄 완성! 오늘의 행운 번호가 확정됐어요','#4FD1C5');}else{setMsg((5-lLines.length)+'줄 남았어요!','#4FD1C5');setTimeout(startTick,300);}}
+            if(yStage==='jo'){yJo=yCurJo;confirmJo(yJo);yStage='num';renderYeonResult();setMsg('조 확정! 이제 6자리 번호를 포착하세요','#FF9F43');setTimeout(startTick,300);}
+            else{yNums.push(yCurNum);confirmYNum(yCurNum);renderYeonResult();if(yNums.length>=6){done=true;setMsg('완성! 오늘의 행운 번호가 확정됐어요','#FF9F43');}else{setMsg((6-yNums.length)+'자리 남았어요!','#FF9F43');setTimeout(startTick,200);}}
+        }else{lLines.push(lCurHot.slice());drawLottoGrid([]);renderLottoResult();if(lLines.length>=5){done=true;setMsg('5줄 완성! 오늘의 행운 번호가 확정됐어요','#FF9F43');}else{setMsg((5-lLines.length)+'줄 남았어요!','#FF9F43');setTimeout(startTick,300);}}
     });
     document.getElementById('btnR').addEventListener('click',resetAll);
     document.getElementById('tabY').addEventListener('click',function(){if(mode==='yeon')return;mode='yeon';this.classList.add('on');document.getElementById('tabL').classList.remove('on');document.getElementById('yeonUI').style.display='block';document.getElementById('lottoUI').style.display='none';renderYeonResultVisible(false);resetAll();});

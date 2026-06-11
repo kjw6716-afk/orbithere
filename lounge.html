@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbit | 광장</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        :root {
+            --bg-color: #0F172A;
+            --accent: #FF9F43;
+            --text-main: #E2E8F0;
+            --card-bg: rgba(30, 41, 59, 0.7);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Pretendard', sans-serif;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        /* 추상 배경 — 동심원 궤도 라인 */
+        .bg-rings {
+            position: fixed; top: 50%; left: 50%;
+            width: 1400px; height: 1400px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background:
+                radial-gradient(circle, transparent 29.9%, rgba(255,159,67,0.04) 30%, transparent 30.4%),
+                radial-gradient(circle, transparent 49.9%, rgba(255,159,67,0.035) 50%, transparent 50.4%),
+                radial-gradient(circle, transparent 69.9%, rgba(255,159,67,0.03) 70%, transparent 70.4%),
+                radial-gradient(circle, transparent 89.9%, rgba(255,159,67,0.025) 90%, transparent 90.4%);
+            pointer-events: none; z-index: -1;
+        }
+        .bg-glow {
+            position: fixed; top: -10%; right: -10%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255,159,67,0.08) 0%, rgba(15,23,42,0) 70%);
+            pointer-events: none; z-index: -1;
+        }
+
+        nav {
+            position: fixed; top: 0; width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100; backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,159,67,0.1);
+        }
+        .logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); cursor: pointer; }
+        .nav-back {
+            font-size: 12px; color: #64748B; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
+            padding: 6px 12px; transition: 0.2s; background: transparent;
+            font-family: 'Pretendard';
+        }
+        .nav-back:hover { color: var(--accent); border-color: rgba(255,159,67,0.3); }
+
+        .container { max-width: 680px; margin: 130px auto 80px; padding: 0 20px; }
+
+        header { margin-bottom: 28px; }
+        header h1 { font-size: 2.2rem; font-weight: 200; margin: 0; line-height: 1.2; }
+        header h1 span { color: var(--accent); font-weight: 700; }
+        header p { color: #94A3B8; margin-top: 10px; font-size: 0.95rem; }
+        .mock-badge {
+            display: inline-block; margin-top: 12px;
+            font-size: 10px; padding: 3px 10px; border-radius: 99px;
+            background: rgba(159,122,234,0.1); color: #9F7AEA;
+            border: 1px solid rgba(159,122,234,0.25); font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+
+        /* 궤도(보드) 탭 */
+        .orbit-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+        .orbit-tab {
+            font-size: 12px; padding: 7px 16px; border-radius: 20px;
+            border: 1.5px solid rgba(255,159,67,0.2); background: transparent;
+            cursor: pointer; color: #94A3B8; transition: all 0.2s;
+            font-family: 'Pretendard'; font-weight: 500;
+        }
+        .orbit-tab:hover { border-color: rgba(255,159,67,0.45); color: var(--accent); }
+        .orbit-tab.on { background: var(--accent); border-color: var(--accent); color: #0F172A; font-weight: 700; }
+
+        /* 글쓰기 카드 */
+        .write-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,159,67,0.15);
+            border-radius: 20px; padding: 20px;
+            margin-bottom: 28px;
+        }
+        .write-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .write-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,159,67,0.2), rgba(255,183,77,0.15));
+            border: 1.5px solid rgba(255,159,67,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0;
+        }
+        .write-nick { font-size: 13px; font-weight: 600; color: #CBD5E1; }
+        .write-orbit-select {
+            margin-left: auto; font-size: 11px; color: var(--accent);
+            background: rgba(255,159,67,0.08); border: 1px solid rgba(255,159,67,0.2);
+            border-radius: 8px; padding: 5px 8px; font-family: 'Pretendard';
+            outline: none; cursor: pointer;
+        }
+        .write-card textarea {
+            width: 100%; min-height: 72px; resize: vertical;
+            background: rgba(15,23,42,0.5);
+            border: 1px solid rgba(255,159,67,0.2);
+            border-radius: 12px; padding: 12px 14px;
+            color: var(--text-main); font-family: 'Pretendard'; font-size: 13px;
+            line-height: 1.6; outline: none; transition: border-color 0.2s;
+        }
+        .write-card textarea:focus { border-color: var(--accent); }
+        .write-card textarea::placeholder { color: #475569; }
+        .write-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        .write-count { font-size: 11px; color: #334155; }
+        .btn-trace {
+            background: var(--accent); color: #0F172A; border: none;
+            border-radius: 10px; padding: 9px 20px;
+            font-weight: 700; font-size: 12px; cursor: pointer;
+            transition: 0.2s; font-family: 'Pretendard';
+        }
+        .btn-trace:hover { opacity: 0.88; transform: scale(0.98); }
+        .btn-trace:disabled { opacity: 0.3; cursor: default; transform: none; }
+
+        /* 미가입 상태 안내 */
+        .need-join { text-align: center; padding: 8px 0; }
+        .need-join p { font-size: 13px; color: #64748B; margin: 0 0 12px; }
+        .btn-go-join {
+            background: transparent; color: var(--accent);
+            border: 1.5px solid rgba(255,159,67,0.3); border-radius: 10px;
+            padding: 9px 20px; font-weight: 600; font-size: 12px;
+            cursor: pointer; transition: 0.2s; font-family: 'Pretendard';
+        }
+        .btn-go-join:hover { background: rgba(255,159,67,0.08); border-color: var(--accent); }
+
+        /* 궤적(글) 카드 */
+        .post {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,159,67,0.12);
+            border-radius: 20px; padding: 20px;
+            margin-bottom: 14px;
+            transition: border-color 0.25s;
+            animation: post-in 0.4s ease both;
+        }
+        .post:hover { border-color: rgba(255,159,67,0.35); }
+        @keyframes post-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .post-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .post-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0;
+        }
+        .post-meta { flex: 1; min-width: 0; }
+        .post-nick { font-size: 13px; font-weight: 600; color: #CBD5E1; }
+        .post-sub { font-size: 10px; color: #475569; margin-top: 2px; }
+        .post-orbit-chip {
+            font-size: 10px; padding: 3px 9px; border-radius: 8px;
+            background: rgba(255,159,67,0.08); color: var(--accent);
+            font-weight: 600; flex-shrink: 0;
+        }
+        .post-orbit-chip.mine { background: rgba(159,122,234,0.1); color: #9F7AEA; }
+        .post-body { font-size: 13.5px; line-height: 1.7; color: #CBD5E1; white-space: pre-wrap; word-break: break-word; }
+        .post-foot { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+
+        /* 교차 버튼 — X자로 겹치는 두 궤적 */
+        .btn-cross {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.03); color: #64748B;
+            border: 1px solid rgba(255,255,255,0.07); border-radius: 99px;
+            padding: 6px 14px; font-size: 11px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; font-family: 'Pretendard';
+        }
+        .btn-cross svg { width: 11px; height: 11px; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+        .btn-cross:hover { border-color: rgba(255,159,67,0.35); color: var(--accent); }
+        .btn-cross.crossed {
+            background: rgba(255,159,67,0.12); color: var(--accent);
+            border-color: rgba(255,159,67,0.4);
+        }
+        .reply-hint { font-size: 11px; color: #334155; margin-left: auto; }
+
+        .empty-state {
+            text-align: center; padding: 50px 0; color: #475569; font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.7rem; }
+            .container { margin-top: 110px; }
+        }
+
+        ::selection { background-color: #4FD1C5; color: #0F172A; }
+        .click-ripple { position:fixed; border-radius:50%; border:1.5px solid #FF9F43; pointer-events:none; z-index:9998; box-shadow:0 0 8px rgba(255,159,67,0.4),inset 0 0 8px rgba(255,159,67,0.1); animation:ripple-expand 0.8s cubic-bezier(0.2,0.8,0.4,1) forwards; }
+        @keyframes ripple-expand { 0%{width:10px;height:10px;opacity:0.9;transform:translate(-50%,-50%) scale(0);}100%{width:130px;height:130px;opacity:0;transform:translate(-50%,-50%) scale(1);} }
+        .click-star { position:fixed; pointer-events:none; z-index:9999; color:#FF9F43; filter:drop-shadow(0 0 4px #FF9F43); animation:star-burst 0.9s cubic-bezier(0,.9,.57,1) forwards; user-select:none; line-height:1; }
+        @keyframes star-burst { 0%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0deg);}100%{opacity:0;transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(0) rotate(var(--rot));} }
+    </style>
+</head>
+<body>
+    <div class="bg-rings"></div>
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="logo" onclick="location.href='index.html'">ORBIT.</div>
+        <button class="nav-back" onclick="location.href='main.html'">← 커뮤니티 홈</button>
+    </nav>
+
+    <main class="container">
+        <header>
+            <h1>광장, <span>궤적</span>이 모이는 곳</h1>
+            <p>비슷한 궤도를 도는 사람들의 이야기가 흘러갑니다</p>
+            <span class="mock-badge">⚙ 목업 버전 — 글은 내 브라우저에만 저장돼요</span>
+        </header>
+
+        <div class="orbit-tabs" id="orbitTabs">
+            <button class="orbit-tab on" data-orbit="all">전체</button>
+            <button class="orbit-tab" data-orbit="free">자유 궤도</button>
+            <button class="orbit-tab" data-orbit="money">재테크 궤도</button>
+            <button class="orbit-tab" data-orbit="dawn">새벽운동 궤도</button>
+        </div>
+
+        <div class="write-card" id="writeCard">
+            <!-- 가입 상태에 따라 JS가 채움 -->
+        </div>
+
+        <section id="postList"></section>
+    </main>
+
+    <script>
+    // ===== 클릭 이펙트 =====
+    document.addEventListener('click', (e) => {
+        const ripple = document.createElement('div');
+        ripple.classList.add('click-ripple');
+        ripple.style.left = `${e.clientX}px`;
+        ripple.style.top = `${e.clientY}px`;
+        document.body.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 800);
+        const starCount = Math.floor(Math.random()*4)+5;
+        for(let i=0;i<starCount;i++){
+            const star = document.createElement('div');
+            star.classList.add('click-star'); star.innerHTML='★';
+            star.style.left=`${e.clientX}px`; star.style.top=`${e.clientY}px`;
+            const angle=Math.random()*2*Math.PI, dist=Math.random()*60+30;
+            star.style.setProperty('--tx',`${Math.cos(angle)*dist}px`);
+            star.style.setProperty('--ty',`${Math.sin(angle)*dist}px`);
+            star.style.setProperty('--rot',`${(Math.random()-0.5)*360}deg`);
+            star.style.fontSize=`${Math.random()*8+8}px`;
+            document.body.appendChild(star);
+            setTimeout(()=>star.remove(),900);
+        }
+    });
+
+    // ===== 데이터 =====
+    var ORBITS = { free:'자유 궤도', money:'재테크 궤도', dawn:'새벽운동 궤도' };
+    var EMOJIS = ['🌟','⭐','🪐','🌙','☄️','🔭','🛸','💫','🌌','✨'];
+    function avatarOf(nick){ return EMOJIS[nick.charCodeAt(0) % EMOJIS.length]; }
+
+    // 목업 데모 글 — 백엔드 연동 시 이 배열이 DB 조회로 대체됨
+    var DEMO_POSTS = [
+        { id:'d1', nick:'달리는거북', orbit:'dawn',  time:'42분 전',  cross:8,
+          text:'새벽 5시 30분 기상 14일차. 솔직히 오늘은 알람 끄고 다시 잘 뻔했는데, 여기 인증하려고 일어났습니다 ㅋㅋ 같은 궤도 도는 분들 덕분에 버티는 중.' },
+        { id:'d2', nick:'월급은스쳐간다', orbit:'money', time:'1시간 전', cross:23,
+          text:'직장 다니면서 몰래 굴린 3년 — 퇴사 결심하게 만든 수익률 공개합니다.\n\n결론부터: 연평균 11%. 대단한 비법은 없고 월급날마다 기계처럼 분할매수한 게 전부예요. 긴 글은 댓글로 질문 주시면 풀게요.' },
+        { id:'d3', nick:'궤도수리공', orbit:'free',  time:'3시간 전', cross:5,
+          text:'다들 퇴근하고 뭐 하면서 충전하세요? 저는 요즘 산책하면서 팟캐스트 듣는 게 유일한 낙인데 추천 좀 받습니다.' },
+        { id:'d4', nick:'이자에진심', orbit:'money', time:'5시간 전', cross:12,
+          text:'파킹통장 금리 비교해서 표로 정리해봤는데 수요 있으면 공유할게요. 0.1% 차이도 모이면 치킨값입니다.' },
+        { id:'d5', nick:'새벽형인간되기', orbit:'dawn', time:'어제', cross:17,
+          text:'새벽운동 궤도 합류 한 달 후기: 체중은 그대로인데 오전 집중력이 진짜 달라졌어요. 숫자보다 이게 더 큰 수확.' }
+    ];
+
+    var nickname = localStorage.getItem('orbit_nickname');
+    var currentOrbit = 'all';
+
+    function loadMyPosts(){
+        try { return JSON.parse(localStorage.getItem('orbit_lounge_posts') || '[]'); }
+        catch(e){ return []; }
+    }
+    function saveMyPosts(posts){ localStorage.setItem('orbit_lounge_posts', JSON.stringify(posts)); }
+    function loadCrossed(){
+        try { return JSON.parse(localStorage.getItem('orbit_lounge_crossed') || '{}'); }
+        catch(e){ return {}; }
+    }
+    function saveCrossed(map){ localStorage.setItem('orbit_lounge_crossed', JSON.stringify(map)); }
+
+    // ===== 글쓰기 카드 =====
+    function renderWriteCard(){
+        var card = document.getElementById('writeCard');
+        if(!nickname){
+            card.innerHTML =
+                '<div class="need-join">' +
+                '<p>궤도에 진입하면 궤적을 남길 수 있어요</p>' +
+                '<button class="btn-go-join" onclick="location.href=\'main.html\'">궤도 진입하러 가기</button>' +
+                '</div>';
+            return;
+        }
+        card.innerHTML =
+            '<div class="write-head">' +
+            '<div class="write-avatar">' + avatarOf(nickname) + '</div>' +
+            '<div class="write-nick">' + escapeHtml(nickname) + '</div>' +
+            '<select class="write-orbit-select" id="orbitSelect">' +
+            '<option value="free">자유 궤도</option>' +
+            '<option value="money">재테크 궤도</option>' +
+            '<option value="dawn">새벽운동 궤도</option>' +
+            '</select>' +
+            '</div>' +
+            '<textarea id="postInput" maxlength="500" placeholder="오늘 어떤 궤적을 남기실 건가요?"></textarea>' +
+            '<div class="write-foot">' +
+            '<span class="write-count" id="charCount">0 / 500</span>' +
+            '<button class="btn-trace" id="btnTrace" disabled>궤적 남기기</button>' +
+            '</div>';
+
+        var input = document.getElementById('postInput');
+        var btn = document.getElementById('btnTrace');
+        input.addEventListener('input', function(){
+            document.getElementById('charCount').textContent = input.value.length + ' / 500';
+            btn.disabled = input.value.trim().length === 0;
+        });
+        btn.addEventListener('click', function(){
+            var text = input.value.trim();
+            if(!text) return;
+            var posts = loadMyPosts();
+            posts.unshift({
+                id: 'm' + Date.now(),
+                nick: nickname,
+                orbit: document.getElementById('orbitSelect').value,
+                time: '방금 전',
+                cross: 0,
+                mine: true,
+                text: text
+            });
+            saveMyPosts(posts);
+            input.value = '';
+            document.getElementById('charCount').textContent = '0 / 500';
+            btn.disabled = true;
+            renderPosts();
+        });
+    }
+
+    // ===== 글 목록 =====
+    function escapeHtml(s){
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function renderPosts(){
+        var list = document.getElementById('postList');
+        list.innerHTML = '';
+        var crossed = loadCrossed();
+        var all = loadMyPosts().concat(DEMO_POSTS);
+        var visible = all.filter(function(p){ return currentOrbit==='all' || p.orbit===currentOrbit; });
+
+        if(visible.length === 0){
+            list.innerHTML = '<div class="empty-state">아직 이 궤도에는 궤적이 없어요.<br>첫 번째 궤적을 남겨보세요!</div>';
+            return;
+        }
+
+        visible.forEach(function(p, i){
+            var isCrossed = !!crossed[p.id];
+            var post = document.createElement('article');
+            post.className = 'post';
+            post.style.animationDelay = (i * 0.05) + 's';
+            post.innerHTML =
+                '<div class="post-head">' +
+                '<div class="post-avatar">' + avatarOf(p.nick) + '</div>' +
+                '<div class="post-meta">' +
+                '<div class="post-nick">' + escapeHtml(p.nick) + (p.mine ? ' <span style="font-size:9px;color:#9F7AEA;">나</span>' : '') + '</div>' +
+                '<div class="post-sub">' + p.time + '</div>' +
+                '</div>' +
+                '<span class="post-orbit-chip' + (p.mine?' mine':'') + '">' + ORBITS[p.orbit] + '</span>' +
+                '</div>' +
+                '<div class="post-body">' + escapeHtml(p.text) + '</div>' +
+                '<div class="post-foot">' +
+                '<button class="btn-cross' + (isCrossed?' crossed':'') + '" data-id="' + p.id + '">' +
+                '<svg viewBox="0 0 24 24" fill="none"><path d="M5 19C9 13 15 11 19 5"/><path d="M5 5C9 11 15 13 19 19"/></svg>' +
+                '교차 <span class="cross-num">' + (p.cross + (isCrossed?1:0)) + '</span>' +
+                '</button>' +
+                '<span class="reply-hint">댓글은 정식 버전에서 열려요</span>' +
+                '</div>';
+            list.appendChild(post);
+        });
+
+        // 교차 토글
+        list.querySelectorAll('.btn-cross').forEach(function(btn){
+            btn.addEventListener('click', function(){
+                var id = btn.getAttribute('data-id');
+                var map = loadCrossed();
+                var num = btn.querySelector('.cross-num');
+                if(map[id]){
+                    delete map[id];
+                    btn.classList.remove('crossed');
+                    num.textContent = parseInt(num.textContent,10) - 1;
+                } else {
+                    map[id] = true;
+                    btn.classList.add('crossed');
+                    num.textContent = parseInt(num.textContent,10) + 1;
+                }
+                saveCrossed(map);
+            });
+        });
+    }
+
+    // ===== 궤도 탭 =====
+    document.getElementById('orbitTabs').addEventListener('click', function(e){
+        var tab = e.target.closest('.orbit-tab');
+        if(!tab) return;
+        document.querySelectorAll('.orbit-tab').forEach(function(t){ t.classList.remove('on'); });
+        tab.classList.add('on');
+        currentOrbit = tab.getAttribute('data-orbit');
+        renderPosts();
+    });
+
+    renderWriteCard();
+    renderPosts();
+    </script>
+</body>
+</html>

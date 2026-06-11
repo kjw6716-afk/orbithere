@@ -8,7 +8,7 @@
     <style>
         :root {
             --bg: #0F172A;
-            --mint: #4FD1C5;
+            --accent: #FF9F43;
             --card: rgba(30,41,59,0.7);
         }
         * { box-sizing: border-box; }
@@ -30,13 +30,13 @@
         .bg-glow {
             position: fixed; top: -10%; left: -10%;
             width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(79,209,197,0.07) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255,159,67,0.07) 0%, transparent 70%);
             pointer-events: none; z-index: 0;
         }
         .bg-glow2 {
             position: fixed; bottom: -10%; right: -10%;
             width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(99,179,237,0.05) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255,183,77,0.05) 0%, transparent 70%);
             pointer-events: none; z-index: 0;
         }
 
@@ -57,7 +57,7 @@
         /* 진입 타이틀 */
         .enter-title {
             font-size: 0.8rem; letter-spacing: 0.2em;
-            color: var(--mint); opacity: 0.6; font-weight: 300;
+            color: var(--accent); opacity: 0.6; font-weight: 300;
             animation: fadeUp 0.6s ease forwards;
         }
 
@@ -65,7 +65,7 @@
         .profile-card {
             width: 100%;
             background: var(--card);
-            border: 1px solid rgba(79,209,197,0.2);
+            border: 1px solid rgba(255,159,67,0.2);
             border-radius: 28px; padding: 32px;
             animation: fadeUp 0.7s ease 0.1s both;
             position: relative; overflow: hidden;
@@ -74,7 +74,7 @@
             content: '';
             position: absolute; top: -40px; right: -40px;
             width: 180px; height: 180px;
-            background: radial-gradient(circle, rgba(79,209,197,0.07) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255,159,67,0.07) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -85,8 +85,8 @@
         }
         .avatar {
             width: 72px; height: 72px; border-radius: 50%;
-            background: linear-gradient(135deg, rgba(79,209,197,0.2), rgba(99,179,237,0.15));
-            border: 2px solid rgba(79,209,197,0.3);
+            background: linear-gradient(135deg, rgba(255,159,67,0.2), rgba(255,183,77,0.15));
+            border: 2px solid rgba(255,159,67,0.3);
             display: flex; align-items: center; justify-content: center;
             font-size: 28px; flex-shrink: 0;
         }
@@ -108,9 +108,9 @@
         .level-badge {
             display: inline-flex; align-items: center; gap: 6px;
             padding: 4px 12px; border-radius: 99px;
-            background: rgba(79,209,197,0.1);
-            border: 1px solid rgba(79,209,197,0.2);
-            font-size: 12px; font-weight: 700; color: var(--mint);
+            background: rgba(255,159,67,0.1);
+            border: 1px solid rgba(255,159,67,0.2);
+            font-size: 12px; font-weight: 700; color: var(--accent);
         }
         .level-badge .star { font-size: 10px; }
         .exp-text {
@@ -123,7 +123,7 @@
         }
         .exp-fill {
             height: 100%; width: 0%;
-            background: linear-gradient(90deg, var(--mint), #63B3ED);
+            background: linear-gradient(90deg, var(--accent), #FC8181);
             border-radius: 2px;
             transition: width 1.2s cubic-bezier(0.4,0,0.2,1) 0.5s;
         }
@@ -141,7 +141,7 @@
         }
         .stat-val {
             font-size: 1.1rem; font-weight: 700;
-            color: var(--mint); margin-bottom: 4px;
+            color: var(--accent); margin-bottom: 4px;
         }
         .stat-label {
             font-size: 10px; color: #334155;
@@ -154,13 +154,13 @@
             font-size: 11px; padding: 3px 10px;
             border-radius: 8px; font-weight: 600;
         }
-        .tag.new { background: rgba(79,209,197,0.1); color: var(--mint); border: 1px solid rgba(79,209,197,0.2); }
+        .tag.new { background: rgba(255,159,67,0.1); color: var(--accent); border: 1px solid rgba(255,159,67,0.2); }
         .tag.beta { background: rgba(159,122,234,0.1); color: #9F7AEA; border: 1px solid rgba(159,122,234,0.2); }
 
         /* 버튼들 */
         .btn-primary {
             width: 100%; padding: 14px;
-            background: var(--mint); color: #0F172A;
+            background: var(--accent); color: #0F172A;
             border: none; border-radius: 14px;
             font-size: 14px; font-weight: 700;
             cursor: pointer; transition: 0.2s;
@@ -177,7 +177,7 @@
             cursor: pointer; transition: 0.2s;
             font-family: 'Pretendard';
         }
-        .btn-secondary:hover { border-color: rgba(79,209,197,0.3); color: var(--mint); }
+        .btn-secondary:hover { border-color: rgba(255,159,67,0.3); color: var(--accent); }
 
         /* 베타 안내 */
         .beta-notice {
@@ -189,8 +189,8 @@
         /* 클릭 이펙트 */
         .click-ripple {
             position: fixed; border-radius: 50%;
-            border: 1.5px solid #4FD1C5; pointer-events: none; z-index: 9998;
-            box-shadow: 0 0 8px rgba(79,209,197,0.4);
+            border: 1.5px solid #FF9F43; pointer-events: none; z-index: 9998;
+            box-shadow: 0 0 8px rgba(255,159,67,0.4);
             animation: ripple-expand 0.8s cubic-bezier(0.2,0.8,0.4,1) forwards;
         }
         @keyframes ripple-expand {
@@ -199,7 +199,7 @@
         }
         .click-star {
             position: fixed; pointer-events: none; z-index: 9999;
-            color: #4FD1C5; filter: drop-shadow(0 0 4px #4FD1C5);
+            color: #FF9F43; filter: drop-shadow(0 0 4px #FF9F43);
             animation: star-burst 0.9s cubic-bezier(0,.9,.57,1) forwards;
             user-select: none; line-height: 1;
         }
@@ -207,6 +207,8 @@
             0%   { opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0deg); }
             100% { opacity:0; transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(0) rotate(var(--rot)); }
         }
+
+        ::selection { background-color: #4FD1C5; color: #0F172A; }
 
         @media (max-width: 480px) {
             .profile-card { padding: 24px 20px; }
