@@ -451,6 +451,7 @@
             localStorage.setItem('orbit_nickname', val);
             var joinDate = new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
             localStorage.setItem('orbit_joindate', joinDate);
+            localStorage.setItem('orbit_jointime', Date.now());
             window.location.href = 'profile.html';
         });
 
