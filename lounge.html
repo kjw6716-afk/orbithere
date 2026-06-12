@@ -185,20 +185,41 @@
         .post-body { font-size: 13.5px; line-height: 1.7; color: #CBD5E1; white-space: pre-wrap; word-break: break-word; }
         .post-foot { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
 
-        /* 교차 버튼 — X자로 겹치는 두 궤적 */
-        .btn-cross {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(255,255,255,0.03); color: #64748B;
+        /* 이모지 교차 리액션 */
+        .reaction-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; position: relative; flex: 1; }
+        .rx-chip {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(255,255,255,0.03); color: #94A3B8;
             border: 1px solid rgba(255,255,255,0.07); border-radius: 99px;
-            padding: 6px 14px; font-size: 11px; font-weight: 600;
-            cursor: pointer; transition: all 0.2s; font-family: 'Pretendard';
+            padding: 5px 11px; font-size: 13px; cursor: pointer;
+            transition: all 0.15s; font-family: 'Pretendard';
         }
-        .btn-cross svg { width: 11px; height: 11px; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
-        .btn-cross:hover { border-color: rgba(255,159,67,0.35); color: var(--accent); }
-        .btn-cross.crossed {
-            background: rgba(255,159,67,0.12); color: var(--accent);
-            border-color: rgba(255,159,67,0.4);
+        .rx-chip .n { font-size: 11px; font-weight: 600; }
+        .rx-chip:hover { border-color: rgba(255,159,67,0.4); }
+        .rx-chip.mine { background: rgba(255,159,67,0.13); border-color: rgba(255,159,67,0.45); color: var(--accent); }
+        .rx-add {
+            width: 28px; height: 28px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.03); color: #64748B;
+            border: 1px dashed rgba(255,255,255,0.15);
+            font-size: 15px; cursor: pointer; transition: all 0.15s; font-family: 'Pretendard';
         }
+        .rx-add:hover { border-color: rgba(255,159,67,0.5); color: var(--accent); }
+        .rx-palette {
+            position: absolute; bottom: calc(100% + 8px); left: 0;
+            background: #1B2538; border: 1px solid rgba(255,159,67,0.25);
+            border-radius: 14px; padding: 7px; display: flex; gap: 3px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.45); z-index: 20;
+            animation: pal-in 0.16s ease;
+        }
+        @keyframes pal-in { from { opacity: 0; transform: translateY(6px) scale(0.92); } }
+        .rx-pal-btn {
+            width: 36px; height: 36px; border-radius: 10px; border: none;
+            background: transparent; font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.12s;
+        }
+        .rx-pal-btn:hover { background: rgba(255,159,67,0.14); }
         .reply-hint { font-size: 11px; color: #334155; margin-left: auto; }
 
         .empty-state {
@@ -211,11 +232,8 @@
         }
 
         ::selection { background-color: #4FD1C5; color: #0F172A; }
-        .click-ripple { position:fixed; border-radius:50%; border:1.5px solid #FF9F43; pointer-events:none; z-index:9998; box-shadow:0 0 8px rgba(255,159,67,0.4),inset 0 0 8px rgba(255,159,67,0.1); animation:ripple-expand 0.8s cubic-bezier(0.2,0.8,0.4,1) forwards; }
-        @keyframes ripple-expand { 0%{width:10px;height:10px;opacity:0.9;transform:translate(-50%,-50%) scale(0);}100%{width:130px;height:130px;opacity:0;transform:translate(-50%,-50%) scale(1);} }
-        .click-star { position:fixed; pointer-events:none; z-index:9999; color:#FF9F43; filter:drop-shadow(0 0 4px #FF9F43); animation:star-burst 0.9s cubic-bezier(0,.9,.57,1) forwards; user-select:none; line-height:1; }
-        @keyframes star-burst { 0%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0deg);}100%{opacity:0;transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(0) rotate(var(--rot));} }
     </style>
+    <script src="effects.js" defer></script>
 </head>
 <body>
     <div class="bg-rings"></div>
@@ -248,28 +266,6 @@
     </main>
 
     <script>
-    // ===== 클릭 이펙트 =====
-    document.addEventListener('click', (e) => {
-        const ripple = document.createElement('div');
-        ripple.classList.add('click-ripple');
-        ripple.style.left = `${e.clientX}px`;
-        ripple.style.top = `${e.clientY}px`;
-        document.body.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 800);
-        const starCount = Math.floor(Math.random()*4)+5;
-        for(let i=0;i<starCount;i++){
-            const star = document.createElement('div');
-            star.classList.add('click-star'); star.innerHTML='★';
-            star.style.left=`${e.clientX}px`; star.style.top=`${e.clientY}px`;
-            const angle=Math.random()*2*Math.PI, dist=Math.random()*60+30;
-            star.style.setProperty('--tx',`${Math.cos(angle)*dist}px`);
-            star.style.setProperty('--ty',`${Math.sin(angle)*dist}px`);
-            star.style.setProperty('--rot',`${(Math.random()-0.5)*360}deg`);
-            star.style.fontSize=`${Math.random()*8+8}px`;
-            document.body.appendChild(star);
-            setTimeout(()=>star.remove(),900);
-        }
-    });
 
     // ===== 데이터 =====
     var ORBITS = { free:'자유 궤도', money:'재테크 궤도', dawn:'새벽운동 궤도' };
@@ -278,15 +274,15 @@
 
     // 목업 데모 글 — 백엔드 연동 시 이 배열이 DB 조회로 대체됨
     var DEMO_POSTS = [
-        { id:'d1', nick:'달리는거북', orbit:'dawn',  time:'42분 전',  cross:8,
+        { id:'d1', nick:'달리는거북', orbit:'dawn',  time:'42분 전',  rx:{'⭐':8,'🔥':4},
           text:'새벽 5시 30분 기상 14일차. 솔직히 오늘은 알람 끄고 다시 잘 뻔했는데, 여기 인증하려고 일어났습니다 ㅋㅋ 같은 궤도 도는 분들 덕분에 버티는 중.' },
-        { id:'d2', nick:'월급은스쳐간다', orbit:'money', time:'1시간 전', cross:23,
+        { id:'d2', nick:'월급은스쳐간다', orbit:'money', time:'1시간 전', rx:{'⭐':23,'🔥':7,'😂':2},
           text:'직장 다니면서 몰래 굴린 3년 — 퇴사 결심하게 만든 수익률 공개합니다.\n\n결론부터: 연평균 11%. 대단한 비법은 없고 월급날마다 기계처럼 분할매수한 게 전부예요. 긴 글은 댓글로 질문 주시면 풀게요.' },
-        { id:'d3', nick:'궤도수리공', orbit:'free',  time:'3시간 전', cross:5,
+        { id:'d3', nick:'궤도수리공', orbit:'free',  time:'3시간 전', rx:{'⭐':5,'🥹':1},
           text:'다들 퇴근하고 뭐 하면서 충전하세요? 저는 요즘 산책하면서 팟캐스트 듣는 게 유일한 낙인데 추천 좀 받습니다.' },
-        { id:'d4', nick:'이자에진심', orbit:'money', time:'5시간 전', cross:12,
+        { id:'d4', nick:'이자에진심', orbit:'money', time:'5시간 전', rx:{'⭐':12,'👏':3},
           text:'파킹통장 금리 비교해서 표로 정리해봤는데 수요 있으면 공유할게요. 0.1% 차이도 모이면 치킨값입니다.' },
-        { id:'d5', nick:'새벽형인간되기', orbit:'dawn', time:'어제', cross:17,
+        { id:'d5', nick:'새벽형인간되기', orbit:'dawn', time:'어제', rx:{'⭐':17,'👏':6,'🫶':2},
           text:'새벽운동 궤도 합류 한 달 후기: 체중은 그대로인데 오전 집중력이 진짜 달라졌어요. 숫자보다 이게 더 큰 수확.' }
     ];
 
@@ -298,11 +294,12 @@
         catch(e){ return []; }
     }
     function saveMyPosts(posts){ localStorage.setItem('orbit_lounge_posts', JSON.stringify(posts)); }
-    function loadCrossed(){
-        try { return JSON.parse(localStorage.getItem('orbit_lounge_crossed') || '{}'); }
+    var RX_EMOJIS = ['⭐','🔥','😂','🥹','👏','🫶'];
+    function loadRx(){
+        try { return JSON.parse(localStorage.getItem('orbit_lounge_rx') || '{}'); }
         catch(e){ return {}; }
     }
-    function saveCrossed(map){ localStorage.setItem('orbit_lounge_crossed', JSON.stringify(map)); }
+    function saveRx(map){ localStorage.setItem('orbit_lounge_rx', JSON.stringify(map)); }
 
     // ===== 글쓰기 카드 =====
     function renderWriteCard(){
@@ -346,7 +343,7 @@
                 nick: nickname,
                 orbit: document.getElementById('orbitSelect').value,
                 time: '방금 전',
-                cross: 0,
+                rx: {},
                 mine: true,
                 text: text
             });
@@ -365,7 +362,6 @@
     function renderPosts(){
         var list = document.getElementById('postList');
         list.innerHTML = '';
-        var crossed = loadCrossed();
         var all = loadMyPosts().concat(DEMO_POSTS);
         var visible = all.filter(function(p){ return currentOrbit==='all' || p.orbit===currentOrbit; });
 
@@ -375,7 +371,6 @@
         }
 
         visible.forEach(function(p, i){
-            var isCrossed = !!crossed[p.id];
             var post = document.createElement('article');
             post.className = 'post';
             post.style.animationDelay = (i * 0.05) + 's';
@@ -390,34 +385,77 @@
                 '</div>' +
                 '<div class="post-body">' + escapeHtml(p.text) + '</div>' +
                 '<div class="post-foot">' +
-                '<button class="btn-cross' + (isCrossed?' crossed':'') + '" data-id="' + p.id + '">' +
-                '<svg viewBox="0 0 24 24" fill="none"><path d="M5 19C9 13 15 11 19 5"/><path d="M5 5C9 11 15 13 19 19"/></svg>' +
-                '교차 <span class="cross-num">' + (p.cross + (isCrossed?1:0)) + '</span>' +
-                '</button>' +
+                '<div class="reaction-row"></div>' +
                 '<span class="reply-hint">댓글은 정식 버전에서 열려요</span>' +
                 '</div>';
             list.appendChild(post);
-        });
-
-        // 교차 토글
-        list.querySelectorAll('.btn-cross').forEach(function(btn){
-            btn.addEventListener('click', function(){
-                var id = btn.getAttribute('data-id');
-                var map = loadCrossed();
-                var num = btn.querySelector('.cross-num');
-                if(map[id]){
-                    delete map[id];
-                    btn.classList.remove('crossed');
-                    num.textContent = parseInt(num.textContent,10) - 1;
-                } else {
-                    map[id] = true;
-                    btn.classList.add('crossed');
-                    num.textContent = parseInt(num.textContent,10) + 1;
-                }
-                saveCrossed(map);
-            });
+            renderRxRow(post.querySelector('.reaction-row'), p);
         });
     }
+
+    // ===== 이모지 교차 리액션 =====
+    function renderRxRow(row, p){
+        var mine = loadRx()[p.id] || {};
+        var base = p.rx || {};
+        var keys = Object.keys(base);
+        Object.keys(mine).forEach(function(e){ if(keys.indexOf(e) < 0) keys.push(e); });
+
+        row.innerHTML = '';
+        keys.forEach(function(emo){
+            var count = (base[emo] || 0) + (mine[emo] ? 1 : 0);
+            if(count <= 0) return;
+            var chip = document.createElement('button');
+            chip.className = 'rx-chip' + (mine[emo] ? ' mine' : '');
+            chip.innerHTML = '<span>' + emo + '</span><span class="n">' + count + '</span>';
+            chip.addEventListener('click', function(ev){
+                ev.stopPropagation();
+                toggleRx(p, emo, row);
+            });
+            row.appendChild(chip);
+        });
+
+        var add = document.createElement('button');
+        add.className = 'rx-add';
+        add.textContent = '+';
+        add.title = '교차 남기기';
+        add.addEventListener('click', function(ev){
+            ev.stopPropagation();
+            togglePalette(row, p);
+        });
+        row.appendChild(add);
+    }
+
+    function toggleRx(p, emo, row){
+        var map = loadRx();
+        var mine = map[p.id] || {};
+        if(mine[emo]) delete mine[emo]; else mine[emo] = true;
+        map[p.id] = mine;
+        saveRx(map);
+        renderRxRow(row, p);
+    }
+
+    var openPal = null;
+    function closePalette(){ if(openPal){ openPal.remove(); openPal = null; } }
+    function togglePalette(row, p){
+        if(openPal && openPal.parentNode === row){ closePalette(); return; }
+        closePalette();
+        var pal = document.createElement('div');
+        pal.className = 'rx-palette';
+        RX_EMOJIS.forEach(function(emo){
+            var b = document.createElement('button');
+            b.className = 'rx-pal-btn';
+            b.textContent = emo;
+            b.addEventListener('click', function(ev){
+                ev.stopPropagation();
+                closePalette();
+                toggleRx(p, emo, row);
+            });
+            pal.appendChild(b);
+        });
+        row.appendChild(pal);
+        openPal = pal;
+    }
+    document.addEventListener('click', closePalette);
 
     // ===== 궤도 탭 =====
     document.getElementById('orbitTabs').addEventListener('click', function(e){

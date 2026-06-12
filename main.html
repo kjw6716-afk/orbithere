@@ -206,11 +206,8 @@
         }
 
         ::selection { background-color: #4FD1C5; color: #0F172A; }
-        .click-ripple { position:fixed; border-radius:50%; border:1.5px solid #FF9F43; pointer-events:none; z-index:9998; box-shadow:0 0 8px rgba(255,159,67,0.4),inset 0 0 8px rgba(255,159,67,0.1); animation:ripple-expand 0.8s cubic-bezier(0.2,0.8,0.4,1) forwards; }
-        @keyframes ripple-expand { 0%{width:10px;height:10px;opacity:0.9;transform:translate(-50%,-50%) scale(0);}100%{width:130px;height:130px;opacity:0;transform:translate(-50%,-50%) scale(1);} }
-        .click-star { position:fixed; pointer-events:none; z-index:9999; color:#FF9F43; filter:drop-shadow(0 0 4px #FF9F43); animation:star-burst 0.9s cubic-bezier(0,.9,.57,1) forwards; user-select:none; line-height:1; }
-        @keyframes star-burst { 0%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0deg);}100%{opacity:0;transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(0) rotate(var(--rot));} }
     </style>
+    <script src="effects.js" defer></script>
 </head>
 <body>
     <div class="bg-glow"></div>
@@ -276,7 +273,17 @@
                     <div class="tl-item">
                         <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
                         <div class="tl-content">
-                            <div class="tl-version">v0.4 — LATEST</div>
+                            <div class="tl-version">v0.5 — LATEST</div>
+                            <div class="tl-date">2026. 06. 12</div>
+                            <div class="tl-title">🧡 컬러 리뉴얼 & 광장 베타</div>
+                            <div class="tl-desc">주황 테마 전환, 광장(목업) 오픈, 이모지 교차 리액션, 파티클 이펙트 개선.</div>
+                            <div class="tl-tags"><span class="tl-tag">리브랜딩</span><span class="tl-tag">광장</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v0.4</div>
                             <div class="tl-date">2026. 05. 25</div>
                             <div class="tl-title">🧑‍🚀 궤도 진입 시스템 추가</div>
                             <div class="tl-desc">닉네임 등록 후 나만의 프로필 카드로 궤도에 진입할 수 있어요.</div>
@@ -401,28 +408,6 @@
     </main>
 
     <script>
-    // ===== 클릭 이펙트 =====
-    document.addEventListener('click', (e) => {
-        const ripple = document.createElement('div');
-        ripple.classList.add('click-ripple');
-        ripple.style.left = `${e.clientX}px`;
-        ripple.style.top = `${e.clientY}px`;
-        document.body.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 800);
-        const starCount = Math.floor(Math.random()*4)+5;
-        for(let i=0;i<starCount;i++){
-            const star = document.createElement('div');
-            star.classList.add('click-star'); star.innerHTML='★';
-            star.style.left=`${e.clientX}px`; star.style.top=`${e.clientY}px`;
-            const angle=Math.random()*2*Math.PI, dist=Math.random()*60+30;
-            star.style.setProperty('--tx',`${Math.cos(angle)*dist}px`);
-            star.style.setProperty('--ty',`${Math.sin(angle)*dist}px`);
-            star.style.setProperty('--rot',`${(Math.random()-0.5)*360}deg`);
-            star.style.fontSize=`${Math.random()*8+8}px`;
-            document.body.appendChild(star);
-            setTimeout(()=>star.remove(),900);
-        }
-    });
 
     // ===== Join Us 로직 =====
     (function(){

@@ -200,27 +200,6 @@
             animation: fadeUp 0.7s ease 0.3s both;
         }
 
-        /* 클릭 이펙트 */
-        .click-ripple {
-            position: fixed; border-radius: 50%;
-            border: 1.5px solid #FF9F43; pointer-events: none; z-index: 9998;
-            box-shadow: 0 0 8px rgba(255,159,67,0.4);
-            animation: ripple-expand 0.8s cubic-bezier(0.2,0.8,0.4,1) forwards;
-        }
-        @keyframes ripple-expand {
-            0%   { width:10px; height:10px; opacity:0.9; transform:translate(-50%,-50%) scale(0); }
-            100% { width:130px; height:130px; opacity:0; transform:translate(-50%,-50%) scale(1); }
-        }
-        .click-star {
-            position: fixed; pointer-events: none; z-index: 9999;
-            color: #FF9F43; filter: drop-shadow(0 0 4px #FF9F43);
-            animation: star-burst 0.9s cubic-bezier(0,.9,.57,1) forwards;
-            user-select: none; line-height: 1;
-        }
-        @keyframes star-burst {
-            0%   { opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0deg); }
-            100% { opacity:0; transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(0) rotate(var(--rot)); }
-        }
 
         ::selection { background-color: #4FD1C5; color: #0F172A; }
 
@@ -229,6 +208,7 @@
             .nickname { font-size: 1.2rem; }
         }
     </style>
+    <script src="effects.js" defer></script>
 </head>
 <body>
     <div class="bg-glow"></div>
@@ -329,32 +309,6 @@
     function goMain(){ window.location.href = 'main.html'; }
     function goIndex(){ window.location.href = 'index.html'; }
 
-    // 클릭 이펙트
-    document.addEventListener('click', function(e){
-        var ripple = document.createElement('div');
-        ripple.classList.add('click-ripple');
-        ripple.style.left = e.clientX + 'px';
-        ripple.style.top  = e.clientY + 'px';
-        document.body.appendChild(ripple);
-        setTimeout(function(){ ripple.remove(); }, 800);
-
-        var count = Math.floor(Math.random()*4)+4;
-        for(let i=0;i<count;i++){
-            const star = document.createElement('div');
-            star.classList.add('click-star');
-            star.innerHTML = '★';
-            star.style.left = e.clientX + 'px';
-            star.style.top  = e.clientY + 'px';
-            const angle = Math.random()*2*Math.PI;
-            const dist  = Math.random()*60+30;
-            star.style.setProperty('--tx', Math.cos(angle)*dist + 'px');
-            star.style.setProperty('--ty', Math.sin(angle)*dist + 'px');
-            star.style.setProperty('--rot', (Math.random()-0.5)*360 + 'deg');
-            star.style.fontSize = (Math.random()*8+8) + 'px';
-            document.body.appendChild(star);
-            setTimeout(function(){ star.remove(); }, 900);
-        }
-    });
     </script>
 </body>
 </html>
