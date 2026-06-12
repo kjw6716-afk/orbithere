@@ -248,7 +248,7 @@
         <header>
             <h1>광장, <span>궤적</span>이 모이는 곳</h1>
             <p>비슷한 궤도를 도는 사람들의 이야기가 흘러갑니다</p>
-            <span class="mock-badge">⚙ 목업 버전 — 글은 내 브라우저에만 저장돼요</span>
+            <span class="mock-badge" id="loungeStatus">β 베타 — 궤적은 모두에게 공개 저장돼요</span>
         </header>
 
         <div class="orbit-tabs" id="orbitTabs">
@@ -265,41 +265,51 @@
         <section id="postList"></section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+    // ===== Supabase =====
+    var SB_URL = 'https://unwxpuvfqyjhgrcrmuhu.supabase.co';
+    var SB_KEY = 'sb_publishable_KnyriHKUHNWw0QyIAXBmOA_0KaHPcXI'; // 공개용 키 (publishable)
+    var sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null;
 
-    // ===== 데이터 =====
+    // ===== 기본 데이터 =====
     var ORBITS = { free:'자유 궤도', money:'재테크 궤도', dawn:'새벽운동 궤도' };
+    var RX_EMOJIS = ['⭐','🔥','😂','🥹','👏','🫶'];
     var EMOJIS = ['🌟','⭐','🪐','🌙','☄️','🔭','🛸','💫','🌌','✨'];
     function avatarOf(nick){ return EMOJIS[nick.charCodeAt(0) % EMOJIS.length]; }
-
-    // 목업 데모 글 — 백엔드 연동 시 이 배열이 DB 조회로 대체됨
-    var DEMO_POSTS = [
-        { id:'d1', nick:'달리는거북', orbit:'dawn',  time:'42분 전',  rx:{'⭐':8,'🔥':4},
-          text:'새벽 5시 30분 기상 14일차. 솔직히 오늘은 알람 끄고 다시 잘 뻔했는데, 여기 인증하려고 일어났습니다 ㅋㅋ 같은 궤도 도는 분들 덕분에 버티는 중.' },
-        { id:'d2', nick:'월급은스쳐간다', orbit:'money', time:'1시간 전', rx:{'⭐':23,'🔥':7,'😂':2},
-          text:'직장 다니면서 몰래 굴린 3년 — 퇴사 결심하게 만든 수익률 공개합니다.\n\n결론부터: 연평균 11%. 대단한 비법은 없고 월급날마다 기계처럼 분할매수한 게 전부예요. 긴 글은 댓글로 질문 주시면 풀게요.' },
-        { id:'d3', nick:'궤도수리공', orbit:'free',  time:'3시간 전', rx:{'⭐':5,'🥹':1},
-          text:'다들 퇴근하고 뭐 하면서 충전하세요? 저는 요즘 산책하면서 팟캐스트 듣는 게 유일한 낙인데 추천 좀 받습니다.' },
-        { id:'d4', nick:'이자에진심', orbit:'money', time:'5시간 전', rx:{'⭐':12,'👏':3},
-          text:'파킹통장 금리 비교해서 표로 정리해봤는데 수요 있으면 공유할게요. 0.1% 차이도 모이면 치킨값입니다.' },
-        { id:'d5', nick:'새벽형인간되기', orbit:'dawn', time:'어제', rx:{'⭐':17,'👏':6,'🫶':2},
-          text:'새벽운동 궤도 합류 한 달 후기: 체중은 그대로인데 오전 집중력이 진짜 달라졌어요. 숫자보다 이게 더 큰 수확.' }
-    ];
 
     var nickname = localStorage.getItem('orbit_nickname');
     var currentOrbit = 'all';
 
-    function loadMyPosts(){
-        try { return JSON.parse(localStorage.getItem('orbit_lounge_posts') || '[]'); }
-        catch(e){ return []; }
+    // 익명 리액션 식별용 기기 ID
+    var deviceId = localStorage.getItem('orbit_device_id');
+    if(!deviceId){
+        deviceId = (window.crypto && crypto.randomUUID)
+            ? crypto.randomUUID()
+            : Date.now() + '-' + Math.random().toString(36).slice(2);
+        localStorage.setItem('orbit_device_id', deviceId);
     }
-    function saveMyPosts(posts){ localStorage.setItem('orbit_lounge_posts', JSON.stringify(posts)); }
-    var RX_EMOJIS = ['⭐','🔥','😂','🥹','👏','🫶'];
-    function loadRx(){
-        try { return JSON.parse(localStorage.getItem('orbit_lounge_rx') || '{}'); }
-        catch(e){ return {}; }
+
+    // 리액션 캐시: { postId: {emoji: count} } / 내 리액션: { postId: {emoji: true} }
+    var rxCount = {}, rxMine = {};
+
+    function escapeHtml(s){
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
-    function saveRx(map){ localStorage.setItem('orbit_lounge_rx', JSON.stringify(map)); }
+    function timeAgo(iso){
+        var s = (Date.now() - new Date(iso).getTime()) / 1000;
+        if(s < 60) return '방금 전';
+        if(s < 3600) return Math.floor(s/60) + '분 전';
+        if(s < 86400) return Math.floor(s/3600) + '시간 전';
+        if(s < 86400*7) return Math.floor(s/86400) + '일 전';
+        return new Date(iso).toLocaleDateString('ko-KR');
+    }
+    function setStatus(t, isErr){
+        var el = document.getElementById('loungeStatus');
+        el.textContent = t;
+        el.style.color = isErr ? '#FC8181' : '';
+        el.style.borderColor = isErr ? 'rgba(252,129,129,0.35)' : '';
+    }
 
     // ===== 글쓰기 카드 =====
     function renderWriteCard(){
@@ -334,59 +344,93 @@
             document.getElementById('charCount').textContent = input.value.length + ' / 500';
             btn.disabled = input.value.trim().length === 0;
         });
-        btn.addEventListener('click', function(){
+        btn.addEventListener('click', async function(){
             var text = input.value.trim();
-            if(!text) return;
-            var posts = loadMyPosts();
-            posts.unshift({
-                id: 'm' + Date.now(),
+            if(!text || !sb || btn.dataset.sending) return;
+            btn.dataset.sending = '1';
+            btn.disabled = true;
+            btn.textContent = '남기는 중...';
+            var res = await sb.from('posts').insert({
                 nick: nickname,
                 orbit: document.getElementById('orbitSelect').value,
-                time: '방금 전',
-                rx: {},
-                mine: true,
                 text: text
             });
-            saveMyPosts(posts);
-            input.value = '';
-            document.getElementById('charCount').textContent = '0 / 500';
-            btn.disabled = true;
-            renderPosts();
+            delete btn.dataset.sending;
+            btn.textContent = '궤적 남기기';
+            if(res.error){
+                btn.disabled = false;
+                setStatus('전송 실패 — 잠시 후 다시 시도해주세요', true);
+                console.error(res.error);
+            } else {
+                input.value = '';
+                document.getElementById('charCount').textContent = '0 / 500';
+                setStatus('β 베타 — 궤적은 모두에게 공개 저장돼요');
+                loadPosts();
+            }
         });
     }
 
-    // ===== 글 목록 =====
-    function escapeHtml(s){
-        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    // ===== 글 불러오기 =====
+    async function loadPosts(){
+        var list = document.getElementById('postList');
+        if(!sb){
+            list.innerHTML = '<div class="empty-state">서버 연결 모듈을 불러오지 못했어요.<br>새로고침 해주세요.</div>';
+            setStatus('연결 실패 — 새로고침 해주세요', true);
+            return;
+        }
+        list.innerHTML = '<div class="empty-state">궤적을 불러오는 중...</div>';
+        try {
+            var q = sb.from('posts').select('*').order('created_at', { ascending: false }).limit(50);
+            if(currentOrbit !== 'all') q = q.eq('orbit', currentOrbit);
+            var res = await q;
+            if(res.error) throw res.error;
+            var posts = res.data || [];
+
+            rxCount = {}; rxMine = {};
+            if(posts.length){
+                var ids = posts.map(function(p){ return p.id; });
+                var r = await sb.from('reactions').select('post_id,emoji,device_id').in('post_id', ids);
+                if(r.error) throw r.error;
+                (r.data || []).forEach(function(row){
+                    var c = rxCount[row.post_id] = rxCount[row.post_id] || {};
+                    c[row.emoji] = (c[row.emoji] || 0) + 1;
+                    if(row.device_id === deviceId){
+                        (rxMine[row.post_id] = rxMine[row.post_id] || {})[row.emoji] = true;
+                    }
+                });
+            }
+            renderPosts(posts);
+        } catch(err){
+            console.error(err);
+            list.innerHTML = '<div class="empty-state">광장을 불러오지 못했어요.<br>잠시 후 다시 시도해주세요.</div>';
+        }
     }
-    function renderPosts(){
+
+    function renderPosts(posts){
         var list = document.getElementById('postList');
         list.innerHTML = '';
-        var all = loadMyPosts().concat(DEMO_POSTS);
-        var visible = all.filter(function(p){ return currentOrbit==='all' || p.orbit===currentOrbit; });
-
-        if(visible.length === 0){
+        if(posts.length === 0){
             list.innerHTML = '<div class="empty-state">아직 이 궤도에는 궤적이 없어요.<br>첫 번째 궤적을 남겨보세요!</div>';
             return;
         }
-
-        visible.forEach(function(p, i){
+        posts.forEach(function(p, i){
+            var isMine = nickname && p.nick === nickname;
             var post = document.createElement('article');
             post.className = 'post';
-            post.style.animationDelay = (i * 0.05) + 's';
+            post.style.animationDelay = (Math.min(i, 10) * 0.05) + 's';
             post.innerHTML =
                 '<div class="post-head">' +
                 '<div class="post-avatar">' + avatarOf(p.nick) + '</div>' +
                 '<div class="post-meta">' +
-                '<div class="post-nick">' + escapeHtml(p.nick) + (p.mine ? ' <span style="font-size:9px;color:#9F7AEA;">나</span>' : '') + '</div>' +
-                '<div class="post-sub">' + p.time + '</div>' +
+                '<div class="post-nick">' + escapeHtml(p.nick) + (isMine ? ' <span style="font-size:9px;color:#9F7AEA;">나</span>' : '') + '</div>' +
+                '<div class="post-sub">' + timeAgo(p.created_at) + '</div>' +
                 '</div>' +
-                '<span class="post-orbit-chip' + (p.mine?' mine':'') + '">' + ORBITS[p.orbit] + '</span>' +
+                '<span class="post-orbit-chip' + (isMine?' mine':'') + '">' + ORBITS[p.orbit] + '</span>' +
                 '</div>' +
                 '<div class="post-body">' + escapeHtml(p.text) + '</div>' +
                 '<div class="post-foot">' +
                 '<div class="reaction-row"></div>' +
-                '<span class="reply-hint">댓글은 정식 버전에서 열려요</span>' +
+                '<span class="reply-hint">댓글은 다음 버전에서 열려요</span>' +
                 '</div>';
             list.appendChild(post);
             renderRxRow(post.querySelector('.reaction-row'), p);
@@ -395,18 +439,15 @@
 
     // ===== 이모지 교차 리액션 =====
     function renderRxRow(row, p){
-        var mine = loadRx()[p.id] || {};
-        var base = p.rx || {};
-        var keys = Object.keys(base);
-        Object.keys(mine).forEach(function(e){ if(keys.indexOf(e) < 0) keys.push(e); });
+        var mine = rxMine[p.id] || {};
+        var counts = rxCount[p.id] || {};
+        var keys = Object.keys(counts).filter(function(e){ return counts[e] > 0; });
 
         row.innerHTML = '';
         keys.forEach(function(emo){
-            var count = (base[emo] || 0) + (mine[emo] ? 1 : 0);
-            if(count <= 0) return;
             var chip = document.createElement('button');
             chip.className = 'rx-chip' + (mine[emo] ? ' mine' : '');
-            chip.innerHTML = '<span>' + emo + '</span><span class="n">' + count + '</span>';
+            chip.innerHTML = '<span>' + emo + '</span><span class="n">' + counts[emo] + '</span>';
             chip.addEventListener('click', function(ev){
                 ev.stopPropagation();
                 toggleRx(p, emo, row);
@@ -425,13 +466,27 @@
         row.appendChild(add);
     }
 
-    function toggleRx(p, emo, row){
-        var map = loadRx();
-        var mine = map[p.id] || {};
-        if(mine[emo]) delete mine[emo]; else mine[emo] = true;
-        map[p.id] = mine;
-        saveRx(map);
+    async function toggleRx(p, emo, row){
+        if(!sb) return;
+        var mine = rxMine[p.id] = rxMine[p.id] || {};
+        var counts = rxCount[p.id] = rxCount[p.id] || {};
+        var turningOn = !mine[emo];
+
+        // 낙관적 업데이트 — 실패 시 롤백
+        if(turningOn){ mine[emo] = true; counts[emo] = (counts[emo] || 0) + 1; }
+        else { delete mine[emo]; counts[emo] = Math.max(0, (counts[emo] || 1) - 1); }
         renderRxRow(row, p);
+
+        var res = turningOn
+            ? await sb.from('reactions').insert({ post_id: p.id, emoji: emo, device_id: deviceId })
+            : await sb.from('reactions').delete().match({ post_id: p.id, emoji: emo, device_id: deviceId });
+
+        if(res.error){
+            console.error(res.error);
+            if(turningOn){ delete mine[emo]; counts[emo] = Math.max(0, counts[emo] - 1); }
+            else { mine[emo] = true; counts[emo] = (counts[emo] || 0) + 1; }
+            renderRxRow(row, p);
+        }
     }
 
     var openPal = null;
@@ -464,11 +519,11 @@
         document.querySelectorAll('.orbit-tab').forEach(function(t){ t.classList.remove('on'); });
         tab.classList.add('on');
         currentOrbit = tab.getAttribute('data-orbit');
-        renderPosts();
+        loadPosts();
     });
 
     renderWriteCard();
-    renderPosts();
+    loadPosts();
     </script>
 </body>
 </html>
