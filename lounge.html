@@ -250,7 +250,13 @@
         }
 
         ::selection { background-color: #4FD1C5; color: #0F172A; }
+
+        /* 메인 패널에 iframe으로 임베드될 때 */
+        .embed nav { display: none; }
+        .embed .container { margin-top: 28px; }
+        .embed .header-otter { display: none; }
     </style>
+    <script>if(new URLSearchParams(location.search).get('embed'))document.documentElement.classList.add('embed');</script>
     <script src="effects.js" defer></script>
 </head>
 <body>
