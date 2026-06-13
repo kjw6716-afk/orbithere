@@ -26,7 +26,7 @@
             --text-main: #E2E8F0;
             --card-bg: rgba(30, 41, 59, 0.7);
         }
-
+        * { box-sizing: border-box; }
         body {
             margin: 0;
             background-color: var(--bg-color);
@@ -37,57 +37,96 @@
         }
 
         .bg-glow {
-            position: fixed;
-            top: -10%; right: -10%;
+            position: fixed; top: -10%; right: -10%;
             width: 600px; height: 600px;
             background: radial-gradient(circle, rgba(255,159,67,0.08) 0%, rgba(15,23,42,0) 70%);
-            pointer-events: none; z-index: -1;
+            pointer-events: none; z-index: 0;
         }
 
-        nav {
-            position: fixed; top: 0; width: 100%;
-            padding: 1.5rem 2rem;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 100; backdrop-filter: blur(15px); box-sizing: border-box;
-            border-bottom: 1px solid rgba(255,159,67,0.1);
+        /* ===== 앱 셸 ===== */
+        .app { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+        /* 사이드바 */
+        .sidebar {
+            width: 244px; flex-shrink: 0;
+            position: sticky; top: 0; height: 100vh;
+            display: flex; flex-direction: column;
+            padding: 22px 16px;
+            border-right: 1px solid rgba(255,159,67,0.1);
+            background: rgba(15,23,42,0.55); backdrop-filter: blur(12px);
         }
-        .logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); cursor: pointer; }
+        .side-logo {
+            font-weight: 700; letter-spacing: 2px; color: var(--accent);
+            font-size: 1.15rem; cursor: pointer; padding: 6px 12px 20px;
+        }
+        .side-nav { display: flex; flex-direction: column; gap: 4px; }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px; width: 100%;
+            padding: 12px 14px; border-radius: 12px; border: none; background: transparent;
+            color: #94A3B8; font-family: 'Pretendard'; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.15s; text-align: left;
+        }
+        .nav-item .ic { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+        .nav-item:hover { background: rgba(255,159,67,0.07); color: var(--text-main); }
+        .nav-item.on { background: rgba(255,159,67,0.13); color: var(--accent); }
+        .side-otter { margin-top: auto; text-align: center; padding-top: 16px; }
+        .side-otter img {
+            width: 156px; height: auto;
+            animation: otter-bob 3.2s ease-in-out infinite;
+            filter: drop-shadow(0 10px 18px rgba(0,0,0,0.3));
+        }
+        .side-otter p { font-size: 11px; color: #475569; margin: 4px 0 0; }
+        @keyframes otter-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-        .container { max-width: 1100px; margin: 140px auto 80px; padding: 0 20px; }
-
-        header { margin-bottom: 50px; }
-        header h1 { font-size: 2.8rem; font-weight: 200; margin: 0; line-height: 1.2; }
-        header h1 span { color: var(--accent); font-weight: 700; }
-        header p { color: #94A3B8; margin-top: 15px; font-size: 1.1rem; }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-auto-rows: minmax(200px, auto);
-            gap: 20px;
+        /* 콘텐츠 */
+        .content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+        .topbar {
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            padding: 20px 32px; border-bottom: 1px solid rgba(255,159,67,0.08);
+            position: sticky; top: 0; z-index: 10;
+            background: rgba(15,23,42,0.7); backdrop-filter: blur(12px);
+        }
+        .panel-title { font-size: 1.3rem; font-weight: 700; margin: 0; line-height: 1.2; }
+        .panel-title span { color: var(--accent); }
+        .profile-chip {
+            display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+            padding: 6px 14px 6px 7px; border-radius: 99px;
+            background: rgba(255,159,67,0.08); border: 1px solid rgba(255,159,67,0.2);
+            color: var(--accent); font-size: 13px; font-weight: 600; transition: all 0.15s;
+            font-family: 'Pretendard'; white-space: nowrap;
+        }
+        .profile-chip:hover { background: rgba(255,159,67,0.14); border-color: var(--accent); }
+        .profile-chip .pc-av {
+            width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+            background: rgba(255,159,67,0.15); display: flex; align-items: center; justify-content: center; font-size: 13px;
         }
 
+        .panel-wrap { padding: 30px 32px 60px; flex: 1; }
+        .panel { display: none; }
+        .panel.on { display: block; animation: panel-in 0.25s ease; }
+        @keyframes panel-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 공통 카드 */
         .card {
             background: var(--card-bg);
             border: 1px solid rgba(255,159,67,0.15);
-            border-radius: 24px; padding: 30px;
+            border-radius: 20px; padding: 26px;
             transition: all 0.3s ease; position: relative;
         }
-        .card:hover {
-            border-color: rgba(255,159,67,0.5);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(255,159,67,0.1);
-        }
+        .card:hover { border-color: rgba(255,159,67,0.4); }
         .card-tag {
             display: inline-block; padding: 4px 12px;
             background: rgba(255,159,67,0.1); color: var(--accent);
-            border-radius: 99px; font-size: 0.75rem; font-weight: 600; margin-bottom: 20px;
+            border-radius: 99px; font-size: 0.75rem; font-weight: 600; margin-bottom: 16px;
         }
-        .card-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
-        .card-desc { color: #94A3B8; font-size: 0.95rem; line-height: 1.6; }
-        .wide { grid-column: span 2; }
+        .card-title { font-size: 1.3rem; font-weight: 600; margin: 0 0 10px; line-height: 1.4; }
+        .card-desc { color: #94A3B8; font-size: 0.95rem; line-height: 1.6; margin: 0; }
 
-        .join-form { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+        /* 홈 패널 */
+        .home-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; max-width: 940px; }
+        .home-grid .span2 { grid-column: 1 / -1; }
+
+        .join-form { display: flex; flex-direction: column; gap: 12px; margin-top: 18px; }
         .join-form input {
             background: rgba(15,23,42,0.5);
             border: 1px solid rgba(255,159,67,0.3);
@@ -97,28 +136,18 @@
         }
         .join-form input:focus { border-color: var(--accent); }
         .join-form input.error { border-color: #FC8181; }
-        .join-error {
-            font-size: 11px; color: #FC8181;
-            display: none; margin-top: -6px;
-        }
+        .join-error { font-size: 11px; color: #FC8181; display: none; margin-top: -6px; }
         .btn-mint {
             background: var(--accent); color: #0F172A;
             border: none; border-radius: 12px; padding: 12px;
             font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Pretendard';
         }
         .btn-mint:hover { opacity: 0.9; transform: scale(0.98); }
-
-        /* 이미 가입한 경우 카드 */
-        .already-joined {
-            display: flex; flex-direction: column; gap: 12px; margin-top: 16px;
-        }
+        .already-joined { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
         .joined-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 10px 14px;
-            background: rgba(255,159,67,0.08);
-            border: 1px solid rgba(255,159,67,0.2);
-            border-radius: 12px;
-            font-size: 13px; color: var(--accent); font-weight: 600;
+            display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px;
+            background: rgba(255,159,67,0.08); border: 1px solid rgba(255,159,67,0.2);
+            border-radius: 12px; font-size: 13px; color: var(--accent); font-weight: 600;
         }
         .btn-outline {
             background: transparent; color: var(--accent);
@@ -129,17 +158,16 @@
         }
         .btn-outline:hover { background: rgba(255,159,67,0.08); border-color: var(--accent); }
 
-        /* 업데이트 노트 */
-        .update-card {
-            grid-column: span 1;
-            background: var(--card-bg);
-            border: 1px solid rgba(255,159,67,0.15);
-            border-radius: 24px; padding: 28px;
-            position: relative; overflow: hidden;
+        /* 대화 광장 iframe */
+        .lounge-frame {
+            width: 100%; height: calc(100vh - 152px);
+            border: none; border-radius: 16px; background: transparent;
         }
-        .update-card:hover { border-color: rgba(255,159,67,0.4); box-shadow: 0 8px 24px rgba(255,159,67,0.08); }
-        .timeline { display: flex; flex-direction: column; gap: 0; margin-top: 16px; }
-        .tl-item { display: flex; gap: 14px; padding-bottom: 20px; position: relative; }
+
+        /* 업데이트 기록 */
+        .update-card { max-width: 620px; background: var(--card-bg); border: 1px solid rgba(255,159,67,0.15); border-radius: 20px; padding: 28px; }
+        .timeline { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
+        .tl-item { display: flex; gap: 14px; padding-bottom: 22px; position: relative; }
         .tl-item:last-child { padding-bottom: 0; }
         .tl-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
         .tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 3px; box-shadow: 0 0 8px rgba(255,159,67,0.5); }
@@ -150,23 +178,21 @@
         .tl-version { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 3px; }
         .tl-version.old { color: #475569; }
         .tl-date { font-size: 10px; color: #334155; margin-bottom: 6px; }
-        .tl-title { font-size: 13px; font-weight: 600; color: #CBD5E1; margin-bottom: 4px; }
-        .tl-desc { font-size: 11px; color: #64748B; line-height: 1.5; }
+        .tl-title { font-size: 14px; font-weight: 600; color: #CBD5E1; margin-bottom: 4px; }
+        .tl-desc { font-size: 12px; color: #64748B; line-height: 1.5; }
         .tl-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
         .tl-tag { font-size: 10px; padding: 2px 7px; border-radius: 6px; background: rgba(255,159,67,0.08); color: #FF9F43; font-weight: 500; }
         .tl-tag.purple { background: rgba(159,122,234,0.1); color: #9F7AEA; }
         .tl-tag.gray { background: rgba(100,116,139,0.15); color: #64748B; }
 
-        /* 복권 카드 */
+        /* ===== Lucky Orbit (게임 크기에 맞춰 컴팩트) ===== */
+        .lucky-wrap { max-width: 680px; }
         .lottery-card {
-            grid-column: span 2;
             background: var(--card-bg);
             border: 1px solid rgba(255,159,67,0.15);
-            border-radius: 24px; padding: 28px;
-            position: relative; overflow: hidden;
+            border-radius: 20px; padding: 26px; position: relative; overflow: hidden;
         }
         .lottery-card::before { content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px; background:radial-gradient(circle,rgba(255,159,67,0.05) 0%,transparent 70%); pointer-events:none; }
-        .lottery-card:hover { border-color:rgba(255,159,67,0.4); box-shadow:0 8px 24px rgba(255,159,67,0.08); }
         .game-inner { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:16px; }
         .ltab-row { display:flex; gap:8px; margin-bottom:16px; }
         .ltab { font-size:12px; padding:5px 16px; border-radius:20px; border:1.5px solid rgba(255,159,67,0.25); background:transparent; cursor:pointer; color:#94A3B8; transition:all 0.2s; font-family:'Pretendard'; font-weight:500; }
@@ -197,12 +223,24 @@
         .lottery-msg { font-size:11px; color:#475569; }
         .tip-icon { display:inline-flex; align-items:center; justify-content:center; width:12px; height:12px; border-radius:50%; border:1.5px solid currentColor; font-size:7px; font-weight:700; flex-shrink:0; margin-top:1px; }
 
-        @media (max-width: 768px) {
-            .grid { grid-template-columns: 1fr; }
-            .wide, .lottery-card, .update-card { grid-column: span 1; }
-            header h1 { font-size: 2rem; }
+        /* ===== 반응형 ===== */
+        @media (max-width: 860px) {
+            .app { flex-direction: column; }
+            .sidebar {
+                width: 100%; height: auto; position: sticky; top: 0;
+                flex-direction: row; align-items: center; gap: 6px;
+                padding: 10px 12px; overflow-x: auto;
+            }
+            .side-logo { padding: 6px 10px; }
+            .side-nav { flex-direction: row; gap: 4px; }
+            .nav-item { padding: 9px 13px; white-space: nowrap; }
+            .side-otter { display: none; }
+            .topbar { padding: 16px 18px; }
+            .panel-wrap { padding: 20px 18px 50px; }
+            .home-grid { grid-template-columns: 1fr; }
             .game-inner { grid-template-columns: 1fr; }
-            .result-panel { padding-left:0; border-left:none; border-top:1px solid rgba(255,159,67,0.08); padding-top:12px; }
+            .result-panel { padding-left: 0; border-left: none; border-top: 1px solid rgba(255,159,67,0.08); padding-top: 12px; }
+            .lounge-frame { height: calc(100vh - 132px); }
         }
 
         ::selection { background-color: #4FD1C5; color: #0F172A; }
@@ -211,201 +249,285 @@
 </head>
 <body>
     <div class="bg-glow"></div>
-    <nav>
-        <div class="logo" onclick="location.href='index.html'">ORBIT.</div>
-    </nav>
 
-    <main class="container">
-        <header>
-            <h1>Connect in <span>Orbit</span></h1>
-            <p>우리의 관심사가 교차하고 새로운 궤도가 만들어지는 곳</p>
-        </header>
-
-        <section class="grid">
-
-            <div class="card wide">
-                <span class="card-tag">Notice</span>
-                <h3 class="card-title">🚀 새로운 궤도에 합류하신 것을 환영합니다!</h3>
-                <p class="card-desc">orbithere는 서로의 성장을 응원하고 지식을 공유하는 커뮤니티입니다.<br>가이드라인을 확인하고 첫 번째 궤적을 남겨보세요.</p>
+    <div class="app">
+        <!-- 사이드바 -->
+        <aside class="sidebar">
+            <div class="side-logo" onclick="location.href='index.html'">ORBIT.</div>
+            <nav class="side-nav" id="sideNav">
+                <button class="nav-item on" data-panel="home"><span class="ic">🏠</span><span class="lbl">홈</span></button>
+                <button class="nav-item" data-panel="lounge"><span class="ic">💬</span><span class="lbl">대화 광장</span></button>
+                <button class="nav-item" data-panel="lucky"><span class="ic">🎰</span><span class="lbl">Lucky Orbit</span></button>
+                <button class="nav-item" data-panel="updates"><span class="ic">📡</span><span class="lbl">업데이트 기록</span></button>
+            </nav>
+            <div class="side-otter">
+                <img src="images/otter.png" alt="Orbit 수달 마스코트" width="156" height="220">
+                <p>오빗 수달이 함께해요</p>
             </div>
+        </aside>
 
-            <!-- Join Us 카드 -->
-            <div class="card" id="joinCard">
-                <span class="card-tag">Join Us</span>
-                <h3 class="card-title" id="joinTitle">궤도 진입하기</h3>
-
-                <!-- 신규 가입 폼 -->
-                <div class="join-form" id="joinForm">
-                    <input type="text" id="nicknameInput" placeholder="닉네임을 입력하세요" maxlength="12">
-                    <div class="join-error" id="joinError"></div>
-                    <button class="btn-mint" id="joinBtn">참여 신청</button>
-                </div>
-
-                <!-- 이미 가입한 경우 -->
-                <div class="already-joined" id="alreadyJoined" style="display:none;">
-                    <div class="joined-badge">
-                        <span>🌟</span>
-                        <span id="joinedNickname">—</span>
-                    </div>
-                    <p style="font-size:13px;color:#64748B;margin:0;">이미 궤도에 진입해 있어요!</p>
-                    <button class="btn-outline" onclick="location.href='profile.html'">내 프로필 보기</button>
+        <!-- 콘텐츠 -->
+        <div class="content">
+            <div class="topbar">
+                <h1 class="panel-title" id="panelTitle">Connect in <span>Orbit</span></h1>
+                <div class="profile-chip" id="profileChip">
+                    <span class="pc-av">🦦</span><span id="profileChipText">내 프로필 보기</span>
                 </div>
             </div>
 
-            <div class="card">
-                <span class="card-tag">Trending</span>
-                <h3 class="card-title">가장 뜨거운 궤도</h3>
-                <p class="card-desc">"직장 다니면서 몰래 굴린 3년 — 퇴사 결심하게 만든 수익률 공개합니다" 글이 현재 인기 순위 1위입니다.</p>
-            </div>
+            <div class="panel-wrap">
+                <!-- 홈 -->
+                <section class="panel on" id="panel-home">
+                    <div class="home-grid">
+                        <div class="card span2">
+                            <span class="card-tag">Notice</span>
+                            <h3 class="card-title">🚀 새로운 궤도에 합류하신 것을 환영합니다!</h3>
+                            <p class="card-desc">orbithere는 서로의 성장을 응원하고 지식을 공유하는 커뮤니티입니다.<br>가이드라인을 확인하고 첫 번째 궤적을 남겨보세요.</p>
+                        </div>
 
-            <div class="card wide" onclick="location.href='lounge.html'" style="cursor:pointer;">
-                <span class="card-tag">Lounge</span>
-                <h3 class="card-title">자유로운 대화 광장</h3>
-                <p class="card-desc">지금 12명의 멤버가 광장에서 실시간으로 이야기를 나누고 있습니다. 당신의 의견을 들려주세요!</p>
-                <p style="font-size:12px;color:var(--accent);font-weight:600;margin-top:14px;margin-bottom:0;">광장 들어가기 →</p>
-            </div>
+                        <!-- Join Us 카드 -->
+                        <div class="card" id="joinCard">
+                            <span class="card-tag">Join Us</span>
+                            <h3 class="card-title" id="joinTitle">궤도 진입하기</h3>
+                            <div class="join-form" id="joinForm">
+                                <input type="text" id="nicknameInput" placeholder="닉네임을 입력하세요" maxlength="12">
+                                <div class="join-error" id="joinError"></div>
+                                <button class="btn-mint" id="joinBtn">참여 신청</button>
+                            </div>
+                            <div class="already-joined" id="alreadyJoined" style="display:none;">
+                                <div class="joined-badge">
+                                    <span>🌟</span>
+                                    <span id="joinedNickname">—</span>
+                                </div>
+                                <p style="font-size:13px;color:#64748B;margin:0;">이미 궤도에 진입해 있어요!</p>
+                                <button class="btn-outline" onclick="location.href='profile.html'">내 프로필 보기</button>
+                            </div>
+                        </div>
 
-            <!-- 업데이트 노트 -->
-            <div class="update-card">
-                <span class="card-tag" style="margin-bottom:12px;">📡 Update Notes</span>
-                <h3 class="card-title" style="font-size:1.1rem;margin-bottom:0;">Orbit 변경사항</h3>
-                <div class="timeline">
-                    <div class="tl-item">
-                        <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
-                        <div class="tl-content">
-                            <div class="tl-version">v0.5 — LATEST</div>
-                            <div class="tl-date">2026. 06. 12</div>
-                            <div class="tl-title">🧡 컬러 리뉴얼 & 광장 베타</div>
-                            <div class="tl-desc">주황 테마 전환, 광장(목업) 오픈, 이모지 교차 리액션, 파티클 이펙트 개선.</div>
-                            <div class="tl-tags"><span class="tl-tag">리브랜딩</span><span class="tl-tag">광장</span></div>
+                        <div class="card">
+                            <span class="card-tag">Trending</span>
+                            <h3 class="card-title">가장 뜨거운 궤도</h3>
+                            <p class="card-desc">"직장 다니면서 몰래 굴린 3년 — 퇴사 결심하게 만든 수익률 공개합니다" 글이 현재 인기 순위 1위입니다.</p>
                         </div>
                     </div>
-                    <div class="tl-item">
-                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
-                        <div class="tl-content">
-                            <div class="tl-version old">v0.4</div>
-                            <div class="tl-date">2026. 05. 25</div>
-                            <div class="tl-title">🧑‍🚀 궤도 진입 시스템 추가</div>
-                            <div class="tl-desc">닉네임 등록 후 나만의 프로필 카드로 궤도에 진입할 수 있어요.</div>
-                            <div class="tl-tags"><span class="tl-tag">프로필</span><span class="tl-tag">진입 시스템</span></div>
-                        </div>
-                    </div>
-                    <div class="tl-item">
-                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
-                        <div class="tl-content">
-                            <div class="tl-version old">v0.3</div>
-                            <div class="tl-date">2026. 05. 22</div>
-                            <div class="tl-title">🎰 Lucky Orbit 미니게임 추가</div>
-                            <div class="tl-desc">카오스 알고리즘 기반 연금복권 / 로또 번호 생성기가 추가됐어요.</div>
-                            <div class="tl-tags"><span class="tl-tag">미니게임</span><span class="tl-tag">연금복권</span><span class="tl-tag">로또</span></div>
-                        </div>
-                    </div>
-                    <div class="tl-item">
-                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
-                        <div class="tl-content">
-                            <div class="tl-version old">v0.2</div>
-                            <div class="tl-date">2026. 05. 21</div>
-                            <div class="tl-title">커뮤니티 메인 페이지 오픈</div>
-                            <div class="tl-desc">bento 그리드 레이아웃, 클릭 이펙트, 기본 카드 구성.</div>
-                            <div class="tl-tags"><span class="tl-tag purple">UI</span><span class="tl-tag gray">레이아웃</span></div>
-                        </div>
-                    </div>
-                    <div class="tl-item">
-                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
-                        <div class="tl-content">
-                            <div class="tl-version old">v0.1</div>
-                            <div class="tl-date">2026. 05. 01</div>
-                            <div class="tl-title">Orbit 랜딩페이지 공개</div>
-                            <div class="tl-desc">meteor shower 애니메이션, orbiting star 로고, 슬로건 적용.</div>
-                            <div class="tl-tags"><span class="tl-tag gray">런칭</span><span class="tl-tag gray">랜딩</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                </section>
 
-            <!-- Lucky Orbit 미니게임 -->
-            <div class="lottery-card">
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-                    <span class="card-tag" style="margin-bottom:0;">🎰 Lucky Orbit</span>
-                    <span style="font-size:10px;color:#334155;">카오스 알고리즘이 번호를 골라드려요</span>
-                </div>
-                <h3 class="card-title" style="font-size:1.1rem;margin-bottom:0;">오늘의 행운 번호 뽑기</h3>
-                <div class="game-inner">
-                    <div>
-                        <div class="ltab-row">
-                            <button class="ltab on" id="tabY">연금복권 720+</button>
-                            <button class="ltab" id="tabL">로또 6/45</button>
-                        </div>
-                        <div id="yeonUI">
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <!-- 대화 광장 -->
+                <section class="panel" id="panel-lounge">
+                    <iframe class="lounge-frame" id="loungeFrame" title="대화 광장" data-src="lounge.html?embed=1"></iframe>
+                </section>
+
+                <!-- Lucky Orbit -->
+                <section class="panel" id="panel-lucky">
+                    <div class="lucky-wrap">
+                        <div class="lottery-card">
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                                <span class="card-tag" style="margin-bottom:0;">🎰 Lucky Orbit</span>
+                                <span style="font-size:10px;color:#334155;">카오스 알고리즘이 번호를 골라드려요</span>
+                            </div>
+                            <h3 class="card-title" style="font-size:1.1rem;margin-bottom:0;">오늘의 행운 번호 뽑기</h3>
+                            <div class="game-inner">
                                 <div>
-                                    <div class="section-label">조 선택</div>
-                                    <div style="display:flex;flex-direction:column;gap:5px;">
-                                        <div class="jo-cell dim" id="joAll" style="padding:9px;font-size:11px;min-height:34px;cursor:pointer;">모든 조 선택</div>
-                                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;">
-                                            <div class="jo-cell dim" id="jo1" style="padding:8px;min-height:30px;">1조</div>
-                                            <div class="jo-cell dim" id="jo2" style="padding:8px;min-height:30px;">2조</div>
-                                            <div class="jo-cell dim" id="jo3" style="padding:8px;min-height:30px;">3조</div>
-                                        </div>
-                                        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:5px;">
-                                            <div class="jo-cell dim" id="jo4" style="padding:8px;min-height:30px;">4조</div>
-                                            <div class="jo-cell dim" id="jo5" style="padding:8px;min-height:30px;">5조</div>
-                                        </div>
-                                        <div style="font-size:9px;color:#334155;line-height:1.6;margin-top:2px;">
-                                            <div style="display:flex;gap:3px;align-items:flex-start;">
-                                                <span class="tip-icon">!</span>
-                                                <span><strong style="color:#475569;">구매팁!</strong><br>모든조 구매 시 1,2등<br>동시 당첨 가능(총 21.6억원)</span>
+                                    <div class="ltab-row">
+                                        <button class="ltab on" id="tabY">연금복권 720+</button>
+                                        <button class="ltab" id="tabL">로또 6/45</button>
+                                    </div>
+                                    <div id="yeonUI">
+                                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                                            <div>
+                                                <div class="section-label">조 선택</div>
+                                                <div style="display:flex;flex-direction:column;gap:5px;">
+                                                    <div class="jo-cell dim" id="joAll" style="padding:9px;font-size:11px;min-height:34px;cursor:pointer;">모든 조 선택</div>
+                                                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;">
+                                                        <div class="jo-cell dim" id="jo1" style="padding:8px;min-height:30px;">1조</div>
+                                                        <div class="jo-cell dim" id="jo2" style="padding:8px;min-height:30px;">2조</div>
+                                                        <div class="jo-cell dim" id="jo3" style="padding:8px;min-height:30px;">3조</div>
+                                                    </div>
+                                                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:5px;">
+                                                        <div class="jo-cell dim" id="jo4" style="padding:8px;min-height:30px;">4조</div>
+                                                        <div class="jo-cell dim" id="jo5" style="padding:8px;min-height:30px;">5조</div>
+                                                    </div>
+                                                    <div style="font-size:9px;color:#334155;line-height:1.6;margin-top:2px;">
+                                                        <div style="display:flex;gap:3px;align-items:flex-start;">
+                                                            <span class="tip-icon">!</span>
+                                                            <span><strong style="color:#475569;">구매팁!</strong><br>모든조 구매 시 1,2등<br>동시 당첨 가능(총 21.6억원)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="section-label">6자리 번호</div>
+                                                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;">
+                                                    <div class="ycell dim" id="yn1" style="aspect-ratio:1;font-size:15px;">1</div>
+                                                    <div class="ycell dim" id="yn2" style="aspect-ratio:1;font-size:15px;">2</div>
+                                                    <div class="ycell dim" id="yn3" style="aspect-ratio:1;font-size:15px;">3</div>
+                                                    <div class="ycell dim" id="yn4" style="aspect-ratio:1;font-size:15px;">4</div>
+                                                    <div class="ycell dim" id="yn5" style="aspect-ratio:1;font-size:15px;">5</div>
+                                                    <div class="ycell dim" id="yn6" style="aspect-ratio:1;font-size:15px;">6</div>
+                                                    <div class="ycell dim" id="yn7" style="aspect-ratio:1;font-size:15px;">7</div>
+                                                    <div class="ycell dim" id="yn8" style="aspect-ratio:1;font-size:15px;">8</div>
+                                                    <div class="ycell dim" id="yn9" style="aspect-ratio:1;font-size:15px;">9</div>
+                                                </div>
+                                                <div class="ycell dim" id="yn0" style="margin-top:5px;padding:7px;font-size:15px;">0</div>
+                                                <div style="font-size:9px;color:#334155;margin-top:6px;">십만단위 번호를 선택하세요</div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div>
-                                    <div class="section-label">6자리 번호</div>
-                                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;">
-                                        <div class="ycell dim" id="yn1" style="aspect-ratio:1;font-size:15px;">1</div>
-                                        <div class="ycell dim" id="yn2" style="aspect-ratio:1;font-size:15px;">2</div>
-                                        <div class="ycell dim" id="yn3" style="aspect-ratio:1;font-size:15px;">3</div>
-                                        <div class="ycell dim" id="yn4" style="aspect-ratio:1;font-size:15px;">4</div>
-                                        <div class="ycell dim" id="yn5" style="aspect-ratio:1;font-size:15px;">5</div>
-                                        <div class="ycell dim" id="yn6" style="aspect-ratio:1;font-size:15px;">6</div>
-                                        <div class="ycell dim" id="yn7" style="aspect-ratio:1;font-size:15px;">7</div>
-                                        <div class="ycell dim" id="yn8" style="aspect-ratio:1;font-size:15px;">8</div>
-                                        <div class="ycell dim" id="yn9" style="aspect-ratio:1;font-size:15px;">9</div>
+                                    <div id="lottoUI" style="display:none;">
+                                        <div class="legend-row">
+                                            <span class="legend-chip" style="background:#FF9F43;color:#3A2410;">1줄</span>
+                                            <span class="legend-chip" style="background:#9F7AEA;color:#fff;">2줄</span>
+                                            <span class="legend-chip" style="background:#4FD1C5;color:#04342C;">3줄</span>
+                                            <span class="legend-chip" style="background:#FC8181;color:#fff;">4줄</span>
+                                            <span class="legend-chip" style="background:#63B3ED;color:#04342C;">5줄</span>
+                                            <span style="font-size:10px;color:#334155;">중복=파이분할</span>
+                                        </div>
+                                        <canvas id="lottoCanvas" width="420" height="320" style="width:100%;display:block;border-radius:10px;background:#080d1a;"></canvas>
                                     </div>
-                                    <div class="ycell dim" id="yn0" style="margin-top:5px;padding:7px;font-size:15px;">0</div>
-                                    <div style="font-size:9px;color:#334155;margin-top:6px;">십만단위 번호를 선택하세요</div>
+                                    <div class="lottery-controls">
+                                        <button class="spd-btn on" id="spdNormal">⚡ 빠름</button>
+                                        <button class="spd-btn" id="spdCrazy">🔥 미침</button>
+                                        <button class="btn-catch" id="btnCatch">포착!</button>
+                                        <button class="btn-reset" id="btnR">초기화</button>
+                                    </div>
+                                    <div class="lottery-msg" id="msg" style="margin-top:8px;">포착 버튼을 눌러 번호를 확정하세요</div>
+                                </div>
+                                <div class="result-panel">
+                                    <div class="section-label" style="color:#94A3B8;letter-spacing:0.08em;">확정 번호</div>
+                                    <div id="yeonResult" class="yeon-result-grid"></div>
+                                    <div id="lottoResult" class="lotto-result" style="display:none;"></div>
                                 </div>
                             </div>
                         </div>
-                        <div id="lottoUI" style="display:none;">
-                            <div class="legend-row">
-                                <span class="legend-chip" style="background:#FF9F43;color:#3A2410;">1줄</span>
-                                <span class="legend-chip" style="background:#9F7AEA;color:#fff;">2줄</span>
-                                <span class="legend-chip" style="background:#4FD1C5;color:#04342C;">3줄</span>
-                                <span class="legend-chip" style="background:#FC8181;color:#fff;">4줄</span>
-                                <span class="legend-chip" style="background:#63B3ED;color:#04342C;">5줄</span>
-                                <span style="font-size:10px;color:#334155;">중복=파이분할</span>
-                            </div>
-                            <canvas id="lottoCanvas" width="420" height="320" style="width:100%;display:block;border-radius:10px;background:#080d1a;"></canvas>
-                        </div>
-                        <div class="lottery-controls">
-                            <button class="spd-btn on" id="spdNormal">⚡ 빠름</button>
-                            <button class="spd-btn" id="spdCrazy">🔥 미침</button>
-                            <button class="btn-catch" id="btnCatch">포착!</button>
-                            <button class="btn-reset" id="btnR">초기화</button>
-                        </div>
-                        <div class="lottery-msg" id="msg" style="margin-top:8px;">포착 버튼을 눌러 번호를 확정하세요</div>
                     </div>
-                    <div class="result-panel">
-                        <div class="section-label" style="color:#94A3B8;letter-spacing:0.08em;">확정 번호</div>
-                        <div id="yeonResult" class="yeon-result-grid"></div>
-                        <div id="lottoResult" class="lotto-result" style="display:none;"></div>
-                    </div>
-                </div>
-            </div>
+                </section>
 
-        </section>
-    </main>
+                <!-- 업데이트 기록 -->
+                <section class="panel" id="panel-updates">
+                    <div class="update-card">
+                        <span class="card-tag" style="margin-bottom:12px;">📡 Update Notes</span>
+                        <h3 class="card-title" style="font-size:1.1rem;margin-bottom:0;">Orbit 변경사항</h3>
+                        <div class="timeline">
+                            <div class="tl-item">
+                                <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                                <div class="tl-content">
+                                    <div class="tl-version">v0.6 — LATEST</div>
+                                    <div class="tl-date">2026. 06. 13</div>
+                                    <div class="tl-title">🦦 수달 마스코트 & 대시보드 개편</div>
+                                    <div class="tl-desc">메인을 사이드바 + 패널 구조로 개편, 수달 마스코트 등장, 글 삭제 기능 추가.</div>
+                                    <div class="tl-tags"><span class="tl-tag">레이아웃</span><span class="tl-tag">마스코트</span></div>
+                                </div>
+                            </div>
+                            <div class="tl-item">
+                                <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                                <div class="tl-content">
+                                    <div class="tl-version old">v0.5</div>
+                                    <div class="tl-date">2026. 06. 12</div>
+                                    <div class="tl-title">🧡 컬러 리뉴얼 & 광장 베타</div>
+                                    <div class="tl-desc">주황 테마 전환, 광장 오픈, 이모지 교차 리액션, 파티클 이펙트 개선.</div>
+                                    <div class="tl-tags"><span class="tl-tag">리브랜딩</span><span class="tl-tag">광장</span></div>
+                                </div>
+                            </div>
+                            <div class="tl-item">
+                                <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                                <div class="tl-content">
+                                    <div class="tl-version old">v0.4</div>
+                                    <div class="tl-date">2026. 05. 25</div>
+                                    <div class="tl-title">🧑‍🚀 궤도 진입 시스템 추가</div>
+                                    <div class="tl-desc">닉네임 등록 후 나만의 프로필 카드로 궤도에 진입할 수 있어요.</div>
+                                    <div class="tl-tags"><span class="tl-tag">프로필</span><span class="tl-tag">진입 시스템</span></div>
+                                </div>
+                            </div>
+                            <div class="tl-item">
+                                <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                                <div class="tl-content">
+                                    <div class="tl-version old">v0.3</div>
+                                    <div class="tl-date">2026. 05. 22</div>
+                                    <div class="tl-title">🎰 Lucky Orbit 미니게임 추가</div>
+                                    <div class="tl-desc">카오스 알고리즘 기반 연금복권 / 로또 번호 생성기가 추가됐어요.</div>
+                                    <div class="tl-tags"><span class="tl-tag">미니게임</span><span class="tl-tag">연금복권</span><span class="tl-tag">로또</span></div>
+                                </div>
+                            </div>
+                            <div class="tl-item">
+                                <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                                <div class="tl-content">
+                                    <div class="tl-version old">v0.2</div>
+                                    <div class="tl-date">2026. 05. 21</div>
+                                    <div class="tl-title">커뮤니티 메인 페이지 오픈</div>
+                                    <div class="tl-desc">bento 그리드 레이아웃, 클릭 이펙트, 기본 카드 구성.</div>
+                                    <div class="tl-tags"><span class="tl-tag purple">UI</span><span class="tl-tag gray">레이아웃</span></div>
+                                </div>
+                            </div>
+                            <div class="tl-item">
+                                <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                                <div class="tl-content">
+                                    <div class="tl-version old">v0.1</div>
+                                    <div class="tl-date">2026. 05. 01</div>
+                                    <div class="tl-title">Orbit 랜딩페이지 공개</div>
+                                    <div class="tl-desc">meteor shower 애니메이션, orbiting star 로고, 슬로건 적용.</div>
+                                    <div class="tl-tags"><span class="tl-tag gray">런칭</span><span class="tl-tag gray">랜딩</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ===== 패널 전환 =====
+    (function(){
+        var TITLES = {
+            home:    'Connect in <span>Orbit</span>',
+            lounge:  '대화 <span>광장</span>',
+            lucky:   '<span>Lucky</span> Orbit',
+            updates: '업데이트 <span>기록</span>'
+        };
+        var loungeLoaded = false;
+        function switchPanel(name){
+            if(!TITLES[name]) name = 'home';
+            document.querySelectorAll('.nav-item').forEach(function(b){
+                b.classList.toggle('on', b.getAttribute('data-panel') === name);
+            });
+            document.querySelectorAll('.panel').forEach(function(p){
+                p.classList.toggle('on', p.id === 'panel-' + name);
+            });
+            document.getElementById('panelTitle').innerHTML = TITLES[name];
+            // 광장은 처음 열 때만 iframe 로드 (지연 로딩)
+            if(name === 'lounge' && !loungeLoaded){
+                var fr = document.getElementById('loungeFrame');
+                fr.src = fr.getAttribute('data-src');
+                loungeLoaded = true;
+            }
+            if(location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+        }
+        document.getElementById('sideNav').addEventListener('click', function(e){
+            var btn = e.target.closest('.nav-item');
+            if(!btn) return;
+            switchPanel(btn.getAttribute('data-panel'));
+        });
+        window.addEventListener('hashchange', function(){ switchPanel(location.hash.slice(1)); });
+
+        // 프로필 칩 — 가입 상태 반영
+        var nick = localStorage.getItem('orbit_nickname');
+        var chip = document.getElementById('profileChip');
+        if(nick){
+            document.getElementById('profileChipText').textContent = nick;
+            chip.addEventListener('click', function(){ location.href = 'profile.html'; });
+        } else {
+            document.getElementById('profileChipText').textContent = '궤도 진입하기';
+            chip.addEventListener('click', function(){
+                switchPanel('home');
+                var inp = document.getElementById('nicknameInput');
+                if(inp) inp.focus();
+            });
+        }
+
+        // 초기 패널 (해시 우선)
+        switchPanel((location.hash || '#home').slice(1));
+    })();
+    </script>
 
     <script>
 
