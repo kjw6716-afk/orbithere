@@ -618,6 +618,24 @@
         loadPosts();
     });
 
+    // ===== 메인의 '오늘의 떡밥'에서 보낸 프리필 수신 =====
+    window.addEventListener('message', function(ev){
+        if(ev.origin !== window.location.origin) return;
+        var d = ev.data;
+        if(!d || d.orbit !== 'prefill' || typeof d.text !== 'string') return;
+        var input = document.getElementById('postInput');
+        if(!input){ // 미가입 상태 — 글쓰기 칸 없음
+            setStatus('떡밥에 답하려면 먼저 궤도에 진입해 주세요!', false);
+            return;
+        }
+        input.value = d.text.slice(0, 500);
+        input.dispatchEvent(new Event('input')); // 글자 수·버튼 상태 갱신
+        input.focus();
+        try { input.setSelectionRange(input.value.length, input.value.length); } catch(e){}
+        var wc = document.querySelector('.write-card');
+        if(wc) wc.scrollIntoView({ behavior:'smooth', block:'center' });
+    });
+
     renderOrbitTabs();
     renderChannelHeader();
     renderWriteCard();
