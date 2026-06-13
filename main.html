@@ -158,6 +158,42 @@
         }
         .btn-outline:hover { background: rgba(255,159,67,0.08); border-color: var(--accent); }
 
+        /* 오늘의 떡밥 */
+        .bait-wrap { max-width: 940px; }
+        .bait-feature {
+            background: linear-gradient(135deg, rgba(255,159,67,0.14), rgba(255,183,77,0.05));
+            border: 1px solid rgba(255,159,67,0.3);
+            border-radius: 22px; padding: 28px; margin-bottom: 20px;
+            position: relative; overflow: hidden;
+        }
+        .bait-feature::before {
+            content:''; position:absolute; top:-40px; right:-30px;
+            width:170px; height:170px;
+            background: radial-gradient(circle, rgba(255,159,67,0.18) 0%, transparent 70%);
+            pointer-events:none;
+        }
+        .bait-feature .bf-emoji { font-size: 40px; line-height: 1; margin-bottom: 14px; }
+        .bait-feature .bf-q { font-size: 1.4rem; font-weight: 700; line-height: 1.45; margin: 0 0 20px; max-width: 640px; }
+        .bait-sub { font-size: 12px; color: #94A3B8; margin-bottom: 18px; line-height: 1.6; }
+        .bait-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .bait-card {
+            background: var(--card-bg); border: 1px solid rgba(255,159,67,0.12);
+            border-radius: 16px; padding: 18px 20px; cursor: pointer;
+            transition: all 0.2s ease; display: flex; gap: 14px; align-items: flex-start;
+        }
+        .bait-card:hover { border-color: rgba(255,159,67,0.4); transform: translateY(-2px); }
+        .bait-card .bc-emoji { font-size: 22px; flex-shrink: 0; line-height: 1.3; }
+        .bait-card .bc-body { min-width: 0; }
+        .bait-card .bc-cat {
+            display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+            color: var(--accent); background: rgba(255,159,67,0.1);
+            padding: 2px 8px; border-radius: 99px; margin-bottom: 7px;
+        }
+        .bait-card .bc-q { font-size: 13.5px; line-height: 1.55; color: #CBD5E1; }
+        .bait-card .bc-go { font-size: 11px; color: #475569; margin-top: 9px; transition: color 0.2s; }
+        .bait-card:hover .bc-go { color: var(--accent); }
+        @media (max-width: 768px){ .bait-grid { grid-template-columns: 1fr; } }
+
         /* 대화 광장 iframe */
         .lounge-frame {
             width: 100%; height: calc(100vh - 152px);
@@ -257,6 +293,7 @@
             <nav class="side-nav" id="sideNav">
                 <button class="nav-item on" data-panel="home"><span class="ic">🏠</span><span class="lbl">홈</span></button>
                 <button class="nav-item" data-panel="lounge"><span class="ic">💬</span><span class="lbl">대화 광장</span></button>
+                <button class="nav-item" data-panel="bait"><span class="ic">🎣</span><span class="lbl">오늘의 떡밥</span></button>
                 <button class="nav-item" data-panel="lucky"><span class="ic">🎰</span><span class="lbl">Lucky Orbit</span></button>
                 <button class="nav-item" data-panel="updates"><span class="ic">📡</span><span class="lbl">업데이트 기록</span></button>
             </nav>
@@ -315,6 +352,15 @@
                 <!-- 대화 광장 -->
                 <section class="panel" id="panel-lounge">
                     <iframe class="lounge-frame" id="loungeFrame" title="대화 광장" data-src="lounge.html?embed=1"></iframe>
+                </section>
+
+                <!-- 오늘의 떡밥 -->
+                <section class="panel" id="panel-bait">
+                    <div class="bait-wrap">
+                        <div class="bait-feature" id="baitFeature"><!-- JS가 채웁니다 --></div>
+                        <div class="bait-sub">🎣 가볍게 던지는 오늘의 이야깃거리예요. 마음에 드는 떡밥을 누르면 광장에서 바로 이야기를 시작할 수 있어요.</div>
+                        <div class="bait-grid" id="baitGrid"><!-- JS가 채웁니다 --></div>
+                    </div>
                 </section>
 
                 <!-- Lucky Orbit -->
@@ -411,7 +457,17 @@
                             <div class="tl-item">
                                 <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
                                 <div class="tl-content">
-                                    <div class="tl-version">v0.6 — LATEST</div>
+                                    <div class="tl-version">v0.7 — LATEST</div>
+                                    <div class="tl-date">2026. 06. 13</div>
+                                    <div class="tl-title">🎣 오늘의 떡밥 & 광장 채널 개편</div>
+                                    <div class="tl-desc">매일 바뀌는 이야깃거리 '오늘의 떡밥' 탭 추가 — 누르면 광장 글쓰기로 바로 이어져요. 광장 궤도엔 채널 헤더가 생겼어요.</div>
+                                    <div class="tl-tags"><span class="tl-tag">떡밥</span><span class="tl-tag">채널</span></div>
+                                </div>
+                            </div>
+                            <div class="tl-item">
+                                <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                                <div class="tl-content">
+                                    <div class="tl-version old">v0.6</div>
                                     <div class="tl-date">2026. 06. 13</div>
                                     <div class="tl-title">🦦 수달 마스코트 & 대시보드 개편</div>
                                     <div class="tl-desc">메인을 사이드바 + 패널 구조로 개편, 수달 마스코트 등장, 글 삭제 기능 추가.</div>
@@ -481,10 +537,11 @@
         var TITLES = {
             home:    'Connect in <span>Orbit</span>',
             lounge:  '대화 <span>광장</span>',
+            bait:    '오늘의 <span>떡밥</span>',
             lucky:   '<span>Lucky</span> Orbit',
             updates: '업데이트 <span>기록</span>'
         };
-        var loungeLoaded = false;
+        var loungeLoaded = false, loungeReady = false, pendingPrefill = null;
         function switchPanel(name){
             if(!TITLES[name]) name = 'home';
             document.querySelectorAll('.nav-item').forEach(function(b){
@@ -533,6 +590,77 @@
                 if(inp) inp.focus();
             });
         }
+
+        // ===== 오늘의 떡밥 → 광장으로 이어주기 =====
+        function flushPrefill(){
+            if(pendingPrefill == null) return;
+            var fr = document.getElementById('loungeFrame');
+            if(!fr || !fr.contentWindow) return;
+            fr.contentWindow.postMessage({ orbit: 'prefill', text: pendingPrefill }, window.location.origin);
+            pendingPrefill = null;
+        }
+        document.getElementById('loungeFrame').addEventListener('load', function(){
+            loungeReady = true;
+            flushPrefill();
+        });
+        function gotoLoungeWith(text){
+            pendingPrefill = text;
+            switchPanel('lounge');
+            if(loungeReady) flushPrefill(); // 이미 로드됐으면 바로, 처음이면 load 이벤트가 처리
+        }
+
+        var BAITS = [
+            { cat:'감성', emoji:'🌙', q:'잠들기 전에 자꾸 떠오르는 생각, 딱 하나만 적어본다면?' },
+            { cat:'취미', emoji:'🎧', q:'요즘 무한반복 중인 노래 한 곡만 추천해준다면?' },
+            { cat:'잡담', emoji:'☕', q:'아침에 눈 뜨자마자 가장 먼저 하는 행동은?' },
+            { cat:'취미', emoji:'📚', q:'책·영화·게임 통틀어 "내 인생작" 하나만 꼽는다면?' },
+            { cat:'감성', emoji:'🍂', q:'오늘 하루 중 사소했지만 기분 좋았던 순간이 있었어?' },
+            { cat:'잡담', emoji:'🍜', q:'비 오는 날엔 무조건 이거다, 하는 음식 있어?' },
+            { cat:'취미', emoji:'📷', q:'요즘 갤러리에 가장 많이 찍힌 피사체는 뭐야?' },
+            { cat:'감성', emoji:'✨', q:'1년 전의 나에게 딱 한 문장만 보낼 수 있다면?' },
+            { cat:'잡담', emoji:'🐾', q:'반려동물 자랑 or 언젠가 키우고 싶은 동물 얘기해줘!' },
+            { cat:'취미', emoji:'🎮', q:'시간 순삭되는 나만의 취미, 남몰래 추천한다면?' },
+            { cat:'시사', emoji:'💸', q:'요즘 물가 어디서 제일 체감해? 나만의 절약 꿀팁도 같이.' },
+            { cat:'감성', emoji:'🌌', q:'"이런 어른이 되고 싶었지" 싶었던 순간이 최근에 있었어?' }
+        ];
+        function dayIndex(){
+            var n = new Date();
+            return Math.floor(Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) / 86400000);
+        }
+        function renderBait(){
+            var day = dayIndex();
+            var feat = BAITS[day % BAITS.length];
+            document.getElementById('baitFeature').innerHTML =
+                '<span class="card-tag" style="margin-bottom:14px;">🔥 오늘의 떡밥</span>' +
+                '<div class="bf-emoji">' + feat.emoji + '</div>' +
+                '<h3 class="bf-q">' + feat.q + '</h3>' +
+                '<button class="btn-mint" id="baitFeatBtn">광장에서 이야기 시작하기 →</button>';
+            document.getElementById('baitFeatBtn').addEventListener('click', function(){
+                gotoLoungeWith('[오늘의 떡밥] ' + feat.q + '\n\n');
+            });
+
+            var grid = document.getElementById('baitGrid');
+            grid.innerHTML = '';
+            for(var i = 1; i <= 6; i++){
+                var b = BAITS[(day + i) % BAITS.length];
+                var card = document.createElement('div');
+                card.className = 'bait-card';
+                card.innerHTML =
+                    '<div class="bc-emoji">' + b.emoji + '</div>' +
+                    '<div class="bc-body">' +
+                    '<span class="bc-cat">' + b.cat + '</span>' +
+                    '<div class="bc-q">' + b.q + '</div>' +
+                    '<div class="bc-go">광장에서 이야기하기 →</div>' +
+                    '</div>';
+                (function(bait){
+                    card.addEventListener('click', function(){
+                        gotoLoungeWith('[떡밥] ' + bait.q + '\n\n');
+                    });
+                })(b);
+                grid.appendChild(card);
+            }
+        }
+        renderBait();
 
         // 초기 패널 (해시 우선)
         switchPanel((location.hash || '#home').slice(1));
