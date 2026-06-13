@@ -193,6 +193,15 @@
         }
         .btn-secondary:hover { border-color: rgba(255,159,67,0.3); color: var(--accent); }
 
+        .btn-logout {
+            width: 100%; padding: 11px; margin-top: 4px;
+            background: transparent; color: #475569;
+            border: none; border-radius: 14px;
+            font-size: 12px; font-weight: 500;
+            cursor: pointer; transition: 0.2s; font-family: 'Pretendard';
+        }
+        .btn-logout:hover { color: #FC8181; }
+
         /* 베타 안내 */
         .beta-notice {
             font-size: 11px; color: #334155;
@@ -260,6 +269,7 @@
 
             <button class="btn-primary" onclick="goMain()">커뮤니티로 이동하기</button>
             <button class="btn-secondary" onclick="goIndex()">처음으로 돌아가기</button>
+            <button class="btn-logout" onclick="logout()">로그아웃</button>
         </div>
 
         <div class="beta-notice">
@@ -308,6 +318,13 @@
 
     function goMain(){ window.location.href = 'main.html'; }
     function goIndex(){ window.location.href = 'index.html'; }
+    function logout(){
+        if(!confirm('로그아웃 하시겠어요? 이 기기에서 닉네임이 해제됩니다.')) return;
+        localStorage.removeItem('orbit_nickname');
+        localStorage.removeItem('orbit_joindate');
+        localStorage.removeItem('orbit_jointime');
+        window.location.href = 'index.html';
+    }
 
     </script>
 </body>
