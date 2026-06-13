@@ -9,6 +9,7 @@ create table if not exists public.posts (
   nick text not null check (char_length(nick) between 2 and 12),
   orbit text not null check (orbit in ('free', 'money', 'dawn')),
   text text not null check (char_length(text) between 1 and 500),
+  author_device text,                          -- 작성 기기 식별 (삭제 권한 확인용)
   created_at timestamptz not null default now()
 );
 
@@ -41,6 +42,22 @@ create policy "rx_insert"    on public.reactions for insert with check (true);
 -- 리액션 취소 허용
 -- (베타: 익명 구조라 device_id 소유 검증은 불가. 정식 계정 도입 시 auth.uid() 기반으로 강화)
 create policy "rx_delete" on public.reactions for delete using (true);
+
+-- 글 삭제: 작성한 기기에서만 가능하도록 RPC로 제한
+-- (posts에는 직접 delete 정책을 두지 않음 → 임의 삭제 차단,
+--  이 함수만 security definer로 author_device 일치 시 삭제)
+create or replace function public.delete_post(p_id uuid, p_device text)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  delete from public.posts where id = p_id and author_device = p_device;
+end;
+$$;
+
+grant execute on function public.delete_post(uuid, text) to anon;
 
 -- 환영 글
 insert into public.posts (nick, orbit, text)

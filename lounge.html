@@ -74,7 +74,14 @@
 
         .container { max-width: 680px; margin: 130px auto 80px; padding: 0 20px; }
 
-        header { margin-bottom: 28px; }
+        header { margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .header-text { min-width: 0; }
+        .header-otter {
+            height: 104px; width: auto; flex-shrink: 0;
+            animation: otter-bob 3.2s ease-in-out infinite;
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.28));
+        }
+        @keyframes otter-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
         header h1 { font-size: 2.2rem; font-weight: 200; margin: 0; line-height: 1.2; }
         header h1 span { color: var(--accent); font-weight: 700; }
         header p { color: #94A3B8; margin-top: 10px; font-size: 0.95rem; }
@@ -220,15 +227,26 @@
             transition: background 0.12s;
         }
         .rx-pal-btn:hover { background: rgba(255,159,67,0.14); }
-        .reply-hint { font-size: 11px; color: #334155; margin-left: auto; }
+        .btn-del {
+            margin-left: auto; flex-shrink: 0;
+            width: 28px; height: 28px; border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: transparent; border: 1px solid rgba(255,255,255,0.07);
+            color: #475569; cursor: pointer; transition: all 0.15s;
+        }
+        .btn-del:hover { border-color: rgba(252,129,129,0.5); color: #FC8181; background: rgba(252,129,129,0.06); }
+        .btn-del svg { width: 13px; height: 13px; }
 
         .empty-state {
-            text-align: center; padding: 50px 0; color: #475569; font-size: 13px;
+            text-align: center; padding: 40px 0; color: #475569; font-size: 13px;
         }
+        .empty-state img { height: 112px; width: auto; margin-bottom: 14px; opacity: 0.9; }
+        .empty-state p { margin: 0; line-height: 1.6; }
 
         @media (max-width: 768px) {
             header h1 { font-size: 1.7rem; }
             .container { margin-top: 110px; }
+            .header-otter { height: 80px; }
         }
 
         ::selection { background-color: #4FD1C5; color: #0F172A; }
@@ -246,9 +264,12 @@
 
     <main class="container">
         <header>
-            <h1>광장, <span>궤적</span>이 모이는 곳</h1>
-            <p>비슷한 궤도를 도는 사람들의 이야기가 흘러갑니다</p>
-            <span class="mock-badge" id="loungeStatus">β 베타 — 궤적은 모두에게 공개 저장돼요</span>
+            <div class="header-text">
+                <h1>광장, <span>궤적</span>이 모이는 곳</h1>
+                <p>비슷한 궤도를 도는 사람들의 이야기가 흘러갑니다</p>
+                <span class="mock-badge" id="loungeStatus">β 베타 — 궤적은 모두에게 공개 저장돼요</span>
+            </div>
+            <img class="header-otter" src="images/otter.png" alt="Orbit 수달 마스코트" width="73" height="104">
         </header>
 
         <div class="orbit-tabs" id="orbitTabs">
@@ -353,7 +374,8 @@
             var res = await sb.from('posts').insert({
                 nick: nickname,
                 orbit: document.getElementById('orbitSelect').value,
-                text: text
+                text: text,
+                author_device: deviceId
             });
             delete btn.dataset.sending;
             btn.textContent = '궤적 남기기';
@@ -410,11 +432,12 @@
         var list = document.getElementById('postList');
         list.innerHTML = '';
         if(posts.length === 0){
-            list.innerHTML = '<div class="empty-state">아직 이 궤도에는 궤적이 없어요.<br>첫 번째 궤적을 남겨보세요!</div>';
+            list.innerHTML = '<div class="empty-state"><img src="images/otter.png" alt=""><p>아직 이 궤도에는 궤적이 없어요.<br>첫 번째 궤적을 남겨보세요!</p></div>';
             return;
         }
         posts.forEach(function(p, i){
             var isMine = nickname && p.nick === nickname;
+            var canDelete = p.author_device && p.author_device === deviceId;
             var post = document.createElement('article');
             post.className = 'post';
             post.style.animationDelay = (Math.min(i, 10) * 0.05) + 's';
@@ -430,11 +453,30 @@
                 '<div class="post-body">' + escapeHtml(p.text) + '</div>' +
                 '<div class="post-foot">' +
                 '<div class="reaction-row"></div>' +
-                '<span class="reply-hint">댓글은 다음 버전에서 열려요</span>' +
+                (canDelete ? '<button class="btn-del" title="궤적 삭제"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg></button>' : '') +
                 '</div>';
             list.appendChild(post);
             renderRxRow(post.querySelector('.reaction-row'), p);
+            if(canDelete){
+                post.querySelector('.btn-del').addEventListener('click', function(){ deletePost(p, post); });
+            }
         });
+    }
+
+    // ===== 궤적 삭제 (작성한 기기에서만) =====
+    async function deletePost(p, el){
+        if(!sb) return;
+        if(!confirm('이 궤적을 삭제할까요? 되돌릴 수 없어요.')) return;
+        var res = await sb.rpc('delete_post', { p_id: p.id, p_device: deviceId });
+        if(res.error){
+            console.error(res.error);
+            setStatus('삭제 실패 — 잠시 후 다시 시도해주세요', true);
+            return;
+        }
+        el.style.transition = 'opacity 0.25s, transform 0.25s';
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(-6px)';
+        setTimeout(loadPosts, 250);
     }
 
     // ===== 이모지 교차 리액션 =====
