@@ -36,19 +36,6 @@
             touch-action: manipulation;
         }
 
-        /* 추상 배경 — 동심원 궤도 라인 */
-        .bg-rings {
-            position: fixed; top: 50%; left: 50%;
-            width: 1400px; height: 1400px;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            background:
-                radial-gradient(circle, transparent 29.9%, rgba(255,159,67,0.04) 30%, transparent 30.4%),
-                radial-gradient(circle, transparent 49.9%, rgba(255,159,67,0.035) 50%, transparent 50.4%),
-                radial-gradient(circle, transparent 69.9%, rgba(255,159,67,0.03) 70%, transparent 70.4%),
-                radial-gradient(circle, transparent 89.9%, rgba(255,159,67,0.025) 90%, transparent 90.4%);
-            pointer-events: none; z-index: -1;
-        }
         .bg-glow {
             position: fixed; top: -10%; right: -10%;
             width: 600px; height: 600px;
@@ -260,7 +247,6 @@
     <script src="effects.js" defer></script>
 </head>
 <body>
-    <div class="bg-rings"></div>
     <div class="bg-glow"></div>
 
     <nav>
@@ -307,6 +293,13 @@
 
     var nickname = localStorage.getItem('orbit_nickname');
     var currentOrbit = 'all';
+    var EMBED = document.documentElement.classList.contains('embed');
+
+    // 임베드(메인 패널 안)일 땐 부모에게 홈 패널 전환을 요청, 단독 페이지일 땐 일반 이동
+    function goJoin(){
+        if(EMBED && window.parent !== window){ window.parent.postMessage({ orbit: 'goHome' }, '*'); }
+        else { location.href = 'main.html'; }
+    }
 
     // 익명 리액션 식별용 기기 ID
     var deviceId = localStorage.getItem('orbit_device_id');
@@ -345,7 +338,7 @@
             card.innerHTML =
                 '<div class="need-join">' +
                 '<p>궤도에 진입하면 궤적을 남길 수 있어요</p>' +
-                '<button class="btn-go-join" onclick="location.href=\'main.html\'">궤도 진입하러 가기</button>' +
+                '<button class="btn-go-join" onclick="goJoin()">궤도 진입하러 가기</button>' +
                 '</div>';
             return;
         }

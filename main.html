@@ -509,6 +509,16 @@
         });
         window.addEventListener('hashchange', function(){ switchPanel(location.hash.slice(1)); });
 
+        // 임베드된 광장(iframe)에서 보내는 패널 전환 요청 수신
+        window.addEventListener('message', function(ev){
+            if(ev.origin !== window.location.origin) return;
+            if(ev.data && ev.data.orbit === 'goHome'){
+                switchPanel('home');
+                var inp = document.getElementById('nicknameInput');
+                if(inp) inp.focus();
+            }
+        });
+
         // 프로필 칩 — 가입 상태 반영
         var nick = localStorage.getItem('orbit_nickname');
         var chip = document.getElementById('profileChip');
