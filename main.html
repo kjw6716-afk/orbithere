@@ -6,6 +6,7 @@
     <title>Orbit | Community</title>
     <meta name="description" content="우리의 관심사가 교차하고 새로운 궤도가 만들어지는 곳 — 오빗 커뮤니티.">
     <meta name="theme-color" content="#0F172A">
+    <link rel="canonical" href="https://orbithere.com/main.html">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -22,29 +23,11 @@
     <meta property="og:url" content="https://orbithere.com/main.html">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="/orbit.css">
     <style>
-        :root {
-            --bg-color: #0F172A;
-            --accent: #FF9F43;
-            --text-main: #E2E8F0;
-            --card-bg: rgba(30, 41, 59, 0.7);
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Pretendard', sans-serif;
-            overflow-x: hidden;
-            touch-action: manipulation;
-        }
+        body { touch-action: manipulation; }   /* 나머지 기본값은 orbit.css */
 
-        .bg-glow {
-            position: fixed; top: -10%; right: -10%;
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(255,159,67,0.08) 0%, rgba(15,23,42,0) 70%);
-            pointer-events: none; z-index: 0;
-        }
+        .bg-glow { z-index: 0; }   /* 앱 셸(.app)이 z-index:1이라 뒤로 밀지 않는다 */
 
         /* ===== 앱 셸 ===== */
         .app { display: flex; min-height: 100vh; position: relative; z-index: 1; }
@@ -199,21 +182,10 @@
         .lucky-out:hover { color: var(--accent); }
 
         /* ===== 공통 푸터 ===== */
+        /* 사이드바 옆 본문 폭을 그대로 쓰는 푸터 — 공통 푸터의 720px 제한을 푼다 */
         .site-footer {
-            margin-top: auto; padding: 24px 32px 30px;
+            max-width: none; margin-top: auto; padding: 24px 32px 30px;
             border-top: 1px solid rgba(255,159,67,0.08); text-align: center;
-        }
-        .foot-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 13px; }
-        .foot-links a { font-size: 12px; color: #64748B; text-decoration: none; transition: color 0.2s; }
-        .foot-links a:hover { color: var(--accent); }
-        .foot-sign {
-            font-size: 11.5px; color: #475569; letter-spacing: 0.03em;
-            display: flex; align-items: center; justify-content: center; gap: 5px;
-        }
-        .foot-star { width: 13px; height: 13px; flex-shrink: 0; animation: foot-twinkle 2.8s ease-in-out infinite; }
-        @keyframes foot-twinkle {
-            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
-            50%      { transform: scale(1.2) rotate(18deg); opacity: 1; }
         }
 
         /* ===== 반응형 ===== */

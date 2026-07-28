@@ -6,6 +6,7 @@
     <title>Orbit | 프로필</title>
     <meta name="description" content="나의 궤도 프로필 — 레벨, 궤적, 연결된 별을 확인하세요.">
     <meta name="theme-color" content="#0F172A">
+    <link rel="canonical" href="https://orbithere.com/profile.html">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -22,13 +23,8 @@
     <meta property="og:url" content="https://orbithere.com/profile.html">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="/orbit.css">
     <style>
-        :root {
-            --bg: #0F172A;
-            --accent: #FF9F43;
-            --card: rgba(30,41,59,0.7);
-        }
-        * { box-sizing: border-box; }
         body {
             margin: 0;
             min-height: 100vh;
@@ -36,7 +32,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: var(--bg);
+            background: var(--bg-color);
             color: #E2E8F0;
             font-family: 'Pretendard', sans-serif;
             overflow-x: hidden;
@@ -81,7 +77,7 @@
         /* 프로필 카드 */
         .profile-card {
             width: 100%;
-            background: var(--card);
+            background: var(--card-bg);
             border: 1px solid rgba(255,159,67,0.2);
             border-radius: 28px; padding: 32px;
             animation: fadeUp 0.7s ease 0.1s both;
@@ -213,9 +209,11 @@
         }
 
 
-        /* ===== 공통 푸터 ===== */
+        /* ===== 공통 푸터 =====
+           카드 안에 들어가는 작은 푸터라 공통 푸터의 테두리·여백을 걷어낸다 */
         .site-footer {
-            text-align: center; margin-top: 4px;
+            max-width: none; padding: 0; border-top: none;
+            text-align: center; margin: 4px auto 0;
             animation: fadeUp 0.7s ease 0.4s both;
         }
         .foot-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 16px; margin-bottom: 10px; }
@@ -226,10 +224,6 @@
             display: flex; align-items: center; justify-content: center; gap: 5px;
         }
         .foot-star { width: 12px; height: 12px; flex-shrink: 0; animation: foot-twinkle 2.8s ease-in-out infinite; }
-        @keyframes foot-twinkle {
-            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
-            50%      { transform: scale(1.2) rotate(18deg); opacity: 1; }
-        }
 
         ::selection { background-color: #4FD1C5; color: #0F172A; }
 

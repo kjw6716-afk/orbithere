@@ -1,0 +1,104 @@
+/* ============================================================
+   Orbit 공통 스타일
+   ------------------------------------------------------------
+   모든 페이지가 실제로 함께 쓰는 것만 둔다.
+   색 변수 · 기본 body · 배경 글로우 · 상단바 · 푸터 · 모션 감속.
+
+   각 페이지의 <style>은 이 파일보다 뒤에 오므로,
+   페이지 고유 스타일은 그대로 두고 필요하면 여기 값을 덮어쓰면 된다.
+   (예: main.html은 푸터를 사이드바 레이아웃에 맞춰 다시 잡는다)
+
+   상단바를 태그 이름(`nav`)이 아니라 `.site-topbar`로 잡는 이유:
+   main.html의 사이드바(<nav class="side-nav">)와
+   index.html의 바로가기(<nav class="quick-links">)도 nav 요소라서
+   태그로 잡으면 그 둘까지 상단 고정바가 되어 버린다.
+   `.topbar`가 아닌 이유는 main.html이 그 이름을 앱 셸의 상단바로 이미 쓰고 있어서다.
+   ============================================================ */
+
+:root {
+    --bg-color:  #0F172A;
+    --accent:    #FF9F43;
+    --text-main: #E2E8F0;
+    --card-bg:   rgba(30, 41, 59, 0.7);
+    --mint:      #4FD1C5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Pretendard', sans-serif;
+    overflow-x: hidden;
+}
+
+/* ===== 배경 글로우 ===== */
+.bg-glow {
+    position: fixed; top: -10%; right: -10%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255,159,67,0.08) 0%, rgba(15,23,42,0) 70%);
+    pointer-events: none; z-index: -1;
+}
+
+/* ===== 상단바 ===== */
+.site-topbar {
+    position: fixed; top: 0; width: 100%;
+    padding: 1.5rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 100; backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255,159,67,0.1);
+}
+.logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); cursor: pointer; }
+.nav-back {
+    font-size: 12px; color: #64748B; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
+    padding: 6px 12px; transition: 0.2s; background: transparent;
+    font-family: 'Pretendard';
+}
+.nav-back:hover { color: var(--accent); border-color: rgba(255,159,67,0.3); }
+
+/* ===== 푸터 ===== */
+.site-footer {
+    max-width: 720px; margin: 60px auto 0; padding: 26px 20px 36px;
+    border-top: 1px solid rgba(255,159,67,0.1); text-align: center;
+}
+.foot-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 13px; }
+.foot-links a { font-size: 12px; color: #64748B; text-decoration: none; transition: color 0.2s; }
+.foot-links a:hover { color: var(--accent); }
+.foot-sign {
+    font-size: 11.5px; color: #475569; letter-spacing: 0.03em;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.foot-star { width: 13px; height: 13px; flex-shrink: 0; animation: foot-twinkle 2.8s ease-in-out infinite; }
+@keyframes foot-twinkle {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
+    50%      { transform: scale(1.2) rotate(18deg); opacity: 1; }
+}
+
+/* ============================================================
+   모션 감속 (prefers-reduced-motion)
+   ------------------------------------------------------------
+   이 사이트는 유성우·파티클·반짝임이 계속 움직인다.
+   전정기관이 예민하거나 멀미가 있는 분들에게는 그게 실제로 괴로우므로,
+   기기에서 "동작 줄이기"를 켠 경우에는 움직임을 걷어낸다.
+
+   애니메이션을 0으로 만들지 않고 0.01ms로 두는 이유:
+   animation 완료(animationend)를 기다렸다 다음 일을 하는 코드가 있어도
+   그 이벤트는 그대로 발생하기 때문에 화면이 멈춰버리지 않는다.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* 끝난 자리에 흔적만 남는 장식들은 아예 감춘다.
+       (유성우는 마지막 프레임이 opacity:0이라 어차피 보이지 않는다) */
+    .starfield, .meteor { display: none !important; }
+
+    /* 반짝이는 별은 움직임만 멈추고 그대로 보이게 둔다 */
+    .foot-star { animation: none !important; opacity: 0.9 !important; }
+}
