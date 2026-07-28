@@ -72,6 +72,11 @@
         .nav-item .ic { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
         .nav-item:hover { background: rgba(255,159,67,0.07); color: var(--text-main); }
         .nav-item.on { background: rgba(255,159,67,0.13); color: var(--accent); }
+
+        /* 모바일 메뉴 버튼 / 스크림 — 데스크톱에서는 숨김 */
+        .nav-toggle { display: none; }
+        .nav-scrim { display: none; }
+
         /* 콘텐츠 */
         .content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
         .topbar {
@@ -215,19 +220,82 @@
         @media (max-width: 860px) {
             .app { flex-direction: column; }
             .sidebar {
-                width: 100%; height: auto; position: sticky; top: 0;
-                flex-direction: row; align-items: center; gap: 6px;
-                padding: 10px 12px; overflow-x: auto;
+                width: 100%; height: auto; position: sticky; top: 0; z-index: 40;
+                flex-direction: row; align-items: center; justify-content: space-between; gap: 10px;
+                padding: 10px 14px; overflow: visible;
             }
-            .side-logo { padding: 6px 10px; }
-            .side-nav { flex-direction: row; gap: 4px; }
-            .nav-item { padding: 9px 13px; white-space: nowrap; }
+            .side-logo { padding: 6px 2px; }
+
+            /* 메뉴 버튼 — 현재 탭을 보여주고, 누르면 탭 목록이 펼쳐짐 */
+            .nav-toggle {
+                display: inline-flex; align-items: center; gap: 8px;
+                padding: 9px 12px 9px 14px; border-radius: 99px;
+                border: 1px solid rgba(255,159,67,0.22); background: rgba(255,159,67,0.09);
+                color: var(--accent); font-family: 'Pretendard'; font-size: 13.5px; font-weight: 700;
+                cursor: pointer; transition: background 0.15s, border-color 0.15s;
+                max-width: 62vw;
+            }
+            .nav-toggle:active { background: rgba(255,159,67,0.16); }
+            .nav-toggle .nt-ic { font-size: 15px; flex-shrink: 0; }
+            .nav-toggle .nt-lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .nav-toggle .nt-arrow {
+                width: 9px; height: 9px; flex-shrink: 0; margin-left: 1px;
+                border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+                transform: rotate(45deg) translate(-2px, -2px);
+                transition: transform 0.25s ease;
+            }
+            .sidebar.open .nav-toggle { background: rgba(255,159,67,0.16); border-color: var(--accent); }
+            .sidebar.open .nav-toggle .nt-arrow { transform: rotate(-135deg) translate(-2px, -2px); }
+
+            /* 펼쳐지는 탭 목록 */
+            .side-nav {
+                position: absolute; top: calc(100% - 4px); left: 10px; right: 10px;
+                flex-direction: column; gap: 4px; padding: 8px;
+                border-radius: 18px;
+                background: #151E36; backdrop-filter: blur(14px);
+                border: 1px solid rgba(255,159,67,0.18);
+                box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+                opacity: 0; visibility: hidden; pointer-events: none;
+                transform: translateY(-10px) scale(0.98); transform-origin: top right;
+                transition: opacity 0.18s ease, transform 0.22s ease, visibility 0.22s;
+            }
+            .sidebar.open .side-nav {
+                opacity: 1; visibility: visible; pointer-events: auto;
+                transform: translateY(0) scale(1);
+            }
+            .nav-item { padding: 13px 14px; font-size: 14.5px; white-space: nowrap; }
+            .sidebar.open .nav-item { animation: nav-drop 0.28s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+            .sidebar.open .nav-item:nth-child(1) { animation-delay: 0.02s; }
+            .sidebar.open .nav-item:nth-child(2) { animation-delay: 0.05s; }
+            .sidebar.open .nav-item:nth-child(3) { animation-delay: 0.08s; }
+            .sidebar.open .nav-item:nth-child(4) { animation-delay: 0.11s; }
+            .sidebar.open .nav-item:nth-child(5) { animation-delay: 0.14s; }
+            .sidebar.open .nav-item:nth-child(6) { animation-delay: 0.17s; }
+            .sidebar.open .nav-item:nth-child(n+7) { animation-delay: 0.2s; }
+            @keyframes nav-drop {
+                from { opacity: 0; transform: translateY(-12px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+
+            /* 바깥 영역 탭하면 닫힘 */
+            .nav-scrim {
+                display: block; position: fixed; inset: 0; z-index: 39;
+                background: rgba(8, 13, 26, 0.5);
+                opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s;
+            }
+            .nav-scrim.on { opacity: 1; visibility: visible; }
+
             .topbar { padding: 16px 18px; }
             .panel-wrap { padding: 20px 18px 50px; }
             .home-grid { grid-template-columns: 1fr; }
             .game-inner { grid-template-columns: 1fr; }
             .result-panel { padding-left: 0; border-left: none; border-top: 1px solid rgba(255,159,67,0.08); padding-top: 12px; }
             .lounge-frame { height: calc(100vh - 132px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .sidebar.open .nav-item { animation: none; }
+            .side-nav, .nav-scrim, .nav-toggle .nt-arrow { transition-duration: 0.01ms; }
         }
 
         ::selection { background-color: #4FD1C5; color: #0F172A; }
@@ -241,6 +309,11 @@
         <!-- 사이드바 -->
         <aside class="sidebar">
             <div class="side-logo" onclick="location.href='index.html'">ORBIT.</div>
+            <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="sideNav" aria-label="메뉴 열기">
+                <span class="nt-ic" id="navToggleIc">🏠</span>
+                <span class="nt-lbl" id="navToggleLbl">홈</span>
+                <span class="nt-arrow" aria-hidden="true"></span>
+            </button>
             <nav class="side-nav" id="sideNav">
                 <button class="nav-item on" data-panel="home"><span class="ic">🏠</span><span class="lbl">홈</span></button>
                 <button class="nav-item" data-panel="lounge"><span class="ic">💬</span><span class="lbl">대화 광장</span></button>
@@ -250,6 +323,7 @@
                 <button class="nav-item" data-panel="updates"><span class="ic">📡</span><span class="lbl">업데이트 기록</span></button>
             </nav>
         </aside>
+        <div class="nav-scrim" id="navScrim"></div>
 
         <!-- 콘텐츠 -->
         <div class="content">
@@ -467,11 +541,39 @@
             updates: '업데이트 <span>기록</span>'
         };
         var loungeLoaded = false, luckyLoaded = false, fortuneLoaded = false, skyLoaded = false;
+
+        // ===== 모바일 탭 메뉴 (버튼 → 탭 목록 펼치기) =====
+        var sidebar   = document.querySelector('.sidebar');
+        var navToggle = document.getElementById('navToggle');
+        var navScrim  = document.getElementById('navScrim');
+        function setMenu(open){
+            sidebar.classList.toggle('open', open);
+            navScrim.classList.toggle('on', open);
+            navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            navToggle.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
+        }
+        navToggle.addEventListener('click', function(){
+            setMenu(!sidebar.classList.contains('open'));
+        });
+        navScrim.addEventListener('click', function(){ setMenu(false); });
+        document.addEventListener('keydown', function(e){
+            if(e.key === 'Escape' && sidebar.classList.contains('open')) setMenu(false);
+        });
+        window.addEventListener('resize', function(){
+            if(window.innerWidth > 860 && sidebar.classList.contains('open')) setMenu(false);
+        });
+
         function switchPanel(name){
             if(!TITLES[name]) name = 'home';
             document.querySelectorAll('.nav-item').forEach(function(b){
-                b.classList.toggle('on', b.getAttribute('data-panel') === name);
+                var on = b.getAttribute('data-panel') === name;
+                b.classList.toggle('on', on);
+                if(on){
+                    document.getElementById('navToggleIc').textContent  = b.querySelector('.ic').textContent;
+                    document.getElementById('navToggleLbl').textContent = b.querySelector('.lbl').textContent;
+                }
             });
+            setMenu(false);
             document.querySelectorAll('.panel').forEach(function(p){
                 p.classList.toggle('on', p.id === 'panel-' + name);
             });
