@@ -188,6 +188,24 @@
         }
         .lucky-out:hover { color: var(--accent); }
 
+        /* ===== 공통 푸터 ===== */
+        .site-footer {
+            margin-top: auto; padding: 24px 32px 30px;
+            border-top: 1px solid rgba(255,159,67,0.08); text-align: center;
+        }
+        .foot-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 13px; }
+        .foot-links a { font-size: 12px; color: #64748B; text-decoration: none; transition: color 0.2s; }
+        .foot-links a:hover { color: var(--accent); }
+        .foot-sign {
+            font-size: 11.5px; color: #475569; letter-spacing: 0.03em;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .foot-star { width: 13px; height: 13px; flex-shrink: 0; animation: foot-twinkle 2.8s ease-in-out infinite; }
+        @keyframes foot-twinkle {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
+            50%      { transform: scale(1.2) rotate(18deg); opacity: 1; }
+        }
+
         /* ===== 반응형 ===== */
         @media (max-width: 860px) {
             .app { flex-direction: column; }
@@ -294,7 +312,27 @@
                             <div class="tl-item">
                                 <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
                                 <div class="tl-content">
-                                    <div class="tl-version">v0.8 — LATEST</div>
+                                    <div class="tl-version">v1.0 — LATEST</div>
+                                    <div class="tl-date">2026. 07. 28</div>
+                                    <div class="tl-title">🌠 오늘의 운세 오픈</div>
+                                    <div class="tl-desc">별자리·띠 운세가 <a href="fortune.html" style="color:var(--accent);">fortune.html</a>에 생겼어요. 총운 점수, 애정·금전·직장운, 행운의 숫자와 색까지 — 매일 자정 새 운세가 궤도에 올라옵니다.</div>
+                                    <div class="tl-tags"><span class="tl-tag">운세</span><span class="tl-tag">검색 유입</span></div>
+                                </div>
+                            </div>
+                            <div class="tl-item">
+                                <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                                <div class="tl-content">
+                                    <div class="tl-version old">v0.9</div>
+                                    <div class="tl-date">2026. 07. 28</div>
+                                    <div class="tl-title">⭐ 공통 푸터 & 이용약관·개인정보처리방침</div>
+                                    <div class="tl-desc">모든 페이지 하단에 반짝이는 별 서명이 담긴 푸터가 생겼어요. <a href="terms.html" style="color:var(--accent);">이용약관</a>과 <a href="privacy.html" style="color:var(--accent);">개인정보처리방침</a> 문서도 정식으로 마련됐어요.</div>
+                                    <div class="tl-tags"><span class="tl-tag">푸터</span><span class="tl-tag">약관</span></div>
+                                </div>
+                            </div>
+                            <div class="tl-item">
+                                <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                                <div class="tl-content">
+                                    <div class="tl-version old">v0.8</div>
                                     <div class="tl-date">2026. 07. 28</div>
                                     <div class="tl-title">🎰 Lucky Orbit 독립 페이지로 분리</div>
                                     <div class="tl-desc">복권 추첨기가 <a href="lucky.html" style="color:var(--accent);">lucky.html</a> 주소를 갖게 됐어요. 사용법·FAQ가 붙었고, 검색으로도 찾아올 수 있어요. 여기 탭에서는 그대로 쓸 수 있어요.</div>
@@ -375,6 +413,21 @@
                     </div>
                 </section>
             </div>
+
+            <footer class="site-footer">
+                <div class="foot-links">
+                    <a href="lounge.html">대화 광장</a>
+                    <a href="lucky.html">로또 번호 생성기</a>
+                    <a href="fortune.html">오늘의 운세</a>
+                    <a href="terms.html">이용약관</a>
+                    <a href="privacy.html">개인정보처리방침</a>
+                </div>
+                <div class="foot-sign">
+                    © 2026 Orbit · Made with
+                    <svg class="foot-star" viewBox="0 0 100 100" aria-hidden="true"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg>
+                    in orbit
+                </div>
+            </footer>
         </div>
     </div>
 

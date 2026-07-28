@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이용약관 | Orbit</title>
+    <meta name="description" content="Orbit(orbithere.com) 커뮤니티 서비스의 이용약관입니다.">
+    <meta name="theme-color" content="#0F172A">
+    <link rel="canonical" href="https://orbithere.com/terms.html">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Orbit">
+    <meta property="og:title" content="이용약관 | Orbit">
+    <meta property="og:description" content="Orbit(orbithere.com) 커뮤니티 서비스의 이용약관입니다.">
+    <meta property="og:url" content="https://orbithere.com/terms.html">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        :root {
+            --bg-color: #0F172A;
+            --accent: #FF9F43;
+            --text-main: #E2E8F0;
+            --card-bg: rgba(30, 41, 59, 0.7);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Pretendard', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .bg-glow {
+            position: fixed; top: -10%; right: -10%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255,159,67,0.08) 0%, rgba(15,23,42,0) 70%);
+            pointer-events: none; z-index: -1;
+        }
+
+        nav {
+            position: fixed; top: 0; width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100; backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,159,67,0.1);
+        }
+        .logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); cursor: pointer; }
+        .nav-back {
+            font-size: 12px; color: #64748B; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
+            padding: 6px 12px; transition: 0.2s; background: transparent;
+            font-family: 'Pretendard';
+        }
+        .nav-back:hover { color: var(--accent); border-color: rgba(255,159,67,0.3); }
+
+        .container { max-width: 720px; margin: 130px auto 0; padding: 0 20px; }
+
+        .hero { margin-bottom: 30px; }
+        .hero h1 { font-size: 1.8rem; font-weight: 200; margin: 0; line-height: 1.3; }
+        .hero h1 strong { color: var(--accent); font-weight: 700; }
+        .hero p { color: #94A3B8; margin-top: 10px; font-size: 0.9rem; line-height: 1.7; }
+        .effective { font-size: 12px; color: #475569; margin-top: 6px; }
+
+        .doc h2 {
+            font-size: 1.05rem; font-weight: 600; margin: 34px 0 12px;
+            padding-bottom: 8px; border-bottom: 1px solid rgba(255,159,67,0.12);
+        }
+        .doc p { color: #94A3B8; font-size: 14px; line-height: 1.8; margin: 0 0 12px; }
+        .doc ul, .doc ol { color: #94A3B8; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0 0 12px; }
+        .doc li { margin-bottom: 6px; }
+        .doc strong { color: var(--accent); font-weight: 600; }
+        .doc a { color: var(--accent); }
+
+        .notice {
+            margin-top: 28px; padding: 16px 18px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px; font-size: 12.5px; color: #64748B; line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.45rem; }
+            .container { margin-top: 110px; }
+        }
+
+        ::selection { background-color: #4FD1C5; color: #0F172A; }
+
+        /* ===== 공통 푸터 ===== */
+        .site-footer {
+            max-width: 720px; margin: 60px auto 0; padding: 26px 20px 36px;
+            border-top: 1px solid rgba(255,159,67,0.1); text-align: center;
+        }
+        .foot-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 13px; }
+        .foot-links a { font-size: 12px; color: #64748B; text-decoration: none; transition: color 0.2s; }
+        .foot-links a:hover { color: #FF9F43; }
+        .foot-sign {
+            font-size: 11.5px; color: #475569; letter-spacing: 0.03em;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .foot-star { width: 13px; height: 13px; flex-shrink: 0; animation: foot-twinkle 2.8s ease-in-out infinite; }
+        @keyframes foot-twinkle {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
+            50%      { transform: scale(1.2) rotate(18deg); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="logo" onclick="location.href='index.html'">ORBIT.</div>
+        <button class="nav-back" onclick="location.href='main.html'">← 커뮤니티 홈</button>
+    </nav>
+
+    <main class="container">
+        <div class="hero">
+            <h1>Orbit <strong>이용약관</strong></h1>
+            <p>궤도에 오래 머물 수 있도록, 서로 지키면 좋은 것들을 적어둔 페이지예요.</p>
+            <div class="effective">시행일: 2026년 7월 28일</div>
+        </div>
+
+        <div class="doc">
+            <h2>제1조 (목적)</h2>
+            <p>이 약관은 Orbit(orbithere.com, 이하 "서비스")이 제공하는 커뮤니티 및 부가 기능의 이용 조건과 절차, 이용자와 운영자의 권리·의무를 정하는 것을 목적으로 합니다.</p>
+
+            <h2>제2조 (서비스의 성격)</h2>
+            <ul>
+                <li>서비스는 <strong>무료</strong>로 제공되며, 별도의 회원가입·로그인 절차 없이 이용할 수 있습니다.</li>
+                <li>서비스는 현재 <strong>베타</strong> 단계로, 기능이 예고 없이 추가·변경·중단될 수 있습니다.</li>
+                <li>서비스는 개인이 운영하는 프로젝트로, 상시적인 고객 지원을 보장하지 않습니다.</li>
+            </ul>
+
+            <h2>제3조 (닉네임과 게시물)</h2>
+            <ul>
+                <li>닉네임은 브라우저에 저장되는 간이 식별 수단으로, 베타 기간 동안 <strong>중복이 발생할 수 있으며</strong> 소유권이 보장되지 않습니다.</li>
+                <li>이용자가 대화 광장 등에 작성한 게시물(궤적)의 책임은 작성자 본인에게 있습니다.</li>
+                <li>게시물은 모두에게 공개되는 공간에 저장되므로, 개인정보(연락처·주소 등)를 게시물에 적지 않도록 주의해 주세요.</li>
+            </ul>
+
+            <h2>제4조 (금지 행위)</h2>
+            <p>다음 행위는 금지되며, 해당 게시물은 사전 통보 없이 삭제될 수 있습니다.</p>
+            <ul>
+                <li>타인에 대한 비방, 모욕, 혐오 표현, 차별적 발언</li>
+                <li>음란물, 불법 정보, 사행성 도박 권유 등 법령에 위반되는 콘텐츠 게시</li>
+                <li>타인 사칭, 개인정보 무단 게시</li>
+                <li>도배, 광고, 스팸 등 서비스의 정상적인 운영을 방해하는 행위</li>
+                <li>서비스의 데이터베이스·시스템에 대한 비정상적인 접근 시도</li>
+            </ul>
+
+            <h2>제5조 (게시물의 관리)</h2>
+            <ul>
+                <li>운영자는 제4조를 위반하거나 서비스 취지에 맞지 않는 게시물을 삭제할 수 있습니다.</li>
+                <li>이용자는 본인이 작성한 게시물을 직접 삭제할 수 있습니다.</li>
+            </ul>
+
+            <h2>제6조 (Lucky Orbit 등 부가 기능에 대한 안내)</h2>
+            <ul>
+                <li>Lucky Orbit(로또·연금복권 번호 생성기)은 <strong>오락용 도구</strong>입니다. 생성된 번호는 당첨을 예측하거나 확률을 높여주지 않습니다.</li>
+                <li>복권 구매 여부와 그 결과에 대한 책임은 전적으로 이용자 본인에게 있으며, 서비스는 복권 판매·중개와 무관합니다.</li>
+                <li>복권 구매는 관련 법령상 <strong>만 19세 이상</strong>만 가능합니다.</li>
+            </ul>
+
+            <h2>제7조 (책임의 한계)</h2>
+            <ul>
+                <li>서비스는 "있는 그대로(as-is)" 제공되며, 무중단·무오류를 보장하지 않습니다.</li>
+                <li>운영자는 천재지변, 인프라 장애 등 불가항력으로 인한 서비스 중단, 또는 이용자 간 분쟁·게시물로 인해 발생한 손해에 대해 책임을 지지 않습니다.</li>
+                <li>베타 기간 중 데이터(게시물, 닉네임 등)는 서비스 개편 과정에서 초기화될 수 있습니다.</li>
+            </ul>
+
+            <h2>제8조 (저작권)</h2>
+            <ul>
+                <li>이용자가 작성한 게시물의 저작권은 작성자에게 있습니다. 다만 서비스는 게시물을 서비스 화면에 표시하기 위한 범위에서 이를 사용할 수 있습니다.</li>
+                <li>서비스의 디자인, 로고, 캐릭터 등은 무단으로 상업적 이용할 수 없습니다.</li>
+            </ul>
+
+            <h2>제9조 (약관의 변경)</h2>
+            <p>이 약관은 필요 시 변경될 수 있으며, 변경 시 이 페이지에 시행일과 함께 게시합니다. 변경 이후에도 서비스를 계속 이용하면 변경된 약관에 동의한 것으로 봅니다.</p>
+
+            <h2>제10조 (문의)</h2>
+            <p>서비스에 관한 문의는 <a href="lounge.html">대화 광장</a>을 통해 남겨주세요.</p>
+
+            <div class="notice">
+                이 약관에서 정하지 않은 사항은 관련 법령 및 일반적인 관례에 따릅니다. · 관련 문서: <a href="privacy.html" style="color:#94A3B8;">개인정보처리방침</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="foot-links">
+            <a href="main.html">커뮤니티 홈</a>
+            <a href="lounge.html">대화 광장</a>
+            <a href="lucky.html">로또 번호 생성기</a>
+            <a href="fortune.html">오늘의 운세</a>
+            <a href="terms.html">이용약관</a>
+            <a href="privacy.html">개인정보처리방침</a>
+        </div>
+        <div class="foot-sign">
+            © 2026 Orbit · Made with
+            <svg class="foot-star" viewBox="0 0 100 100" aria-hidden="true"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg>
+            in orbit
+        </div>
+    </footer>
+</body>
+</html>

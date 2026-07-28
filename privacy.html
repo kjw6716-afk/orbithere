@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개인정보처리방침 | Orbit</title>
+    <meta name="description" content="Orbit(orbithere.com)이 어떤 정보를 어떻게 다루는지 설명하는 개인정보처리방침입니다.">
+    <meta name="theme-color" content="#0F172A">
+    <link rel="canonical" href="https://orbithere.com/privacy.html">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Orbit">
+    <meta property="og:title" content="개인정보처리방침 | Orbit">
+    <meta property="og:description" content="Orbit(orbithere.com)이 어떤 정보를 어떻게 다루는지 설명하는 개인정보처리방침입니다.">
+    <meta property="og:url" content="https://orbithere.com/privacy.html">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        :root {
+            --bg-color: #0F172A;
+            --accent: #FF9F43;
+            --text-main: #E2E8F0;
+            --card-bg: rgba(30, 41, 59, 0.7);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Pretendard', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .bg-glow {
+            position: fixed; top: -10%; right: -10%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255,159,67,0.08) 0%, rgba(15,23,42,0) 70%);
+            pointer-events: none; z-index: -1;
+        }
+
+        nav {
+            position: fixed; top: 0; width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100; backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,159,67,0.1);
+        }
+        .logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); cursor: pointer; }
+        .nav-back {
+            font-size: 12px; color: #64748B; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
+            padding: 6px 12px; transition: 0.2s; background: transparent;
+            font-family: 'Pretendard';
+        }
+        .nav-back:hover { color: var(--accent); border-color: rgba(255,159,67,0.3); }
+
+        .container { max-width: 720px; margin: 130px auto 0; padding: 0 20px; }
+
+        .hero { margin-bottom: 30px; }
+        .hero h1 { font-size: 1.8rem; font-weight: 200; margin: 0; line-height: 1.3; }
+        .hero h1 strong { color: var(--accent); font-weight: 700; }
+        .hero p { color: #94A3B8; margin-top: 10px; font-size: 0.9rem; line-height: 1.7; }
+        .effective { font-size: 12px; color: #475569; margin-top: 6px; }
+
+        .doc h2 {
+            font-size: 1.05rem; font-weight: 600; margin: 34px 0 12px;
+            padding-bottom: 8px; border-bottom: 1px solid rgba(255,159,67,0.12);
+        }
+        .doc p { color: #94A3B8; font-size: 14px; line-height: 1.8; margin: 0 0 12px; }
+        .doc ul, .doc ol { color: #94A3B8; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0 0 12px; }
+        .doc li { margin-bottom: 6px; }
+        .doc strong { color: var(--accent); font-weight: 600; }
+        .doc a { color: var(--accent); }
+        .doc code {
+            font-family: inherit; font-size: 13px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 6px; padding: 1px 6px; color: #CBD5E1;
+        }
+        .doc table {
+            width: 100%; border-collapse: collapse; font-size: 13px; color: #94A3B8;
+            margin: 0 0 12px;
+        }
+        .doc th, .doc td {
+            text-align: left; padding: 8px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.06); line-height: 1.6;
+        }
+        .doc th { color: #CBD5E1; font-weight: 600; font-size: 12px; }
+
+        .notice {
+            margin-top: 28px; padding: 16px 18px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px; font-size: 12.5px; color: #64748B; line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.45rem; }
+            .container { margin-top: 110px; }
+        }
+
+        ::selection { background-color: #4FD1C5; color: #0F172A; }
+
+        /* ===== 공통 푸터 ===== */
+        .site-footer {
+            max-width: 720px; margin: 60px auto 0; padding: 26px 20px 36px;
+            border-top: 1px solid rgba(255,159,67,0.1); text-align: center;
+        }
+        .foot-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 13px; }
+        .foot-links a { font-size: 12px; color: #64748B; text-decoration: none; transition: color 0.2s; }
+        .foot-links a:hover { color: #FF9F43; }
+        .foot-sign {
+            font-size: 11.5px; color: #475569; letter-spacing: 0.03em;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .foot-star { width: 13px; height: 13px; flex-shrink: 0; animation: foot-twinkle 2.8s ease-in-out infinite; }
+        @keyframes foot-twinkle {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
+            50%      { transform: scale(1.2) rotate(18deg); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="logo" onclick="location.href='index.html'">ORBIT.</div>
+        <button class="nav-back" onclick="location.href='main.html'">← 커뮤니티 홈</button>
+    </nav>
+
+    <main class="container">
+        <div class="hero">
+            <h1>Orbit <strong>개인정보처리방침</strong></h1>
+            <p>Orbit은 회원가입 없이 쓰는 서비스라 모으는 정보 자체가 아주 적어요. 그래도 무엇을, 왜, 어떻게 다루는지 투명하게 적어둡니다.</p>
+            <div class="effective">시행일: 2026년 7월 28일</div>
+        </div>
+
+        <div class="doc">
+            <h2>1. 수집하는 정보</h2>
+            <p>Orbit(orbithere.com, 이하 "서비스")은 회원가입·로그인 절차가 없으며, 다음 정보만을 다룹니다.</p>
+            <table>
+                <tr><th>항목</th><th>내용</th><th>저장 위치</th></tr>
+                <tr><td>닉네임</td><td>이용자가 직접 입력한 별칭</td><td>이용자 브라우저(localStorage), 글 작성 시 데이터베이스</td></tr>
+                <tr><td>게시물</td><td>대화 광장에 작성한 글·리액션과 작성 시각</td><td>데이터베이스(Supabase)</td></tr>
+            </table>
+            <ul>
+                <li>이름, 이메일, 전화번호, 위치정보 등 <strong>실명 기반 개인정보는 수집하지 않습니다.</strong></li>
+                <li>서비스 자체적으로 별도의 방문자 추적(analytics) 도구를 사용하지 않습니다.</li>
+                <li>호스팅(GitHub Pages)·데이터베이스(Supabase) 사업자가 서비스 운영을 위해 접속 기록(IP 주소 등)을 자동 수집할 수 있으며, 이는 각 사업자의 개인정보처리방침을 따릅니다.</li>
+            </ul>
+
+            <h2>2. 이용 목적</h2>
+            <ul>
+                <li>닉네임: 커뮤니티 내 작성자 표시 및 프로필 기능 제공</li>
+                <li>게시물: 대화 광장 서비스 제공(모든 이용자에게 공개 표시)</li>
+            </ul>
+
+            <h2>3. 보관 및 파기</h2>
+            <ul>
+                <li>닉네임(localStorage)은 이용자가 로그아웃하거나 브라우저 데이터를 지우면 즉시 삭제됩니다.</li>
+                <li>게시물은 이용자가 직접 삭제하거나 운영자가 운영 정책에 따라 삭제할 때까지 보관됩니다.</li>
+                <li>베타 기간 중 서비스 개편으로 데이터가 일괄 초기화될 수 있습니다.</li>
+            </ul>
+
+            <h2>4. 브라우저 저장소(localStorage) 사용</h2>
+            <p>서비스는 로그인 대신 브라우저 저장소에 아래 값을 저장합니다. 모두 이용자 기기에만 저장되며, 브라우저 설정에서 언제든 삭제할 수 있습니다.</p>
+            <ul>
+                <li><code>orbit_nickname</code> — 닉네임</li>
+                <li><code>orbit_joindate</code>, <code>orbit_jointime</code> — 궤도 진입(가입) 시점</li>
+            </ul>
+
+            <h2>5. 제3자 제공 및 처리 위탁</h2>
+            <p>수집한 정보를 제3자에게 판매하거나 제공하지 않습니다. 다만 서비스 운영을 위해 아래 인프라를 이용합니다.</p>
+            <table>
+                <tr><th>사업자</th><th>용도</th></tr>
+                <tr><td>GitHub Pages</td><td>웹사이트 호스팅</td></tr>
+                <tr><td>Supabase</td><td>게시물 데이터베이스</td></tr>
+                <tr><td>jsDelivr CDN</td><td>웹폰트·라이브러리 전송</td></tr>
+            </table>
+
+            <h2>6. 광고에 관한 안내</h2>
+            <p>향후 서비스에 광고(Google AdSense 등 제3자 광고 서비스)가 게재될 수 있습니다. 이 경우 광고 사업자는 맞춤 광고 제공을 위해 쿠키를 사용할 수 있으며, 이용자는 <a href="https://adssettings.google.com" rel="noopener" target="_blank">Google 광고 설정</a>에서 맞춤 광고를 관리하거나 거부할 수 있습니다. 광고 도입 시 이 방침을 갱신해 고지합니다.</p>
+
+            <h2>7. 이용자의 권리</h2>
+            <ul>
+                <li>이용자는 본인이 작성한 게시물을 언제든 직접 삭제할 수 있습니다.</li>
+                <li>브라우저 데이터를 삭제하면 서비스에 저장된 닉네임 연결이 해제됩니다.</li>
+                <li>기타 삭제 요청이나 문의는 <a href="lounge.html">대화 광장</a>을 통해 남겨주세요.</li>
+            </ul>
+
+            <h2>8. 방침의 변경</h2>
+            <p>이 방침은 법령이나 서비스 변경에 따라 개정될 수 있으며, 개정 시 이 페이지에 시행일과 함께 게시합니다.</p>
+
+            <div class="notice">
+                게시물은 공개 공간에 저장돼요. 연락처·주소 같은 개인정보는 글에 적지 않는 것을 권장합니다. · 관련 문서: <a href="terms.html" style="color:#94A3B8;">이용약관</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="foot-links">
+            <a href="main.html">커뮤니티 홈</a>
+            <a href="lounge.html">대화 광장</a>
+            <a href="lucky.html">로또 번호 생성기</a>
+            <a href="fortune.html">오늘의 운세</a>
+            <a href="terms.html">이용약관</a>
+            <a href="privacy.html">개인정보처리방침</a>
+        </div>
+        <div class="foot-sign">
+            © 2026 Orbit · Made with
+            <svg class="foot-star" viewBox="0 0 100 100" aria-hidden="true"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg>
+            in orbit
+        </div>
+    </footer>
+</body>
+</html>
