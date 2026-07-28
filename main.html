@@ -126,6 +126,8 @@
             transition: border-color 0.2s;
         }
         .join-form input:focus { border-color: var(--accent); }
+        /* 모바일에서 16px 미만이면 iOS Safari가 포커스 순간 페이지를 자동 확대한다 */
+        @media (max-width: 768px) { .join-form input { font-size: 16px; } }
         .join-form input.error { border-color: #FC8181; }
         .join-error { font-size: 11px; color: #FC8181; display: none; margin-top: -6px; }
         .btn-mint {
