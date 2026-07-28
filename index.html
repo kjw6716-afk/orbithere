@@ -190,6 +190,20 @@
             animation: hint-pulse 2.5s ease-in-out 1.2s infinite;
         }
 
+        /* 하단 바로가기 — 검색엔진이 따라갈 수 있는 실제 링크 */
+        .quick-links {
+            position: fixed; bottom: 22px; left: 0; right: 0;
+            z-index: 2; text-align: center;
+            display: flex; justify-content: center; gap: 18px; flex-wrap: wrap;
+            padding: 0 16px;
+        }
+        .quick-links a {
+            font-size: 0.72rem; color: rgba(226,232,240,0.28);
+            text-decoration: none; letter-spacing: 0.04em;
+            transition: color 0.2s;
+        }
+        .quick-links a:hover { color: #4FD1C5; }
+
         @keyframes hint-pulse {
             0%,100% { opacity: 0.2; }
             50%      { opacity: 0.6; }
@@ -261,10 +275,18 @@
         <p class="click-hint">아무곳이나 클릭</p>
     </div>
 
+    <nav class="quick-links">
+        <a href="main.html">커뮤니티 홈</a>
+        <a href="lucky.html">로또 번호 생성기</a>
+        <a href="lounge.html">대화 광장</a>
+    </nav>
+
     <script>
         document.body.style.cursor = 'pointer';
 
-        document.body.addEventListener('click', () => {
+        document.body.addEventListener('click', (e) => {
+            // 하단 바로가기는 각자 목적지가 있으니 입장 전환에서 제외
+            if (e.target.closest('.quick-links')) return;
             // 파티클은 effects.js가 그림 — 여기선 입장 전환만
             setTimeout(() => {
                 window.location.href = 'main.html';

@@ -176,43 +176,17 @@
         .tl-tag.purple { background: rgba(159,122,234,0.1); color: #9F7AEA; }
         .tl-tag.gray { background: rgba(100,116,139,0.15); color: #64748B; }
 
-        /* ===== Lucky Orbit (게임 크기에 맞춰 컴팩트) ===== */
+        /* ===== Lucky Orbit (lucky.html iframe 임베드) ===== */
         .lucky-wrap { max-width: 680px; }
-        .lottery-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,159,67,0.15);
-            border-radius: 20px; padding: 26px; position: relative; overflow: hidden;
+        .lucky-frame {
+            width: 100%; height: 620px;
+            border: none; border-radius: 16px; background: transparent;
         }
-        .lottery-card::before { content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px; background:radial-gradient(circle,rgba(255,159,67,0.05) 0%,transparent 70%); pointer-events:none; }
-        .game-inner { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:16px; }
-        .ltab-row { display:flex; gap:8px; margin-bottom:16px; }
-        .ltab { font-size:12px; padding:5px 16px; border-radius:20px; border:1.5px solid rgba(255,159,67,0.25); background:transparent; cursor:pointer; color:#94A3B8; transition:all 0.2s; font-family:'Pretendard'; font-weight:500; }
-        .ltab.on { background:var(--accent); border-color:var(--accent); color:#0F172A; font-weight:700; }
-        .section-label { font-size:10px; color:#475569; font-weight:600; margin-bottom:8px; letter-spacing:0.06em; text-transform:uppercase; }
-        .jo-cell { display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:600; cursor:default; border:1.5px solid rgba(255,255,255,0.06); transition:background 0.08s,color 0.08s; font-family:'Pretendard'; font-size:12px; }
-        .jo-cell.dim { background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.18); }
-        .jo-cell.hot { background:rgba(255,159,67,0.15); color:var(--accent); }
-        .jo-cell.done { background:var(--accent); color:#0F172A; border-color:var(--accent); }
-        #joAll.dim:hover { background:rgba(255,159,67,0.1); color:var(--accent); border-color:rgba(255,159,67,0.4); }
-        .ycell { display:flex; align-items:center; justify-content:center; border-radius:6px; font-weight:600; cursor:default; border:1px solid rgba(255,255,255,0.06); transition:background 0.08s,color 0.08s; font-family:'Pretendard'; }
-        .ycell.dim { background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.18); }
-        .ycell.hot { background:rgba(255,159,67,0.18); color:var(--accent); }
-        .ycell.done { background:var(--accent); color:#0F172A; border-color:var(--accent); }
-        .result-panel { display:flex; flex-direction:column; gap:12px; padding-left:16px; border-left:1px solid rgba(255,159,67,0.08); }
-        .yeon-result-grid { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:4px; }
-        .lotto-result { display:flex; flex-direction:column; gap:5px; margin-top:4px; }
-        .legend-row { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px; align-items:center; }
-        .legend-chip { font-size:10px; padding:2px 7px; border-radius:8px; font-weight:600; }
-        .lottery-controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,159,67,0.08); }
-        .spd-btn { font-size:11px; padding:6px 14px; border-radius:8px; border:1.5px solid rgba(255,159,67,0.2); background:rgba(255,255,255,0.03); color:#64748B; cursor:pointer; transition:all 0.2s; font-family:'Pretendard'; font-weight:600; }
-        .spd-btn:hover { border-color:rgba(255,159,67,0.4); color:#94A3B8; }
-        .spd-btn.on { background:rgba(255,159,67,0.12); border-color:var(--accent); color:var(--accent); }
-        .btn-catch { background:var(--accent); color:#0F172A; border:none; border-radius:8px; padding:8px 18px; font-weight:700; cursor:pointer; transition:0.2s; font-family:'Pretendard'; font-size:12px; }
-        .btn-catch:hover { opacity:0.88; transform:scale(0.98); }
-        .btn-reset { background:rgba(255,255,255,0.04); color:#64748B; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:8px 12px; cursor:pointer; transition:0.2s; font-family:'Pretendard'; font-size:11px; }
-        .btn-reset:hover { border-color:rgba(255,159,67,0.3); color:var(--accent); }
-        .lottery-msg { font-size:11px; color:#475569; }
-        .tip-icon { display:inline-flex; align-items:center; justify-content:center; width:12px; height:12px; border-radius:50%; border:1.5px solid currentColor; font-size:7px; font-weight:700; flex-shrink:0; margin-top:1px; }
+        .lucky-out {
+            display: inline-block; margin-top: 10px; font-size: 12px;
+            color: #64748B; text-decoration: none; transition: color 0.2s;
+        }
+        .lucky-out:hover { color: var(--accent); }
 
         /* ===== 반응형 ===== */
         @media (max-width: 860px) {
@@ -306,85 +280,8 @@
                 <!-- Lucky Orbit -->
                 <section class="panel" id="panel-lucky">
                     <div class="lucky-wrap">
-                        <div class="lottery-card">
-                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-                                <span class="card-tag" style="margin-bottom:0;">🎰 Lucky Orbit</span>
-                                <span style="font-size:10px;color:#334155;">카오스 알고리즘이 번호를 골라드려요</span>
-                            </div>
-                            <h3 class="card-title" style="font-size:1.1rem;margin-bottom:0;">오늘의 행운 번호 뽑기</h3>
-                            <div class="game-inner">
-                                <div>
-                                    <div class="ltab-row">
-                                        <button class="ltab on" id="tabY">연금복권 720+</button>
-                                        <button class="ltab" id="tabL">로또 6/45</button>
-                                    </div>
-                                    <div id="yeonUI">
-                                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                                            <div>
-                                                <div class="section-label">조 선택</div>
-                                                <div style="display:flex;flex-direction:column;gap:5px;">
-                                                    <div class="jo-cell dim" id="joAll" style="padding:9px;font-size:11px;min-height:34px;cursor:pointer;">모든 조 선택</div>
-                                                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;">
-                                                        <div class="jo-cell dim" id="jo1" style="padding:8px;min-height:30px;">1조</div>
-                                                        <div class="jo-cell dim" id="jo2" style="padding:8px;min-height:30px;">2조</div>
-                                                        <div class="jo-cell dim" id="jo3" style="padding:8px;min-height:30px;">3조</div>
-                                                    </div>
-                                                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:5px;">
-                                                        <div class="jo-cell dim" id="jo4" style="padding:8px;min-height:30px;">4조</div>
-                                                        <div class="jo-cell dim" id="jo5" style="padding:8px;min-height:30px;">5조</div>
-                                                    </div>
-                                                    <div style="font-size:9px;color:#334155;line-height:1.6;margin-top:2px;">
-                                                        <div style="display:flex;gap:3px;align-items:flex-start;">
-                                                            <span class="tip-icon">!</span>
-                                                            <span><strong style="color:#475569;">구매팁!</strong><br>모든조 구매 시 1,2등<br>동시 당첨 가능(총 21.6억원)</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div class="section-label">6자리 번호</div>
-                                                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;">
-                                                    <div class="ycell dim" id="yn1" style="aspect-ratio:1;font-size:15px;">1</div>
-                                                    <div class="ycell dim" id="yn2" style="aspect-ratio:1;font-size:15px;">2</div>
-                                                    <div class="ycell dim" id="yn3" style="aspect-ratio:1;font-size:15px;">3</div>
-                                                    <div class="ycell dim" id="yn4" style="aspect-ratio:1;font-size:15px;">4</div>
-                                                    <div class="ycell dim" id="yn5" style="aspect-ratio:1;font-size:15px;">5</div>
-                                                    <div class="ycell dim" id="yn6" style="aspect-ratio:1;font-size:15px;">6</div>
-                                                    <div class="ycell dim" id="yn7" style="aspect-ratio:1;font-size:15px;">7</div>
-                                                    <div class="ycell dim" id="yn8" style="aspect-ratio:1;font-size:15px;">8</div>
-                                                    <div class="ycell dim" id="yn9" style="aspect-ratio:1;font-size:15px;">9</div>
-                                                </div>
-                                                <div class="ycell dim" id="yn0" style="margin-top:5px;padding:7px;font-size:15px;">0</div>
-                                                <div style="font-size:9px;color:#334155;margin-top:6px;">십만단위 번호를 선택하세요</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="lottoUI" style="display:none;">
-                                        <div class="legend-row">
-                                            <span class="legend-chip" style="background:#FF9F43;color:#3A2410;">1줄</span>
-                                            <span class="legend-chip" style="background:#9F7AEA;color:#fff;">2줄</span>
-                                            <span class="legend-chip" style="background:#4FD1C5;color:#04342C;">3줄</span>
-                                            <span class="legend-chip" style="background:#FC8181;color:#fff;">4줄</span>
-                                            <span class="legend-chip" style="background:#63B3ED;color:#04342C;">5줄</span>
-                                            <span style="font-size:10px;color:#334155;">중복=파이분할</span>
-                                        </div>
-                                        <canvas id="lottoCanvas" width="420" height="320" style="width:100%;display:block;border-radius:10px;background:#080d1a;"></canvas>
-                                    </div>
-                                    <div class="lottery-controls">
-                                        <button class="spd-btn on" id="spdNormal">⚡ 빠름</button>
-                                        <button class="spd-btn" id="spdCrazy">🔥 미침</button>
-                                        <button class="btn-catch" id="btnCatch">포착!</button>
-                                        <button class="btn-reset" id="btnR">초기화</button>
-                                    </div>
-                                    <div class="lottery-msg" id="msg" style="margin-top:8px;">포착 버튼을 눌러 번호를 확정하세요</div>
-                                </div>
-                                <div class="result-panel">
-                                    <div class="section-label" style="color:#94A3B8;letter-spacing:0.08em;">확정 번호</div>
-                                    <div id="yeonResult" class="yeon-result-grid"></div>
-                                    <div id="lottoResult" class="lotto-result" style="display:none;"></div>
-                                </div>
-                            </div>
-                        </div>
+                        <iframe class="lucky-frame" id="luckyFrame" title="Lucky Orbit — 로또 번호 생성기" data-src="lucky.html?embed=1"></iframe>
+                        <a class="lucky-out" href="lucky.html">전체 화면으로 열기 · 사용법과 FAQ 보기 →</a>
                     </div>
                 </section>
 
@@ -397,7 +294,17 @@
                             <div class="tl-item">
                                 <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
                                 <div class="tl-content">
-                                    <div class="tl-version">v0.7 — LATEST</div>
+                                    <div class="tl-version">v0.8 — LATEST</div>
+                                    <div class="tl-date">2026. 07. 28</div>
+                                    <div class="tl-title">🎰 Lucky Orbit 독립 페이지로 분리</div>
+                                    <div class="tl-desc">복권 추첨기가 <a href="lucky.html" style="color:var(--accent);">lucky.html</a> 주소를 갖게 됐어요. 사용법·FAQ가 붙었고, 검색으로도 찾아올 수 있어요. 여기 탭에서는 그대로 쓸 수 있어요.</div>
+                                    <div class="tl-tags"><span class="tl-tag">Lucky Orbit</span><span class="tl-tag">검색 유입</span></div>
+                                </div>
+                            </div>
+                            <div class="tl-item">
+                                <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                                <div class="tl-content">
+                                    <div class="tl-version old">v0.7</div>
                                     <div class="tl-date">2026. 06. 13</div>
                                     <div class="tl-title">🎣 오늘의 떡밥 & 광장 채널 개편</div>
                                     <div class="tl-desc">매일 바뀌는 이야깃거리 '오늘의 떡밥' 탭 추가 — 누르면 광장 글쓰기로 바로 이어져요. 광장 궤도엔 채널 헤더가 생겼어요.</div>
@@ -480,7 +387,7 @@
             lucky:   '<span>Lucky</span> Orbit',
             updates: '업데이트 <span>기록</span>'
         };
-        var loungeLoaded = false;
+        var loungeLoaded = false, luckyLoaded = false;
         function switchPanel(name){
             if(!TITLES[name]) name = 'home';
             document.querySelectorAll('.nav-item').forEach(function(b){
@@ -490,11 +397,16 @@
                 p.classList.toggle('on', p.id === 'panel-' + name);
             });
             document.getElementById('panelTitle').innerHTML = TITLES[name];
-            // 광장은 처음 열 때만 iframe 로드 (지연 로딩)
+            // 광장·Lucky Orbit은 처음 열 때만 iframe 로드 (지연 로딩)
             if(name === 'lounge' && !loungeLoaded){
                 var fr = document.getElementById('loungeFrame');
                 fr.src = fr.getAttribute('data-src');
                 loungeLoaded = true;
+            }
+            if(name === 'lucky' && !luckyLoaded){
+                var lf = document.getElementById('luckyFrame');
+                lf.src = lf.getAttribute('data-src');
+                luckyLoaded = true;
             }
             if(location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
         }
@@ -512,6 +424,11 @@
                 switchPanel('home');
                 var inp = document.getElementById('nicknameInput');
                 if(inp) inp.focus();
+            }
+            // Lucky Orbit은 탭/줄 수에 따라 높이가 변해서 콘텐츠에 맞춰 늘려줌
+            if(ev.data && ev.data.orbit === 'luckyHeight'){
+                var h = parseInt(ev.data.height, 10);
+                if(h > 0 && h < 4000) document.getElementById('luckyFrame').style.height = h + 'px';
             }
         });
 
@@ -594,124 +511,6 @@
             input.focus();
         }
     })();
-
-    // ===== 카오스 복권 =====
-    var SI=[150,80,40,18,25];
-    var curSpeed=3;
-    document.getElementById('spdNormal').addEventListener('click',function(){curSpeed=3;this.classList.add('on');document.getElementById('spdCrazy').classList.remove('on');});
-    document.getElementById('spdCrazy').addEventListener('click',function(){curSpeed=5;this.classList.add('on');document.getElementById('spdNormal').classList.remove('on');});
-    function getBaseInterval(){return SI[curSpeed-1];}
-    function getInterval(){return Math.floor(getBaseInterval()*(0.7+_rand()*0.6));}
-    var BCOLS=['#FF9F43','#9F7AEA','#4FD1C5','#FC8181','#63B3ED'];
-    var TCOLS=['#3A2410','#fff','#04342C','#fff','#04342C'];
-    var PL=['십만','만','천','백','십','일'];
-    var mode='yeon',done=false;
-    var yJo=null,yNums=[],yStage='jo',yCurJo=1,yCurNum=0;
-    var lLines=[],lCurHot=[];
-    var tickTimer=null,running=false,canCatch=false;
-
-    var _seed=Date.now()^Math.floor(Math.random()*0xFFFFFFFF);
-    function _reseed(){_seed=(_seed^Math.floor(performance.now()*1000))^Math.floor(Math.random()*0xFFFFFFFF)^Date.now();}
-    function _rand(){_reseed();_seed^=_seed<<13;_seed^=_seed>>>17;_seed^=_seed<<5;return (_seed>>>0)/0x100000000;}
-    function randInt(max){return Math.floor(_rand()*max);}
-    function randPick(pool,n){var arr=pool.slice();for(var i=arr.length-1;i>0;i--){var j=Math.floor(_rand()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr.slice(0,n).sort(function(a,b){return a-b;});}
-
-    var joIds=['jo1','jo2','jo3','jo4','jo5'];
-    function resetJoCells(){document.getElementById('joAll').className='jo-cell dim';joIds.forEach(function(id){document.getElementById(id).className='jo-cell dim';});}
-    function resetNumCells(){['yn0','yn1','yn2','yn3','yn4','yn5','yn6','yn7','yn8','yn9'].forEach(function(id){document.getElementById(id).className='ycell dim';});}
-    function setJoHot(j){resetJoCells();document.getElementById('jo'+j).className='jo-cell hot';yCurJo=j;}
-    function setNumHot(n){resetNumCells();document.getElementById('yn'+n).className='ycell hot';yCurNum=n;}
-    function confirmJo(j){resetJoCells();document.getElementById('jo'+j).className='jo-cell done';}
-    document.getElementById('joAll').addEventListener('click',function(){
-        if(done||yStage!=='jo'||!running)return;
-        stopTick();yJo='모든';resetJoCells();
-        document.getElementById('joAll').className='jo-cell done';
-        document.getElementById('joAll').textContent='모든 조';
-        yStage='num';renderYeonResult();
-        setMsg('모든 조 선택! 이제 6자리 번호를 포착하세요','#FF9F43');
-        setTimeout(startTick,300);
-    });
-    function confirmYNum(n){document.getElementById('yn'+n).className='ycell done';}
-    function tickYeon(){if(yStage==='jo'){var j=randInt(5)+1;setJoHot(j);}else{var n=randInt(10);setNumHot(n);}canCatch=true;}
-    function renderYeonResult(){
-        var area=document.getElementById('yeonResult');area.innerHTML='';
-        if(yJo){var jb=document.createElement('div');jb.style.cssText='padding:4px 12px;border-radius:99px;background:var(--accent);color:#0F172A;font-size:11px;font-weight:700;';jb.textContent=yJo==='모든'?'모든 조':yJo+'조';area.appendChild(jb);}
-        PL.forEach(function(lbl,i){
-            var wrap=document.createElement('div');wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:2px;';
-            var l=document.createElement('div');l.style.cssText='font-size:9px;color:#334155;font-weight:600;letter-spacing:0.04em;';l.textContent=lbl;
-            var b=document.createElement('div');b.style.cssText='width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;box-sizing:border-box;flex-shrink:0;';
-            if(i<yNums.length){b.style.background='var(--accent)';b.style.color='#0F172A';b.textContent=yNums[i];}
-            else if(i===yNums.length&&running){b.style.border='1.5px solid var(--accent)';b.style.color='var(--accent)';b.textContent='?';}
-            else{b.style.border='1.5px dashed rgba(255,159,67,0.15)';b.style.color='transparent';b.textContent='-';}
-            wrap.appendChild(l);wrap.appendChild(b);area.appendChild(wrap);
-        });
-        if(yJo&&yNums.length===6){var note=document.createElement('div');note.style.cssText='width:100%;margin-top:10px;font-size:11px;color:var(--accent);font-weight:600;line-height:1.5;';note.textContent=(yJo==='모든'?'모든 조':yJo+'조')+' '+yNums.join('')+' — 이번주에도 행운을 빌어요!';area.appendChild(note);}
-    }
-    function renderYeonResultVisible(isLotto){document.getElementById('yeonResult').style.display=isLotto?'none':'flex';document.getElementById('lottoResult').style.display=isLotto?'flex':'none';}
-
-    var lc=document.getElementById('lottoCanvas');
-    var lctx=lc.getContext('2d');
-    if(!lctx.roundRect){
-        // Safari 16 미만 등 roundRect 미지원 브라우저 폴백
-        CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
-            this.moveTo(x+r,y);
-            this.arcTo(x+w,y,x+w,y+h,r);this.arcTo(x+w,y+h,x,y+h,r);
-            this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);
-            this.closePath();return this;
-        };
-    }
-    var LW=lc.width,LH=lc.height;
-    var GCOLS=9,GCW=Math.floor(LW/GCOLS),GCH=Math.floor(LH/5);
-    function getLineIndices(n){var idxs=[];lLines.forEach(function(l,i){if(l.indexOf(n)>=0)idxs.push(i);});return idxs;}
-    function drawLottoCell(n,isHot){
-        var idx=n-1,col=idx%GCOLS,row=Math.floor(idx/GCOLS);
-        var x=col*GCW+2,y=row*GCH+2,w=GCW-4,h=GCH-4,cx=x+w/2,cy=y+h/2,r=3;
-        var li=getLineIndices(n);
-        lctx.save();lctx.beginPath();lctx.roundRect(x,y,w,h,r);lctx.clip();
-        if(li.length===0){lctx.fillStyle=isHot?'rgba(255,159,67,0.22)':'rgba(255,255,255,0.03)';lctx.fillRect(x,y,w,h);}
-        else if(li.length===1){lctx.fillStyle=BCOLS[li[0]];lctx.fillRect(x,y,w,h);}
-        else{var step=(Math.PI*2)/li.length;for(var i=0;i<li.length;i++){lctx.beginPath();lctx.moveTo(cx,cy);lctx.arc(cx,cy,Math.max(w,h),step*i-Math.PI/2,step*(i+1)-Math.PI/2);lctx.closePath();lctx.fillStyle=BCOLS[li[i]];lctx.fill();}}
-        lctx.restore();
-        lctx.beginPath();lctx.roundRect(x,y,w,h,r);
-        lctx.strokeStyle=li.length>0?'rgba(0,0,0,0.25)':isHot?'#FF9F43':'rgba(255,255,255,0.06)';
-        lctx.lineWidth=isHot&&li.length===0?1.5:0.8;lctx.stroke();
-        lctx.fillStyle=li.length===0?(isHot?'#FF9F43':'rgba(255,255,255,0.22)'):li.length===1?TCOLS[li[0]]:'#fff';
-        lctx.font=(li.length>0?'600 ':'')+'10px Pretendard,sans-serif';
-        lctx.textAlign='center';lctx.textBaseline='middle';lctx.fillText(String(n),cx,cy);
-    }
-    function drawLottoGrid(hotNums){lctx.fillStyle='#080d1a';lctx.fillRect(0,0,LW,LH);for(var n=1;n<=45;n++)drawLottoCell(n,hotNums&&hotNums.indexOf(n)>=0);lctx.textAlign='left';lctx.textBaseline='alphabetic';}
-    function pickSixRandom(){var pool=[];for(var i=1;i<=45;i++)pool.push(i);return randPick(pool,6);}
-    function tickLotto(){lCurHot=pickSixRandom();drawLottoGrid(lCurHot);canCatch=true;}
-    function renderLottoResult(){
-        var area=document.getElementById('lottoResult');area.innerHTML='';
-        for(var i=0;i<5;i++){
-            var row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:5px;';
-            var l=document.createElement('span');l.style.cssText='font-size:9px;color:#0F172A;background:'+BCOLS[i]+';padding:2px 7px;border-radius:6px;font-weight:700;flex-shrink:0;';l.textContent=(i+1)+'줄';row.appendChild(l);
-            var balls=document.createElement('div');balls.style.cssText='display:flex;gap:3px;flex-wrap:wrap;';
-            if(i<lLines.length){lLines[i].forEach(function(n){var b=document.createElement('div');b.style.cssText='width:28px;height:28px;border-radius:50%;background:'+BCOLS[i]+';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:'+TCOLS[i]+';flex-shrink:0;box-sizing:border-box;';b.textContent=n;balls.appendChild(b);});}
-            else{for(var j=0;j<6;j++){var e=document.createElement('div');e.style.cssText='width:28px;height:28px;border-radius:50%;border:1px dashed rgba(255,159,67,0.15);flex-shrink:0;box-sizing:border-box;';balls.appendChild(e);}}
-            row.appendChild(balls);
-            if(i<lLines.length){var p=document.createElement('span');p.style.cssText='font-size:9px;color:var(--accent);font-weight:500;';p.textContent='1,000원';row.appendChild(p);}
-            area.appendChild(row);
-        }
-        if(lLines.length===5){var n=document.createElement('div');n.style.cssText='font-size:11px;color:var(--accent);margin-top:6px;font-weight:600;';n.textContent='총 5,000원 — 이번주에도 행운을 빌어요!';area.appendChild(n);}
-    }
-    function scheduleTick(){if(!running)return;tickTimer=setTimeout(function(){if(!running)return;mode==='yeon'?tickYeon():tickLotto();scheduleTick();},getInterval());}
-    function startTick(){running=true;canCatch=false;scheduleTick();}
-    function stopTick(){running=false;if(tickTimer){clearTimeout(tickTimer);tickTimer=null;}}
-    function setMsg(t,c){var e=document.getElementById('msg');e.textContent=t;e.style.color=c||'#475569';}
-    document.getElementById('btnCatch').addEventListener('click',function(){
-        if(done||!running||!canCatch)return;stopTick();
-        if(mode==='yeon'){
-            if(yStage==='jo'){yJo=yCurJo;confirmJo(yJo);yStage='num';renderYeonResult();setMsg('조 확정! 이제 6자리 번호를 포착하세요','#FF9F43');setTimeout(startTick,300);}
-            else{yNums.push(yCurNum);confirmYNum(yCurNum);renderYeonResult();if(yNums.length>=6){done=true;setMsg('완성! 오늘의 행운 번호가 확정됐어요','#FF9F43');}else{setMsg((6-yNums.length)+'자리 남았어요!','#FF9F43');setTimeout(startTick,200);}}
-        }else{lLines.push(lCurHot.slice());drawLottoGrid([]);renderLottoResult();if(lLines.length>=5){done=true;setMsg('5줄 완성! 오늘의 행운 번호가 확정됐어요','#FF9F43');}else{setMsg((5-lLines.length)+'줄 남았어요!','#FF9F43');setTimeout(startTick,300);}}
-    });
-    document.getElementById('btnR').addEventListener('click',resetAll);
-    document.getElementById('tabY').addEventListener('click',function(){if(mode==='yeon')return;mode='yeon';this.classList.add('on');document.getElementById('tabL').classList.remove('on');document.getElementById('yeonUI').style.display='block';document.getElementById('lottoUI').style.display='none';renderYeonResultVisible(false);resetAll();});
-    document.getElementById('tabL').addEventListener('click',function(){if(mode==='lotto')return;mode='lotto';this.classList.add('on');document.getElementById('tabY').classList.remove('on');document.getElementById('yeonUI').style.display='none';document.getElementById('lottoUI').style.display='block';renderYeonResultVisible(true);resetAll();});
-    function resetAll(){stopTick();done=false;yJo=null;yNums=[];yStage='jo';yCurJo=1;yCurNum=0;lLines=[];lCurHot=[];canCatch=false;_seed=Date.now()^Math.floor(Math.random()*0xFFFFFFFF);resetJoCells();resetNumCells();document.getElementById('joAll').textContent='모든 조 선택';if(mode==='lotto')drawLottoGrid([]);renderYeonResult();renderLottoResult();setMsg('포착 버튼을 눌러 번호를 확정하세요');startTick();}
-    renderYeonResultVisible(false);resetAll();
     </script>
 </body>
 </html>
