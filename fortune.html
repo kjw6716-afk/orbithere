@@ -251,7 +251,13 @@
             0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
             50%      { transform: scale(1.2) rotate(18deg); opacity: 1; }
         }
+
+        /* 메인 패널에 iframe으로 임베드될 때 */
+        .embed nav { display: none; }
+        .embed .container { margin: 0 auto; padding: 0; max-width: 680px; }
+        .embed .hero, .embed .seo-content, .embed .site-footer { display: none; }
     </style>
+    <script>if(new URLSearchParams(location.search).get('embed'))document.documentElement.classList.add('embed');</script>
     <script src="effects.js" defer></script>
 </head>
 <body>
@@ -565,6 +571,24 @@
             d.getFullYear() + '년 ' + (d.getMonth()+1) + '월 ' + d.getDate() + '일 (' + days[d.getDay()] + ') 의 운세';
         renderGrid();
         if (picked[mode]) showFortune(picked[mode]);
+    })();
+
+    // ===== 임베드될 때 부모에게 콘텐츠 높이 알리기 =====
+    // 운세 결과가 펼쳐지면 높이가 바뀌므로 고정 높이로는 잘림
+    (function(){
+        if(!document.documentElement.classList.contains('embed')) return;
+        var last = 0;
+        function report(){
+            var h = Math.ceil(document.querySelector('.container').getBoundingClientRect().height);
+            if(h && h !== last){
+                last = h;
+                parent.postMessage({ orbit:'fortuneHeight', height:h }, window.location.origin);
+            }
+        }
+        if(window.ResizeObserver) new ResizeObserver(report).observe(document.querySelector('.container'));
+        window.addEventListener('load', report);
+        setInterval(report, 500); // 애니메이션·폰트 로딩으로 놓치는 변화 대비
+        report();
     })();
     </script>
 </body>
