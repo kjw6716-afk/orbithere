@@ -342,7 +342,7 @@
         for(var i=0;i<ORBIT_LIST.length;i++){ if(ORBIT_LIST[i].id === id) return ORBIT_LIST[i]; }
         return { id:id, icon:'🛰️', label:id, desc:'' }; // 사라진 옛 채널의 글도 깨지지 않게
     }
-    var RX_EMOJIS = ['⭐','🔥','😂','🥹','👏','🫶'];
+    var RX_EMOJIS = ['⭐','🔥','😂','🥰','👏','❤️'];
     var EMOJIS = ['🌟','⭐','🪐','🌙','☄️','🔭','🛸','💫','🌌','✨'];
     function avatarOf(nick){ return EMOJIS[nick.charCodeAt(0) % EMOJIS.length]; }
 

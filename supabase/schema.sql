@@ -17,7 +17,7 @@ create table if not exists public.posts (
 create table if not exists public.reactions (
   id bigint generated always as identity primary key,
   post_id uuid not null references public.posts(id) on delete cascade,
-  emoji text not null check (emoji in ('⭐','🔥','😂','🥹','👏','🫶')),
+  emoji text not null check (emoji in ('⭐','🔥','😂','🥰','👏','❤️')),
   device_id text not null check (char_length(device_id) between 8 and 64),
   created_at timestamptz not null default now(),
   unique (post_id, emoji, device_id)  -- 같은 기기는 글당 이모지 하나씩
