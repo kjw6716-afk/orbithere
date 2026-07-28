@@ -277,7 +277,7 @@
                             <span class="legend-chip" style="background:#63B3ED;color:#04342C;">5줄</span>
                             <span style="font-size:10px;color:#334155;">중복=파이분할</span>
                         </div>
-                        <canvas id="lottoCanvas" width="420" height="320" style="width:100%;display:block;border-radius:10px;background:#080d1a;" aria-label="로또 1부터 45까지 번호판"></canvas>
+                        <canvas id="lottoCanvas" style="width:100%;max-width:460px;margin:0 auto;display:block;border-radius:10px;background:#080d1a;" aria-label="로또 1부터 45까지 번호판"></canvas>
                     </div>
                     <div class="lottery-controls">
                         <button class="spd-btn on" id="spdNormal">⚡ 빠름</button>
@@ -415,12 +415,33 @@
             this.closePath();return this;
         };
     }
-    var LW=lc.width,LH=lc.height;
-    var GCOLS=9,GCW=Math.floor(LW/GCOLS),GCH=Math.floor(LH/5);
+    var GCOLS=9,GROWS=5;
+    var LW=0,LH=0,GCW=0,GCH=0,cellGap=2,cellR=3,cellFont=10;
+
+    // 캔버스를 실제 표시 크기 × 화면 배율로 그린다.
+    // 고정 크기(420×320)를 CSS로 늘리면 레티나에서 3배 가까이 확대돼 글자가 뭉개짐.
+    function setupLottoCanvas(){
+        var cssW=lc.clientWidth;
+        if(!cssW) return false;               // 탭이 숨겨져 있으면 측정 불가 — 열릴 때 다시 호출
+        var dpr=window.devicePixelRatio||1;
+        var cssH=Math.round(cssW*GROWS/GCOLS); // 칸을 정사각형으로
+        lc.style.height=cssH+'px';
+        lc.width=Math.round(cssW*dpr);
+        lc.height=Math.round(cssH*dpr);
+        lctx.setTransform(dpr,0,0,dpr,0,0);   // 이후 좌표는 전부 CSS 픽셀 기준
+        LW=cssW;LH=cssH;
+        GCW=LW/GCOLS;GCH=LH/GROWS;
+        cellGap=Math.max(2,GCW*0.07);
+        cellR=Math.max(3,GCW*0.14);
+        cellFont=Math.max(10,Math.round(GCH*0.36));
+        return true;
+    }
+
     function getLineIndices(n){var idxs=[];lLines.forEach(function(l,i){if(l.indexOf(n)>=0)idxs.push(i);});return idxs;}
     function drawLottoCell(n,isHot){
         var idx=n-1,col=idx%GCOLS,row=Math.floor(idx/GCOLS);
-        var x=col*GCW+2,y=row*GCH+2,w=GCW-4,h=GCH-4,cx=x+w/2,cy=y+h/2,r=3;
+        var g=cellGap;
+        var x=col*GCW+g,y=row*GCH+g,w=GCW-g*2,h=GCH-g*2,cx=x+w/2,cy=y+h/2,r=cellR;
         var li=getLineIndices(n);
         lctx.save();lctx.beginPath();lctx.roundRect(x,y,w,h,r);lctx.clip();
         if(li.length===0){lctx.fillStyle=isHot?'rgba(255,159,67,0.22)':'rgba(255,255,255,0.03)';lctx.fillRect(x,y,w,h);}
@@ -431,10 +452,24 @@
         lctx.strokeStyle=li.length>0?'rgba(0,0,0,0.25)':isHot?'#FF9F43':'rgba(255,255,255,0.06)';
         lctx.lineWidth=isHot&&li.length===0?1.5:0.8;lctx.stroke();
         lctx.fillStyle=li.length===0?(isHot?'#FF9F43':'rgba(255,255,255,0.22)'):li.length===1?TCOLS[li[0]]:'#fff';
-        lctx.font=(li.length>0?'600 ':'')+'10px Pretendard,sans-serif';
+        lctx.font=(li.length>0?'600 ':'')+cellFont+'px Pretendard,sans-serif';
         lctx.textAlign='center';lctx.textBaseline='middle';lctx.fillText(String(n),cx,cy);
     }
-    function drawLottoGrid(hotNums){lctx.fillStyle='#080d1a';lctx.fillRect(0,0,LW,LH);for(var n=1;n<=45;n++)drawLottoCell(n,hotNums&&hotNums.indexOf(n)>=0);lctx.textAlign='left';lctx.textBaseline='alphabetic';}
+    function drawLottoGrid(hotNums){
+        if(!LW && !setupLottoCanvas()) return;
+        lctx.fillStyle='#080d1a';lctx.fillRect(0,0,LW,LH);
+        for(var n=1;n<=45;n++)drawLottoCell(n,hotNums&&hotNums.indexOf(n)>=0);
+        lctx.textAlign='left';lctx.textBaseline='alphabetic';
+    }
+
+    // 창 크기·배율이 바뀌면 백킹 스토어를 다시 만든다
+    var _rzT=null;
+    window.addEventListener('resize',function(){
+        clearTimeout(_rzT);
+        _rzT=setTimeout(function(){
+            if(mode==='lotto'&&setupLottoCanvas()) drawLottoGrid(running?lCurHot:[]);
+        },150);
+    });
     function pickSixRandom(){var pool=[];for(var i=1;i<=45;i++)pool.push(i);return randPick(pool,6);}
     function tickLotto(){lCurHot=pickSixRandom();drawLottoGrid(lCurHot);canCatch=true;}
     function renderLottoResult(){
@@ -464,7 +499,7 @@
     });
     document.getElementById('btnR').addEventListener('click',resetAll);
     document.getElementById('tabY').addEventListener('click',function(){if(mode==='yeon')return;mode='yeon';this.classList.add('on');document.getElementById('tabL').classList.remove('on');document.getElementById('yeonUI').style.display='block';document.getElementById('lottoUI').style.display='none';renderYeonResultVisible(false);resetAll();});
-    document.getElementById('tabL').addEventListener('click',function(){if(mode==='lotto')return;mode='lotto';this.classList.add('on');document.getElementById('tabY').classList.remove('on');document.getElementById('yeonUI').style.display='none';document.getElementById('lottoUI').style.display='block';renderYeonResultVisible(true);resetAll();});
+    document.getElementById('tabL').addEventListener('click',function(){if(mode==='lotto')return;mode='lotto';this.classList.add('on');document.getElementById('tabY').classList.remove('on');document.getElementById('yeonUI').style.display='none';document.getElementById('lottoUI').style.display='block';setupLottoCanvas();renderYeonResultVisible(true);resetAll();});
     function resetAll(){stopTick();done=false;yJo=null;yNums=[];yStage='jo';yCurJo=1;yCurNum=0;lLines=[];lCurHot=[];canCatch=false;_seed=Date.now()^Math.floor(Math.random()*0xFFFFFFFF);resetJoCells();resetNumCells();document.getElementById('joAll').textContent='모든 조 선택';if(mode==='lotto')drawLottoGrid([]);renderYeonResult();renderLottoResult();setMsg('포착 버튼을 눌러 번호를 확정하세요');startTick();}
     renderYeonResultVisible(false);resetAll();
 
