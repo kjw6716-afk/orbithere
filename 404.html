@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | Orbit</title>
+    <meta name="description" content="이 궤도에는 아무것도 없어요 — 페이지를 찾을 수 없습니다.">
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#0F172A">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="/orbit.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center; padding: 20px;
+            touch-action: manipulation;
+        }
+
+        /* 길 잃은 별 — 궤도를 벗어나 떠다닌다 */
+        .lost-star {
+            width: 56px; height: 56px; margin-bottom: 26px;
+            animation: drift 5s ease-in-out infinite;
+        }
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) rotate(-8deg); }
+            50%      { transform: translate(10px, -14px) rotate(10deg); }
+        }
+
+        .code {
+            font-size: 0.8rem; letter-spacing: 0.3em;
+            color: var(--accent); opacity: 0.6; font-weight: 300;
+            margin: 0 0 10px;
+        }
+        h1 {
+            font-size: 1.5rem; font-weight: 200; letter-spacing: -0.02em;
+            color: var(--text-main); margin: 0;
+        }
+        h1 strong { color: var(--accent); font-weight: 600; }
+        .sub {
+            font-size: 0.85rem; color: #94A3B8;
+            margin-top: 12px; line-height: 1.7;
+        }
+
+        .links { display: flex; gap: 10px; margin-top: 30px; flex-wrap: wrap; justify-content: center; }
+        .links a {
+            font-size: 13px; font-weight: 600; text-decoration: none;
+            padding: 10px 20px; border-radius: 12px; transition: 0.2s;
+        }
+        .links .go-main { background: var(--accent); color: #0F172A; }
+        .links .go-main:hover { opacity: 0.88; }
+        .links .go-home {
+            color: #94A3B8; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .links .go-home:hover { color: var(--accent); border-color: rgba(255,159,67,0.35); }
+
+        @media (prefers-reduced-motion: reduce) {
+            .lost-star { animation: none; }
+        }
+
+        ::selection { background-color: #4FD1C5; color: #0F172A; }
+    </style>
+    <script src="/effects.js" defer></script>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <svg class="lost-star" viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z"
+              fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>
+
+    <p class="code">404</p>
+    <h1>이 궤도에는 <strong>아무것도</strong> 없어요</h1>
+    <p class="sub">주소가 바뀌었거나, 별이 다른 궤도로 떠났나 봐요.<br>아래에서 돌아갈 궤도를 골라주세요.</p>
+
+    <nav class="links">
+        <a class="go-main" href="/main.html">커뮤니티 홈으로</a>
+        <a class="go-home" href="/">대문으로</a>
+    </nav>
+</body>
+</html>

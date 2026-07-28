@@ -49,7 +49,7 @@ body {
     z-index: 100; backdrop-filter: blur(15px);
     border-bottom: 1px solid rgba(255,159,67,0.1);
 }
-.logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); cursor: pointer; }
+.logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); cursor: pointer; text-decoration: none; }
 .nav-back {
     font-size: 12px; color: #64748B; cursor: pointer;
     border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
@@ -67,13 +67,56 @@ body {
 .foot-links a { font-size: 12px; color: #64748B; text-decoration: none; transition: color 0.2s; }
 .foot-links a:hover { color: var(--accent); }
 .foot-sign {
-    font-size: 11.5px; color: #475569; letter-spacing: 0.03em;
+    font-size: 11.5px; color: #64748B; letter-spacing: 0.03em;
     display: flex; align-items: center; justify-content: center; gap: 5px;
 }
 .foot-star { width: 13px; height: 13px; flex-shrink: 0; animation: foot-twinkle 2.8s ease-in-out infinite; }
 @keyframes foot-twinkle {
     0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
     50%      { transform: scale(1.2) rotate(18deg); opacity: 1; }
+}
+
+/* ============================================================
+   콘텐츠 페이지 공통 (lucky · fortune · sky가 함께 쓴다)
+   ------------------------------------------------------------
+   세 페이지에 똑같이 복붙되어 있던 히어로 · SEO 본문 · 안내 박스 ·
+   광장 CTA를 한곳으로 모았다. 페이지 고유의 추가 규칙
+   (lucky의 code/tiny-note, sky의 .notice a)은 각 페이지에 남긴다.
+   ============================================================ */
+.hero { margin-bottom: 26px; }
+.hero h1 { font-size: 2rem; font-weight: 200; margin: 0; line-height: 1.3; }
+.hero h1 strong { color: var(--accent); font-weight: 700; }
+.hero p { color: #94A3B8; margin-top: 12px; font-size: 0.95rem; line-height: 1.7; }
+
+.seo-content { margin-top: 44px; }
+.seo-content h2 {
+    font-size: 1.15rem; font-weight: 600; margin: 36px 0 12px;
+    padding-bottom: 8px; border-bottom: 1px solid rgba(255,159,67,0.12);
+}
+.seo-content h3 { font-size: 0.95rem; font-weight: 600; margin: 20px 0 6px; color: #CBD5E1; }
+.seo-content p { color: #94A3B8; font-size: 14px; line-height: 1.8; margin: 0 0 12px; }
+.seo-content ol, .seo-content ul { color: #94A3B8; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0 0 12px; }
+.seo-content li { margin-bottom: 6px; }
+.seo-content strong { color: var(--accent); font-weight: 600; }
+
+.notice {
+    margin-top: 28px; padding: 16px 18px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px; font-size: 12.5px; color: #64748B; line-height: 1.7;
+}
+
+.cta-lounge {
+    display: block; margin-top: 32px; padding: 20px 22px; text-decoration: none;
+    background: linear-gradient(135deg, rgba(255,159,67,0.12), rgba(255,183,77,0.04));
+    border: 1px solid rgba(255,159,67,0.25); border-radius: 16px;
+    transition: 0.2s;
+}
+.cta-lounge:hover { border-color: rgba(255,159,67,0.5); transform: translateY(-2px); }
+.cta-lounge .ct { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 5px; }
+.cta-lounge .cd { font-size: 12.5px; color: #94A3B8; line-height: 1.6; }
+
+@media (max-width: 768px) {
+    .hero h1 { font-size: 1.55rem; }
 }
 
 /* ============================================================
@@ -101,4 +144,9 @@ body {
 
     /* 반짝이는 별은 움직임만 멈추고 그대로 보이게 둔다 */
     .foot-star { animation: none !important; opacity: 0.9 !important; }
+
+    /* 대문의 "아무곳이나 클릭" 힌트는 기본 opacity가 0이고 애니메이션으로만
+       나타난다. 애니메이션을 1회로 줄이면 힌트가 영영 안 보이므로,
+       여기서는 애니메이션 없이 고정된 밝기로 보여준다. */
+    .click-hint { animation: none !important; opacity: 0.5 !important; }
 }

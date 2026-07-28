@@ -22,7 +22,8 @@
     <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://orbithere.com/">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="stylesheet" href="/orbit.css">
     <style>
         body {
@@ -184,16 +185,19 @@
             font-weight: 300;
         }
 
-        /* 클릭 힌트 */
+        /* 클릭 힌트 — 키보드 사용자를 위해 실제 링크로 둔다 (Tab → Enter 입장) */
         .click-hint {
+            display: inline-block;
             margin-top: 40px;
             font-size: 0.72rem;
             color: #4FD1C5;
+            text-decoration: none;
             opacity: 0;
             letter-spacing: 0.2em;
             font-weight: 300;
             animation: hint-pulse 2.5s ease-in-out 1.2s infinite;
         }
+        .click-hint:focus-visible { opacity: 0.8; outline: 1px solid rgba(79,209,197,0.5); outline-offset: 6px; }
 
         /* 하단 바로가기 — 검색엔진이 따라갈 수 있는 실제 링크 */
         .quick-links {
@@ -203,14 +207,14 @@
             padding: 0 16px;
         }
         .quick-links a {
-            font-size: 0.72rem; color: rgba(226,232,240,0.28);
+            font-size: 0.72rem; color: rgba(226,232,240,0.5);
             text-decoration: none; letter-spacing: 0.04em;
             transition: color 0.2s;
         }
         .quick-links a:hover { color: #4FD1C5; }
         .quick-links .foot-copy {
             width: 100%; margin-top: 5px;
-            font-size: 0.62rem; color: rgba(226,232,240,0.18);
+            font-size: 0.62rem; color: rgba(226,232,240,0.35);
             letter-spacing: 0.06em;
             display: flex; align-items: center; justify-content: center; gap: 5px;
         }
@@ -288,7 +292,7 @@
         </div>
         <h1 class="title">궤도에서 <span class="highlight">너를</span> 만나다</h1>
         <p class="subtitle">비슷한 궤도를 도는 사람들이 모이는 곳</p>
-        <p class="click-hint">아무곳이나 클릭</p>
+        <a class="click-hint" href="main.html">아무곳이나 클릭</a>
     </div>
 
     <nav class="quick-links">
@@ -310,6 +314,9 @@
         document.body.addEventListener('click', (e) => {
             // 하단 바로가기는 각자 목적지가 있으니 입장 전환에서 제외
             if (e.target.closest('.quick-links')) return;
+            // 힌트 링크는 즉시 이동 대신 아래의 700ms 전환을 같이 탄다
+            // (JS가 꺼져 있으면 링크 본연의 즉시 이동으로 동작)
+            if (e.target.closest('.click-hint')) e.preventDefault();
             // 파티클은 effects.js가 그림 — 여기선 입장 전환만
             setTimeout(() => {
                 window.location.href = 'main.html';
