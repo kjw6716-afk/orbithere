@@ -68,7 +68,8 @@
       ]
     }
     </script>
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="stylesheet" href="/orbit.css">
     <style>
         :root { --mint: #4FD1C5; }   /* 나머지 색은 orbit.css */
@@ -77,10 +78,7 @@
 
         .container { max-width: 720px; margin: 130px auto 80px; padding: 0 20px; }
 
-        .hero { margin-bottom: 26px; }
-        .hero h1 { font-size: 2rem; font-weight: 200; margin: 0; line-height: 1.3; }
-        .hero h1 strong { color: var(--accent); font-weight: 700; }
-        .hero p { color: #94A3B8; margin-top: 12px; font-size: 0.95rem; line-height: 1.7; }
+        /* 히어로·SEO 본문·notice·cta-lounge 공통 스타일은 orbit.css */
 
         .card-tag {
             display: inline-flex; align-items: center; justify-content: center;
@@ -154,6 +152,7 @@
             transition: border-color 0.2s, transform 0.2s;
         }
         .ev:hover { border-color: rgba(255,159,67,0.35); transform: translateY(-1px); }
+        .ev:focus-visible { border-color: rgba(255,159,67,0.5); outline: none; }
         .ev.open { border-color: rgba(255,159,67,0.4); }
         .ev-top { display: flex; align-items: center; gap: 13px; }
         .ev-ic { font-size: 22px; line-height: 1; flex-shrink: 0; width: 26px; text-align: center; }
@@ -167,7 +166,7 @@
             background: rgba(255,159,67,0.1); border-radius: 99px;
             font-variant-numeric: tabular-nums;
         }
-        .ev-dday.past { color: #475569; background: rgba(255,255,255,0.03); }
+        .ev-dday.past { color: #64748B; background: rgba(255,255,255,0.03); }
 
         .badges { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
         /* 알약 배지 — 높이를 고정하고 flex로 가운데 맞춘다.
@@ -202,35 +201,10 @@
         .ev-row .rl { font-size: 11px; font-weight: 700; color: var(--accent); flex-shrink: 0; width: 74px; }
         .ev-row .rv { font-size: 12.5px; color: #94A3B8; line-height: 1.65; flex: 1; }
 
-        /* ===== SEO 본문 ===== */
-        .seo-content { margin-top: 44px; }
-        .seo-content h2 {
-            font-size: 1.15rem; font-weight: 600; margin: 36px 0 12px;
-            padding-bottom: 8px; border-bottom: 1px solid rgba(255,159,67,0.12);
-        }
-        .seo-content h3 { font-size: 0.95rem; font-weight: 600; margin: 20px 0 6px; color: #CBD5E1; }
-        .seo-content p { color: #94A3B8; font-size: 14px; line-height: 1.8; margin: 0 0 12px; }
-        .seo-content ol, .seo-content ul { color: #94A3B8; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0 0 12px; }
-        .seo-content li { margin-bottom: 6px; }
-        .seo-content strong { color: var(--accent); font-weight: 600; }
-        .notice {
-            margin-top: 28px; padding: 16px 18px;
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 14px; font-size: 12.5px; color: #64748B; line-height: 1.7;
-        }
+        /* SEO 본문·notice·cta-lounge 공통 스타일은 orbit.css — 이 페이지 고유분만 */
         .notice a { color: #94A3B8; }
-        .cta-lounge {
-            display: block; margin-top: 32px; padding: 20px 22px; text-decoration: none;
-            background: linear-gradient(135deg, rgba(255,159,67,0.12), rgba(255,183,77,0.04));
-            border: 1px solid rgba(255,159,67,0.25); border-radius: 16px;
-            transition: 0.2s;
-        }
-        .cta-lounge:hover { border-color: rgba(255,159,67,0.5); transform: translateY(-2px); }
-        .cta-lounge .ct { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 5px; }
-        .cta-lounge .cd { font-size: 12.5px; color: #94A3B8; line-height: 1.6; }
 
         @media (max-width: 768px) {
-            .hero h1 { font-size: 1.55rem; }
             .container { margin-top: 110px; }
             .dday { font-size: 2.1rem; }
             .moon-card { gap: 16px; padding: 20px; }
@@ -258,7 +232,7 @@
     <div class="bg-glow"></div>
 
     <nav class="site-topbar">
-        <div class="logo" onclick="location.href='index.html'">ORBIT.</div>
+        <a class="logo" href="index.html">ORBIT.</a>
         <button class="nav-back" onclick="location.href='main.html'">← 커뮤니티 홈</button>
     </nav>
 
@@ -272,7 +246,7 @@
         <section class="next-card">
             <div style="display:flex;align-items:center;gap:10px;">
                 <span class="card-tag" style="margin-bottom:0;">🔭 다음 천문 현상</span>
-                <span style="font-size:10px;color:#334155;">한국 표준시(KST) 기준</span>
+                <span style="font-size:10px;color:#64748B;">한국 표준시(KST) 기준</span>
             </div>
             <div class="nx-head" style="margin-top:14px;">
                 <div class="nx-emoji" id="nxEmoji">✨</div>
@@ -747,7 +721,7 @@
             }
 
             return '' +
-            '<article class="ev" data-id="' + e.id + '">' +
+            '<article class="ev" data-id="' + e.id + '" tabindex="0">' +
               '<div class="ev-top">' +
                 '<div class="ev-ic">' + e.ic + '</div>' +
                 '<div class="ev-mid">' +
@@ -765,10 +739,17 @@
         }).join('');
     }
 
-    // 카드 펼치기
+    // 카드 펼치기 — 클릭과 키보드(Enter/Space) 모두
     document.addEventListener('click', function (ev) {
         var card = ev.target.closest('.ev');
         if (card) card.classList.toggle('open');
+    });
+    document.addEventListener('keydown', function (ev) {
+        if (ev.key !== 'Enter' && ev.key !== ' ') return;
+        var card = ev.target.closest && ev.target.closest('.ev');
+        if (!card) return;
+        ev.preventDefault(); // Space의 페이지 스크롤 방지
+        card.classList.toggle('open');
     });
 
     // 필터

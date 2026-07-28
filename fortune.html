@@ -63,17 +63,15 @@
       ]
     }
     </script>
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="stylesheet" href="/orbit.css">
     <style>
         body { touch-action: manipulation; }   /* 나머지 기본값은 orbit.css */
 
         .container { max-width: 720px; margin: 130px auto 80px; padding: 0 20px; }
 
-        .hero { margin-bottom: 26px; }
-        .hero h1 { font-size: 2rem; font-weight: 200; margin: 0; line-height: 1.3; }
-        .hero h1 strong { color: var(--accent); font-weight: 700; }
-        .hero p { color: #94A3B8; margin-top: 12px; font-size: 0.95rem; line-height: 1.7; }
+        /* 히어로·SEO 본문·notice·cta-lounge 공통 스타일은 orbit.css */
 
         .card-tag {
             display: inline-block; font-size: 11px; font-weight: 600;
@@ -89,7 +87,7 @@
             border-radius: 20px; padding: 26px; position: relative; overflow: hidden;
         }
         .fortune-card::before { content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px; background:radial-gradient(circle,rgba(255,159,67,0.05) 0%,transparent 70%); pointer-events:none; }
-        .today-label { font-size: 11px; color: #475569; margin-top: 4px; }
+        .today-label { font-size: 11px; color: #64748B; margin-top: 4px; }
 
         .ftab-row { display:flex; gap:8px; margin: 16px 0; }
         .ftab { font-size:12px; padding:5px 16px; border-radius:20px; border:1.5px solid rgba(255,159,67,0.25); background:transparent; cursor:pointer; color:#94A3B8; transition:all 0.2s; font-family:'Pretendard'; font-weight:500; }
@@ -108,7 +106,7 @@
         .sign-cell.on { background: rgba(255,159,67,0.14); border-color: var(--accent); color: var(--accent); }
         .sign-cell .se { font-size: 20px; line-height: 1; }
         .sign-cell .sn { font-size: 11px; font-weight: 600; }
-        .sign-cell .sd { font-size: 8.5px; color: #475569; letter-spacing: -0.02em; white-space: nowrap; }
+        .sign-cell .sd { font-size: 8.5px; color: #64748B; letter-spacing: -0.02em; white-space: nowrap; }
         .sign-cell.on .sd { color: rgba(255,159,67,0.7); }
 
         /* 결과 */
@@ -164,34 +162,9 @@
         }
         .btn-lucky-link:hover { border-color: rgba(255,159,67,0.3); color: var(--accent); }
 
-        /* ===== 본문(SEO) ===== */
-        .seo-content { margin-top: 44px; }
-        .seo-content h2 {
-            font-size: 1.15rem; font-weight: 600; margin: 36px 0 12px;
-            padding-bottom: 8px; border-bottom: 1px solid rgba(255,159,67,0.12);
-        }
-        .seo-content h3 { font-size: 0.95rem; font-weight: 600; margin: 20px 0 6px; color: #CBD5E1; }
-        .seo-content p { color: #94A3B8; font-size: 14px; line-height: 1.8; margin: 0 0 12px; }
-        .seo-content ol, .seo-content ul { color: #94A3B8; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0 0 12px; }
-        .seo-content li { margin-bottom: 6px; }
-        .seo-content strong { color: var(--accent); font-weight: 600; }
-        .notice {
-            margin-top: 28px; padding: 16px 18px;
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 14px; font-size: 12.5px; color: #64748B; line-height: 1.7;
-        }
-        .cta-lounge {
-            display: block; margin-top: 32px; padding: 20px 22px; text-decoration: none;
-            background: linear-gradient(135deg, rgba(255,159,67,0.12), rgba(255,183,77,0.04));
-            border: 1px solid rgba(255,159,67,0.25); border-radius: 16px;
-            transition: 0.2s;
-        }
-        .cta-lounge:hover { border-color: rgba(255,159,67,0.5); transform: translateY(-2px); }
-        .cta-lounge .ct { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 5px; }
-        .cta-lounge .cd { font-size: 12.5px; color: #94A3B8; line-height: 1.6; }
+        /* SEO 본문·notice·cta-lounge 공통 스타일은 orbit.css */
 
         @media (max-width: 768px) {
-            .hero h1 { font-size: 1.55rem; }
             .container { margin-top: 110px; }
             .sign-grid { grid-template-columns: repeat(4, 1fr); }
         }
@@ -216,7 +189,7 @@
     <div class="bg-glow"></div>
 
     <nav class="site-topbar">
-        <div class="logo" onclick="location.href='index.html'">ORBIT.</div>
+        <a class="logo" href="index.html">ORBIT.</a>
         <button class="nav-back" onclick="location.href='main.html'">← 커뮤니티 홈</button>
     </nav>
 
@@ -229,7 +202,7 @@
         <div class="fortune-card">
             <div style="display:flex;align-items:center;gap:10px;">
                 <span class="card-tag" style="margin-bottom:0;">🌠 오늘의 운세</span>
-                <span style="font-size:10px;color:#334155;">자정마다 새로 뜨는 궤도 운세</span>
+                <span style="font-size:10px;color:#64748B;">자정마다 새로 뜨는 궤도 운세</span>
             </div>
             <h2 class="card-title" style="font-size:1.1rem;">내 별을 고르세요</h2>
             <div class="today-label" id="todayLabel"></div>
@@ -686,9 +659,12 @@
                 parent.postMessage({ orbit:'fortuneHeight', height:h }, window.location.origin);
             }
         }
+        // 상시 폴링(setInterval) 대신 크기가 실제로 바뀌는 순간들만 잡는다
+        // — ResizeObserver + load + 폰트 로딩 완료면 충분하고 배터리를 아낀다
         if(window.ResizeObserver) new ResizeObserver(report).observe(document.querySelector('.container'));
+        else setInterval(report, 500); // 아주 옛 브라우저 폴백
         window.addEventListener('load', report);
-        setInterval(report, 500); // 애니메이션·폰트 로딩으로 놓치는 변화 대비
+        if(document.fonts && document.fonts.ready) document.fonts.ready.then(report);
         report();
     })();
     </script>

@@ -22,7 +22,8 @@
     <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://orbithere.com/main.html">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="stylesheet" href="/orbit.css">
     <style>
         body { touch-action: manipulation; }   /* 나머지 기본값은 orbit.css */
@@ -42,6 +43,7 @@
             background: rgba(15,23,42,0.55); backdrop-filter: blur(12px);
         }
         .side-logo {
+            display: block; text-decoration: none;
             font-weight: 700; letter-spacing: 2px; color: var(--accent);
             font-size: 1.15rem; cursor: pointer; padding: 6px 12px 20px;
         }
@@ -160,8 +162,8 @@
         .tl-item:last-child .tl-line { display: none; }
         .tl-content { flex: 1; }
         .tl-version { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 3px; }
-        .tl-version.old { color: #475569; }
-        .tl-date { font-size: 10px; color: #334155; margin-bottom: 6px; }
+        .tl-version.old { color: #64748B; }
+        .tl-date { font-size: 10px; color: #64748B; margin-bottom: 6px; }
         .tl-title { font-size: 14px; font-weight: 600; color: #CBD5E1; margin-bottom: 4px; }
         .tl-desc { font-size: 12px; color: #64748B; line-height: 1.5; }
         .tl-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
@@ -280,7 +282,7 @@
     <div class="app">
         <!-- 사이드바 -->
         <aside class="sidebar">
-            <div class="side-logo" onclick="location.href='index.html'">ORBIT.</div>
+            <a class="side-logo" href="index.html">ORBIT.</a>
             <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="sideNav" aria-label="메뉴 열기">
                 <span class="nt-ic" id="navToggleIc">🏠</span>
                 <span class="nt-lbl" id="navToggleLbl">홈</span>
@@ -292,7 +294,8 @@
                 <button class="nav-item" data-panel="lucky"><span class="ic">🎰</span><span class="lbl">Lucky Orbit</span></button>
                 <button class="nav-item" data-panel="fortune"><span class="ic">🌠</span><span class="lbl">오늘의 운세</span></button>
                 <button class="nav-item" data-panel="sky"><span class="ic">🔭</span><span class="lbl">밤하늘 달력</span></button>
-                <button class="nav-item" data-panel="updates"><span class="ic">📡</span><span class="lbl">업데이트 기록</span></button>
+                <!-- 업데이트 기록 패널은 메뉴에 노출하지 않는다.
+                     main.html#updates 해시로 직접 들어갈 때만 열리는 운영자용 비밀 탭. -->
             </nav>
         </aside>
         <div class="nav-scrim" id="navScrim"></div>
@@ -301,9 +304,9 @@
         <div class="content">
             <div class="topbar">
                 <h1 class="panel-title" id="panelTitle">Connect in <span>Orbit</span></h1>
-                <div class="profile-chip" id="profileChip">
+                <button class="profile-chip" id="profileChip" type="button">
                     <span class="pc-av">🦦</span><span id="profileChipText">내 프로필 보기</span>
-                </div>
+                </button>
             </div>
 
             <div class="panel-wrap">
@@ -335,10 +338,12 @@
                             </div>
                         </div>
 
-                        <div class="card">
+                        <!-- 실제 광장 데이터로 채워진다 — 글이 없으면 카드 자체를 숨긴다 -->
+                        <div class="card" id="trendCard" style="display:none;">
                             <span class="card-tag">Trending</span>
-                            <h3 class="card-title">가장 뜨거운 궤도</h3>
-                            <p class="card-desc">"직장 다니면서 몰래 굴린 3년 — 퇴사 결심하게 만든 수익률 공개합니다" 글이 현재 인기 순위 1위입니다.</p>
+                            <h3 class="card-title" id="trendTitle">가장 뜨거운 궤도</h3>
+                            <p class="card-desc" id="trendDesc"></p>
+                            <button class="btn-outline" id="trendGo" style="margin-top:16px;">광장에서 보기</button>
                         </div>
                     </div>
                 </section>
@@ -537,14 +542,21 @@
 
         function switchPanel(name){
             if(!TITLES[name]) name = 'home';
+            var found = false;
             document.querySelectorAll('.nav-item').forEach(function(b){
                 var on = b.getAttribute('data-panel') === name;
                 b.classList.toggle('on', on);
                 if(on){
+                    found = true;
                     document.getElementById('navToggleIc').textContent  = b.querySelector('.ic').textContent;
                     document.getElementById('navToggleLbl').textContent = b.querySelector('.lbl').textContent;
                 }
             });
+            // 메뉴에 없는 비밀 패널(#updates 직접 진입)도 모바일 토글 라벨은 맞춰준다
+            if(!found && name === 'updates'){
+                document.getElementById('navToggleIc').textContent  = '📡';
+                document.getElementById('navToggleLbl').textContent = '업데이트 기록';
+            }
             setMenu(false);
             document.querySelectorAll('.panel').forEach(function(p){
                 p.classList.toggle('on', p.id === 'panel-' + name);
@@ -677,6 +689,45 @@
             errEl.style.display = 'block';
             input.focus();
         }
+    })();
+    </script>
+
+    <script>
+    // ===== Trending — 광장에서 실제로 가장 뜨거운 궤적 =====
+    // 가짜 하드코딩 문구 대신 리액션이 가장 많은 실제 글을 보여준다.
+    // SDK 없이 REST 두 번이면 충분해서 supabase-js는 싣지 않는다.
+    // 글이 하나도 없거나 요청이 실패하면 카드를 아예 보여주지 않는다.
+    (function(){
+        var SB_URL = 'https://unwxpuvfqyjhgrcrmuhu.supabase.co';
+        var SB_KEY = 'sb_publishable_KnyriHKUHNWw0QyIAXBmOA_0KaHPcXI'; // 공개용 키 (publishable)
+        function get(path){
+            return fetch(SB_URL + '/rest/v1/' + path, {
+                headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
+            }).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+        }
+        Promise.all([
+            get('posts?select=id,nick,text&order=created_at.desc&limit=50'),
+            get('reactions?select=post_id&limit=1000')
+        ]).then(function(res){
+            var posts = res[0] || [];
+            if(!posts.length) return; // 광장이 비어 있으면 카드 비노출
+            var count = {};
+            (res[1] || []).forEach(function(r){ count[r.post_id] = (count[r.post_id] || 0) + 1; });
+            var top = null, topN = 0;
+            posts.forEach(function(p){
+                var n = count[p.id] || 0;
+                if(n > topN){ top = p; topN = n; }
+            });
+            var p = top || posts[0]; // 아직 리액션이 없으면 최신 궤적
+            var text = p.text.length > 64 ? p.text.slice(0, 64) + '…' : p.text;
+            // textContent로만 넣는다 — 사용자 글이므로 HTML로 해석되면 안 된다
+            document.getElementById('trendDesc').textContent = top
+                ? '"' + text + '" — ' + p.nick + ' 님의 궤적이 리액션 ' + topN + '개로 가장 뜨겁습니다.'
+                : '"' + text + '" — ' + p.nick + ' 님이 방금 남기고 간 최신 궤적입니다.';
+            if(!top) document.getElementById('trendTitle').textContent = '방금 지나간 궤적';
+            document.getElementById('trendGo').addEventListener('click', function(){ location.hash = '#lounge'; });
+            document.getElementById('trendCard').style.display = '';
+        }).catch(function(){ /* 연결 실패 시 카드 숨김 유지 */ });
     })();
     </script>
 </body>

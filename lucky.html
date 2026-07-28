@@ -68,18 +68,15 @@
       ]
     }
     </script>
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="stylesheet" href="/orbit.css">
     <style>
         body { touch-action: manipulation; }   /* 나머지 기본값은 orbit.css */
 
         .container { max-width: 720px; margin: 130px auto 80px; padding: 0 20px; }
 
-        /* 히어로 */
-        .hero { margin-bottom: 26px; }
-        .hero h1 { font-size: 2rem; font-weight: 200; margin: 0; line-height: 1.3; }
-        .hero h1 strong { color: var(--accent); font-weight: 700; }
-        .hero p { color: #94A3B8; margin-top: 12px; font-size: 0.95rem; line-height: 1.7; }
+        /* 히어로·SEO 본문·notice·cta-lounge 공통 스타일은 orbit.css */
 
         .card-tag {
             display: inline-block; font-size: 11px; font-weight: 600;
@@ -99,7 +96,7 @@
         .ltab-row { display:flex; gap:8px; margin-bottom:16px; }
         .ltab { font-size:12px; padding:5px 16px; border-radius:20px; border:1.5px solid rgba(255,159,67,0.25); background:transparent; cursor:pointer; color:#94A3B8; transition:all 0.2s; font-family:'Pretendard'; font-weight:500; }
         .ltab.on { background:var(--accent); border-color:var(--accent); color:#0F172A; font-weight:700; }
-        .section-label { font-size:10px; color:#475569; font-weight:600; margin-bottom:8px; letter-spacing:0.06em; text-transform:uppercase; }
+        .section-label { font-size:10px; color:#64748B; font-weight:600; margin-bottom:8px; letter-spacing:0.06em; text-transform:uppercase; }
         .jo-cell { display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:600; cursor:default; border:1.5px solid rgba(255,255,255,0.06); transition:background 0.08s,color 0.08s; font-family:'Pretendard'; font-size:12px; }
         .jo-cell.dim { background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.18); }
         .jo-cell.hot { background:rgba(255,159,67,0.15); color:var(--accent); }
@@ -122,20 +119,10 @@
         .btn-catch:hover { opacity:0.88; transform:scale(0.98); }
         .btn-reset { background:rgba(255,255,255,0.04); color:#64748B; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:8px 12px; cursor:pointer; transition:0.2s; font-family:'Pretendard'; font-size:11px; }
         .btn-reset:hover { border-color:rgba(255,159,67,0.3); color:var(--accent); }
-        .lottery-msg { font-size:11px; color:#475569; }
+        .lottery-msg { font-size:11px; color:#64748B; }
         .tip-icon { display:inline-flex; align-items:center; justify-content:center; width:12px; height:12px; border-radius:50%; border:1.5px solid currentColor; font-size:7px; font-weight:700; flex-shrink:0; margin-top:1px; }
 
-        /* ===== 본문(SEO) ===== */
-        .seo-content { margin-top: 44px; }
-        .seo-content h2 {
-            font-size: 1.15rem; font-weight: 600; margin: 36px 0 12px;
-            padding-bottom: 8px; border-bottom: 1px solid rgba(255,159,67,0.12);
-        }
-        .seo-content h3 { font-size: 0.95rem; font-weight: 600; margin: 20px 0 6px; color: #CBD5E1; }
-        .seo-content p { color: #94A3B8; font-size: 14px; line-height: 1.8; margin: 0 0 12px; }
-        .seo-content ol, .seo-content ul { color: #94A3B8; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0 0 12px; }
-        .seo-content li { margin-bottom: 6px; }
-        .seo-content strong { color: var(--accent); font-weight: 600; }
+        /* ===== 본문(SEO) — 기본은 orbit.css, 이 페이지 고유분만 ===== */
         .seo-content code {
             font-size: 12.5px; padding: 1px 6px; border-radius: 5px;
             background: rgba(255,255,255,0.05); color: #CBD5E1;
@@ -145,23 +132,7 @@
             font-size: 13px !important; color: #64748B !important;
             border-left: 2px solid rgba(255,159,67,0.25); padding-left: 12px;
         }
-        .notice {
-            margin-top: 28px; padding: 16px 18px;
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 14px; font-size: 12.5px; color: #64748B; line-height: 1.7;
-        }
-        .cta-lounge {
-            display: block; margin-top: 32px; padding: 20px 22px; text-decoration: none;
-            background: linear-gradient(135deg, rgba(255,159,67,0.12), rgba(255,183,77,0.04));
-            border: 1px solid rgba(255,159,67,0.25); border-radius: 16px;
-            transition: 0.2s;
-        }
-        .cta-lounge:hover { border-color: rgba(255,159,67,0.5); transform: translateY(-2px); }
-        .cta-lounge .ct { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 5px; }
-        .cta-lounge .cd { font-size: 12.5px; color: #94A3B8; line-height: 1.6; }
-
         @media (max-width: 768px) {
-            .hero h1 { font-size: 1.55rem; }
             .container { margin-top: 110px; }
             .game-inner { grid-template-columns: 1fr; }
             .result-panel { padding-left: 0; border-left: none; border-top: 1px solid rgba(255,159,67,0.08); padding-top: 12px; }
@@ -185,7 +156,7 @@
     <div class="bg-glow"></div>
 
     <nav class="site-topbar">
-        <div class="logo" onclick="location.href='index.html'">ORBIT.</div>
+        <a class="logo" href="index.html">ORBIT.</a>
         <button class="nav-back" onclick="location.href='main.html'">← 커뮤니티 홈</button>
     </nav>
 
@@ -198,7 +169,7 @@
         <div class="lottery-card">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
                 <span class="card-tag" style="margin-bottom:0;">🎰 Lucky Orbit</span>
-                <span style="font-size:10px;color:#334155;">카오스 알고리즘이 번호를 골라드려요</span>
+                <span style="font-size:10px;color:#64748B;">카오스 알고리즘이 번호를 골라드려요</span>
             </div>
             <h2 class="card-title" style="font-size:1.1rem;margin-bottom:0;">오늘의 행운 번호 뽑기</h2>
             <div class="game-inner">
@@ -212,7 +183,7 @@
                             <div>
                                 <div class="section-label">조 선택</div>
                                 <div style="display:flex;flex-direction:column;gap:5px;">
-                                    <div class="jo-cell dim" id="joAll" style="padding:9px;font-size:11px;min-height:34px;cursor:pointer;">모든 조 선택</div>
+                                    <button class="jo-cell dim" id="joAll" type="button" style="padding:9px;font-size:11px;min-height:34px;cursor:pointer;">모든 조 선택</button>
                                     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;">
                                         <div class="jo-cell dim" id="jo1" style="padding:8px;min-height:30px;">1조</div>
                                         <div class="jo-cell dim" id="jo2" style="padding:8px;min-height:30px;">2조</div>
@@ -222,10 +193,10 @@
                                         <div class="jo-cell dim" id="jo4" style="padding:8px;min-height:30px;">4조</div>
                                         <div class="jo-cell dim" id="jo5" style="padding:8px;min-height:30px;">5조</div>
                                     </div>
-                                    <div style="font-size:9px;color:#334155;line-height:1.6;margin-top:2px;">
+                                    <div style="font-size:9px;color:#64748B;line-height:1.6;margin-top:2px;">
                                         <div style="display:flex;gap:3px;align-items:flex-start;">
                                             <span class="tip-icon">!</span>
-                                            <span><strong style="color:#475569;">구매팁!</strong><br>모든조 구매 시 1,2등<br>동시 당첨 가능(총 21.6억원)</span>
+                                            <span><strong style="color:#94A3B8;">구매팁!</strong><br>모든조 구매 시 1,2등<br>동시 당첨 가능(총 21.6억원)</span>
                                         </div>
                                     </div>
                                 </div>
@@ -244,7 +215,7 @@
                                     <div class="ycell dim" id="yn9" style="aspect-ratio:1;font-size:15px;">9</div>
                                 </div>
                                 <div class="ycell dim" id="yn0" style="margin-top:5px;padding:7px;font-size:15px;">0</div>
-                                <div style="font-size:9px;color:#334155;margin-top:6px;">십만단위 번호를 선택하세요</div>
+                                <div style="font-size:9px;color:#64748B;margin-top:6px;">십만단위 번호를 선택하세요</div>
                             </div>
                         </div>
                     </div>
@@ -255,7 +226,7 @@
                             <span class="legend-chip" style="background:#4FD1C5;color:#04342C;">3줄</span>
                             <span class="legend-chip" style="background:#FC8181;color:#fff;">4줄</span>
                             <span class="legend-chip" style="background:#63B3ED;color:#04342C;">5줄</span>
-                            <span style="font-size:10px;color:#334155;">중복=파이분할</span>
+                            <span style="font-size:10px;color:#64748B;">중복=파이분할</span>
                         </div>
                         <canvas id="lottoCanvas" style="width:100%;max-width:460px;margin:0 auto;display:block;border-radius:10px;background:#080d1a;" aria-label="로또 1부터 45까지 번호판"></canvas>
                     </div>
@@ -432,7 +403,7 @@
         if(yJo){var jb=document.createElement('div');jb.style.cssText='padding:4px 12px;border-radius:99px;background:var(--accent);color:#0F172A;font-size:11px;font-weight:700;';jb.textContent=yJo==='모든'?'모든 조':yJo+'조';area.appendChild(jb);}
         PL.forEach(function(lbl,i){
             var wrap=document.createElement('div');wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:2px;';
-            var l=document.createElement('div');l.style.cssText='font-size:9px;color:#334155;font-weight:600;letter-spacing:0.04em;';l.textContent=lbl;
+            var l=document.createElement('div');l.style.cssText='font-size:9px;color:#64748B;font-weight:600;letter-spacing:0.04em;';l.textContent=lbl;
             var b=document.createElement('div');b.style.cssText='width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;box-sizing:border-box;flex-shrink:0;';
             if(i<yNums.length){b.style.background='var(--accent)';b.style.color='#0F172A';b.textContent=yNums[i];}
             else if(i===yNums.length&&running){b.style.border='1.5px solid var(--accent)';b.style.color='var(--accent)';b.textContent='?';}
@@ -528,7 +499,7 @@
     function scheduleTick(){if(!running)return;tickTimer=setTimeout(function(){if(!running)return;mode==='yeon'?tickYeon():tickLotto();scheduleTick();},getInterval());}
     function startTick(){running=true;canCatch=false;lastTick=-1;scheduleTick();}
     function stopTick(){running=false;if(tickTimer){clearTimeout(tickTimer);tickTimer=null;}}
-    function setMsg(t,c){var e=document.getElementById('msg');e.textContent=t;e.style.color=c||'#475569';}
+    function setMsg(t,c){var e=document.getElementById('msg');e.textContent=t;e.style.color=c||'#64748B';}
     document.getElementById('btnCatch').addEventListener('click',function(){
         if(done||!running||!canCatch)return;stopTick();
         if(mode==='yeon'){
@@ -554,9 +525,12 @@
                 parent.postMessage({ orbit:'luckyHeight', height:h }, window.location.origin);
             }
         }
+        // 상시 폴링(setInterval) 대신 크기가 실제로 바뀌는 순간들만 잡는다
+        // — ResizeObserver + load + 폰트 로딩 완료면 충분하고 배터리를 아낀다
         if(window.ResizeObserver) new ResizeObserver(report).observe(document.querySelector('.container'));
+        else setInterval(report, 500); // 아주 옛 브라우저 폴백
         window.addEventListener('load', report);
-        setInterval(report, 500); // ResizeObserver가 놓치는 캔버스/폰트 변화 대비
+        if(document.fonts && document.fonts.ready) document.fonts.ready.then(report);
         report();
     })();
     </script>
