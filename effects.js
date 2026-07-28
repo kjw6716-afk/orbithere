@@ -1,24 +1,58 @@
 /* Orbit 클릭 이펙트 — requestAnimationFrame 기반 파티클 엔진
    기존 CSS 키프레임 방식 대신 매 프레임 위치를 계산해
-   중력/감속/회전/반짝임이 있는 물리감을 표현한다. */
+   중력/감속/회전/반짝임이 있는 물리감을 표현한다.
+
+   모바일 주의점: 캔버스는 레이아웃 뷰포트가 아니라 "실제로 보이는 영역"
+   (visualViewport)에 맞춘다. 핀치 확대나 키보드가 올라와 보이는 영역이
+   바뀌어도 파티클이 배율만큼 커지거나 지워지지 않은 잔상이 남지 않는다. */
 (function () {
     var ACCENT = '#FF9F43';   // 별 메인
     var LIGHT  = '#FFD08A';   // 별 라이트
     var MINT   = '#4FD1C5';   // 반짝이 포인트 (대문의 민트와 연결)
 
     var canvas = document.createElement('canvas');
-    canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;';
+    canvas.style.cssText = 'position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform-origin:0 0;';
     var ctx = canvas.getContext('2d');
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var vv = window.visualViewport || null;
+
+    // 보이는 영역: 크기(w,h), 레이아웃 뷰포트 기준 오프셋(x,y), 확대 배율(s)
+    var view = { w: 0, h: 0, x: 0, y: 0, s: 1 };
+
+    function measure() {
+        if (vv) {
+            view.w = vv.width; view.h = vv.height;
+            view.x = vv.offsetLeft; view.y = vv.offsetTop;
+            view.s = vv.scale || 1;
+        } else {
+            view.w = window.innerWidth; view.h = window.innerHeight;
+            view.x = 0; view.y = 0; view.s = 1;
+        }
+    }
+
+    function place() {
+        // 위치만 갱신 — 캔버스 크기를 건드리지 않아 진행 중인 파티클이 지워지지 않는다
+        canvas.style.transform = 'translate(' + view.x + 'px,' + view.y + 'px)';
+    }
 
     function resize() {
-        canvas.width = window.innerWidth * dpr;
-        canvas.height = window.innerHeight * dpr;
-        canvas.style.width = window.innerWidth + 'px';
-        canvas.style.height = window.innerHeight + 'px';
+        measure();
+        canvas.style.width = view.w + 'px';
+        canvas.style.height = view.h + 'px';
+        canvas.width = Math.round(view.w * dpr);   // 대입 자체가 캔버스를 비운다
+        canvas.height = Math.round(view.h * dpr);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        place();
     }
+
+    function onViewportScroll() { measure(); place(); }
+
     window.addEventListener('resize', resize);
+    window.addEventListener('orientationchange', resize);
+    if (vv) {
+        vv.addEventListener('resize', resize);
+        vv.addEventListener('scroll', onViewportScroll);
+    }
     document.body.appendChild(canvas);
     resize();
 
@@ -81,7 +115,8 @@
     function tick(now) {
         var dt = Math.min((now - last) / 16.67, 2); // 프레임 드랍 시에도 속도 일정
         last = now;
-        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        // 백킹 스토어 전체를 지운다 — 보이는 영역이 바뀌어도 잔상이 남지 않는다
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         for (var i = parts.length - 1; i >= 0; i--) {
             var p = parts[i];
@@ -105,6 +140,9 @@
             p.vy *= Math.pow(p.drag, dt);
             p.x += p.vx * dt;
             p.y += p.vy * dt;
+
+            // 보이는 영역 밖으로 나간 입자는 즉시 정리
+            if (p.x < -60 || p.x > view.w + 60 || p.y > view.h + 60) { parts.splice(i, 1); continue; }
 
             if (p.type === 'star') {
                 p.rot += p.vr * dt;
@@ -132,8 +170,29 @@
         ctx.globalAlpha = 1;
 
         if (parts.length) requestAnimationFrame(tick);
-        else { running = false; ctx.clearRect(0, 0, window.innerWidth, window.innerHeight); }
+        else { running = false; ctx.clearRect(0, 0, canvas.width, canvas.height); }
     }
 
-    document.addEventListener('click', function (e) { burst(e.clientX, e.clientY); });
+    function isTextField(el) {
+        if (!el) return false;
+        var tag = el.tagName;
+        return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable === true;
+    }
+
+    document.addEventListener('click', function (e) {
+        measure();
+
+        // 확대된 상태에서는 파티클을 띄우지 않는다 (좌표·배율이 어긋나 화면을 뒤덮는다)
+        if (view.s > 1.05) return;
+
+        // 입력창 탭은 키보드를 여닫으며 레이아웃을 흔든다 — 이펙트 대상에서 제외
+        if (isTextField(e.target) || (e.target.closest && e.target.closest('input,textarea,select,[contenteditable]'))) return;
+        if (isTextField(document.activeElement)) return;
+
+        var x = e.clientX - view.x;   // 레이아웃 뷰포트 좌표 → 보이는 영역 좌표
+        var y = e.clientY - view.y;
+        if (x < 0 || y < 0 || x > view.w || y > view.h) return;
+
+        burst(x, y);
+    });
 })();
