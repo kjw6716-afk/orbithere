@@ -63,12 +63,6 @@
 
         header { margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
         .header-text { min-width: 0; }
-        .header-otter {
-            height: 104px; width: auto; flex-shrink: 0;
-            animation: otter-bob 3.2s ease-in-out infinite;
-            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.28));
-        }
-        @keyframes otter-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
         header h1 { font-size: 2.2rem; font-weight: 200; margin: 0; line-height: 1.2; }
         header h1 span { color: var(--accent); font-weight: 700; }
         header p { color: #94A3B8; margin-top: 10px; font-size: 0.95rem; }
@@ -246,13 +240,11 @@
         .empty-state {
             text-align: center; padding: 40px 0; color: #475569; font-size: 13px;
         }
-        .empty-state img { height: 112px; width: auto; margin-bottom: 14px; opacity: 0.9; }
         .empty-state p { margin: 0; line-height: 1.6; }
 
         @media (max-width: 768px) {
             header h1 { font-size: 1.7rem; }
             .container { margin-top: 110px; }
-            .header-otter { height: 80px; }
         }
 
         ::selection { background-color: #4FD1C5; color: #0F172A; }
@@ -260,7 +252,6 @@
         /* 메인 패널에 iframe으로 임베드될 때 */
         .embed nav { display: none; }
         .embed .container { margin-top: 28px; }
-        .embed .header-otter { display: none; }
     </style>
     <script>if(new URLSearchParams(location.search).get('embed'))document.documentElement.classList.add('embed');</script>
     <script src="effects.js" defer></script>
@@ -280,7 +271,6 @@
                 <p>비슷한 궤도를 도는 사람들의 이야기가 흘러갑니다</p>
                 <span class="mock-badge" id="loungeStatus">β 베타 — 궤적은 모두에게 공개 저장돼요</span>
             </div>
-            <img class="header-otter" src="images/otter.png" alt="Orbit 수달 마스코트" width="73" height="104">
         </header>
 
         <div class="orbit-tabs" id="orbitTabs"><!-- 채널 탭은 JS가 ORBIT_LIST로 채웁니다 --></div>
@@ -464,7 +454,7 @@
         var list = document.getElementById('postList');
         list.innerHTML = '';
         if(posts.length === 0){
-            list.innerHTML = '<div class="empty-state"><img src="images/otter.png" alt=""><p>아직 이 궤도에는 궤적이 없어요.<br>첫 번째 궤적을 남겨보세요!</p></div>';
+            list.innerHTML = '<div class="empty-state"><p>아직 이 궤도에는 궤적이 없어요.<br>첫 번째 궤적을 남겨보세요!</p></div>';
             return;
         }
         posts.forEach(function(p, i){
