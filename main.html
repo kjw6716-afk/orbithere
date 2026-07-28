@@ -69,15 +69,6 @@
         .nav-item .ic { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
         .nav-item:hover { background: rgba(255,159,67,0.07); color: var(--text-main); }
         .nav-item.on { background: rgba(255,159,67,0.13); color: var(--accent); }
-        .side-otter { margin-top: auto; text-align: center; padding-top: 16px; }
-        .side-otter img {
-            width: 156px; height: auto;
-            animation: otter-bob 3.2s ease-in-out infinite;
-            filter: drop-shadow(0 10px 18px rgba(0,0,0,0.3));
-        }
-        .side-otter p { font-size: 11px; color: #475569; margin: 4px 0 0; }
-        @keyframes otter-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-
         /* 콘텐츠 */
         .content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
         .topbar {
@@ -234,7 +225,6 @@
             .side-logo { padding: 6px 10px; }
             .side-nav { flex-direction: row; gap: 4px; }
             .nav-item { padding: 9px 13px; white-space: nowrap; }
-            .side-otter { display: none; }
             .topbar { padding: 16px 18px; }
             .panel-wrap { padding: 20px 18px 50px; }
             .home-grid { grid-template-columns: 1fr; }
@@ -260,10 +250,6 @@
                 <button class="nav-item" data-panel="lucky"><span class="ic">🎰</span><span class="lbl">Lucky Orbit</span></button>
                 <button class="nav-item" data-panel="updates"><span class="ic">📡</span><span class="lbl">업데이트 기록</span></button>
             </nav>
-            <div class="side-otter">
-                <img src="images/otter.png" alt="Orbit 수달 마스코트" width="156" height="220">
-                <p>오빗 수달이 함께해요</p>
-            </div>
         </aside>
 
         <!-- 콘텐츠 -->
