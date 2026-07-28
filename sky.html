@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>밤하늘 달력 — 유성우 · 일식 · 월식 · 슈퍼문 일정 | Orbit</title>
+    <meta name="description" content="다음 유성우는 언제일까요? 페르세우스자리 유성우부터 쌍둥이자리 유성우, 개기일식과 슈퍼문까지. 극대 시각과 달빛 방해까지 계산해 관측 조건을 알려주는 밤하늘 달력.">
+    <meta name="theme-color" content="#0F172A">
+    <link rel="canonical" href="https://orbithere.com/sky.html">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="/apple-touch-icon-precomposed.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Orbit">
+    <meta property="og:title" content="밤하늘 달력 — 유성우 · 일식 · 월식 · 슈퍼문 일정">
+    <meta property="og:description" content="다음 천문 현상까지 남은 시간, 오늘의 달, 그리고 달빛 방해까지 계산한 관측 조건. 궤도에서 내려다본 밤하늘 일정표.">
+    <meta property="og:image" content="https://orbithere.com/images/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://orbithere.com/sky.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Orbit 밤하늘 달력",
+      "url": "https://orbithere.com/sky.html",
+      "applicationCategory": "ReferenceApplication",
+      "operatingSystem": "All",
+      "inLanguage": "ko",
+      "description": "유성우·일식·월식·슈퍼문 일정과 관측 조건을 보여주는 밤하늘 달력.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "유성우는 극대 시각에 봐야 하나요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "극대 시각이 낮이면 그 시각에는 볼 수 없습니다. 유성우는 극대 전후 하루 이틀 동안 이어지므로, 극대에 가장 가까운 '밤'을 고르면 됩니다. 밤하늘 달력은 극대 시각과 별개로 실제 관측하기 좋은 밤을 따로 알려드립니다." }
+        },
+        {
+          "@type": "Question",
+          "name": "관측 조건은 어떻게 계산하나요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "관측일 밤의 달 조도를 천문 계산으로 구해 등급을 매깁니다. 달이 밝으면 어두운 유성이 묻혀서 실제로 보이는 개수가 크게 줄기 때문입니다. 다만 달이 뜨고 지는 시각과 그날의 날씨는 반영하지 않으므로 참고용으로 봐주세요." }
+        },
+        {
+          "@type": "Question",
+          "name": "ZHR이 시간당 100개면 100개를 볼 수 있나요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "아닙니다. ZHR은 하늘이 완벽히 어둡고 복사점이 머리 꼭대기에 있을 때를 가정한 이론값입니다. 실제 도심에서는 그 몇 분의 일, 어두운 시골에서도 절반 정도를 보는 경우가 많습니다." }
+        },
+        {
+          "@type": "Question",
+          "name": "관측에 망원경이 필요한가요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "유성우는 맨눈이 가장 좋습니다. 망원경이나 쌍안경은 시야를 좁혀서 오히려 불리합니다. 하늘이 넓게 트인 어두운 곳에 누워 하늘 전체를 보는 것이 가장 좋은 방법입니다." }
+        },
+        {
+          "@type": "Question",
+          "name": "한국에서 안 보이는 현상도 있나요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "있습니다. 일식과 월식은 지구 위 특정 지역에서만 보입니다. 예를 들어 2026년 8월 12일 개기일식은 그린란드·아이슬란드·스페인에서 보이고 한국은 밤이라 볼 수 없습니다. 밤하늘 달력은 각 현상마다 국내 관측 가능 여부를 표시합니다." }
+        }
+      ]
+    }
+    </script>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        :root {
+            --bg-color: #0F172A;
+            --accent: #FF9F43;
+            --text-main: #E2E8F0;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --mint: #4FD1C5;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Pretendard', sans-serif;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+        .bg-glow {
+            position: fixed; top: -10%; right: -10%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255,159,67,0.08) 0%, rgba(15,23,42,0) 70%);
+            pointer-events: none; z-index: -1;
+        }
+
+        nav {
+            position: fixed; top: 0; width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100; backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,159,67,0.1);
+        }
+        .logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); cursor: pointer; }
+        .nav-back {
+            font-size: 12px; color: #64748B; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
+            padding: 6px 12px; transition: 0.2s; background: transparent;
+            font-family: 'Pretendard';
+        }
+        .nav-back:hover { color: var(--accent); border-color: rgba(255,159,67,0.3); }
+
+        .container { max-width: 720px; margin: 130px auto 80px; padding: 0 20px; }
+
+        .hero { margin-bottom: 26px; }
+        .hero h1 { font-size: 2rem; font-weight: 200; margin: 0; line-height: 1.3; }
+        .hero h1 strong { color: var(--accent); font-weight: 700; }
+        .hero p { color: #94A3B8; margin-top: 12px; font-size: 0.95rem; line-height: 1.7; }
+
+        .card-tag {
+            display: inline-block; font-size: 11px; font-weight: 600;
+            color: var(--accent); background: rgba(255,159,67,0.1);
+            padding: 4px 10px; border-radius: 99px; margin-bottom: 12px;
+        }
+
+        /* ===== 다음 현상 카운트다운 ===== */
+        .next-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,159,67,0.15);
+            border-radius: 20px; padding: 26px; position: relative; overflow: hidden;
+        }
+        .next-card::before {
+            content:''; position:absolute; top:-70px; right:-70px; width:230px; height:230px;
+            background:radial-gradient(circle,rgba(255,159,67,0.07) 0%,transparent 70%); pointer-events:none;
+        }
+        .nx-emoji { font-size: 34px; line-height: 1; }
+        .nx-head { display: flex; align-items: center; gap: 12px; }
+        .nx-name { font-size: 1.15rem; font-weight: 700; }
+        .nx-when { font-size: 11.5px; color: #64748B; margin-top: 3px; }
+        .dday-row { display: flex; align-items: baseline; gap: 10px; margin: 18px 0 4px; flex-wrap: wrap; }
+        .dday { font-size: 2.6rem; font-weight: 700; color: var(--accent); line-height: 1; letter-spacing: -0.02em; }
+        .dday-sub { font-size: 13px; color: #94A3B8; }
+        .cd-units { display: flex; gap: 7px; margin-top: 14px; flex-wrap: wrap; }
+        .cd-unit {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 11px; padding: 9px 13px; text-align: center; min-width: 62px;
+        }
+        .cd-unit b { display: block; font-size: 1.1rem; color: var(--text-main); font-weight: 700; font-variant-numeric: tabular-nums; }
+        .cd-unit span { font-size: 10px; color: #64748B; }
+        .nx-note {
+            margin-top: 16px; padding: 13px 15px; border-radius: 12px;
+            background: rgba(79,209,197,0.07); border: 1px solid rgba(79,209,197,0.2);
+            font-size: 12.5px; color: #A5B4C4; line-height: 1.7;
+        }
+        .nx-note strong { color: var(--mint); font-weight: 700; }
+
+        /* ===== 오늘의 달 ===== */
+        .moon-card {
+            margin-top: 16px; display: flex; align-items: center; gap: 20px;
+            background: var(--card-bg); border: 1px solid rgba(255,159,67,0.15);
+            border-radius: 20px; padding: 22px 26px;
+        }
+        .moon-vis { flex-shrink: 0; }
+        .moon-meta .mm-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 5px; }
+        .moon-meta .mm-name span { color: var(--accent); }
+        .moon-meta .mm-line { font-size: 12.5px; color: #94A3B8; line-height: 1.75; }
+        .moon-meta .mm-line b { color: #CBD5E1; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+        /* ===== 필터 ===== */
+        .filter-row { display: flex; gap: 8px; margin: 30px 0 14px; flex-wrap: wrap; }
+        .fbtn {
+            font-size: 12px; padding: 5px 16px; border-radius: 20px;
+            border: 1.5px solid rgba(255,159,67,0.25); background: transparent;
+            cursor: pointer; color: #94A3B8; transition: all 0.2s;
+            font-family: 'Pretendard'; font-weight: 500;
+        }
+        .fbtn:hover { color: var(--text-main); border-color: rgba(255,159,67,0.45); }
+        .fbtn.on { background: var(--accent); border-color: var(--accent); color: #0F172A; font-weight: 700; }
+
+        /* ===== 타임라인 ===== */
+        .timeline { display: flex; flex-direction: column; gap: 10px; }
+        .ev {
+            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 16px 18px; cursor: pointer;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .ev:hover { border-color: rgba(255,159,67,0.35); transform: translateY(-1px); }
+        .ev.open { border-color: rgba(255,159,67,0.4); }
+        .ev-top { display: flex; align-items: center; gap: 13px; }
+        .ev-ic { font-size: 22px; line-height: 1; flex-shrink: 0; width: 26px; text-align: center; }
+        .ev-mid { flex: 1; min-width: 0; }
+        .ev-name { font-size: 14.5px; font-weight: 600; }
+        .ev-date { font-size: 11.5px; color: #64748B; margin-top: 2px; }
+        .ev-dday {
+            flex-shrink: 0; font-size: 12px; font-weight: 700; color: var(--accent);
+            background: rgba(255,159,67,0.1); border-radius: 99px; padding: 4px 11px;
+            font-variant-numeric: tabular-nums;
+        }
+        .ev-dday.past { color: #475569; background: rgba(255,255,255,0.03); }
+
+        .badges { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+        .bdg {
+            font-size: 10.5px; font-weight: 600; padding: 3px 9px; border-radius: 99px;
+            border: 1px solid transparent; white-space: nowrap;
+        }
+        .bdg.best  { color: #4FD1C5; background: rgba(79,209,197,0.1);  border-color: rgba(79,209,197,0.3); }
+        .bdg.good  { color: #A3D977; background: rgba(163,217,119,0.1); border-color: rgba(163,217,119,0.28); }
+        .bdg.fair  { color: #FFB74D; background: rgba(255,183,77,0.1);  border-color: rgba(255,183,77,0.28); }
+        .bdg.poor  { color: #F87171; background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.28); }
+        .bdg.kr    { color: #94A3B8; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.09); }
+        .bdg.nokr  { color: #64748B; background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.07); }
+        .bdg.zhr   { color: #94A3B8; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.09); font-variant-numeric: tabular-nums; }
+
+        .ev-body { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.07); }
+        .ev.open .ev-body { display: block; animation: rise 0.25s ease; }
+        @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .ev-desc { font-size: 13px; color: #94A3B8; line-height: 1.8; margin: 0 0 12px; }
+        .ev-rows { display: flex; flex-direction: column; gap: 8px; }
+        .ev-row {
+            display: flex; gap: 10px; align-items: flex-start;
+            padding: 10px 12px; border-radius: 10px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+        }
+        .ev-row .rl { font-size: 11px; font-weight: 700; color: var(--accent); flex-shrink: 0; width: 74px; }
+        .ev-row .rv { font-size: 12.5px; color: #94A3B8; line-height: 1.65; flex: 1; }
+
+        /* ===== SEO 본문 ===== */
+        .seo-content { margin-top: 44px; }
+        .seo-content h2 {
+            font-size: 1.15rem; font-weight: 600; margin: 36px 0 12px;
+            padding-bottom: 8px; border-bottom: 1px solid rgba(255,159,67,0.12);
+        }
+        .seo-content h3 { font-size: 0.95rem; font-weight: 600; margin: 20px 0 6px; color: #CBD5E1; }
+        .seo-content p { color: #94A3B8; font-size: 14px; line-height: 1.8; margin: 0 0 12px; }
+        .seo-content ol, .seo-content ul { color: #94A3B8; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0 0 12px; }
+        .seo-content li { margin-bottom: 6px; }
+        .seo-content strong { color: var(--accent); font-weight: 600; }
+        .notice {
+            margin-top: 28px; padding: 16px 18px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px; font-size: 12.5px; color: #64748B; line-height: 1.7;
+        }
+        .notice a { color: #94A3B8; }
+        .cta-lounge {
+            display: block; margin-top: 32px; padding: 20px 22px; text-decoration: none;
+            background: linear-gradient(135deg, rgba(255,159,67,0.12), rgba(255,183,77,0.04));
+            border: 1px solid rgba(255,159,67,0.25); border-radius: 16px;
+            transition: 0.2s;
+        }
+        .cta-lounge:hover { border-color: rgba(255,159,67,0.5); transform: translateY(-2px); }
+        .cta-lounge .ct { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 5px; }
+        .cta-lounge .cd { font-size: 12.5px; color: #94A3B8; line-height: 1.6; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.55rem; }
+            .container { margin-top: 110px; }
+            .dday { font-size: 2.1rem; }
+            .moon-card { gap: 16px; padding: 20px; }
+        }
+        @media (max-width: 420px) {
+            .moon-card { flex-direction: column; align-items: flex-start; }
+            .ev-row { flex-direction: column; gap: 3px; }
+            .ev-row .rl { width: auto; }
+        }
+
+        ::selection { background-color: #4FD1C5; color: #0F172A; }
+
+        /* ===== 공통 푸터 ===== */
+        .site-footer {
+            max-width: 720px; margin: 0 auto; padding: 26px 20px 36px;
+            border-top: 1px solid rgba(255,159,67,0.1); text-align: center;
+        }
+        .foot-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 13px; }
+        .foot-links a { font-size: 12px; color: #64748B; text-decoration: none; transition: color 0.2s; }
+        .foot-links a:hover { color: #FF9F43; }
+        .foot-sign {
+            font-size: 11.5px; color: #475569; letter-spacing: 0.03em;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .foot-star { width: 13px; height: 13px; flex-shrink: 0; animation: foot-twinkle 2.8s ease-in-out infinite; }
+        @keyframes foot-twinkle {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
+            50%      { transform: scale(1.2) rotate(18deg); opacity: 1; }
+        }
+
+        /* 메인 패널에 iframe으로 임베드될 때 */
+        .embed nav { display: none; }
+        .embed .container { margin: 0 auto; padding: 0; max-width: 680px; }
+        .embed .hero, .embed .seo-content, .embed .site-footer { display: none; }
+    </style>
+    <script>if(new URLSearchParams(location.search).get('embed'))document.documentElement.classList.add('embed');</script>
+    <script src="effects.js" defer></script>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="logo" onclick="location.href='index.html'">ORBIT.</div>
+        <button class="nav-back" onclick="location.href='main.html'">← 커뮤니티 홈</button>
+    </nav>
+
+    <main class="container">
+        <div class="hero">
+            <h1><strong>밤하늘 달력</strong> — 다음 우주쇼는 언제?</h1>
+            <p>유성우, 일식과 월식, 그리고 가장 큰 보름달까지. 다음 천문 현상까지 남은 시간과 함께, 그날 밤 달빛이 얼마나 방해할지까지 계산해서 관측 조건을 알려드립니다. 궤도에서 내려다본 밤하늘 일정표.</p>
+        </div>
+
+        <!-- 다음 현상 카운트다운 -->
+        <section class="next-card">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span class="card-tag" style="margin-bottom:0;">🔭 다음 천문 현상</span>
+                <span style="font-size:10px;color:#334155;">한국 표준시(KST) 기준</span>
+            </div>
+            <div class="nx-head" style="margin-top:14px;">
+                <div class="nx-emoji" id="nxEmoji">✨</div>
+                <div>
+                    <div class="nx-name" id="nxName">불러오는 중…</div>
+                    <div class="nx-when" id="nxWhen"></div>
+                </div>
+            </div>
+            <div class="dday-row">
+                <div class="dday" id="nxDday">D-</div>
+                <div class="dday-sub" id="nxDdaySub"></div>
+            </div>
+            <div class="cd-units" id="nxUnits"></div>
+            <div class="nx-note" id="nxNote"></div>
+        </section>
+
+        <!-- 오늘의 달 -->
+        <section class="moon-card">
+            <div class="moon-vis" id="moonVis"></div>
+            <div class="moon-meta">
+                <div class="mm-name">오늘의 달 — <span id="mmPhase">…</span></div>
+                <div class="mm-line">
+                    월령 <b id="mmAge">–</b> · 밝기 <b id="mmIllum">–</b><br>
+                    <span id="mmHint" style="color:#64748B;"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 필터 -->
+        <div class="filter-row" id="filterRow">
+            <button class="fbtn on" data-f="all">전체</button>
+            <button class="fbtn" data-f="meteor">☄️ 유성우</button>
+            <button class="fbtn" data-f="moon">🌕 달</button>
+            <button class="fbtn" data-f="eclipse">🌑 일식 · 월식</button>
+            <button class="fbtn" data-f="kr">🇰🇷 국내 관측 가능</button>
+        </div>
+
+        <div class="timeline" id="timeline"></div>
+
+        <!-- SEO 본문 -->
+        <section class="seo-content">
+            <h2>유성우, 언제 어떻게 봐야 잘 보일까?</h2>
+            <p>유성우 소식은 매년 뉴스에 나오지만, 정작 <strong>"그래서 오늘 밤 몇 시에 어디를 보면 되냐"</strong>에 답해주는 곳은 의외로 드뭅니다. 밤하늘 달력은 그 한 가지에 집중합니다.</p>
+
+            <h3>1. 극대 시각보다 '극대에 가까운 밤'이 중요합니다</h3>
+            <p>유성우에는 가장 많이 떨어지는 <strong>극대 시각</strong>이 있습니다. 그런데 이 시각이 한국 기준 대낮이면 그 순간에는 아무것도 볼 수 없습니다. 다행히 유성우는 극대 앞뒤로 하루 이틀 이어지기 때문에, 극대에 가장 가까운 밤을 고르면 됩니다. 그래서 이 페이지는 극대 시각과 <strong>실제 관측하기 좋은 밤</strong>을 따로 표시합니다.</p>
+
+            <h3>2. 최대의 적은 구름이 아니라 달빛입니다</h3>
+            <p>보름달이 떠 있는 밤에는 하늘 전체가 밝아져서 어두운 유성이 전부 묻혀버립니다. 시간당 100개가 떨어지는 유성우라도 보름달이 겹치면 체감으로는 몇 개밖에 못 봅니다. 반대로 <strong>신월(그믐) 근처면 같은 유성우도 완전히 다른 경험</strong>이 됩니다. 이 페이지는 각 관측일 밤의 달 밝기를 천문 계산으로 구해 관측 조건 등급을 매깁니다.</p>
+
+            <h3>3. 새벽이 저녁보다 유리합니다</h3>
+            <p>자정을 넘기면 지구의 자전 때문에 관측자가 지구의 '진행 방향' 쪽을 향하게 됩니다. 달리는 차의 앞유리에 빗방울이 더 많이 부딪히는 것과 같은 이치로, <strong>새벽 시간대에 유성이 더 많이 보입니다.</strong> 대체로 자정 이후부터 동트기 전까지가 가장 좋습니다.</p>
+
+            <h3>4. 준비물은 맨눈, 그리고 시간</h3>
+            <p>망원경이나 쌍안경은 오히려 <strong>방해가 됩니다.</strong> 시야를 좁혀버리기 때문입니다. 유성우는 하늘 전체에서 나타나므로 맨눈으로 넓게 보는 것이 정답입니다. 눈이 어둠에 적응하는 데 <strong>20~30분</strong>이 걸리니, 그동안 휴대폰 화면을 보지 않는 것이 중요합니다. 돗자리를 깔고 누우면 목도 안 아프고 시야도 가장 넓어집니다.</p>
+
+            <h3>5. 복사점을 정면으로 볼 필요는 없습니다</h3>
+            <p>유성우의 이름은 유성이 뻗어 나오는 <strong>복사점</strong>이 있는 별자리에서 따옵니다. 하지만 복사점만 뚫어져라 볼 필요는 없습니다. 오히려 복사점에서 조금 떨어진 하늘에서 유성의 꼬리가 더 길게 보입니다. 복사점 방향을 대략 알고, 하늘 전체를 훑는 것이 좋습니다.</p>
+
+            <h2>ZHR이 뭔가요?</h2>
+            <p>ZHR(천정시간율)은 <strong>하늘이 완벽하게 어둡고 복사점이 정확히 머리 꼭대기에 있을 때</strong> 한 사람이 한 시간에 볼 수 있는 유성 개수의 이론값입니다. 즉 현실에서는 거의 도달할 수 없는 최댓값입니다.</p>
+            <p>도심에서는 ZHR의 10분의 1 이하, 불빛이 적은 시골이라도 절반 정도를 보게 되는 경우가 많습니다. ZHR 100인 유성우라면 어두운 곳에서 <strong>시간당 20~50개 정도</strong>를 기대하는 것이 현실적입니다. 숫자가 작다고 실망할 필요는 없습니다. 하나만 봐도 충분히 좋으니까요.</p>
+
+            <h2>일식과 월식은 왜 한국에서 못 보는 경우가 있나요?</h2>
+            <p>유성우는 지구의 밤인 곳이면 어디서나 볼 수 있지만, <strong>일식과 월식은 다릅니다.</strong></p>
+            <p><strong>일식</strong>은 달의 그림자가 지구 표면에 드리우는 현상이라, 그 그림자가 지나가는 좁은 길 위에 있어야만 보입니다. <strong>월식</strong>은 달이 지구 그림자에 들어가는 현상이라 지구 밤쪽 절반에서 볼 수 있지만, 그 시각에 우리나라가 낮이면 달이 지평선 아래에 있어 볼 수 없습니다.</p>
+            <p>그래서 밤하늘 달력은 현상마다 <strong>국내에서 볼 수 있는지 여부</strong>를 반드시 함께 표시합니다. 해외에서만 보이는 현상도 목록에 남겨두는 이유는, 그것대로 알아두면 재미있고 여행 계획의 이유가 되기도 하기 때문입니다.</p>
+
+            <div class="notice">
+                <strong style="color:#94A3B8;">데이터 안내 ·</strong>
+                일정과 극대 시각은 한국천문연구원(KASI)과 국제유성기구(IMO)가 공개한 자료를 기준으로 정리했습니다.
+                달의 위상·밝기·월령은 이 페이지에서 천문 계산식으로 직접 계산해 표시합니다.<br><br>
+                관측 조건 등급은 <b>그날 밤의 달 밝기만</b>을 기준으로 한 참고값입니다.
+                달이 뜨고 지는 시각, 그날의 날씨와 빛공해는 반영하지 않으므로 실제 관측 결과와 다를 수 있습니다.
+                유성우 극대 시각은 해마다 예보가 조금씩 조정되며, 특히 다음 해 일정은 잠정값입니다.
+                정확한 공식 정보는 <a href="https://astro.kasi.re.kr/" target="_blank" rel="noopener">한국천문연구원 천문우주지식정보</a>를 확인해 주세요.
+            </div>
+
+            <a class="cta-lounge" href="lounge.html">
+                <div class="ct">별 보러 갔다 왔다면 →</div>
+                <div class="cd">그날 밤 하늘이 어땠는지, 몇 개나 봤는지 대화 광장에 남겨주세요. 같은 하늘을 본 사람들이 궤도에 모여 있습니다.</div>
+            </a>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="foot-links">
+            <a href="main.html">커뮤니티 홈</a>
+            <a href="lounge.html">대화 광장</a>
+            <a href="lucky.html">로또 번호 생성기</a>
+            <a href="fortune.html">오늘의 운세</a>
+            <a href="sky.html">밤하늘 달력</a>
+            <a href="terms.html">이용약관</a>
+            <a href="privacy.html">개인정보처리방침</a>
+        </div>
+        <div class="foot-sign">
+            © 2026 Orbit · Made with
+            <svg class="foot-star" viewBox="0 0 100 100" aria-hidden="true"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg>
+            in orbit
+        </div>
+    </footer>
+
+    <script>
+    // ============================================================
+    //  밤하늘 달력
+    //  - 이벤트 일정: KASI / IMO 공개 자료 기준 (아래 EVENTS)
+    //  - 달의 위상/밝기/월령: Meeus 천문 알고리즘으로 직접 계산
+    //    (하드코딩이 아니라 계산이므로 몇 년 뒤 날짜도 그대로 맞는다)
+    // ============================================================
+
+    // ---------- 달 계산 ----------
+    var RAD = Math.PI / 180;
+    function toJD(d) { return d.getTime() / 86400000 + 2440587.5; }
+    function norm360(x) { x = x % 360; return x < 0 ? x + 360 : x; }
+
+    // Meeus 「Astronomical Algorithms」 47장·48장
+    // 반환: illum(0~1 조도), age(월령 일), waxing(차오르는 중인지)
+    function moonInfo(date) {
+        var T  = (toJD(date) - 2451545.0) / 36525.0;
+        var T2 = T * T, T3 = T2 * T, T4 = T3 * T;
+        // 달의 평균 이각 (D=0 신월, D=180 보름)
+        var D  = norm360(297.8501921 + 445267.1114034 * T - 0.0018819 * T2 + T3 / 545868 - T4 / 113065000);
+        // 태양의 평균 근점이각
+        var M  = norm360(357.5291092 + 35999.0502909 * T - 0.0001536 * T2 + T3 / 24490000);
+        // 달의 평균 근점이각
+        var Mp = norm360(134.9633964 + 477198.8675055 * T + 0.0087414 * T2 + T3 / 69699 - T4 / 14712000);
+
+        // 위상각 i (Meeus 48.4) — 태양-달-지구가 이루는 각
+        var i = 180 - D
+              - 6.289 * Math.sin(Mp * RAD)
+              + 2.100 * Math.sin(M  * RAD)
+              - 1.274 * Math.sin((2 * D - Mp) * RAD)
+              - 0.658 * Math.sin(2 * D * RAD)
+              - 0.214 * Math.sin(2 * Mp * RAD)
+              - 0.110 * Math.sin(D * RAD);
+
+        return {
+            illum:  (1 + Math.cos(i * RAD)) / 2,
+            age:    D / 360 * 29.530588853,
+            waxing: D < 180
+        };
+    }
+
+    function phaseName(m) {
+        var k = m.illum;
+        if (k < 0.02) return '삭 (신월)';
+        if (k > 0.98) return '보름달';
+        if (Math.abs(k - 0.5) < 0.06) return m.waxing ? '상현달' : '하현달';
+        if (k < 0.5) return m.waxing ? '초승달' : '그믐달';
+        return m.waxing ? '차오르는 달' : '기우는 달';
+    }
+
+    // 달을 SVG로 그린다. 밝은 부분의 경계(명암경계선)는
+    // 반지름이 r*|2k-1| 인 타원 호가 된다.
+    function moonSVG(m, r) {
+        var k = m.illum;
+        var rx = (r * Math.abs(2 * k - 1)).toFixed(2);
+        // 아래쪽(0,r)에서 위쪽(0,-r)으로 돌아오는 호의 방향.
+        // sweep=1이면 왼쪽으로 부풀어 볼록달, sweep=0이면 오른쪽으로 파여 초승달이 된다.
+        var sweep = k < 0.5 ? 0 : 1;
+        var size = r * 2 + 8, c = size / 2;
+        var lit = 'M 0 ' + (-r) +
+                  ' A ' + r + ' ' + r + ' 0 0 1 0 ' + r +
+                  ' A ' + rx + ' ' + r + ' 0 0 ' + sweep + ' 0 ' + (-r) + ' Z';
+        // 기우는 달은 왼쪽이 밝으므로 좌우 반전
+        var flip = m.waxing ? '' : ' scale(-1,1)';
+        return '' +
+        '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" aria-label="달 모양">' +
+          '<defs>' +
+            '<radialGradient id="mg" cx="38%" cy="34%">' +
+              '<stop offset="0%" stop-color="#FFF3DC"/>' +
+              '<stop offset="70%" stop-color="#FFD08A"/>' +
+              '<stop offset="100%" stop-color="#F0B45E"/>' +
+            '</radialGradient>' +
+          '</defs>' +
+          '<g transform="translate(' + c + ',' + c + ')">' +
+            '<circle r="' + r + '" fill="rgba(255,255,255,0.045)" stroke="rgba(255,255,255,0.09)" stroke-width="1"/>' +
+            '<g transform="' + flip + '"><path d="' + lit + '" fill="url(#mg)"/></g>' +
+          '</g>' +
+        '</svg>';
+    }
+
+    // ---------- 관측 조건 등급 (달 밝기 기준) ----------
+    // 화면에 보여주는 퍼센트(반올림값)를 그대로 기준으로 삼는다.
+    // 내부 소수값으로 나누면 "달 25%인데 등급은 양호" 같은 어긋남이 생긴다.
+    function condOf(illum) {
+        var pct = Math.round(illum * 100);
+        var c;
+        if      (pct <= 25) c = { cls: 'best', label: '관측 조건 최상' };
+        else if (pct <= 50) c = { cls: 'good', label: '관측 조건 양호' };
+        else if (pct <= 75) c = { cls: 'fair', label: '관측 조건 보통' };
+        else                c = { cls: 'poor', label: '달빛 방해 큼' };
+        c.pct = pct;
+        return c;
+    }
+
+    // ---------- 이벤트 데이터 ----------
+    // watch : 실제로 하늘을 봐야 하는 시각(KST). D-day와 정렬의 기준.
+    // peak  : 극대/최대식 시각. 낮이면 국내에서 그 순간은 볼 수 없다.
+    // kr    : 국내 관측 가능 여부.
+    var EVENTS = [
+        {
+            id:'perseids2026', type:'meteor', ic:'☄️', kr:true,
+            name:'페르세우스자리 유성우',
+            watch:'2026-08-12T23:00:00+09:00',
+            dateText:'2026년 8월 12일 밤 ~ 14일 새벽',
+            peakText:'8월 13일 12시경 (KST)',
+            zhr:100,
+            radiant:'페르세우스자리 — 북동쪽 하늘',
+            best:'12일 밤~13일 새벽, 13일 밤~14일 새벽 모두 좋습니다. 자정 이후가 특히 유리합니다.',
+            desc:'3대 유성우 중 하나이며, 여름 휴가철과 겹쳐 가장 보기 좋은 유성우로 꼽힙니다. 스위프트-터틀 혜성이 남긴 부스러기가 지구 대기와 부딪히며 타는 현상입니다. 2026년은 극대 직전인 8월 12일이 신월이라 밤새 달빛 방해가 사실상 없습니다 — 몇 년 만에 오는 최상의 조건입니다.',
+            hi:true
+        },
+        {
+            id:'tse2026', type:'eclipse', ic:'🌑', kr:false,
+            name:'개기일식 (국내 관측 불가)',
+            watch:'2026-08-13T02:47:00+09:00',
+            dateText:'2026년 8월 12일 (최대식 17:47 UTC)',
+            peakText:'한국 시각으로 8월 13일 새벽 2시 47분',
+            radiant:null,
+            best:null,
+            desc:'21세기 들어 유럽 대륙에서 볼 수 있는 첫 개기일식입니다. 개기식대는 북극 상공에서 그린란드 동부와 아이슬란드를 지나 스페인 북부까지 이어집니다. 최대 지속 시간은 약 2분 18초입니다. 한국은 이 시각이 한밤중이라 해가 지평선 아래에 있어 부분일식조차 볼 수 없습니다.'
+        },
+        {
+            id:'ple2026', type:'eclipse', ic:'🌗', kr:false,
+            name:'부분월식 (국내 관측 불가)',
+            watch:'2026-08-28T13:12:00+09:00',
+            dateText:'2026년 8월 28일 (최대식 04:12 UTC)',
+            peakText:'한국 시각으로 8월 28일 오후 1시 12분',
+            desc:'달의 약 96%가 지구 본그림자에 들어가는, 개기월식에 가까운 매우 깊은 부분월식입니다. 아메리카 대륙에서 가장 잘 보이고 유럽·아프리카에서는 달이 지기 직전 낮게 보입니다. 한국은 이 시각이 대낮이라 달이 지평선 아래에 있어 관측할 수 없습니다.'
+        },
+        {
+            id:'orionids2026', type:'meteor', ic:'☄️', kr:true,
+            name:'오리온자리 유성우',
+            watch:'2026-10-21T02:00:00+09:00',
+            dateText:'2026년 10월 21일 전후 새벽',
+            peakText:'10월 21일 전후 (해마다 조정)',
+            zhr:20,
+            radiant:'오리온자리 — 동쪽~남동쪽 하늘',
+            best:'복사점이 충분히 높이 올라오는 자정 이후~새벽이 좋습니다.',
+            desc:'핼리 혜성이 남긴 부스러기로 만들어지는 유성우입니다. 개수는 많지 않지만 유성의 속도가 매우 빨라 밝고 긴 자취를 남기는 것이 특징입니다.'
+        },
+        {
+            id:'leonids2026', type:'meteor', ic:'☄️', kr:true,
+            name:'사자자리 유성우',
+            watch:'2026-11-17T03:00:00+09:00',
+            dateText:'2026년 11월 17일 전후 새벽',
+            peakText:'11월 17일 전후 (해마다 조정)',
+            zhr:15,
+            radiant:'사자자리 — 동쪽 하늘',
+            best:'사자자리가 떠오르는 자정 이후~새벽.',
+            desc:'평년에는 조용하지만 약 33년 주기로 시간당 수천 개가 쏟아지는 "유성 폭풍"을 일으킨 전력이 있는 유성우입니다. 유성의 진입 속도가 가장 빠른 편에 속합니다.'
+        },
+        {
+            id:'geminids2026', type:'meteor', ic:'🌠', kr:true,
+            name:'쌍둥이자리 유성우',
+            watch:'2026-12-14T23:00:00+09:00',
+            dateText:'2026년 12월 14일 밤 ~ 15일 새벽',
+            peakText:'12월 14일 23시 (KST)',
+            zhr:150,
+            radiant:'쌍둥이자리 — 북동쪽 하늘',
+            best:'극대 시각이 한국의 밤과 정확히 겹칩니다. 14일 밤부터 15일 새벽까지가 최적입니다.',
+            desc:'1년 중 가장 많은 유성이 떨어지는 유성우입니다. 혜성이 아니라 소행성 파에톤이 남긴 부스러기라는 점이 독특합니다. 유성의 속도가 느린 편이라 초보자도 알아보기 쉽고, 2026년은 극대 시각이 한국 밤 시간과 겹치는 데다 달빛 방해도 적어 조건이 매우 좋습니다.',
+            hi:true
+        },
+        {
+            id:'ursids2026', type:'meteor', ic:'☄️', kr:true,
+            name:'작은곰자리 유성우',
+            watch:'2026-12-22T02:00:00+09:00',
+            dateText:'2026년 12월 22일 전후 새벽',
+            peakText:'12월 22일 전후 (해마다 조정)',
+            zhr:10,
+            radiant:'작은곰자리 — 북쪽 하늘 (북극성 부근)',
+            best:'복사점이 북쪽 하늘에 늘 떠 있어 밤새 관측할 수 있습니다.',
+            desc:'개수는 적지만 복사점이 북극성 근처라 밤새 지지 않는다는 장점이 있습니다. 한겨울 추위 대비가 관측의 절반입니다.'
+        },
+        {
+            id:'supermoon2026', type:'moon', ic:'🌕', kr:true,
+            name:'2026년 가장 큰 보름달 (슈퍼문)',
+            watch:'2026-12-24T19:00:00+09:00',
+            dateText:'2026년 12월 24일 · 크리스마스이브',
+            peakText:'해가 진 직후부터 밤새',
+            desc:'달이 지구에 가장 가까운 지점 근처에서 보름이 되어, 2026년 한 해 중 가장 크고 밝게 보이는 보름달입니다. 크리스마스이브 밤에 뜬다는 점에서 더 특별합니다. 지평선 근처에 낮게 떠 있을 때 건물이나 산과 함께 보면 훨씬 크게 느껴집니다.',
+            hi:true
+        },
+        {
+            id:'quadrantids2027', type:'meteor', ic:'☄️', kr:true,
+            name:'사분의자리 유성우',
+            watch:'2027-01-04T03:00:00+09:00',
+            dateText:'2027년 1월 3일 밤 ~ 4일 새벽',
+            peakText:'1월 3~4일 (해마다 조정 · 잠정)',
+            zhr:120,
+            radiant:'목동자리 부근 — 북동쪽 하늘',
+            best:'극대가 몇 시간으로 매우 짧아 날짜를 정확히 맞춰야 합니다.',
+            desc:'3대 유성우 중 하나지만 극대가 몇 시간밖에 지속되지 않아 타이밍을 놓치기 쉽습니다. 한겨울 새벽이라 관측 난이도도 높은 편이지만, 조건이 맞으면 3대 유성우답게 화려합니다.'
+        },
+        {
+            id:'ase2027', type:'eclipse', ic:'🌑', kr:false,
+            name:'금환일식 (국내 관측 불가)',
+            watch:'2027-02-06T21:00:00+09:00',
+            dateText:'2027년 2월 6일',
+            peakText:'—',
+            desc:'달이 태양보다 작게 보여 태양 가장자리가 반지처럼 남는 금환일식입니다. 남아메리카 남부와 대서양 일대에서 관측됩니다. 한국에서는 볼 수 없습니다.'
+        },
+        {
+            id:'lyrids2027', type:'meteor', ic:'☄️', kr:true,
+            name:'거문고자리 유성우',
+            watch:'2027-04-22T03:00:00+09:00',
+            dateText:'2027년 4월 22일 전후 새벽',
+            peakText:'4월 22일 전후 (잠정)',
+            zhr:18,
+            radiant:'거문고자리 — 동쪽 하늘 (직녀성 부근)',
+            best:'자정 이후 복사점이 높이 뜬 뒤가 좋습니다.',
+            desc:'기록에 남은 가장 오래된 유성우 중 하나로, 2,600년 전 중국 기록에도 등장합니다. 개수는 많지 않지만 가끔 아주 밝은 유성이 섞여 나옵니다.'
+        },
+        {
+            id:'etaaqr2027', type:'meteor', ic:'☄️', kr:true,
+            name:'물병자리 에타 유성우',
+            watch:'2027-05-06T03:30:00+09:00',
+            dateText:'2027년 5월 6일 전후 새벽',
+            peakText:'5월 6일 전후 (잠정)',
+            zhr:50,
+            radiant:'물병자리 — 동쪽 하늘 (낮게 뜸)',
+            best:'복사점이 낮아 동틀 무렵 새벽에만 잠깐 볼 수 있습니다.',
+            desc:'오리온자리 유성우와 마찬가지로 핼리 혜성이 남긴 부스러기입니다. 남반구에서 훨씬 잘 보이고, 한국에서는 복사점이 낮게 떠서 새벽 짧은 시간에만 관측할 수 있습니다.'
+        },
+        {
+            id:'tse2027', type:'eclipse', ic:'🌑', kr:false,
+            name:'개기일식 (국내 관측 불가)',
+            watch:'2027-08-02T20:00:00+09:00',
+            dateText:'2027년 8월 2일',
+            peakText:'—',
+            desc:'최대 지속 시간이 약 6분 23초에 달하는, 21세기 육지에서 관측 가능한 가장 긴 개기일식입니다. 스페인 남부와 북아프리카를 지나 이집트 룩소르 상공을 통과합니다. 맑은 날이 많은 지역을 지나기 때문에 "세기의 일식"으로 불리며 벌써부터 원정 관측 계획이 세워지고 있습니다. 한국에서는 볼 수 없습니다.'
+        }
+    ];
+
+    // ---------- 렌더링 ----------
+    var $ = function (id) { return document.getElementById(id); };
+    var MS_DAY = 86400000;
+
+    function parseKST(s) { return new Date(s); }
+
+    function fmtDday(ms) {
+        if (ms <= 0) return null;
+        var d = Math.floor(ms / MS_DAY);
+        var h = Math.floor((ms % MS_DAY) / 3600000);
+        var m = Math.floor((ms % 3600000) / 60000);
+        var s = Math.floor((ms % 60000) / 1000);
+        return { d: d, h: h, m: m, s: s };
+    }
+
+    // 지난 이벤트를 제외하고 가까운 순으로 정렬
+    function upcoming() {
+        var now = Date.now();
+        return EVENTS
+            .map(function (e) { return { e: e, t: parseKST(e.watch).getTime() }; })
+            .filter(function (x) { return x.t > now; })
+            .sort(function (a, b) { return a.t - b.t; });
+    }
+
+    function renderNext() {
+        var list = upcoming();
+        if (!list.length) {
+            $('nxName').textContent = '예정된 현상이 없습니다';
+            $('nxWhen').textContent = '달력을 업데이트할 시기입니다';
+            $('nxDday').textContent = '—';
+            return;
+        }
+        var e = list[0].e, t = list[0].t;
+        $('nxEmoji').textContent = e.ic;
+        $('nxName').textContent = e.name;
+        $('nxWhen').textContent = e.dateText;
+
+        var moon = moonInfo(new Date(t));
+        var cond = condOf(moon.illum);
+        var noteHtml;
+        if (e.kr === false) {
+            noteHtml = '<strong>국내에서는 볼 수 없습니다.</strong> 이 현상은 다른 지역에서만 관측됩니다. ' +
+                       '아래 목록에서 국내 관측 가능한 현상만 따로 볼 수 있어요.';
+        } else if (e.type === 'meteor') {
+            noteHtml = '그날 밤 달 밝기는 <strong>' + cond.pct + '%</strong> — ' +
+                       cond.label + '입니다. ' +
+                       (e.best || '');
+        } else {
+            noteHtml = e.best || e.desc.split('.')[0] + '.';
+        }
+        $('nxNote').innerHTML = noteHtml;
+
+        function tick() {
+            var left = fmtDday(t - Date.now());
+            if (!left) { renderNext(); renderTimeline(); return; }
+            $('nxDday').textContent = 'D-' + (left.d === 0 ? 'DAY' : left.d);
+            $('nxDdaySub').textContent = left.d === 0 ? '오늘 밤입니다' : '남았습니다';
+            $('nxUnits').innerHTML =
+                '<div class="cd-unit"><b>' + left.d + '</b><span>일</span></div>' +
+                '<div class="cd-unit"><b>' + left.h + '</b><span>시간</span></div>' +
+                '<div class="cd-unit"><b>' + left.m + '</b><span>분</span></div>' +
+                '<div class="cd-unit"><b>' + left.s + '</b><span>초</span></div>';
+        }
+        tick();
+        if (window.__nxTimer) clearInterval(window.__nxTimer);
+        window.__nxTimer = setInterval(tick, 1000);
+    }
+
+    function renderMoon() {
+        var m = moonInfo(new Date());
+        $('moonVis').innerHTML = moonSVG(m, 42);
+        $('mmPhase').textContent = phaseName(m);
+        $('mmAge').textContent = m.age.toFixed(1) + '일';
+        $('mmIllum').textContent = Math.round(m.illum * 100) + '%';
+
+        var hint;
+        if (m.illum <= 0.25)      hint = '달이 어두워 별 보기 좋은 밤입니다.';
+        else if (m.illum <= 0.6)  hint = '달이 적당히 밝습니다. 밝은 별은 충분히 보여요.';
+        else if (m.illum <= 0.9)  hint = '달이 꽤 밝아 어두운 별은 묻힙니다.';
+        else                      hint = '보름 무렵이라 하늘 전체가 밝습니다. 달 자체를 보기엔 최고예요.';
+        $('mmHint').textContent = hint;
+    }
+
+    var curFilter = 'all';
+
+    function renderTimeline() {
+        var now = Date.now();
+        var rows = EVENTS
+            .map(function (e) { return { e: e, t: parseKST(e.watch).getTime() }; })
+            .filter(function (x) { return x.t > now; })
+            .sort(function (a, b) { return a.t - b.t; })
+            .filter(function (x) {
+                if (curFilter === 'all') return true;
+                if (curFilter === 'kr')  return x.e.kr;
+                return x.e.type === curFilter;
+            });
+
+        if (!rows.length) {
+            $('timeline').innerHTML =
+                '<div class="notice" style="margin-top:0;">해당하는 예정 현상이 없습니다. 다른 조건으로 찾아보세요.</div>';
+            return;
+        }
+
+        $('timeline').innerHTML = rows.map(function (x) {
+            var e = x.e;
+            var days = Math.ceil((x.t - now) / MS_DAY);
+            var moon = moonInfo(new Date(x.t));
+            var cond = condOf(moon.illum);
+
+            var badges = '';
+            // 관측 조건 배지는 국내에서 볼 수 있는 유성우에만 의미가 있다
+            if (e.kr && e.type === 'meteor') {
+                badges += '<span class="bdg ' + cond.cls + '">' + cond.label +
+                          ' · 달 ' + cond.pct + '%</span>';
+            }
+            badges += e.kr
+                ? '<span class="bdg kr">🇰🇷 국내 관측 가능</span>'
+                : '<span class="bdg nokr">국내 관측 불가</span>';
+            if (e.zhr) badges += '<span class="bdg zhr">최대 시간당 ' + e.zhr + '개(ZHR)</span>';
+            if (e.hi)  badges += '<span class="bdg best">✨ 올해의 하이라이트</span>';
+
+            var rowsHtml = '';
+            function row(l, v) {
+                if (!v) return '';
+                return '<div class="ev-row"><div class="rl">' + l + '</div><div class="rv">' + v + '</div></div>';
+            }
+            rowsHtml += row('극대 시각', e.peakText);
+            rowsHtml += row('복사점', e.radiant);
+            rowsHtml += row('관측 적기', e.best);
+            if (e.kr) {
+                rowsHtml += row('그날의 달',
+                    '밝기 ' + cond.pct + '% · 월령 ' + moon.age.toFixed(1) + '일 (' + phaseName(moon) + ')');
+            }
+
+            return '' +
+            '<article class="ev" data-id="' + e.id + '">' +
+              '<div class="ev-top">' +
+                '<div class="ev-ic">' + e.ic + '</div>' +
+                '<div class="ev-mid">' +
+                  '<div class="ev-name">' + e.name + '</div>' +
+                  '<div class="ev-date">' + e.dateText + '</div>' +
+                '</div>' +
+                '<div class="ev-dday">D-' + (days <= 0 ? 'DAY' : days) + '</div>' +
+              '</div>' +
+              '<div class="badges">' + badges + '</div>' +
+              '<div class="ev-body">' +
+                '<p class="ev-desc">' + e.desc + '</p>' +
+                '<div class="ev-rows">' + rowsHtml + '</div>' +
+              '</div>' +
+            '</article>';
+        }).join('');
+    }
+
+    // 카드 펼치기
+    document.addEventListener('click', function (ev) {
+        var card = ev.target.closest('.ev');
+        if (card) card.classList.toggle('open');
+    });
+
+    // 필터
+    $('filterRow').addEventListener('click', function (ev) {
+        var b = ev.target.closest('.fbtn');
+        if (!b) return;
+        curFilter = b.getAttribute('data-f');
+        Array.prototype.forEach.call(this.querySelectorAll('.fbtn'), function (x) {
+            x.classList.toggle('on', x === b);
+        });
+        renderTimeline();
+    });
+
+    renderNext();
+    renderMoon();
+    renderTimeline();
+    </script>
+</body>
+</html>
