@@ -193,10 +193,29 @@
 
         ::selection { background-color: #4FD1C5; color: #0F172A; }
 
+        /* ===== 공통 푸터 ===== */
+        .site-footer {
+            max-width: 720px; margin: 0 auto; padding: 26px 20px 36px;
+            border-top: 1px solid rgba(255,159,67,0.1); text-align: center;
+        }
+        .foot-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 13px; }
+        .foot-links a { font-size: 12px; color: #64748B; text-decoration: none; transition: color 0.2s; }
+        .foot-links a:hover { color: #FF9F43; }
+        .foot-sign {
+            font-size: 11.5px; color: #475569; letter-spacing: 0.03em;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .foot-star { width: 13px; height: 13px; flex-shrink: 0; animation: foot-twinkle 2.8s ease-in-out infinite; }
+        @keyframes foot-twinkle {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
+            50%      { transform: scale(1.2) rotate(18deg); opacity: 1; }
+        }
+
         /* 메인 패널에 iframe으로 임베드될 때 */
         .embed nav { display: none; }
         .embed .container { margin: 0 auto; padding: 0; max-width: 680px; }
         .embed .hero, .embed .seo-content, .embed .cta-lounge { display: none; }
+        .embed .site-footer { display: none; }
     </style>
     <script>if(new URLSearchParams(location.search).get('embed'))document.documentElement.classList.add('embed');</script>
     <script src="effects.js" defer></script>
@@ -348,6 +367,21 @@
             </div>
         </section>
     </main>
+
+    <footer class="site-footer">
+        <div class="foot-links">
+            <a href="main.html">커뮤니티 홈</a>
+            <a href="lounge.html">대화 광장</a>
+            <a href="lucky.html">로또 번호 생성기</a>
+            <a href="terms.html">이용약관</a>
+            <a href="privacy.html">개인정보처리방침</a>
+        </div>
+        <div class="foot-sign">
+            © 2026 Orbit · Made with
+            <svg class="foot-star" viewBox="0 0 100 100" aria-hidden="true"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg>
+            in orbit
+        </div>
+    </footer>
 
     <script>
     // ===== 카오스 복권 =====
