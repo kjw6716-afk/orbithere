@@ -52,8 +52,8 @@
         },
         {
           "@type": "Question",
-          "name": "카오스 알고리즘이 뭔가요?",
-          "acceptedAnswer": { "@type": "Answer", "text": "xorshift 난수 생성기에 매 호출마다 현재 시각과 페이지 실행 시간(performance.now)을 섞어 시드를 다시 만드는 방식입니다. 여기에 사용자가 '포착' 버튼을 누르는 순간의 타이밍이 더해져서, 뽑히는 번호가 매번 달라집니다." }
+          "name": "번호는 어떻게 뽑히나요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "브라우저에 내장된 암호학적 난수 생성기(crypto.getRandomValues)로 뽑습니다. 비밀번호나 보안 키를 만들 때 쓰는 것과 같은 방식이라 다음 번호를 예측할 수 없습니다. 특정 숫자가 더 자주 나오는 편향을 없앴고, 피셔-예이츠 셔플을 써서 같은 번호가 중복해서 나오지 않습니다. 다만 어떤 방식으로 뽑아도 당첨 확률 자체는 똑같습니다." }
         },
         {
           "@type": "Question",
@@ -69,45 +69,9 @@
     }
     </script>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="/orbit.css">
     <style>
-        :root {
-            --bg-color: #0F172A;
-            --accent: #FF9F43;
-            --text-main: #E2E8F0;
-            --card-bg: rgba(30, 41, 59, 0.7);
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Pretendard', sans-serif;
-            overflow-x: hidden;
-            touch-action: manipulation;
-        }
-
-        .bg-glow {
-            position: fixed; top: -10%; right: -10%;
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(255,159,67,0.08) 0%, rgba(15,23,42,0) 70%);
-            pointer-events: none; z-index: -1;
-        }
-
-        nav {
-            position: fixed; top: 0; width: 100%;
-            padding: 1.5rem 2rem;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 100; backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255,159,67,0.1);
-        }
-        .logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); cursor: pointer; }
-        .nav-back {
-            font-size: 12px; color: #64748B; cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
-            padding: 6px 12px; transition: 0.2s; background: transparent;
-            font-family: 'Pretendard';
-        }
-        .nav-back:hover { color: var(--accent); border-color: rgba(255,159,67,0.3); }
+        body { touch-action: manipulation; }   /* 나머지 기본값은 orbit.css */
 
         .container { max-width: 720px; margin: 130px auto 80px; padding: 0 20px; }
 
@@ -172,6 +136,15 @@
         .seo-content ol, .seo-content ul { color: #94A3B8; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0 0 12px; }
         .seo-content li { margin-bottom: 6px; }
         .seo-content strong { color: var(--accent); font-weight: 600; }
+        .seo-content code {
+            font-size: 12.5px; padding: 1px 6px; border-radius: 5px;
+            background: rgba(255,255,255,0.05); color: #CBD5E1;
+        }
+        /* 기대치를 정확히 알려주는 각주 — 본문보다 한 톤 낮게 */
+        .tiny-note {
+            font-size: 13px !important; color: #64748B !important;
+            border-left: 2px solid rgba(255,159,67,0.25); padding-left: 12px;
+        }
         .notice {
             margin-top: 28px; padding: 16px 18px;
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
@@ -197,22 +170,7 @@
         ::selection { background-color: #4FD1C5; color: #0F172A; }
 
         /* ===== 공통 푸터 ===== */
-        .site-footer {
-            max-width: 720px; margin: 0 auto; padding: 26px 20px 36px;
-            border-top: 1px solid rgba(255,159,67,0.1); text-align: center;
-        }
-        .foot-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 13px; }
-        .foot-links a { font-size: 12px; color: #64748B; text-decoration: none; transition: color 0.2s; }
-        .foot-links a:hover { color: #FF9F43; }
-        .foot-sign {
-            font-size: 11.5px; color: #475569; letter-spacing: 0.03em;
-            display: flex; align-items: center; justify-content: center; gap: 5px;
-        }
-        .foot-star { width: 13px; height: 13px; flex-shrink: 0; animation: foot-twinkle 2.8s ease-in-out infinite; }
-        @keyframes foot-twinkle {
-            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
-            50%      { transform: scale(1.2) rotate(18deg); opacity: 1; }
-        }
+        .site-footer { margin: 0 auto; }   /* 임베드용 — 위 여백 없이 */
 
         /* 메인 패널에 iframe으로 임베드될 때 */
         .embed nav { display: none; }
@@ -226,7 +184,7 @@
 <body>
     <div class="bg-glow"></div>
 
-    <nav>
+    <nav class="site-topbar">
         <div class="logo" onclick="location.href='index.html'">ORBIT.</div>
         <button class="nav-back" onclick="location.href='main.html'">← 커뮤니티 홈</button>
     </nav>
@@ -342,14 +300,15 @@
             <h3>속도 조절</h3>
             <p><strong>⚡ 빠름</strong>은 적당히 눈으로 따라갈 수 있는 속도, <strong>🔥 미침</strong>은 사람이 노리고 누르는 게 사실상 불가능한 속도입니다. 운에 완전히 맡기고 싶다면 미침 모드를 추천해요.</p>
 
-            <h2>카오스 알고리즘이란?</h2>
-            <p>보통의 번호 생성기는 <code>Math.random()</code>을 한 번 호출하고 끝냅니다. Lucky Orbit은 조금 다르게 동작해요.</p>
+            <h2>번호는 어떻게 뽑나요?</h2>
+            <p>보통의 번호 생성기는 <code>Math.random()</code>을 씁니다. 편하지만 원래 게임이나 애니메이션용으로 만들어진 함수라, 브라우저에 따라 품질이 들쭉날쭉하고 다음 값이 예측되기도 합니다. Lucky Orbit은 그 대신 브라우저에 내장된 <strong>암호학적 난수 생성기</strong>(<code>crypto.getRandomValues</code>)를 사용해요. 비밀번호나 보안 키를 만들 때 쓰는 것과 같은 것입니다.</p>
             <ul>
-                <li><strong>xorshift 난수 생성기</strong>를 기반으로 하되,</li>
-                <li>난수를 뽑을 때마다 현재 시각(<code>Date.now</code>)과 페이지가 실행된 시간(<code>performance.now</code>)을 시드에 다시 섞습니다.</li>
-                <li>여기에 <strong>사용자가 포착 버튼을 누르는 순간의 타이밍</strong>이 더해집니다. 밀리초 단위로 다른 이 타이밍이 결과를 가르는 마지막 변수예요.</li>
+                <li><strong>예측 불가능</strong> — 지금까지 나온 번호를 전부 알아도 다음 번호를 계산해낼 수 없습니다.</li>
+                <li><strong>편향 없음</strong> — 45개 중 6개를 고를 때 특정 숫자가 조금이라도 더 자주 나오지 않도록, 나머지 연산에서 생기는 미세한 치우침까지 걷어냈습니다.</li>
+                <li><strong>중복 없음</strong> — 피셔-예이츠 셔플로 뽑기 때문에 같은 번호가 두 번 나오는 일이 없습니다.</li>
             </ul>
             <p>그래서 같은 사람이 연속으로 열 번을 돌려도 매번 다른 번호가 나옵니다. 결과를 미리 계산해두고 보여주는 방식이 아니라, 누르는 그 순간에 정해지는 구조예요.</p>
+            <p class="tiny-note">참고로 이건 <strong>당첨 확률을 높여주지 않습니다.</strong> 어떤 방식으로 뽑아도 로또 1등 확률은 8,145,060분의 1로 같아요. 다만 "제대로 무작위인가"는 다른 문제고, 그건 확실하게 해두었습니다.</p>
 
             <h2>자주 묻는 질문</h2>
 
@@ -404,11 +363,34 @@
     var lLines=[],lCurHot=[];
     var tickTimer=null,running=false,canCatch=false;
 
-    var _seed=Date.now()^Math.floor(Math.random()*0xFFFFFFFF);
-    function _reseed(){_seed=(_seed^Math.floor(performance.now()*1000))^Math.floor(Math.random()*0xFFFFFFFF)^Date.now();}
-    function _rand(){_reseed();_seed^=_seed<<13;_seed^=_seed>>>17;_seed^=_seed<<5;return (_seed>>>0)/0x100000000;}
-    function randInt(max){return Math.floor(_rand()*max);}
-    function randPick(pool,n){var arr=pool.slice();for(var i=arr.length-1;i>0;i--){var j=Math.floor(_rand()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr.slice(0,n).sort(function(a,b){return a-b;});}
+    // ===== 난수 =====
+    // 브라우저에 내장된 암호학적 난수 생성기(CSPRNG)를 그대로 쓴다.
+    //
+    // 예전에는 xorshift를 두고 뽑을 때마다 Date.now/performance.now로 시드를
+    // 다시 섞었는데, 그건 오히려 나쁜 방법이었다. xorshift가 좋은 난수인 이유는
+    // 하나의 시드에서 출발해 상태가 길게 진화하기 때문인데 매번 시드를 갈아엎으면
+    // 그 진화가 통째로 사라진다. 게다가 Date.now()는 연속 호출 시 거의 같은 값이라
+    // 엔트로피도 늘지 않아, 결과적으로 비슷한 번호가 자주 나왔다.
+    // crypto.getRandomValues는 그런 손질이 필요 없다.
+    var CRYPTO_OK = !!(window.crypto && window.crypto.getRandomValues);
+    var _buf = CRYPTO_OK ? new Uint32Array(1) : null;
+    var U32 = 4294967296;  // 2^32
+
+    function _u32(){ crypto.getRandomValues(_buf); return _buf[0]; }
+    function _rand(){ return CRYPTO_OK ? _u32() / U32 : Math.random(); }  // [0, 1)
+
+    // max 미만의 정수. 2^32를 max로 나눈 나머지 구간을 버려서
+    // 특정 숫자가 아주 미세하게 더 자주 나오는 편향까지 없앤다.
+    function randInt(max){
+        if(!CRYPTO_OK) return Math.floor(Math.random()*max);
+        var limit = Math.floor(U32/max)*max;
+        var v;
+        do { v = _u32(); } while(v >= limit);
+        return v % max;
+    }
+
+    // 피셔-예이츠 셔플 후 앞에서 n개 — 중복 없이 균등하게 뽑힌다
+    function randPick(pool,n){var arr=pool.slice();for(var i=arr.length-1;i>0;i--){var j=randInt(i+1);var t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr.slice(0,n).sort(function(a,b){return a-b;});}
 
     var joIds=['jo1','jo2','jo3','jo4','jo5'];
     function resetJoCells(){document.getElementById('joAll').className='jo-cell dim';joIds.forEach(function(id){document.getElementById(id).className='jo-cell dim';});}
@@ -426,7 +408,25 @@
         setTimeout(startTick,300);
     });
     function confirmYNum(n){document.getElementById('yn'+n).className='ycell done';}
-    function tickYeon(){if(yStage==='jo'){var j=randInt(5)+1;setJoHot(j);}else{var n=randInt(10);setNumHot(n);}canCatch=true;}
+    // 흘러가는 칸이 직전과 같은 곳에 멈추면 "안 움직였다 / 같은 게 또 나왔다"로 보인다.
+    // 조는 5칸이라 20%, 자릿수는 10칸이라 10% 확률로 그런 일이 생겨 눈에 꽤 띈다.
+    // 직전 값만 피해서 다시 뽑는다 — 이렇게 해도 포착되는 값의 확률은 칸마다 여전히 같다.
+    //
+    // lastTick은 "흘러가는 중"에만 유효하다. 한 자리를 확정하고 다음 자리로 넘어갈 때는
+    // startTick에서 -1로 비워, 새 자리의 첫 칸은 아무 제약 없이 뽑히게 한다.
+    var lastTick = -1;
+    function randIntNot(max, prev){
+        if(max < 2) return 0;
+        var v;
+        do { v = randInt(max); } while(v === prev);
+        return v;
+    }
+    function tickYeon(){
+        lastTick = randIntNot(yStage==='jo' ? 5 : 10, lastTick);
+        if(yStage==='jo') setJoHot(lastTick+1);
+        else setNumHot(lastTick);
+        canCatch=true;
+    }
     function renderYeonResult(){
         var area=document.getElementById('yeonResult');area.innerHTML='';
         if(yJo){var jb=document.createElement('div');jb.style.cssText='padding:4px 12px;border-radius:99px;background:var(--accent);color:#0F172A;font-size:11px;font-weight:700;';jb.textContent=yJo==='모든'?'모든 조':yJo+'조';area.appendChild(jb);}
@@ -526,7 +526,7 @@
         if(lLines.length===5){var n=document.createElement('div');n.style.cssText='font-size:11px;color:var(--accent);margin-top:6px;font-weight:600;';n.textContent='총 5,000원 — 이번주에도 행운을 빌어요!';area.appendChild(n);}
     }
     function scheduleTick(){if(!running)return;tickTimer=setTimeout(function(){if(!running)return;mode==='yeon'?tickYeon():tickLotto();scheduleTick();},getInterval());}
-    function startTick(){running=true;canCatch=false;scheduleTick();}
+    function startTick(){running=true;canCatch=false;lastTick=-1;scheduleTick();}
     function stopTick(){running=false;if(tickTimer){clearTimeout(tickTimer);tickTimer=null;}}
     function setMsg(t,c){var e=document.getElementById('msg');e.textContent=t;e.style.color=c||'#475569';}
     document.getElementById('btnCatch').addEventListener('click',function(){
@@ -539,7 +539,7 @@
     document.getElementById('btnR').addEventListener('click',resetAll);
     document.getElementById('tabY').addEventListener('click',function(){if(mode==='yeon')return;mode='yeon';this.classList.add('on');document.getElementById('tabL').classList.remove('on');document.getElementById('yeonUI').style.display='block';document.getElementById('lottoUI').style.display='none';renderYeonResultVisible(false);resetAll();});
     document.getElementById('tabL').addEventListener('click',function(){if(mode==='lotto')return;mode='lotto';this.classList.add('on');document.getElementById('tabY').classList.remove('on');document.getElementById('yeonUI').style.display='none';document.getElementById('lottoUI').style.display='block';setupLottoCanvas();renderYeonResultVisible(true);resetAll();});
-    function resetAll(){stopTick();done=false;yJo=null;yNums=[];yStage='jo';yCurJo=1;yCurNum=0;lLines=[];lCurHot=[];canCatch=false;_seed=Date.now()^Math.floor(Math.random()*0xFFFFFFFF);resetJoCells();resetNumCells();document.getElementById('joAll').textContent='모든 조 선택';if(mode==='lotto')drawLottoGrid([]);renderYeonResult();renderLottoResult();setMsg('포착 버튼을 눌러 번호를 확정하세요');startTick();}
+    function resetAll(){stopTick();done=false;yJo=null;yNums=[];yStage='jo';yCurJo=1;yCurNum=0;lLines=[];lCurHot=[];canCatch=false;resetJoCells();resetNumCells();document.getElementById('joAll').textContent='모든 조 선택';if(mode==='lotto')drawLottoGrid([]);renderYeonResult();renderLottoResult();setMsg('포착 버튼을 눌러 번호를 확정하세요');startTick();}
     renderYeonResultVisible(false);resetAll();
 
     // ===== 임베드될 때 부모에게 콘텐츠 높이 알리기 =====

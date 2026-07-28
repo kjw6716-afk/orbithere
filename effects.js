@@ -6,6 +6,12 @@
    (visualViewport)에 맞춘다. 핀치 확대나 키보드가 올라와 보이는 영역이
    바뀌어도 파티클이 배율만큼 커지거나 지워지지 않은 잔상이 남지 않는다. */
 (function () {
+    // 기기에서 "동작 줄이기"를 켠 사용자에게는 파티클을 띄우지 않는다.
+    // CSS는 orbit.css의 prefers-reduced-motion 블록이 맡지만, 캔버스로 그리는
+    // 이 이펙트는 CSS가 닿지 않으므로 여기서 직접 확인해야 한다.
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduceMotion && reduceMotion.matches) return;
+
     var ACCENT = '#FF9F43';   // 별 메인
     var LIGHT  = '#FFD08A';   // 별 라이트
     var MINT   = '#4FD1C5';   // 반짝이 포인트 (대문의 민트와 연결)

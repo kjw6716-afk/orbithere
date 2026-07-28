@@ -6,6 +6,7 @@
     <title>Orbit | 광장</title>
     <meta name="description" content="비슷한 궤도를 도는 사람들의 이야기가 흘러가는 광장.">
     <meta name="theme-color" content="#0F172A">
+    <link rel="canonical" href="https://orbithere.com/lounge.html">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -22,45 +23,9 @@
     <meta property="og:url" content="https://orbithere.com/lounge.html">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="/orbit.css">
     <style>
-        :root {
-            --bg-color: #0F172A;
-            --accent: #FF9F43;
-            --text-main: #E2E8F0;
-            --card-bg: rgba(30, 41, 59, 0.7);
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Pretendard', sans-serif;
-            overflow-x: hidden;
-            touch-action: manipulation;
-        }
-
-        .bg-glow {
-            position: fixed; top: -10%; right: -10%;
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(255,159,67,0.08) 0%, rgba(15,23,42,0) 70%);
-            pointer-events: none; z-index: -1;
-        }
-
-        nav {
-            position: fixed; top: 0; width: 100%;
-            padding: 1.5rem 2rem;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 100; backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255,159,67,0.1);
-        }
-        .logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); cursor: pointer; }
-        .nav-back {
-            font-size: 12px; color: #64748B; cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
-            padding: 6px 12px; transition: 0.2s; background: transparent;
-            font-family: 'Pretendard';
-        }
-        .nav-back:hover { color: var(--accent); border-color: rgba(255,159,67,0.3); }
+        body { touch-action: manipulation; }   /* 나머지 기본값은 orbit.css */
 
         .container { max-width: 680px; margin: 130px auto 80px; padding: 0 20px; }
 
@@ -255,22 +220,6 @@
         ::selection { background-color: #4FD1C5; color: #0F172A; }
 
         /* ===== 공통 푸터 ===== */
-        .site-footer {
-            max-width: 720px; margin: 60px auto 0; padding: 26px 20px 36px;
-            border-top: 1px solid rgba(255,159,67,0.1); text-align: center;
-        }
-        .foot-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 13px; }
-        .foot-links a { font-size: 12px; color: #64748B; text-decoration: none; transition: color 0.2s; }
-        .foot-links a:hover { color: #FF9F43; }
-        .foot-sign {
-            font-size: 11.5px; color: #475569; letter-spacing: 0.03em;
-            display: flex; align-items: center; justify-content: center; gap: 5px;
-        }
-        .foot-star { width: 13px; height: 13px; flex-shrink: 0; animation: foot-twinkle 2.8s ease-in-out infinite; }
-        @keyframes foot-twinkle {
-            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
-            50%      { transform: scale(1.2) rotate(18deg); opacity: 1; }
-        }
 
         /* 메인 패널에 iframe으로 임베드될 때 */
         .embed nav { display: none; }
@@ -283,7 +232,7 @@
 <body>
     <div class="bg-glow"></div>
 
-    <nav>
+    <nav class="site-topbar">
         <div class="logo" onclick="location.href='index.html'">ORBIT.</div>
         <button class="nav-back" onclick="location.href='main.html'">← 커뮤니티 홈</button>
     </nav>
@@ -375,7 +324,11 @@
     var rxCount = {}, rxMine = {};
 
     function escapeHtml(s){
-        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        // 작은따옴표까지 막는다. 지금은 모든 속성을 큰따옴표로 쓰지만,
+        // 나중에 title='...' 같은 걸 한 줄 쓰는 순간 구멍이 되기 때문에 미리 닫아둔다.
+        return String(s)
+            .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     }
     function timeAgo(iso){
         var s = (Date.now() - new Date(iso).getTime()) / 1000;
