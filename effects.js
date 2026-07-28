@@ -19,8 +19,18 @@
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     window.addEventListener('resize', resize);
+    // iOS에서 키보드가 열리거나 핀치줌 될 때는 window resize가 안 올 수 있음
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', resize);
     document.body.appendChild(canvas);
     resize();
+
+    // 리사이즈/줌으로 캔버스 크기와 innerWidth가 어긋나도 항상 전체를 지우도록
+    function clearAll() {
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+    }
 
     var parts = [];
     var running = false;
@@ -81,7 +91,7 @@
     function tick(now) {
         var dt = Math.min((now - last) / 16.67, 2); // 프레임 드랍 시에도 속도 일정
         last = now;
-        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        clearAll();
 
         for (var i = parts.length - 1; i >= 0; i--) {
             var p = parts[i];
@@ -132,8 +142,13 @@
         ctx.globalAlpha = 1;
 
         if (parts.length) requestAnimationFrame(tick);
-        else { running = false; ctx.clearRect(0, 0, window.innerWidth, window.innerHeight); }
+        else { running = false; clearAll(); }
     }
 
-    document.addEventListener('click', function (e) { burst(e.clientX, e.clientY); });
+    document.addEventListener('click', function (e) {
+        // 입력하려고 누른 탭에는 이펙트를 터뜨리지 않는다
+        var t = e.target;
+        if (t && t.closest && t.closest('input, textarea, select, label')) return;
+        burst(e.clientX, e.clientY);
+    });
 })();

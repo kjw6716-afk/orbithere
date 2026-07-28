@@ -136,6 +136,10 @@
         }
         .write-card textarea:focus { border-color: var(--accent); }
         .write-card textarea::placeholder { color: #475569; }
+        /* 16px 미만 입력칸은 iOS가 포커스 시 화면을 강제 확대하므로 터치 기기에선 16px 고정 */
+        @media (hover: none) and (pointer: coarse) {
+            .write-card textarea, .write-orbit-select { font-size: 16px; }
+        }
         .write-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
         .write-count { font-size: 11px; color: #334155; }
         .btn-trace {
