@@ -240,6 +240,7 @@
                 <button class="nav-item on" data-panel="home"><span class="ic">🏠</span><span class="lbl">홈</span></button>
                 <button class="nav-item" data-panel="lounge"><span class="ic">💬</span><span class="lbl">대화 광장</span></button>
                 <button class="nav-item" data-panel="lucky"><span class="ic">🎰</span><span class="lbl">Lucky Orbit</span></button>
+                <button class="nav-item" data-panel="fortune"><span class="ic">🌠</span><span class="lbl">오늘의 운세</span></button>
                 <button class="nav-item" data-panel="updates"><span class="ic">📡</span><span class="lbl">업데이트 기록</span></button>
             </nav>
         </aside>
@@ -300,6 +301,14 @@
                     <div class="lucky-wrap">
                         <iframe class="lucky-frame" id="luckyFrame" title="Lucky Orbit — 로또 번호 생성기" data-src="lucky.html?embed=1"></iframe>
                         <a class="lucky-out" href="lucky.html">전체 화면으로 열기 · 사용법과 FAQ 보기 →</a>
+                    </div>
+                </section>
+
+                <!-- 오늘의 운세 -->
+                <section class="panel" id="panel-fortune">
+                    <div class="lucky-wrap">
+                        <iframe class="lucky-frame" id="fortuneFrame" title="오늘의 운세 — 별자리 · 띠 운세" data-src="fortune.html?embed=1"></iframe>
+                        <a class="lucky-out" href="fortune.html">전체 화면으로 열기 · 운세 보는 법과 FAQ 보기 →</a>
                     </div>
                 </section>
 
@@ -438,9 +447,10 @@
             home:    'Connect in <span>Orbit</span>',
             lounge:  '대화 <span>광장</span>',
             lucky:   '<span>Lucky</span> Orbit',
+            fortune: '오늘의 <span>운세</span>',
             updates: '업데이트 <span>기록</span>'
         };
-        var loungeLoaded = false, luckyLoaded = false;
+        var loungeLoaded = false, luckyLoaded = false, fortuneLoaded = false;
         function switchPanel(name){
             if(!TITLES[name]) name = 'home';
             document.querySelectorAll('.nav-item').forEach(function(b){
@@ -460,6 +470,11 @@
                 var lf = document.getElementById('luckyFrame');
                 lf.src = lf.getAttribute('data-src');
                 luckyLoaded = true;
+            }
+            if(name === 'fortune' && !fortuneLoaded){
+                var ff = document.getElementById('fortuneFrame');
+                ff.src = ff.getAttribute('data-src');
+                fortuneLoaded = true;
             }
             if(location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
         }
@@ -482,6 +497,10 @@
             if(ev.data && ev.data.orbit === 'luckyHeight'){
                 var h = parseInt(ev.data.height, 10);
                 if(h > 0 && h < 4000) document.getElementById('luckyFrame').style.height = h + 'px';
+            }
+            if(ev.data && ev.data.orbit === 'fortuneHeight'){
+                var fh = parseInt(ev.data.height, 10);
+                if(fh > 0 && fh < 4000) document.getElementById('fortuneFrame').style.height = fh + 'px';
             }
         });
 
