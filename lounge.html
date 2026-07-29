@@ -23,7 +23,7 @@
     <meta property="og:url" content="https://orbithere.com/lounge.html">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
     <link rel="stylesheet" href="/orbit.css">
     <style>
         body { touch-action: manipulation; }   /* 나머지 기본값은 orbit.css */
@@ -72,6 +72,31 @@
         .channel-header .ch-text { min-width: 0; }
         .channel-header .ch-name { font-size: 14px; font-weight: 700; color: var(--text-main); }
         .channel-header .ch-desc { font-size: 11.5px; color: #94A3B8; margin-top: 3px; line-height: 1.45; }
+
+        /* 새로고침 — 이 궤도의 궤적만 다시 불러온다 */
+        .btn-refresh {
+            margin-left: auto; flex-shrink: 0;
+            display: inline-flex; align-items: center; gap: 6px;
+            background: transparent; color: #94A3B8;
+            border: 1px solid rgba(255,159,67,0.18); border-radius: 99px;
+            padding: 7px 13px; font-size: 11.5px; font-weight: 600;
+            font-family: 'Pretendard'; cursor: pointer; transition: all 0.15s;
+        }
+        .btn-refresh:hover { border-color: rgba(255,159,67,0.45); color: var(--accent); }
+        .btn-refresh svg { width: 13px; height: 13px; flex-shrink: 0; transform-origin: 50% 50%; }
+        .btn-refresh.spin { color: var(--accent); border-color: rgba(255,159,67,0.45); cursor: default; }
+        .btn-refresh.spin svg { animation: rf-spin 0.7s linear infinite; }
+        @keyframes rf-spin { to { transform: rotate(360deg); } }
+        /* 좁은 화면에서는 아이콘만 — 채널 이름이 밀리지 않게.
+           대신 손가락으로 누를 수 있는 크기(약 40px)는 유지한다. */
+        @media (max-width: 480px) {
+            .btn-refresh {
+                padding: 0; justify-content: center;
+                min-width: 40px; min-height: 40px;
+            }
+            .btn-refresh .rf-lbl { display: none; }
+            .btn-refresh svg { width: 15px; height: 15px; }
+        }
 
         /* 글쓰기 카드 */
         .write-card {
@@ -287,7 +312,9 @@
     var ORBIT_LIST = [
         { id:'free',  icon:'💬', label:'자유 궤도',     desc:'아무 말이나 편하게 — 잡담·일상·혼잣말 환영이에요.' },
         { id:'money', icon:'📈', label:'재테크 궤도',   desc:'투자·절약·돈 이야기를 함께 나누는 궤도예요.' },
-        { id:'dawn',  icon:'🌅', label:'새벽운동 궤도', desc:'미라클모닝·운동 인증, 같이 일어나는 궤도예요.' }
+        // id는 'dawn' 그대로 둔다 — 이미 이 궤도에 쌓인 글들이 붙어 있는 값이라
+        // 바꾸면 DB의 orbit 제약과 기존 글이 전부 어긋난다. 보이는 이름만 넓혔다.
+        { id:'dawn',  icon:'💪', label:'운동 궤도',     desc:'러닝·헬스·홈트·새벽운동 — 오늘 몸 쓴 이야기를 남기는 궤도예요.' }
     ];
     var ALL_ORBIT = { id:'all', icon:'🌌', label:'전체', desc:'모든 궤도의 궤적이 한데 흐르는 광장이에요.' };
     // 호환용 파생 맵 / 조회 헬퍼
@@ -404,20 +431,23 @@
                 input.value = '';
                 document.getElementById('charCount').textContent = '0 / 500';
                 setStatus('β 베타 — 궤적은 모두에게 공개 저장돼요');
-                loadPosts();
+                loadPosts({ quiet: true });   // 목록을 로딩 문구로 비웠다 채우지 않게
             }
         });
     }
 
     // ===== 글 불러오기 =====
-    async function loadPosts(){
+    // opts.quiet — 새로고침처럼 이미 보고 있는 목록을 갱신하는 경우.
+    // 로딩 문구로 목록을 지우지 않고, 실패해도 보던 궤적을 남겨둔다.
+    async function loadPosts(opts){
+        var quiet = !!(opts && opts.quiet);
         var list = document.getElementById('postList');
         if(!sb){
             list.innerHTML = '<div class="empty-state">서버 연결 모듈을 불러오지 못했어요.<br>새로고침 해주세요.</div>';
             setStatus('연결 실패 — 새로고침 해주세요', true);
             return;
         }
-        list.innerHTML = '<div class="empty-state">궤적을 불러오는 중...</div>';
+        if(!quiet) list.innerHTML = '<div class="empty-state">궤적을 불러오는 중...</div>';
         try {
             var q = sb.from('posts').select('*').order('created_at', { ascending: false }).limit(50);
             if(currentOrbit !== 'all') q = q.eq('orbit', currentOrbit);
@@ -438,10 +468,13 @@
                     }
                 });
             }
-            renderPosts(posts);
+            renderPosts(posts, quiet);
         } catch(err){
             console.error(err);
-            list.innerHTML = '<div class="empty-state">광장을 불러오지 못했어요.<br>' + escapeHtml(errHint(err)) + '</div>';
+            // 조용한 갱신이 실패했을 때 목록을 에러 문구로 갈아치우면
+            // 잘 보고 있던 궤적이 통째로 사라진다 — 상태 배지로만 알린다.
+            if(quiet) setStatus('새로고침 실패 — ' + errHint(err), true);
+            else list.innerHTML = '<div class="empty-state">광장을 불러오지 못했어요.<br>' + escapeHtml(errHint(err)) + '</div>';
         }
     }
 
@@ -462,7 +495,9 @@
         return m.slice(0, 80) || ('오류 코드 ' + (err.code || err.status || '?'));
     }
 
-    function renderPosts(posts){
+    // quiet일 때는 등장 애니메이션을 생략한다. 새로고침마다 목록 전체가
+    // 다시 떠오르면 바뀐 게 없어도 화면이 요동쳐서 오히려 어수선하다.
+    function renderPosts(posts, quiet){
         var list = document.getElementById('postList');
         list.innerHTML = '';
         if(posts.length === 0){
@@ -470,11 +505,15 @@
             return;
         }
         posts.forEach(function(p, i){
-            var isMine = nickname && p.nick === nickname;
-            var canDelete = p.author_device && p.author_device === deviceId;
+            // "나"는 닉네임이 아니라 작성 기기로 판단한다.
+            // 닉네임은 자유 입력이라 남이 같은 닉을 쓰면 그 사람 글에 '나' 배지가 붙는다.
+            // 삭제 권한이 이미 쓰고 있던 기준(author_device)과 하나로 맞췄다.
+            var isMine = !!(p.author_device && p.author_device === deviceId);
+            var canDelete = isMine;
             var post = document.createElement('article');
             post.className = 'post';
-            post.style.animationDelay = (Math.min(i, 10) * 0.05) + 's';
+            if(quiet) post.style.animation = 'none';
+            else post.style.animationDelay = (Math.min(i, 10) * 0.05) + 's';
             post.innerHTML =
                 '<div class="post-head">' +
                 '<div class="post-avatar">' + avatarOf(p.nick) + '</div>' +
@@ -510,7 +549,7 @@
         el.style.transition = 'opacity 0.25s, transform 0.25s';
         el.style.opacity = '0';
         el.style.transform = 'translateY(-6px)';
-        setTimeout(loadPosts, 250);
+        setTimeout(function(){ loadPosts({ quiet: true }); }, 250);
     }
 
     // ===== 이모지 교차 리액션 =====
@@ -598,6 +637,12 @@
         });
         document.getElementById('orbitTabs').innerHTML = html;
     }
+    var REFRESH_ICON =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>' +
+        '<path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M21 21v-5h-5"/>' +
+        '</svg>';
+
     function renderChannelHeader(){
         var o = orbitInfo(currentOrbit);
         document.getElementById('channelHeader').innerHTML =
@@ -605,8 +650,23 @@
             '<div class="ch-text">' +
             '<div class="ch-name">' + escapeHtml(o.label) + '</div>' +
             '<div class="ch-desc">' + escapeHtml(o.desc) + '</div>' +
-            '</div>';
+            '</div>' +
+            '<button class="btn-refresh" type="button" title="새 궤적 불러오기">' +
+            REFRESH_ICON + '<span class="rf-lbl">새로고침</span></button>';
     }
+
+    // 헤더는 채널을 바꿀 때마다 다시 그려지므로, 버튼에 직접 걸지 않고 위임한다
+    document.getElementById('channelHeader').addEventListener('click', function(e){
+        var btn = e.target.closest('.btn-refresh');
+        if(!btn || btn.classList.contains('spin')) return;
+        btn.classList.add('spin');
+        // 최소 한 바퀴는 돌려준다 — 응답이 즉시 와도 "눌리긴 한 건가" 싶지 않게
+        var started = Date.now();
+        loadPosts({ quiet: true }).then(function(){
+            setTimeout(function(){ btn.classList.remove('spin'); },
+                       Math.max(0, 700 - (Date.now() - started)));
+        });
+    });
 
     document.getElementById('orbitTabs').addEventListener('click', function(e){
         var tab = e.target.closest('.orbit-tab');

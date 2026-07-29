@@ -23,7 +23,7 @@
     <meta property="og:url" content="https://orbithere.com/main.html">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
     <link rel="stylesheet" href="/orbit.css">
     <style>
         body { touch-action: manipulation; }   /* 나머지 기본값은 orbit.css */
@@ -340,8 +340,8 @@
 
                         <!-- 실제 광장 데이터로 채워진다 — 글이 없으면 카드 자체를 숨긴다 -->
                         <div class="card" id="trendCard" style="display:none;">
-                            <span class="card-tag">Trending</span>
-                            <h3 class="card-title" id="trendTitle">가장 뜨거운 궤도</h3>
+                            <span class="card-tag" id="trendTag">🔥 지금 뜨는 궤적</span>
+                            <h3 class="card-title" id="trendTitle">가장 뜨거운 궤적</h3>
                             <p class="card-desc" id="trendDesc"></p>
                             <button class="btn-outline" id="trendGo" style="margin-top:16px;">광장에서 보기</button>
                         </div>
@@ -386,7 +386,17 @@
                             <div class="tl-item">
                                 <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
                                 <div class="tl-content">
-                                    <div class="tl-version">v1.0 — LATEST</div>
+                                    <div class="tl-version">v1.1 — LATEST</div>
+                                    <div class="tl-date">2026. 07. 29</div>
+                                    <div class="tl-title">💪 운동 궤도 개편 & 광장 새로고침</div>
+                                    <div class="tl-desc">'새벽운동 궤도'가 <a href="lounge.html" style="color:var(--accent);">운동 궤도</a>로 넓어졌어요 — 러닝·헬스·홈트 전부 환영이에요. 채널마다 새로고침 버튼이 생겨서, 보던 궤적을 잃지 않고 새 글만 불러옵니다. '나' 표시는 닉네임이 아니라 기기 기준으로 바뀌어 같은 닉을 쓰는 다른 사람 글이 내 글로 보이지 않아요.</div>
+                                    <div class="tl-tags"><span class="tl-tag">광장</span><span class="tl-tag">새로고침</span></div>
+                                </div>
+                            </div>
+                            <div class="tl-item">
+                                <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                                <div class="tl-content">
+                                    <div class="tl-version old">v1.0</div>
                                     <div class="tl-date">2026. 07. 28</div>
                                     <div class="tl-title">🌠 오늘의 운세 오픈</div>
                                     <div class="tl-desc">별자리·띠 운세가 <a href="fortune.html" style="color:var(--accent);">fortune.html</a>에 생겼어요. 총운 점수, 애정·금전·직장운, 행운의 숫자와 색까지 — 매일 자정 새 운세가 궤도에 올라옵니다.</div>
@@ -724,7 +734,12 @@
             document.getElementById('trendDesc').textContent = top
                 ? '"' + text + '" — ' + p.nick + ' 님의 궤적이 리액션 ' + topN + '개로 가장 뜨겁습니다.'
                 : '"' + text + '" — ' + p.nick + ' 님이 방금 남기고 간 최신 궤적입니다.';
-            if(!top) document.getElementById('trendTitle').textContent = '방금 지나간 궤적';
+            // 리액션이 아직 하나도 없으면 이건 "뜨는 글"이 아니라 그냥 최신 글이다.
+            // 태그까지 같이 바꿔야 제목과 어긋나지 않는다.
+            if(!top){
+                document.getElementById('trendTitle').textContent = '방금 지나간 궤적';
+                document.getElementById('trendTag').textContent = '✨ 가장 최근 궤적';
+            }
             document.getElementById('trendGo').addEventListener('click', function(){ location.hash = '#lounge'; });
             document.getElementById('trendCard').style.display = '';
         }).catch(function(){ /* 연결 실패 시 카드 숨김 유지 */ });
