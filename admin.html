@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbit | 관제실</title>
+    <!-- 검색에 잡히지 않게 한다. robots.txt에도 Disallow가 있고 sitemap에도 넣지 않는다.
+         숨기는 게 보안은 아니지만(권한은 서버 RLS가 판정한다) 굳이 노출할 이유도 없다. -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#0F172A">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
+    <link rel="stylesheet" href="/orbit.css">
+    <style>
+        .wrap { max-width: 420px; margin: 130px auto 80px; padding: 0 20px; }
+
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,159,67,0.15);
+            border-radius: 20px; padding: 28px;
+        }
+        .panel h1 { font-size: 1.35rem; font-weight: 200; margin: 0 0 6px; }
+        .panel h1 strong { color: var(--accent); font-weight: 700; }
+        .panel .sub { font-size: 12.5px; color: #64748B; line-height: 1.6; margin: 0 0 22px; }
+
+        .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+        .field label { font-size: 11px; color: #94A3B8; font-weight: 600; letter-spacing: 0.03em; }
+        .field input {
+            background: rgba(15,23,42,0.5);
+            border: 1px solid rgba(255,159,67,0.25);
+            border-radius: 12px; padding: 12px 14px;
+            color: var(--text-main); font-family: 'Pretendard'; font-size: 14px;
+            outline: none; transition: border-color 0.2s;
+        }
+        .field input:focus { border-color: var(--accent); }
+        /* 모바일에서 16px 미만이면 iOS Safari가 포커스 순간 페이지를 자동 확대한다 */
+        @media (max-width: 768px) { .field input { font-size: 16px; } }
+
+        .btn-main {
+            width: 100%; padding: 13px; margin-top: 4px;
+            background: var(--accent); color: #0F172A; border: none; border-radius: 12px;
+            font-family: 'Pretendard'; font-size: 14px; font-weight: 700;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-main:hover { opacity: 0.9; }
+        .btn-main:disabled { opacity: 0.4; cursor: default; }
+
+        .btn-line {
+            display: block; width: 100%; padding: 11px; margin-top: 8px;
+            background: transparent; color: #94A3B8; text-align: center; text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
+            font-family: 'Pretendard'; font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-line:hover { border-color: rgba(255,159,67,0.35); color: var(--accent); }
+
+        .note {
+            margin-top: 16px; padding: 12px 14px; border-radius: 12px;
+            font-size: 12px; line-height: 1.65;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            color: #64748B;
+        }
+        .note.err { background: rgba(252,129,129,0.07); border-color: rgba(252,129,129,0.3); color: #FC8181; }
+        .note.ok  { background: rgba(79,209,197,0.07); border-color: rgba(79,209,197,0.3); color: var(--mint); }
+        .note:empty { display: none; }
+
+        .who {
+            display: flex; align-items: center; gap: 10px;
+            padding: 13px 15px; border-radius: 14px; margin-bottom: 16px;
+            background: rgba(255,159,67,0.08); border: 1px solid rgba(255,159,67,0.22);
+        }
+        .who .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); flex-shrink: 0; }
+        .who .txt { min-width: 0; }
+        .who .t1 { font-size: 13px; font-weight: 700; color: var(--accent); }
+        .who .t2 { font-size: 11px; color: #94A3B8; margin-top: 2px; word-break: break-all; }
+
+        ::selection { background-color: #4FD1C5; color: #0F172A; }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <nav class="site-topbar">
+        <a class="logo" href="index.html">ORBIT.</a>
+        <button class="nav-back" onclick="location.href='main.html'">← 커뮤니티 홈</button>
+    </nav>
+
+    <main class="wrap">
+        <div class="panel">
+            <!-- 로그인 전 -->
+            <div id="loginView">
+                <h1>🛰️ <strong>관제실</strong></h1>
+                <p class="sub">운영자만 들어오는 곳이에요. 로그인하면 광장의 모든 궤적과 답을 지울 수 있습니다.</p>
+                <form id="loginForm" autocomplete="on">
+                    <div class="field">
+                        <label for="email">이메일</label>
+                        <input type="email" id="email" name="email" autocomplete="username" required>
+                    </div>
+                    <div class="field">
+                        <label for="pw">비밀번호</label>
+                        <input type="password" id="pw" name="current-password" autocomplete="current-password" required>
+                    </div>
+                    <button class="btn-main" id="btnLogin" type="submit">로그인</button>
+                </form>
+            </div>
+
+            <!-- 로그인 후 -->
+            <div id="doneView" style="display:none;">
+                <h1>🛰️ <strong>관제실</strong></h1>
+                <p class="sub">관리자로 로그인되어 있습니다.</p>
+                <div class="who">
+                    <span class="dot"></span>
+                    <span class="txt">
+                        <span class="t1" id="whoRole">—</span>
+                        <span class="t2" id="whoMail"></span>
+                    </span>
+                </div>
+                <a class="btn-line" href="lounge.html">광장으로 가기 →</a>
+                <button class="btn-line" id="btnOut" type="button">로그아웃</button>
+            </div>
+
+            <div class="note" id="note"></div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+    (function(){
+        var SB_URL = 'https://unwxpuvfqyjhgrcrmuhu.supabase.co';
+        var SB_KEY = 'sb_publishable_KnyriHKUHNWw0QyIAXBmOA_0KaHPcXI'; // 공개용 키 (publishable)
+        var sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null;
+
+        var note = document.getElementById('note');
+        function say(msg, kind){
+            note.textContent = msg || '';
+            note.className = 'note' + (kind ? ' ' + kind : '');
+        }
+
+        if(!sb){
+            say('로그인 모듈을 불러오지 못했어요. 새로고침 해주세요.', 'err');
+            document.getElementById('btnLogin').disabled = true;
+            return;
+        }
+
+        // 로그인은 됐는데 admins에 없는 계정일 수 있다.
+        // 그 경우 "로그인 성공"만 보여주면 왜 삭제 버튼이 없는지 알 수 없으므로 구분해서 알린다.
+        async function showSession(session){
+            if(!session){
+                document.getElementById('loginView').style.display = '';
+                document.getElementById('doneView').style.display = 'none';
+                return;
+            }
+            document.getElementById('loginView').style.display = 'none';
+            document.getElementById('doneView').style.display = '';
+            document.getElementById('whoMail').textContent = session.user.email || session.user.id;
+
+            var r = await sb.rpc('is_admin');
+            if(r.error){
+                document.getElementById('whoRole').textContent = '권한 확인 실패';
+                say('관리자 여부를 확인하지 못했어요 — ' + (r.error.message || '') +
+                    '\n마이그레이션(migration_005_admin.sql)이 아직 실행되지 않았을 수 있어요.', 'err');
+                return;
+            }
+            if(r.data === true){
+                document.getElementById('whoRole').textContent = '관리자';
+                say('광장에서 모든 궤적과 답에 삭제 버튼이 보입니다.', 'ok');
+            } else {
+                document.getElementById('whoRole').textContent = '일반 계정 (권한 없음)';
+                say('로그인은 됐지만 이 계정은 관리자로 등록되어 있지 않아요.\n' +
+                    'admins 테이블에 이 계정의 UID를 넣어야 합니다.\n\nUID: ' + session.user.id, 'err');
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e){
+            e.preventDefault();
+            var btn = document.getElementById('btnLogin');
+            if(btn.dataset.busy) return;
+            btn.dataset.busy = '1'; btn.disabled = true; btn.textContent = '확인 중...';
+            say('');
+
+            var res = await sb.auth.signInWithPassword({
+                email: document.getElementById('email').value.trim(),
+                password: document.getElementById('pw').value
+            });
+
+            delete btn.dataset.busy; btn.disabled = false; btn.textContent = '로그인';
+            if(res.error){
+                var m = res.error.message || '';
+                // 원인별로 다음에 뭘 해야 하는지 알려준다
+                if(/Email not confirmed/i.test(m))
+                    say('이메일 인증이 안 된 계정이에요. 대시보드에서 계정을 만들 때 ' +
+                        "'Auto Confirm User'를 켜야 합니다.", 'err');
+                else if(/Invalid login credentials/i.test(m))
+                    say('이메일이나 비밀번호가 맞지 않아요.', 'err');
+                else
+                    say('로그인 실패 — ' + m, 'err');
+                return;
+            }
+            document.getElementById('pw').value = '';
+            showSession(res.data.session);
+        });
+
+        document.getElementById('btnOut').addEventListener('click', async function(){
+            await sb.auth.signOut();
+            say('로그아웃했습니다.');
+            showSession(null);
+        });
+
+        sb.auth.getSession().then(function(r){ showSession(r.data.session); });
+    })();
+    </script>
+</body>
+</html>

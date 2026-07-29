@@ -733,14 +733,23 @@
                 headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
             }).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
         }
+        function rpc(fn, body){
+            return fetch(SB_URL + '/rest/v1/rpc/' + fn, {
+                method: 'POST',
+                headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+                body: JSON.stringify(body || {})
+            }).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+        }
         Promise.all([
             get('posts?select=id,nick,text&order=created_at.desc&limit=50'),
-            get('reactions?select=post_id&limit=1000')
+            // reactions는 직접 읽지 않는다 — 행에 device_id가 실려 나가기 때문에
+            // 테이블 읽기를 닫고 집계 함수만 열어두었다. 여기선 개수만 있으면 된다.
+            rpc('reaction_counts', {})
         ]).then(function(res){
             var posts = res[0] || [];
             if(!posts.length) return; // 광장이 비어 있으면 카드 비노출
             var count = {};
-            (res[1] || []).forEach(function(r){ count[r.post_id] = (count[r.post_id] || 0) + 1; });
+            (res[1] || []).forEach(function(r){ count[r.post_id] = Number(r.n) || 0; });
             var top = null, topN = 0;
             posts.forEach(function(p){
                 var n = count[p.id] || 0;

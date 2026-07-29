@@ -401,6 +401,11 @@
     var currentOrbit = 'all';
     var EMBED = document.documentElement.classList.contains('embed');
 
+    // 관리자 모드. 로그인만으로는 켜지지 않고 admins 테이블에 등록된 계정이어야 한다.
+    // 여기서 true여도 실제 삭제를 허용하는 건 서버의 RLS라서,
+    // 이 값을 브라우저에서 조작해도 남의 글은 지워지지 않는다. 버튼 표시용일 뿐이다.
+    var isAdmin = false;
+
     // 임베드(메인 패널 안)일 땐 부모에게 홈 패널 전환을 요청, 단독 페이지일 땐 일반 이동
     function goJoin(){
         if(EMBED && window.parent !== window){ window.parent.postMessage({ orbit: 'goHome' }, window.location.origin); }
@@ -532,12 +537,14 @@
             rxCount = {}; rxMine = {}; cmts = {};
             if(posts.length){
                 var ids = posts.map(function(p){ return p.id; });
-                var r = await sb.from('reactions').select('post_id,emoji,device_id').in('post_id', ids);
+                // 예전에는 reactions 행을 통째로 받아 device_id를 직접 비교했다.
+                // 그러면 남의 기기 ID가 모두 노출돼 그 값으로 남의 리액션을 지울 수 있었다.
+                // 이제 서버가 개수와 "내가 눌렀는지"만 계산해서 돌려준다.
+                var r = await sb.rpc('reaction_summary', { p_post_ids: ids, p_device: deviceId });
                 if(r.error) throw r.error;
                 (r.data || []).forEach(function(row){
-                    var c = rxCount[row.post_id] = rxCount[row.post_id] || {};
-                    c[row.emoji] = (c[row.emoji] || 0) + 1;
-                    if(row.device_id === deviceId){
+                    (rxCount[row.post_id] = rxCount[row.post_id] || {})[row.emoji] = Number(row.n) || 0;
+                    if(row.mine){
                         (rxMine[row.post_id] = rxMine[row.post_id] || {})[row.emoji] = true;
                     }
                 });
@@ -595,7 +602,7 @@
             // 닉네임은 자유 입력이라 남이 같은 닉을 쓰면 그 사람 글에 '나' 배지가 붙는다.
             // 삭제 권한이 이미 쓰고 있던 기준(author_device)과 하나로 맞췄다.
             var isMine = !!(p.author_device && p.author_device === deviceId);
-            var canDelete = isMine;
+            var canDelete = isMine || isAdmin;
             var post = document.createElement('article');
             post.className = 'post';
             if(quiet) post.style.animation = 'none';
@@ -647,19 +654,24 @@
         } else {
             html += '<div class="cmt-list">';
             list.forEach(function(c){
-                var mine = !!(c.author_device && c.author_device === deviceId);
+                // '나' 배지는 내가 쓴 것에만, 삭제 버튼은 내 것 + 관리자.
+                // 둘을 한 변수로 묶으면 관리자에게 남의 답이 전부 '나'로 보인다.
+                var own = !!(c.author_device && c.author_device === deviceId);
+                var canDel = own || isAdmin;
                 html +=
                     '<div class="cmt" data-cid="' + escapeHtml(c.id) + '">' +
                     '<div class="cmt-av">' + avatarOf(c.nick) + '</div>' +
                     '<div class="cmt-main">' +
                     '<div class="cmt-meta">' +
                     '<span class="cmt-nick">' + escapeHtml(c.nick) + '</span>' +
-                    (mine ? '<span class="cmt-me">나</span>' : '') +
+                    (own ? '<span class="cmt-me">나</span>' : '') +
                     '<span class="cmt-time">' + timeAgo(c.created_at) + '</span>' +
                     '</div>' +
                     '<div class="cmt-body">' + escapeHtml(c.text) + '</div>' +
                     '</div>' +
-                    (mine ? '<button class="btn-cmt-del" type="button" title="댓글 삭제">×</button>' : '') +
+                    (canDel ? '<button class="btn-cmt-del" type="button" title="' +
+                              (own ? '답 삭제' : '관리자 삭제') + '"' +
+                              (own ? '' : ' data-admin="1"') + '>×</button>' : '') +
                     '</div>';
             });
             html += '</div>';
@@ -694,7 +706,8 @@
 
         thread.querySelectorAll('.btn-cmt-del').forEach(function(b){
             b.addEventListener('click', function(){
-                deleteComment(p, post, b.closest('.cmt').getAttribute('data-cid'));
+                deleteComment(p, post, b.closest('.cmt').getAttribute('data-cid'),
+                              b.hasAttribute('data-admin'));
             });
         });
     }
@@ -737,10 +750,13 @@
         await refreshThread(p, post);
     }
 
-    async function deleteComment(p, post, cid){
+    async function deleteComment(p, post, cid, asAdmin){
         if(!sb || !cid) return;
-        if(!confirm('이 답을 삭제할까요? 되돌릴 수 없어요.')) return;
-        var res = await sb.rpc('delete_comment', { p_id: cid, p_device: deviceId });
+        if(!confirm(asAdmin ? '[관리자] 이 답을 삭제할까요? 되돌릴 수 없어요.'
+                            : '이 답을 삭제할까요? 되돌릴 수 없어요.')) return;
+        var res = asAdmin
+            ? await sb.from('comments').delete().eq('id', cid)
+            : await sb.rpc('delete_comment', { p_id: cid, p_device: deviceId });
         if(res.error){
             console.error(res.error);
             setStatus('삭제 실패 — 잠시 후 다시 시도해주세요', true);
@@ -749,11 +765,18 @@
         await refreshThread(p, post);
     }
 
-    // ===== 궤적 삭제 (작성한 기기에서만) =====
+    // ===== 궤적 삭제 (작성한 기기 또는 관리자) =====
+    // 내 글은 기기를 확인하는 RPC로, 관리자는 REST delete로 지운다.
+    // 관리자 경로가 통과되는 근거는 서버의 RLS 정책(is_admin())이지
+    // 아래 isAdmin 변수가 아니다 — 변수는 어느 요청을 보낼지만 고른다.
     async function deletePost(p, el){
         if(!sb) return;
-        if(!confirm('이 궤적을 삭제할까요? 되돌릴 수 없어요.')) return;
-        var res = await sb.rpc('delete_post', { p_id: p.id, p_device: deviceId });
+        var mine = !!(p.author_device && p.author_device === deviceId);
+        if(!confirm(mine ? '이 궤적을 삭제할까요? 되돌릴 수 없어요.'
+                         : '[관리자] ' + p.nick + ' 님의 궤적을 삭제할까요? 되돌릴 수 없어요.')) return;
+        var res = mine
+            ? await sb.rpc('delete_post', { p_id: p.id, p_device: deviceId })
+            : await sb.from('posts').delete().eq('id', p.id);
         if(res.error){
             console.error(res.error);
             setStatus('삭제 실패 — 잠시 후 다시 시도해주세요', true);
@@ -805,9 +828,11 @@
         else { delete mine[emo]; counts[emo] = Math.max(0, (counts[emo] || 1) - 1); }
         renderRxRow(row, p);
 
+        // 취소는 REST delete가 아니라 RPC로 한다 — 정책이 관리자에게만 열려 있고,
+        // 이 함수가 기기가 일치하는 행만 지운다.
         var res = turningOn
             ? await sb.from('reactions').insert({ post_id: p.id, emoji: emo, device_id: deviceId })
-            : await sb.from('reactions').delete().match({ post_id: p.id, emoji: emo, device_id: deviceId });
+            : await sb.rpc('delete_reaction', { p_post_id: p.id, p_emoji: emo, p_device: deviceId });
 
         if(res.error){
             console.error(res.error);
@@ -893,10 +918,38 @@
         loadPosts();
     });
 
+    // ===== 관리자 확인 =====
+    // 로그인 세션이 있으면 admins에 등록된 계정인지 서버에 물어본다.
+    // 등록돼 있으면 모든 궤적·답에 삭제 버튼이 붙는다.
+    // 실패하거나 세션이 없으면 그냥 일반 사용자로 둔다 — 광장은 그대로 동작한다.
+    async function checkAdmin(){
+        if(!sb || !sb.auth) return false;
+        try {
+            var s = await sb.auth.getSession();
+            if(!s.data || !s.data.session) return false;
+            var r = await sb.rpc('is_admin');
+            return !r.error && r.data === true;
+        } catch(e){ return false; }
+    }
+
+    function showAdminBadge(){
+        var el = document.getElementById('loungeStatus');
+        el.textContent = '🛰️ 관리자 모드 — 모든 궤적과 답을 지울 수 있어요';
+        el.style.color = 'var(--mint)';
+        el.style.borderColor = 'rgba(79,209,197,0.35)';
+        el.style.background = 'rgba(79,209,197,0.08)';
+    }
+
     renderOrbitTabs();
     renderChannelHeader();
     renderWriteCard();
-    loadPosts();
+
+    // 관리자 확인이 끝난 뒤에 목록을 그린다 — 먼저 그리면 삭제 버튼이 한 박자 늦게 나타난다.
+    checkAdmin().then(function(ok){
+        isAdmin = ok;
+        if(ok) showAdminBadge();
+        loadPosts();
+    });
     </script>
 </body>
 </html>
