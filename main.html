@@ -31,7 +31,12 @@
         .bg-glow { z-index: 0; }   /* 앱 셸(.app)이 z-index:1이라 뒤로 밀지 않는다 */
 
         /* ===== 앱 셸 ===== */
-        .app { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+        /* 폭 상한을 두고 가운데 정렬한다.
+           울트라와이드(3440px)에서는 사이드바가 화면 왼쪽 끝에 붙고 본문은
+           680px에 머물러, 둘 사이가 1200px 넘게 벌어지고 오른쪽이 통째로 비었다.
+           셸 전체를 묶어 가운데로 보내면 사이드바와 본문이 하나의 창처럼 붙는다.
+           1280px 미만 화면에서는 아무 영향이 없다. */
+        .app { display: flex; min-height: 100vh; position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; }
 
         /* 사이드바 */
         .sidebar {
@@ -86,6 +91,10 @@
         }
 
         .panel-wrap { padding: 30px 32px 60px; flex: 1; }
+
+        /* 본문 칼럼은 콘텐츠 영역 가운데로.
+           푸터가 가운데 정렬이라 칼럼을 왼쪽에 붙여두면 둘의 중심이 어긋난다. */
+        .home-grid, .lucky-wrap, .update-card { margin-left: auto; margin-right: auto; }
         .panel { display: none; }
         .panel.on { display: block; animation: panel-in 0.25s ease; }
         @keyframes panel-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
