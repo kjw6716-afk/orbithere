@@ -101,11 +101,41 @@
         .jo-cell.dim { background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.18); }
         .jo-cell.hot { background:rgba(255,159,67,0.15); color:var(--accent); }
         .jo-cell.done { background:var(--accent); color:#0F172A; border-color:var(--accent); }
-        #joAll.dim:hover { background:rgba(255,159,67,0.1); color:var(--accent); border-color:rgba(255,159,67,0.4); }
+        /* 모든 조 선택 — 1조~5조 칸과 크기·색이 같아 여섯 번째 칸처럼 보였다.
+           실제로는 1·2등 동시 당첨이라는 분명한 이점이 있는 선택지라 먼저 눈에 띄어야 한다.
+           옆에 9px로 따로 적혀 있던 구매팁을 버튼 안 부제로 넣었다 —
+           왜 눌러야 하는지가 버튼에서 바로 읽히고, 왼쪽 열의 작은 박스도 하나 사라진다. */
+        .jo-all { flex-direction:column; gap:2px; padding:9px 8px; min-height:46px; cursor:pointer; }
+        .jo-all.dim { background:rgba(255,159,67,0.08); border-color:rgba(255,159,67,0.32); color:var(--accent); }
+        .jo-all.dim:hover { background:rgba(255,159,67,0.16); border-color:var(--accent); }
+        .jo-all .ja-title { font-size:12px; font-weight:700; line-height:1.2; }
+        .jo-all .ja-sub { font-size:9.5px; font-weight:500; color:#94A3B8; line-height:1.2; letter-spacing:-0.01em; }
+        .jo-all.done .ja-sub { color:rgba(15,23,42,0.72); }
+
         .ycell { display:flex; align-items:center; justify-content:center; border-radius:6px; font-weight:600; cursor:default; border:1px solid rgba(255,255,255,0.06); transition:background 0.08s,color 0.08s; font-family:'Pretendard'; }
         .ycell.dim { background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.18); }
         .ycell.hot { background:rgba(255,159,67,0.18); color:var(--accent); }
         .ycell.done { background:var(--accent); color:#0F172A; border-color:var(--accent); }
+
+        /* 숫자판 — 칸이 99px 정사각형이라 오른쪽 열만 길어지고 왼쪽 아래가 180px 비었다.
+           이 칸들은 순서대로 불이 켜질 뿐 누르는 곳이 아니라서 손가락 크기가 필요 없다.
+           3×3 + 0(혼자 아래에 놓인 긴 칸)을 5×2로 바꿔 세로를 절반 이하로 줄였다.
+           0도 9 다음 자리에 자연스럽게 들어가서 따로 떼어놓을 이유가 없어진다. */
+        .ynum-pad { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; }
+        .ynum-pad .ycell { aspect-ratio:1; font-size:15px; }
+        .ynum-hint { font-size:9px; color:#64748B; margin-top:6px; }
+
+        /* 조 선택 | 숫자판.
+           기본은 위아래로 쌓고, 게임 영역이 카드 폭을 통째로 쓰는 구간에서만 나란히 둔다.
+           나란히 둘 수 있는 조건이 좁은 이유:
+             ~560px  화면 자체가 좁다 — 반으로 나누면 숫자판이 24px로 뭉개진다
+             769px~  .game-inner가 2열(게임 | 확정번호)로 갈라져 게임 영역이 절반이 된다.
+                     여기서 또 반으로 나누면 마찬가지로 25px가 된다.
+           결국 561~768px, 즉 메인에 임베드된 680px 폭에서만 2열이 성립한다. */
+        .yeon-cols { display:grid; grid-template-columns:1fr; gap:16px; }
+        @media (min-width: 561px) and (max-width: 768px) {
+            .yeon-cols { grid-template-columns:1fr 1fr; gap:12px; }
+        }
         .result-panel { display:flex; flex-direction:column; gap:12px; padding-left:16px; border-left:1px solid rgba(255,159,67,0.08); }
         .yeon-result-grid { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:4px; }
         .lotto-result { display:flex; flex-direction:column; gap:5px; margin-top:4px; }
@@ -120,7 +150,6 @@
         .btn-reset { background:rgba(255,255,255,0.04); color:#64748B; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:8px 12px; cursor:pointer; transition:0.2s; font-family:'Pretendard'; font-size:11px; }
         .btn-reset:hover { border-color:rgba(255,159,67,0.3); color:var(--accent); }
         .lottery-msg { font-size:11px; color:#64748B; }
-        .tip-icon { display:inline-flex; align-items:center; justify-content:center; width:12px; height:12px; border-radius:50%; border:1.5px solid currentColor; font-size:7px; font-weight:700; flex-shrink:0; margin-top:1px; }
 
         /* ===== 본문(SEO) — 기본은 orbit.css, 이 페이지 고유분만 ===== */
         .seo-content code {
@@ -179,11 +208,14 @@
                         <button class="ltab" id="tabL">로또 6/45</button>
                     </div>
                     <div id="yeonUI">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div class="yeon-cols">
                             <div>
                                 <div class="section-label">조 선택</div>
                                 <div style="display:flex;flex-direction:column;gap:5px;">
-                                    <button class="jo-cell dim" id="joAll" type="button" style="padding:9px;font-size:11px;min-height:34px;cursor:pointer;">모든 조 선택</button>
+                                    <button class="jo-cell jo-all dim" id="joAll" type="button">
+                                        <span class="ja-title">모든 조 선택</span>
+                                        <span class="ja-sub">1·2등 동시 당첨 가능 · 총 21.6억</span>
+                                    </button>
                                     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;">
                                         <div class="jo-cell dim" id="jo1" style="padding:8px;min-height:30px;">1조</div>
                                         <div class="jo-cell dim" id="jo2" style="padding:8px;min-height:30px;">2조</div>
@@ -193,29 +225,23 @@
                                         <div class="jo-cell dim" id="jo4" style="padding:8px;min-height:30px;">4조</div>
                                         <div class="jo-cell dim" id="jo5" style="padding:8px;min-height:30px;">5조</div>
                                     </div>
-                                    <div style="font-size:9px;color:#64748B;line-height:1.6;margin-top:2px;">
-                                        <div style="display:flex;gap:3px;align-items:flex-start;">
-                                            <span class="tip-icon">!</span>
-                                            <span><strong style="color:#94A3B8;">구매팁!</strong><br>모든조 구매 시 1,2등<br>동시 당첨 가능(총 21.6억원)</span>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <div>
                                 <div class="section-label">6자리 번호</div>
-                                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;">
-                                    <div class="ycell dim" id="yn1" style="aspect-ratio:1;font-size:15px;">1</div>
-                                    <div class="ycell dim" id="yn2" style="aspect-ratio:1;font-size:15px;">2</div>
-                                    <div class="ycell dim" id="yn3" style="aspect-ratio:1;font-size:15px;">3</div>
-                                    <div class="ycell dim" id="yn4" style="aspect-ratio:1;font-size:15px;">4</div>
-                                    <div class="ycell dim" id="yn5" style="aspect-ratio:1;font-size:15px;">5</div>
-                                    <div class="ycell dim" id="yn6" style="aspect-ratio:1;font-size:15px;">6</div>
-                                    <div class="ycell dim" id="yn7" style="aspect-ratio:1;font-size:15px;">7</div>
-                                    <div class="ycell dim" id="yn8" style="aspect-ratio:1;font-size:15px;">8</div>
-                                    <div class="ycell dim" id="yn9" style="aspect-ratio:1;font-size:15px;">9</div>
+                                <div class="ynum-pad">
+                                    <div class="ycell dim" id="yn1">1</div>
+                                    <div class="ycell dim" id="yn2">2</div>
+                                    <div class="ycell dim" id="yn3">3</div>
+                                    <div class="ycell dim" id="yn4">4</div>
+                                    <div class="ycell dim" id="yn5">5</div>
+                                    <div class="ycell dim" id="yn6">6</div>
+                                    <div class="ycell dim" id="yn7">7</div>
+                                    <div class="ycell dim" id="yn8">8</div>
+                                    <div class="ycell dim" id="yn9">9</div>
+                                    <div class="ycell dim" id="yn0">0</div>
                                 </div>
-                                <div class="ycell dim" id="yn0" style="margin-top:5px;padding:7px;font-size:15px;">0</div>
-                                <div style="font-size:9px;color:#64748B;margin-top:6px;">십만단위 번호를 선택하세요</div>
+                                <div class="ynum-hint">십만단위 번호를 선택하세요</div>
                             </div>
                         </div>
                     </div>
@@ -233,10 +259,10 @@
                     <div class="lottery-controls">
                         <button class="spd-btn on" id="spdNormal">⚡ 빠름</button>
                         <button class="spd-btn" id="spdCrazy">🔥 미침</button>
-                        <button class="btn-catch" id="btnCatch">포착!</button>
+                        <button class="btn-catch" id="btnCatch">지금!</button>
                         <button class="btn-reset" id="btnR">초기화</button>
                     </div>
-                    <div class="lottery-msg" id="msg" style="margin-top:8px;">포착 버튼을 눌러 번호를 확정하세요</div>
+                    <div class="lottery-msg" id="msg" style="margin-top:8px;">«지금!» 버튼을 눌러 번호를 확정하세요</div>
                 </div>
                 <div class="result-panel">
                     <div class="section-label" style="color:#94A3B8;letter-spacing:0.08em;">확정 번호</div>
@@ -257,7 +283,7 @@
             <h3>로또 6/45 번호 뽑기</h3>
             <ol>
                 <li>상단에서 <strong>로또 6/45</strong> 탭을 선택하세요.</li>
-                <li>1~45 번호판 위로 6개 번호가 빠르게 흘러갑니다. 마음에 드는 순간 <strong>포착!</strong> 버튼을 누르면 그 조합이 한 줄로 확정돼요.</li>
+                <li>1~45 번호판 위로 6개 번호가 빠르게 흘러갑니다. 마음에 드는 순간 <strong>지금!</strong> 버튼을 누르면 그 조합이 한 줄로 확정돼요.</li>
                 <li>같은 방식으로 <strong>5줄(5,000원어치)</strong>까지 채우면 완성입니다. 줄마다 색이 달라서 한눈에 구분되고, 여러 줄에 겹친 번호는 파이 모양으로 나뉘어 보여요.</li>
             </ol>
 
@@ -364,7 +390,11 @@
     function randPick(pool,n){var arr=pool.slice();for(var i=arr.length-1;i>0;i--){var j=randInt(i+1);var t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr.slice(0,n).sort(function(a,b){return a-b;});}
 
     var joIds=['jo1','jo2','jo3','jo4','jo5'];
-    function resetJoCells(){document.getElementById('joAll').className='jo-cell dim';joIds.forEach(function(id){document.getElementById(id).className='jo-cell dim';});}
+    // joAll은 제목·부제 두 줄로 되어 있어서 className/textContent를 통째로 갈아끼우면
+    // jo-all 클래스와 안쪽 span이 사라진다. 상태와 제목만 따로 건드린다.
+    function setJoAllState(state){ document.getElementById('joAll').className='jo-cell jo-all '+state; }
+    function setJoAllTitle(t){ document.getElementById('joAll').querySelector('.ja-title').textContent=t; }
+    function resetJoCells(){setJoAllState('dim');joIds.forEach(function(id){document.getElementById(id).className='jo-cell dim';});}
     function resetNumCells(){['yn0','yn1','yn2','yn3','yn4','yn5','yn6','yn7','yn8','yn9'].forEach(function(id){document.getElementById(id).className='ycell dim';});}
     function setJoHot(j){resetJoCells();document.getElementById('jo'+j).className='jo-cell hot';yCurJo=j;}
     function setNumHot(n){resetNumCells();document.getElementById('yn'+n).className='ycell hot';yCurNum=n;}
@@ -372,10 +402,10 @@
     document.getElementById('joAll').addEventListener('click',function(){
         if(done||yStage!=='jo'||!running)return;
         stopTick();yJo='모든';resetJoCells();
-        document.getElementById('joAll').className='jo-cell done';
-        document.getElementById('joAll').textContent='모든 조';
+        setJoAllState('done');
+        setJoAllTitle('모든 조 선택됨');
         yStage='num';renderYeonResult();
-        setMsg('모든 조 선택! 이제 6자리 번호를 포착하세요','#FF9F43');
+        setMsg('모든 조 선택! 이제 6자리 번호를 뽑을 차례예요','#FF9F43');
         setTimeout(startTick,300);
     });
     function confirmYNum(n){document.getElementById('yn'+n).className='ycell done';}
@@ -503,14 +533,14 @@
     document.getElementById('btnCatch').addEventListener('click',function(){
         if(done||!running||!canCatch)return;stopTick();
         if(mode==='yeon'){
-            if(yStage==='jo'){yJo=yCurJo;confirmJo(yJo);yStage='num';renderYeonResult();setMsg('조 확정! 이제 6자리 번호를 포착하세요','#FF9F43');setTimeout(startTick,300);}
+            if(yStage==='jo'){yJo=yCurJo;confirmJo(yJo);yStage='num';renderYeonResult();setMsg('조 확정! 이제 6자리 번호를 뽑을 차례예요','#FF9F43');setTimeout(startTick,300);}
             else{yNums.push(yCurNum);confirmYNum(yCurNum);renderYeonResult();if(yNums.length>=6){done=true;setMsg('완성! 오늘의 행운 번호가 확정됐어요','#FF9F43');}else{setMsg((6-yNums.length)+'자리 남았어요!','#FF9F43');setTimeout(startTick,200);}}
         }else{lLines.push(lCurHot.slice());drawLottoGrid([]);renderLottoResult();if(lLines.length>=5){done=true;setMsg('5줄 완성! 오늘의 행운 번호가 확정됐어요','#FF9F43');}else{setMsg((5-lLines.length)+'줄 남았어요!','#FF9F43');setTimeout(startTick,300);}}
     });
     document.getElementById('btnR').addEventListener('click',resetAll);
     document.getElementById('tabY').addEventListener('click',function(){if(mode==='yeon')return;mode='yeon';this.classList.add('on');document.getElementById('tabL').classList.remove('on');document.getElementById('yeonUI').style.display='block';document.getElementById('lottoUI').style.display='none';renderYeonResultVisible(false);resetAll();});
     document.getElementById('tabL').addEventListener('click',function(){if(mode==='lotto')return;mode='lotto';this.classList.add('on');document.getElementById('tabY').classList.remove('on');document.getElementById('yeonUI').style.display='none';document.getElementById('lottoUI').style.display='block';setupLottoCanvas();renderYeonResultVisible(true);resetAll();});
-    function resetAll(){stopTick();done=false;yJo=null;yNums=[];yStage='jo';yCurJo=1;yCurNum=0;lLines=[];lCurHot=[];canCatch=false;resetJoCells();resetNumCells();document.getElementById('joAll').textContent='모든 조 선택';if(mode==='lotto')drawLottoGrid([]);renderYeonResult();renderLottoResult();setMsg('포착 버튼을 눌러 번호를 확정하세요');startTick();}
+    function resetAll(){stopTick();done=false;yJo=null;yNums=[];yStage='jo';yCurJo=1;yCurNum=0;lLines=[];lCurHot=[];canCatch=false;resetJoCells();resetNumCells();setJoAllTitle('모든 조 선택');if(mode==='lotto')drawLottoGrid([]);renderYeonResult();renderLottoResult();setMsg('«지금!» 버튼을 눌러 번호를 확정하세요');startTick();}
     renderYeonResultVisible(false);resetAll();
 
     // ===== 임베드될 때 부모에게 콘텐츠 높이 알리기 =====
