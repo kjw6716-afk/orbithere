@@ -620,14 +620,13 @@
                 var inp = document.getElementById('nicknameInput');
                 if(inp) inp.focus();
             }
-            // Lucky Orbit은 탭/줄 수에 따라 높이가 변해서 콘텐츠에 맞춰 늘려줌
-            if(ev.data && ev.data.orbit === 'luckyHeight'){
+            // 임베드된 페이지들은 탭·필터·줄 수에 따라 높이가 변한다.
+            // 고정 높이로 두면 iframe 안에 스크롤바가 따로 생기므로 콘텐츠에 맞춰 늘려준다.
+            // 상한을 두는 건 잘못된 값이 와도 페이지가 끝없이 길어지지 않게 하기 위함이다.
+            var frameOf = { luckyHeight: 'luckyFrame', fortuneHeight: 'fortuneFrame', skyHeight: 'skyFrame' };
+            if(ev.data && frameOf[ev.data.orbit]){
                 var h = parseInt(ev.data.height, 10);
-                if(h > 0 && h < 4000) document.getElementById('luckyFrame').style.height = h + 'px';
-            }
-            if(ev.data && ev.data.orbit === 'fortuneHeight'){
-                var fh = parseInt(ev.data.height, 10);
-                if(fh > 0 && fh < 4000) document.getElementById('fortuneFrame').style.height = fh + 'px';
+                if(h > 0 && h < 8000) document.getElementById(frameOf[ev.data.orbit]).style.height = h + 'px';
             }
         });
 

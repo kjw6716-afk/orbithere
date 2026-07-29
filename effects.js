@@ -101,7 +101,10 @@
 
     function burst(x, y) {
         // 젤리 별 — 위로 살짝 던져진 뒤 중력으로 떨어지며 회전
-        var n = 7 + Math.floor(Math.random() * 5);
+        // 개수는 한 번 줄였다(7~11 → 4~7). 연타하게 되는 버튼들이 있어서
+        // 원래 값이면 화면이 별로 뒤덮였다. 터질 때의 인상은 개수보다
+        // 흩어지는 속도와 반짝임이 만들기 때문에 줄여도 심심해지지 않는다.
+        var n = 4 + Math.floor(Math.random() * 4);
         for (var i = 0; i < n; i++) {
             var ang = Math.random() * Math.PI * 2;
             var spd = 2.2 + Math.random() * 3.4;
@@ -117,7 +120,7 @@
             });
         }
         // 잔 반짝이 — 가볍게 떠다니며 깜빡임
-        for (var j = 0; j < 6; j++) {
+        for (var j = 0; j < 4; j++) {
             var a2 = Math.random() * Math.PI * 2;
             var s2 = 1 + Math.random() * 2.4;
             parts.push({

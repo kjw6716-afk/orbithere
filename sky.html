@@ -766,6 +766,29 @@
     renderNext();
     renderMoon();
     renderTimeline();
+
+    // ===== 임베드될 때 부모에게 콘텐츠 높이 알리기 =====
+    // lucky·fortune과 같은 방식. 이게 없으면 메인의 iframe이 고정 620px에 머물러
+    // 2000px가 넘는 달력이 그 안에서 따로 스크롤된다 — 페이지 안에 스크롤바가
+    // 하나 더 생기고 내용이 빽빽해 보이는 원인이었다.
+    // 필터를 바꾸면 목록 길이가 달라지므로 ResizeObserver로 그 순간들을 잡는다.
+    (function(){
+        if(!document.documentElement.classList.contains('embed')) return;
+        var box = document.querySelector('.container');
+        var last = 0;
+        function report(){
+            var h = Math.ceil(box.getBoundingClientRect().height);
+            if(h && h !== last){
+                last = h;
+                parent.postMessage({ orbit:'skyHeight', height:h }, window.location.origin);
+            }
+        }
+        if(window.ResizeObserver) new ResizeObserver(report).observe(box);
+        else setInterval(report, 500); // 아주 옛 브라우저 폴백
+        window.addEventListener('load', report);
+        if(document.fonts && document.fonts.ready) document.fonts.ready.then(report);
+        report();
+    })();
     </script>
 </body>
 </html>
