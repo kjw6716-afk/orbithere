@@ -75,6 +75,43 @@
         .who .t1 { font-size: 13px; font-weight: 700; color: var(--accent); }
         .who .t2 { font-size: 11px; color: #94A3B8; margin-top: 2px; word-break: break-all; }
 
+        /* ===== 업데이트 기록 =====
+           원래 main.html#updates 해시로만 열리던 숨은 탭이었다.
+           숨김은 접근 제어가 아니라서 주소를 아는 사람은 누구나 볼 수 있었다.
+           운영자용 기록이므로 로그인해야 보이는 이곳으로 옮겼다. */
+        .log-panel { margin-top: 18px; }
+        .log-panel > h2 {
+            font-size: 12px; font-weight: 700; color: #94A3B8;
+            letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 12px;
+        }
+        .update-card {
+            background: var(--card-bg); border: 1px solid rgba(255,159,67,0.15);
+            border-radius: 20px; padding: 22px;
+        }
+        .timeline { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
+        .tl-item { display: flex; gap: 14px; padding-bottom: 22px; position: relative; }
+        .tl-item:last-child { padding-bottom: 0; }
+        .tl-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+        .tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 3px; box-shadow: 0 0 8px rgba(255,159,67,0.5); }
+        .tl-dot.old { background: #334155; box-shadow: none; }
+        .tl-line { width: 1px; flex: 1; margin-top: 4px; background: linear-gradient(to bottom, rgba(255,159,67,0.3), rgba(255,159,67,0.05)); }
+        .tl-item:last-child .tl-line { display: none; }
+        .tl-content { flex: 1; min-width: 0; }
+        .tl-version { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 3px; }
+        .tl-version.old { color: #64748B; }
+        .tl-date { font-size: 10px; color: #64748B; margin-bottom: 6px; }
+        .tl-title { font-size: 14px; font-weight: 600; color: #CBD5E1; margin-bottom: 4px; }
+        .tl-desc { font-size: 12px; color: #64748B; line-height: 1.5; }
+        .tl-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+        .tl-tag { font-size: 10px; padding: 2px 7px; border-radius: 6px; background: rgba(255,159,67,0.08); color: #FF9F43; font-weight: 500; }
+        .tl-tag.purple { background: rgba(159,122,234,0.1); color: #9F7AEA; }
+        .tl-tag.gray { background: rgba(100,116,139,0.15); color: #64748B; }
+
+        /* 기록이 길어서 로그인 카드보다 넓게 쓴다 */
+        @media (min-width: 720px) {
+            .wrap:has(.log-panel:not([style*="none"])) { max-width: 660px; }
+        }
+
         ::selection { background-color: #4FD1C5; color: #0F172A; }
     </style>
 </head>
@@ -122,6 +159,145 @@
 
             <div class="note" id="note"></div>
         </div>
+
+        <!-- 업데이트 기록 — 로그인한 관리자에게만 보인다 -->
+        <section class="log-panel" id="logPanel" style="display:none;">
+            <h2>📡 Update Notes</h2>
+            <div class="update-card">
+                <div class="timeline">
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version">v1.3 — LATEST</div>
+                            <div class="tl-date">2026. 07. 29</div>
+                            <div class="tl-title">🐾 반려동물 궤도 & 운세 점수제</div>
+                            <div class="tl-desc">광장에 <a href="lounge.html" style="color:var(--accent);">반려동물 궤도</a>가 열렸어요 — 강아지·고양이·물고기까지 우리 집 식구를 자랑하는 곳이에요. <a href="fortune.html" style="color:var(--accent);">오늘의 운세</a>는 애정·금전·직장운마다 점수와 등급이 붙어 한눈에 들어오고, 총운은 세 항목의 평균으로 계산돼요. 이 업데이트 기록은 관제실로 옮겼습니다.</div>
+                            <div class="tl-tags"><span class="tl-tag">궤도</span><span class="tl-tag">운세</span><span class="tl-tag gray">관제실</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v1.2</div>
+                            <div class="tl-date">2026. 07. 29</div>
+                            <div class="tl-title">💬 궤적에 답을 달 수 있어요</div>
+                            <div class="tl-desc">이제 <a href="lounge.html" style="color:var(--accent);">광장</a>의 각 궤적에 답을 남길 수 있어요. 글 아래 💬 버튼을 누르면 답이 펼쳐집니다. 내가 남긴 답은 언제든 지울 수 있고, 리액션만으로는 하기 어려웠던 이야기를 이어갈 수 있어요.</div>
+                            <div class="tl-tags"><span class="tl-tag">댓글</span><span class="tl-tag">광장</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v1.1</div>
+                            <div class="tl-date">2026. 07. 29</div>
+                            <div class="tl-title">💪 운동 궤도 개편 & 광장 새로고침</div>
+                            <div class="tl-desc">'새벽운동 궤도'가 <a href="lounge.html" style="color:var(--accent);">운동 궤도</a>로 넓어졌어요 — 러닝·헬스·홈트 전부 환영이에요. 채널마다 새로고침 버튼이 생겨서, 보던 궤적을 잃지 않고 새 글만 불러옵니다. '나' 표시는 닉네임이 아니라 기기 기준으로 바뀌어 같은 닉을 쓰는 다른 사람 글이 내 글로 보이지 않아요.</div>
+                            <div class="tl-tags"><span class="tl-tag">광장</span><span class="tl-tag">새로고침</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v1.0</div>
+                            <div class="tl-date">2026. 07. 28</div>
+                            <div class="tl-title">🌠 오늘의 운세 오픈</div>
+                            <div class="tl-desc">별자리·띠 운세가 <a href="fortune.html" style="color:var(--accent);">fortune.html</a>에 생겼어요. 총운 점수, 애정·금전·직장운, 행운의 숫자와 색까지 — 매일 자정 새 운세가 궤도에 올라옵니다.</div>
+                            <div class="tl-tags"><span class="tl-tag">운세</span><span class="tl-tag">검색 유입</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v0.9</div>
+                            <div class="tl-date">2026. 07. 28</div>
+                            <div class="tl-title">⭐ 공통 푸터 & 이용약관·개인정보처리방침</div>
+                            <div class="tl-desc">모든 페이지 하단에 반짝이는 별 서명이 담긴 푸터가 생겼어요. <a href="terms.html" style="color:var(--accent);">이용약관</a>과 <a href="privacy.html" style="color:var(--accent);">개인정보처리방침</a> 문서도 정식으로 마련됐어요.</div>
+                            <div class="tl-tags"><span class="tl-tag">푸터</span><span class="tl-tag">약관</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v0.8</div>
+                            <div class="tl-date">2026. 07. 28</div>
+                            <div class="tl-title">🎰 Lucky Orbit 독립 페이지로 분리</div>
+                            <div class="tl-desc">복권 추첨기가 <a href="lucky.html" style="color:var(--accent);">lucky.html</a> 주소를 갖게 됐어요. 사용법·FAQ가 붙었고, 검색으로도 찾아올 수 있어요. 여기 탭에서는 그대로 쓸 수 있어요.</div>
+                            <div class="tl-tags"><span class="tl-tag">Lucky Orbit</span><span class="tl-tag">검색 유입</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v0.7</div>
+                            <div class="tl-date">2026. 06. 13</div>
+                            <div class="tl-title">🎣 오늘의 떡밥 & 광장 채널 개편</div>
+                            <div class="tl-desc">매일 바뀌는 이야깃거리 '오늘의 떡밥' 탭 추가 — 누르면 광장 글쓰기로 바로 이어져요. 광장 궤도엔 채널 헤더가 생겼어요.</div>
+                            <div class="tl-tags"><span class="tl-tag">떡밥</span><span class="tl-tag">채널</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v0.6</div>
+                            <div class="tl-date">2026. 06. 13</div>
+                            <div class="tl-title">🦦 수달 마스코트 & 대시보드 개편</div>
+                            <div class="tl-desc">메인을 사이드바 + 패널 구조로 개편, 수달 마스코트 등장, 글 삭제 기능 추가.</div>
+                            <div class="tl-tags"><span class="tl-tag">레이아웃</span><span class="tl-tag">마스코트</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v0.5</div>
+                            <div class="tl-date">2026. 06. 12</div>
+                            <div class="tl-title">🧡 컬러 리뉴얼 & 광장 베타</div>
+                            <div class="tl-desc">주황 테마 전환, 광장 오픈, 이모지 교차 리액션, 파티클 이펙트 개선.</div>
+                            <div class="tl-tags"><span class="tl-tag">리브랜딩</span><span class="tl-tag">광장</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v0.4</div>
+                            <div class="tl-date">2026. 05. 25</div>
+                            <div class="tl-title">🧑‍🚀 궤도 진입 시스템 추가</div>
+                            <div class="tl-desc">닉네임 등록 후 나만의 프로필 카드로 궤도에 진입할 수 있어요.</div>
+                            <div class="tl-tags"><span class="tl-tag">프로필</span><span class="tl-tag">진입 시스템</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v0.3</div>
+                            <div class="tl-date">2026. 05. 22</div>
+                            <div class="tl-title">🎰 Lucky Orbit 미니게임 추가</div>
+                            <div class="tl-desc">카오스 알고리즘 기반 연금복권 / 로또 번호 생성기가 추가됐어요.</div>
+                            <div class="tl-tags"><span class="tl-tag">미니게임</span><span class="tl-tag">연금복권</span><span class="tl-tag">로또</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v0.2</div>
+                            <div class="tl-date">2026. 05. 21</div>
+                            <div class="tl-title">커뮤니티 메인 페이지 오픈</div>
+                            <div class="tl-desc">bento 그리드 레이아웃, 클릭 이펙트, 기본 카드 구성.</div>
+                            <div class="tl-tags"><span class="tl-tag purple">UI</span><span class="tl-tag gray">레이아웃</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v0.1</div>
+                            <div class="tl-date">2026. 05. 01</div>
+                            <div class="tl-title">Orbit 랜딩페이지 공개</div>
+                            <div class="tl-desc">meteor shower 애니메이션, orbiting star 로고, 슬로건 적용.</div>
+                            <div class="tl-tags"><span class="tl-tag gray">런칭</span><span class="tl-tag gray">랜딩</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -145,12 +321,18 @@
 
         // 로그인은 됐는데 admins에 없는 계정일 수 있다.
         // 그 경우 "로그인 성공"만 보여주면 왜 삭제 버튼이 없는지 알 수 없으므로 구분해서 알린다.
+        // 업데이트 기록은 관리자로 확인된 뒤에만 펼친다.
+        // (숨김이 접근 제어는 아니지만, 관제실 콘텐츠를 로그인 전에 보일 이유가 없다)
+        function showLog(on){ document.getElementById('logPanel').style.display = on ? '' : 'none'; }
+
         async function showSession(session){
             if(!session){
                 document.getElementById('loginView').style.display = '';
                 document.getElementById('doneView').style.display = 'none';
+                showLog(false);
                 return;
             }
+            showLog(false);   // 권한 확인 전까지는 닫아둔다
             document.getElementById('loginView').style.display = 'none';
             document.getElementById('doneView').style.display = '';
             document.getElementById('whoMail').textContent = session.user.email || session.user.id;
@@ -164,6 +346,7 @@
             }
             if(r.data === true){
                 document.getElementById('whoRole').textContent = '관리자';
+                showLog(true);
                 say('광장에서 모든 궤적과 답에 삭제 버튼이 보입니다.', 'ok');
             } else {
                 document.getElementById('whoRole').textContent = '일반 계정 (권한 없음)';

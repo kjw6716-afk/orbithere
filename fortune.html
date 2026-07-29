@@ -135,8 +135,25 @@
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
         }
         .fr-sec .si { font-size: 16px; line-height: 1.4; flex-shrink: 0; }
+        .fr-sec .sc { flex: 1; min-width: 0; }
         .fr-sec .st { font-size: 11px; font-weight: 700; color: var(--accent); margin-bottom: 2px; }
         .fr-sec .sb { font-size: 13px; color: #94A3B8; line-height: 1.7; }
+
+        /* 항목별 점수 — "무난하겠어요" 같은 두루뭉술한 문장만으로는
+           오늘이 좋은 건지 나쁜 건지 알 수 없다. 숫자와 등급을 먼저 보여주고
+           문장은 그 이유를 덧붙이는 역할로 돌린다. */
+        .st-row { display: flex; align-items: center; gap: 7px; margin-bottom: 3px; flex-wrap: wrap; }
+        .st-row .st { margin-bottom: 0; }
+        .grade {
+            display: inline-flex; align-items: baseline; gap: 4px;
+            font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px;
+            border: 1px solid currentColor; line-height: 1.5;
+        }
+        .grade .gn { font-size: 11px; font-variant-numeric: tabular-nums; }
+        .grade .gl { opacity: 0.85; }
+        /* 항목 점수 막대 — 총운 막대의 축소판 */
+        .sub-bar { height: 3px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; margin: 5px 0 7px; }
+        .sub-fill { height: 100%; width: 0; border-radius: 99px; transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
 
         .lucky-row { display: flex; gap: 8px; flex-wrap: wrap; }
         .lucky-chip {
@@ -228,9 +245,21 @@
                 </div>
                 <div class="fr-overall" id="frOverall"></div>
                 <div class="fr-sections">
-                    <div class="fr-sec"><span class="si">💗</span><div><div class="st">애정운</div><div class="sb" id="frLove"></div></div></div>
-                    <div class="fr-sec"><span class="si">💰</span><div><div class="st">금전운</div><div class="sb" id="frMoney"></div></div></div>
-                    <div class="fr-sec"><span class="si">💼</span><div><div class="st">직장 · 학업운</div><div class="sb" id="frWork"></div></div></div>
+                    <div class="fr-sec"><span class="si">💗</span><div class="sc">
+                        <div class="st-row"><span class="st">애정운</span><span class="grade" id="gLove"></span></div>
+                        <div class="sub-bar"><div class="sub-fill" id="bLove"></div></div>
+                        <div class="sb" id="frLove"></div>
+                    </div></div>
+                    <div class="fr-sec"><span class="si">💰</span><div class="sc">
+                        <div class="st-row"><span class="st">금전운</span><span class="grade" id="gMoney"></span></div>
+                        <div class="sub-bar"><div class="sub-fill" id="bMoney"></div></div>
+                        <div class="sb" id="frMoney"></div>
+                    </div></div>
+                    <div class="fr-sec"><span class="si">💼</span><div class="sc">
+                        <div class="st-row"><span class="st">직장 · 학업운</span><span class="grade" id="gWork"></span></div>
+                        <div class="sub-bar"><div class="sub-fill" id="bWork"></div></div>
+                        <div class="sb" id="frWork"></div>
+                    </div></div>
                     <div class="fr-sec"><span class="si" id="frSeasonIcon">🍂</span><div><div class="st" id="frSeasonTitle">계절의 기운</div><div class="sb" id="frSeason"></div></div></div>
                     <div class="fr-sec"><span class="si">🛰️</span><div><div class="st" id="frDayTitle">요일의 궤도 팁</div><div class="sb" id="frDay"></div></div></div>
                 </div>
@@ -256,6 +285,7 @@
 
             <h2>운세는 어떻게 만들어지나요?</h2>
             <p>오늘 날짜와 선택한 별자리(띠)를 씨앗값으로 하는 알고리즘이 총운·애정운·금전운·직장운 문구와 행운의 숫자·색·아이템을 조합합니다. 그래서 <strong>같은 날 같은 별자리라면 누가 봐도 같은 운세</strong>가 나오고, 자정이 지나면 새 운세로 바뀝니다.</p>
+            <p>애정운·금전운·직장운에는 <strong>항목별 점수와 등급</strong>(90점 이상 아주 좋음, 80점대 좋음, 70점대 보통, 그 아래 조심)이 함께 표시됩니다. 맨 위의 <strong>총운 점수는 이 세 항목의 평균</strong>이라, 총운만 높고 세부 항목은 시큰둥한 식으로 어긋나지 않습니다.</p>
             <p>통계도 예언도 아니에요. 아침에 한 번 보고 "오늘은 이런 하루로 만들어볼까" 하는 가벼운 나침반으로 즐겨주세요.</p>
 
             <h2>자주 묻는 질문</h2>
@@ -537,6 +567,31 @@
 
     function listOf(m){ return m === 'zodiac' ? ZODIAC : ANIMAL; }
 
+    // 점수를 등급으로. 경계는 항목 점수 범위(55~99)에 맞춰 네 칸으로 나눴다.
+    // 전부 좋게만 나오면 점수를 보는 재미가 없어서 아래쪽 칸도 남겨둔다.
+    var GRADES = [
+        { min: 90, label: '아주 좋음', color: '#4FD1C5' },
+        { min: 80, label: '좋음',      color: '#FF9F43' },
+        { min: 70, label: '보통',      color: '#94A3B8' },
+        { min: 0,  label: '조심',      color: '#FC8181' }
+    ];
+    function gradeOf(n){
+        for (var i = 0; i < GRADES.length; i++) if (n >= GRADES[i].min) return GRADES[i];
+        return GRADES[GRADES.length - 1];
+    }
+    // 배지와 막대를 함께 칠한다. 막대는 총운 막대와 같은 방식으로
+    // 0에서 시작해 늘어나야 눈에 들어오므로 다음 프레임에 폭을 준다.
+    function setGrade(badgeId, barId, n){
+        var g = gradeOf(n);
+        var b = document.getElementById(badgeId);
+        b.style.color = g.color;
+        b.innerHTML = '<span class="gn">' + n + '</span><span class="gl">' + g.label + '</span>';
+        var bar = document.getElementById(barId);
+        bar.style.width = '0%';
+        bar.style.background = g.color;
+        setTimeout(function(){ bar.style.width = n + '%'; }, 60);
+    }
+
     function renderGrid(){
         var list = listOf(mode);
         var cur = picked[mode];
@@ -560,7 +615,13 @@
         var rnd = mulberry32(todayKey() * 100 + idx + (mode === 'animal' ? 50 : 0));
         var pick = function(arr){ return arr[Math.floor(rnd() * arr.length)]; };
 
-        var score = 60 + Math.floor(rnd() * 40); // 60~99
+        // 항목별 점수를 먼저 뽑고 총운은 그 평균으로 정한다.
+        // 예전에는 총운이 따로 굴러가서 "총운 90인데 세 항목이 다 시큰둥"한 날이
+        // 나왔다. 평균으로 묶으면 카드 안의 숫자들이 서로 어긋나지 않는다.
+        var sLove  = 55 + Math.floor(rnd() * 45);   // 55~99
+        var sMoney = 55 + Math.floor(rnd() * 45);
+        var sWork  = 55 + Math.floor(rnd() * 45);
+        var score  = Math.round((sLove + sMoney + sWork) / 3);
         var col = pick(COLORS);
         var d = new Date();
 
@@ -572,6 +633,9 @@
         document.getElementById('frLove').textContent = pick(LOVE);
         document.getElementById('frMoney').textContent = pick(MONEY);
         document.getElementById('frWork').textContent = pick(WORK);
+        setGrade('gLove',  'bLove',  sLove);
+        setGrade('gMoney', 'bMoney', sMoney);
+        setGrade('gWork',  'bWork',  sWork);
         document.getElementById('frNum').textContent = 1 + Math.floor(rnd() * 45);
         document.getElementById('frColor').textContent = col.n;
         document.getElementById('frColorDot').style.background = col.c;
@@ -617,13 +681,22 @@
     document.getElementById('tabZodiac').addEventListener('click', function(){ switchMode('zodiac'); });
     document.getElementById('tabAnimal').addEventListener('click', function(){ switchMode('animal'); });
 
+    // 배지의 "82" + "좋음"을 한 줄 텍스트로 (복사용)
+    function gradeText(id){
+        var el = document.getElementById(id);
+        var n = el.querySelector('.gn'), l = el.querySelector('.gl');
+        return n && l ? n.textContent + '점 ' + l.textContent : '';
+    }
+
     document.getElementById('btnShare').addEventListener('click', function(){
         var name = document.getElementById('frName').textContent;
         var text = '🌠 ' + name + ' (' + document.getElementById('frScore').textContent + '점)\n' +
                    document.getElementById('frOverall').textContent + '\n' +
-                   '💗 ' + document.getElementById('frLove').textContent + '\n' +
-                   '💰 ' + document.getElementById('frMoney').textContent + '\n' +
-                   '💼 ' + document.getElementById('frWork').textContent + '\n' +
+                   // 항목마다 "82 좋음" 형태의 점수를 앞에 붙인다 —
+                   // 붙여넣기로 옮겨 갔을 때도 화면과 같은 정보가 남게.
+                   '💗 애정운 ' + gradeText('gLove')  + ' — ' + document.getElementById('frLove').textContent + '\n' +
+                   '💰 금전운 ' + gradeText('gMoney') + ' — ' + document.getElementById('frMoney').textContent + '\n' +
+                   '💼 직장운 ' + gradeText('gWork')  + ' — ' + document.getElementById('frWork').textContent + '\n' +
                    document.getElementById('frSeasonIcon').textContent + ' ' + document.getElementById('frSeason').textContent + '\n' +
                    '🛰️ ' + document.getElementById('frDay').textContent + '\n' +
                    '행운의 숫자 ' + document.getElementById('frNum').textContent +
