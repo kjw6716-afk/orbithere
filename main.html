@@ -153,6 +153,18 @@
         }
         .btn-outline:hover { background: rgba(255,159,67,0.08); border-color: var(--accent); }
 
+        /* 닉네임 베타 안내 — 닉을 정하는 바로 그 자리에서 읽히도록 카드 안에 둔다.
+           따로 떼어 두면 정작 이름을 입력할 때는 안 보인다.
+           색은 사이트에서 베타 표시에 쓰는 보라(광장의 β 배지, 업데이트 태그)와 맞췄다. */
+        .join-note {
+            margin: 14px 0 0; padding: 10px 12px;
+            background: rgba(159,122,234,0.07);
+            border: 1px solid rgba(159,122,234,0.2);
+            border-radius: 10px;
+            font-size: 11.5px; line-height: 1.65; color: #94A3B8;
+        }
+        .join-note b { color: #9F7AEA; font-weight: 700; }
+
         /* 대화 광장 iframe */
         .lounge-frame {
             width: 100%; height: calc(100vh - 152px);
@@ -345,6 +357,12 @@
                                 <p style="font-size:13px;color:#64748B;margin:0;">이미 궤도에 진입해 있어요!</p>
                                 <button class="btn-outline" onclick="location.href='profile.html'">내 프로필 보기</button>
                             </div>
+                            <!-- 진입 전·후 모두 보이도록 폼 바깥에 둔다 -->
+                            <p class="join-note">
+                                <b>β 베타</b> — 닉네임은 아직 먼저 쓴 사람이 임자가 되는 방식이 아니에요.
+                                같은 이름을 다른 분이 쓸 수도 있습니다.
+                                대신 내가 남긴 궤적과 답은 <b>이 기기에서만</b> 지울 수 있어요.
+                            </p>
                         </div>
 
                         <!-- 실제 광장 데이터로 채워진다 — 글이 없으면 카드 자체를 숨긴다 -->
