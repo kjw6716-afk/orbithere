@@ -107,6 +107,55 @@
         .tl-tag.purple { background: rgba(159,122,234,0.1); color: #9F7AEA; }
         .tl-tag.gray { background: rgba(100,116,139,0.15); color: #64748B; }
 
+        /* ===== 신고함 ===== */
+        .rq-head { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; }
+        .rq-head h2 {
+            font-size: 12px; font-weight: 700; color: #94A3B8;
+            letter-spacing: 0.06em; text-transform: uppercase; margin: 0;
+        }
+        .rq-count {
+            font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 99px;
+            background: rgba(252,129,129,0.12); color: #FC8181; border: 1px solid rgba(252,129,129,0.3);
+        }
+        .rq-count.zero { background: rgba(79,209,197,0.1); color: var(--mint); border-color: rgba(79,209,197,0.3); }
+        .rq-empty { font-size: 12px; color: #64748B; padding: 14px 0; }
+        .rq-list { display: flex; flex-direction: column; gap: 10px; }
+        .rq-item {
+            background: var(--card-bg); border: 1px solid rgba(252,129,129,0.22);
+            border-radius: 14px; padding: 14px 16px;
+        }
+        .rq-item.handled { border-color: rgba(255,255,255,0.06); opacity: 0.55; }
+        .rq-top { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-bottom: 7px; }
+        .rq-reason {
+            font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px;
+            background: rgba(252,129,129,0.12); color: #FC8181;
+        }
+        .rq-item.handled .rq-reason { background: rgba(100,116,139,0.15); color: #64748B; }
+        .rq-kind { font-size: 10px; color: #64748B; }
+        .rq-dup { font-size: 10px; color: var(--accent); font-weight: 700; }
+        .rq-when { font-size: 10px; color: #64748B; margin-left: auto; }
+        .rq-nick { font-size: 11.5px; color: #94A3B8; font-weight: 600; margin-bottom: 4px; }
+        .rq-body {
+            font-size: 12.5px; color: #CBD5E1; line-height: 1.6;
+            white-space: pre-wrap; word-break: break-word;
+            max-height: 88px; overflow: auto;
+        }
+        .rq-gone { font-size: 12px; color: #64748B; font-style: normal; }
+        .rq-detail {
+            margin-top: 7px; font-size: 11.5px; color: #94A3B8; line-height: 1.55;
+            border-left: 2px solid rgba(255,159,67,0.25); padding-left: 9px;
+        }
+        .rq-acts { display: flex; gap: 6px; margin-top: 11px; }
+        .rq-acts button {
+            padding: 7px 12px; border-radius: 8px; cursor: pointer;
+            font-family: 'Pretendard'; font-size: 11.5px; font-weight: 700; transition: 0.2s;
+        }
+        .rq-del { background: rgba(252,129,129,0.1); color: #FC8181; border: 1px solid rgba(252,129,129,0.35); }
+        .rq-del:hover { background: rgba(252,129,129,0.2); }
+        .rq-ok { background: transparent; color: #94A3B8; border: 1px solid rgba(255,255,255,0.08); }
+        .rq-ok:hover { border-color: rgba(79,209,197,0.4); color: var(--mint); }
+        .rq-acts button:disabled { opacity: 0.4; cursor: default; }
+
         /* 기록이 길어서 로그인 카드보다 넓게 쓴다 */
         @media (min-width: 720px) {
             .wrap:has(.log-panel:not([style*="none"])) { max-width: 660px; }
@@ -160,6 +209,15 @@
             <div class="note" id="note"></div>
         </div>
 
+        <!-- 신고함 — 로그인한 관리자에게만 보인다 -->
+        <section class="log-panel" id="reportPanel" style="display:none;">
+            <div class="rq-head">
+                <h2>🚩 신고함</h2>
+                <span class="rq-count" id="rqCount">–</span>
+            </div>
+            <div id="rqList"></div>
+        </section>
+
         <!-- 업데이트 기록 — 로그인한 관리자에게만 보인다 -->
         <section class="log-panel" id="logPanel" style="display:none;">
             <h2>📡 Update Notes</h2>
@@ -168,7 +226,17 @@
                     <div class="tl-item">
                         <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
                         <div class="tl-content">
-                            <div class="tl-version">v1.3 — LATEST</div>
+                            <div class="tl-version">v1.4 — LATEST</div>
+                            <div class="tl-date">2026. 07. 29</div>
+                            <div class="tl-title">🚩 신고 기능</div>
+                            <div class="tl-desc">이제 <a href="lounge.html" style="color:var(--accent);">광장</a>의 궤적과 답에 신고 버튼이 생겼어요. 사유를 고르고 보내면 관제실 신고함으로 접수됩니다. 누가 신고했는지는 공개되지 않고, 같은 대상에 여러 신고가 들어오면 한 번에 처리돼요.</div>
+                            <div class="tl-tags"><span class="tl-tag">신고</span><span class="tl-tag gray">관제실</span></div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-left"><div class="tl-dot old"></div><div class="tl-line"></div></div>
+                        <div class="tl-content">
+                            <div class="tl-version old">v1.3</div>
                             <div class="tl-date">2026. 07. 29</div>
                             <div class="tl-title">🐾 반려동물 궤도 & 운세 점수제</div>
                             <div class="tl-desc">광장에 <a href="lounge.html" style="color:var(--accent);">반려동물 궤도</a>가 열렸어요 — 강아지·고양이·물고기까지 우리 집 식구를 자랑하는 곳이에요. <a href="fortune.html" style="color:var(--accent);">오늘의 운세</a>는 애정·금전·직장운마다 점수와 등급이 붙어 한눈에 들어오고, 총운은 세 항목의 평균으로 계산돼요. 이 업데이트 기록은 관제실로 옮겼습니다.</div>
@@ -323,7 +391,91 @@
         // 그 경우 "로그인 성공"만 보여주면 왜 삭제 버튼이 없는지 알 수 없으므로 구분해서 알린다.
         // 업데이트 기록은 관리자로 확인된 뒤에만 펼친다.
         // (숨김이 접근 제어는 아니지만, 관제실 콘텐츠를 로그인 전에 보일 이유가 없다)
-        function showLog(on){ document.getElementById('logPanel').style.display = on ? '' : 'none'; }
+        function showLog(on){
+            document.getElementById('logPanel').style.display = on ? '' : 'none';
+            document.getElementById('reportPanel').style.display = on ? '' : 'none';
+        }
+
+        // ===== 신고함 =====
+        var RQ_REASONS = { spam:'도배 · 광고', abuse:'욕설 · 비방', adult:'선정적 · 불쾌',
+                           privacy:'개인정보 노출', etc:'기타' };
+
+        function esc(s){
+            return String(s == null ? '' : s)
+                .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        }
+        function ago(iso){
+            var s = (Date.now() - new Date(iso).getTime()) / 1000;
+            if(s < 60) return '방금';
+            if(s < 3600) return Math.floor(s/60) + '분 전';
+            if(s < 86400) return Math.floor(s/3600) + '시간 전';
+            if(s < 86400*7) return Math.floor(s/86400) + '일 전';
+            return new Date(iso).toLocaleDateString('ko-KR');
+        }
+
+        async function loadReports(){
+            var list = document.getElementById('rqList');
+            var count = document.getElementById('rqCount');
+            var r = await sb.rpc('report_queue');
+            if(r.error){
+                count.textContent = '–';
+                list.innerHTML = '<div class="rq-empty">신고함을 불러오지 못했어요 — ' + esc(r.error.message) +
+                    '<br>migration_007_reports.sql이 아직 실행되지 않았을 수 있어요.</div>';
+                return;
+            }
+            var rows = r.data || [];
+            var open = rows.filter(function(x){ return !x.handled; });
+            count.textContent = open.length ? open.length + '건 미처리' : '미처리 없음';
+            count.className = 'rq-count' + (open.length ? '' : ' zero');
+
+            if(!rows.length){
+                list.innerHTML = '<div class="rq-empty">아직 접수된 신고가 없어요.</div>';
+                return;
+            }
+            list.innerHTML = '<div class="rq-list">' + rows.map(function(x){
+                return '<div class="rq-item' + (x.handled ? ' handled' : '') + '" data-id="' + esc(x.id) + '">' +
+                    '<div class="rq-top">' +
+                    '<span class="rq-reason">' + esc(RQ_REASONS[x.reason] || x.reason) + '</span>' +
+                    '<span class="rq-kind">' + (x.target_type === 'post' ? '궤적' : '답') +
+                    (x.orbit ? ' · ' + esc(x.orbit) : '') + '</span>' +
+                    (Number(x.dup_count) > 1 ? '<span class="rq-dup">신고 ' + x.dup_count + '건</span>' : '') +
+                    '<span class="rq-when">' + ago(x.created_at) + '</span>' +
+                    '</div>' +
+                    (x.target_exists
+                        ? '<div class="rq-nick">' + esc(x.nick) + '</div>' +
+                          '<div class="rq-body">' + esc(x.content) + '</div>'
+                        : '<div class="rq-gone">— 이미 삭제된 대상이에요</div>') +
+                    (x.detail ? '<div class="rq-detail">' + esc(x.detail) + '</div>' : '') +
+                    (x.handled ? '' :
+                        '<div class="rq-acts">' +
+                        (x.target_exists ? '<button class="rq-del" type="button" data-act="del">삭제하고 처리</button>' : '') +
+                        '<button class="rq-ok" type="button" data-act="ok">문제 없음 · 처리</button>' +
+                        '</div>') +
+                    '</div>';
+            }).join('') + '</div>';
+        }
+
+        // 목록이 매번 다시 그려지므로 위임으로 받는다
+        document.getElementById('rqList').addEventListener('click', async function(e){
+            var b = e.target.closest('button[data-act]');
+            if(!b || b.disabled) return;
+            var item = b.closest('.rq-item');
+            var del = b.getAttribute('data-act') === 'del';
+            if(del && !confirm('이 내용을 삭제하고 신고를 처리할까요? 되돌릴 수 없어요.')) return;
+
+            item.querySelectorAll('button').forEach(function(x){ x.disabled = true; });
+            b.textContent = '처리 중...';
+            var res = await sb.rpc('resolve_report', {
+                p_report_id: item.getAttribute('data-id'), p_delete_target: del
+            });
+            if(res.error){
+                item.querySelectorAll('button').forEach(function(x){ x.disabled = false; });
+                say('처리 실패 — ' + (res.error.message || ''), 'err');
+                return;
+            }
+            loadReports();
+        });
 
         async function showSession(session){
             if(!session){
@@ -347,6 +499,7 @@
             if(r.data === true){
                 document.getElementById('whoRole').textContent = '관리자';
                 showLog(true);
+                loadReports();
                 say('광장에서 모든 궤적과 답에 삭제 버튼이 보입니다.', 'ok');
             } else {
                 document.getElementById('whoRole').textContent = '일반 계정 (권한 없음)';

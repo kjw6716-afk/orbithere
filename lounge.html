@@ -301,6 +301,75 @@
             font-weight: 600; text-decoration: underline;
         }
 
+        /* ===== 신고 =====
+           눈에 잘 띄면 홧김에 누르고, 너무 숨기면 정작 필요할 때 못 찾는다.
+           평소엔 배경색과 가깝게 두고 hover에서만 또렷해지게 했다. */
+        .btn-report {
+            flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: transparent; border: 1px solid rgba(255,255,255,0.05);
+            color: #475569; cursor: pointer; transition: all 0.15s;
+        }
+        .btn-report:hover { border-color: rgba(252,129,129,0.4); color: #FC8181; }
+        .btn-report svg { width: 12px; height: 12px; }
+        .btn-report.done { color: var(--mint); border-color: rgba(79,209,197,0.35); cursor: default; }
+        .cmt .btn-report { width: 22px; height: 22px; border-radius: 6px; }
+        .cmt .btn-report svg { width: 10px; height: 10px; }
+
+        /* 신고 대화상자 */
+        .rp-back {
+            position: fixed; inset: 0; z-index: 60;
+            background: rgba(8,13,26,0.62); backdrop-filter: blur(3px);
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+            animation: rp-fade 0.15s ease;
+        }
+        @keyframes rp-fade { from { opacity: 0; } }
+        .rp-box {
+            width: 100%; max-width: 380px;
+            background: #151E36; border: 1px solid rgba(255,159,67,0.2);
+            border-radius: 18px; padding: 22px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: rp-in 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        @keyframes rp-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } }
+        .rp-box h3 { font-size: 15px; font-weight: 700; margin: 0 0 4px; color: var(--text-main); }
+        .rp-box .rp-sub { font-size: 11.5px; color: #64748B; line-height: 1.6; margin: 0 0 16px; }
+        .rp-quote {
+            font-size: 12px; color: #94A3B8; line-height: 1.6;
+            background: rgba(255,255,255,0.03); border-left: 2px solid rgba(255,159,67,0.3);
+            border-radius: 0 8px 8px 0; padding: 9px 12px; margin-bottom: 16px;
+            max-height: 72px; overflow: hidden; word-break: break-word;
+        }
+        .rp-reasons { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+        .rp-reason {
+            display: flex; align-items: center; gap: 9px; cursor: pointer;
+            padding: 9px 12px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.02);
+            font-size: 12.5px; color: #CBD5E1; transition: all 0.12s;
+        }
+        .rp-reason:hover { border-color: rgba(255,159,67,0.3); }
+        .rp-reason input { accent-color: var(--accent); flex-shrink: 0; margin: 0; }
+        .rp-reason.on { border-color: var(--accent); background: rgba(255,159,67,0.08); color: var(--accent); }
+        .rp-detail {
+            width: 100%; background: rgba(15,23,42,0.5);
+            border: 1px solid rgba(255,159,67,0.18); border-radius: 10px;
+            padding: 9px 12px; color: var(--text-main);
+            font-family: 'Pretendard'; font-size: 12.5px; outline: none;
+            margin-bottom: 14px; resize: vertical; min-height: 54px;
+        }
+        .rp-detail:focus { border-color: var(--accent); }
+        @media (max-width: 768px) { .rp-detail { font-size: 16px; } }
+        .rp-acts { display: flex; gap: 8px; }
+        .rp-acts button {
+            flex: 1; padding: 10px; border-radius: 10px; cursor: pointer;
+            font-family: 'Pretendard'; font-size: 12.5px; font-weight: 700; transition: 0.2s;
+        }
+        .rp-cancel { background: transparent; color: #94A3B8; border: 1px solid rgba(255,255,255,0.08); }
+        .rp-cancel:hover { color: var(--text-main); }
+        .rp-send { background: #FC8181; color: #2A0F0F; border: none; }
+        .rp-send:hover { opacity: 0.88; }
+        .rp-send:disabled { opacity: 0.35; cursor: default; }
+
         .empty-state {
             text-align: center; padding: 40px 0; color: #64748B; font-size: 13px;
         }
@@ -576,6 +645,8 @@
     function errHint(err){
         if(!err) return '알 수 없는 오류';
         var m = (err.message || '') + '';
+        if(/orbit_report_rate_limit/i.test(m))
+            return '신고를 너무 빠르게 보내고 있어요 — 잠시 후 다시 시도해주세요';
         if(/orbit_comment_rate_limit/i.test(m))
             return '답을 너무 빠르게 남기고 있어요 — 잠시 쉬었다가 다시 남겨주세요';
         if(/orbit_rate_limit/i.test(m))
@@ -624,6 +695,8 @@
                 '<div class="reaction-row"></div>' +
                 '<button class="btn-cmt' + (openThreads[p.id] ? ' on' : '') + '" type="button" title="댓글">' +
                 '<span>💬</span><span class="cn">' + (cmts[p.id] || []).length + '</span></button>' +
+                // 내 글은 신고할 이유가 없다 — 지우면 되니까
+                (isMine ? '' : reportBtn('post', p.id)) +
                 (canDelete ? '<button class="btn-del" title="궤적 삭제"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg></button>' : '') +
                 '</div>' +
                 '<div class="cmt-thread"' + (openThreads[p.id] ? '' : ' style="display:none;"') + '></div>';
@@ -643,6 +716,106 @@
             });
             // 새로고침 전에 펼쳐져 있던 스레드는 그대로 열어둔 채로 그린다
             if(openThreads[p.id]) renderThread(post, p);
+        });
+    }
+
+    // ===== 신고 =====
+    var REPORT_REASONS = [
+        { id:'spam',    label:'도배 · 광고' },
+        { id:'abuse',   label:'욕설 · 비방' },
+        { id:'adult',   label:'선정적이거나 불쾌한 내용' },
+        { id:'privacy', label:'개인정보 노출' },
+        { id:'etc',     label:'기타' }
+    ];
+    // 이 기기가 이번 세션에서 신고한 대상 — 버튼을 눌린 상태로 유지한다.
+    // 서버에도 (대상, 기기) 유니크 제약이 있어 중복은 어차피 막힌다.
+    var reported = {};
+
+    var FLAG_ICON =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+        'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></svg>';
+
+    function reportBtn(type, id){
+        var done = reported[type + ':' + id];
+        return '<button class="btn-report' + (done ? ' done' : '') + '" type="button"' +
+               ' data-rp-type="' + type + '" data-rp-id="' + escapeHtml(id) + '"' +
+               ' title="' + (done ? '신고함' : '신고하기') + '">' + FLAG_ICON + '</button>';
+    }
+
+    // 신고 버튼은 글·답 어디에나 있고 목록이 다시 그려지므로 문서 단위로 위임한다
+    document.addEventListener('click', function(e){
+        var btn = e.target.closest('.btn-report');
+        if(!btn || btn.classList.contains('done')) return;
+        e.stopPropagation();
+        var type = btn.getAttribute('data-rp-type');
+        var id   = btn.getAttribute('data-rp-id');
+        var box  = btn.closest(type === 'post' ? '.post' : '.cmt');
+        var body = box ? box.querySelector(type === 'post' ? '.post-body' : '.cmt-body') : null;
+        openReport(type, id, body ? body.textContent : '', btn);
+    });
+
+    function openReport(type, id, quote, btn){
+        var back = document.createElement('div');
+        back.className = 'rp-back';
+        back.innerHTML =
+            '<div class="rp-box" role="dialog" aria-modal="true" aria-label="신고하기">' +
+            '<h3>이 ' + (type === 'post' ? '궤적' : '답') + '을 신고할까요?</h3>' +
+            '<p class="rp-sub">운영자가 확인한 뒤 조치합니다. 신고한 사람이 누구인지는 공개되지 않아요.</p>' +
+            (quote ? '<div class="rp-quote">' + escapeHtml(quote.slice(0, 120)) +
+                     (quote.length > 120 ? '…' : '') + '</div>' : '') +
+            '<div class="rp-reasons">' +
+            REPORT_REASONS.map(function(r, i){
+                return '<label class="rp-reason' + (i === 0 ? ' on' : '') + '">' +
+                       '<input type="radio" name="rp" value="' + r.id + '"' + (i === 0 ? ' checked' : '') + '>' +
+                       escapeHtml(r.label) + '</label>';
+            }).join('') +
+            '</div>' +
+            '<textarea class="rp-detail" maxlength="200" placeholder="덧붙일 말이 있다면 적어주세요 (선택)"></textarea>' +
+            '<div class="rp-acts">' +
+            '<button class="rp-cancel" type="button">취소</button>' +
+            '<button class="rp-send" type="button">신고하기</button>' +
+            '</div></div>';
+        document.body.appendChild(back);
+
+        var close = function(){ back.remove(); document.removeEventListener('keydown', onKey); };
+        function onKey(ev){ if(ev.key === 'Escape') close(); }
+        document.addEventListener('keydown', onKey);
+        back.addEventListener('click', function(ev){ if(ev.target === back) close(); });
+        back.querySelector('.rp-cancel').addEventListener('click', close);
+
+        // 라디오 선택 표시
+        back.querySelectorAll('.rp-reason').forEach(function(l){
+            l.addEventListener('click', function(){
+                back.querySelectorAll('.rp-reason').forEach(function(x){ x.classList.remove('on'); });
+                l.classList.add('on');
+            });
+        });
+
+        var send = back.querySelector('.rp-send');
+        send.addEventListener('click', async function(){
+            if(!sb || send.dataset.busy) return;
+            send.dataset.busy = '1'; send.disabled = true; send.textContent = '보내는 중...';
+            var reason = back.querySelector('input[name="rp"]:checked').value;
+            var detail = back.querySelector('.rp-detail').value.trim();
+            var res = await sb.from('reports').insert({
+                target_type: type, target_id: id, reason: reason,
+                detail: detail || null, reporter_device: deviceId
+            });
+            delete send.dataset.busy;
+
+            // 유니크 제약(23505) = 이미 신고한 대상. 실패가 아니라 이미 접수된 상태다.
+            if(res.error && res.error.code !== '23505'){
+                send.disabled = false; send.textContent = '신고하기';
+                setStatus('신고 실패 — ' + errHint(res.error), true);
+                console.error(res.error);
+                return;
+            }
+            reported[type + ':' + id] = true;
+            if(btn){ btn.classList.add('done'); btn.title = '신고함'; }
+            close();
+            setStatus(res.error ? '이미 신고한 ' + (type === 'post' ? '궤적' : '답') + '이에요'
+                                : '신고를 접수했어요. 확인 후 조치할게요');
         });
     }
 
@@ -672,6 +845,7 @@
                     '</div>' +
                     '<div class="cmt-body">' + escapeHtml(c.text) + '</div>' +
                     '</div>' +
+                    (own ? '' : reportBtn('comment', c.id)) +
                     (canDel ? '<button class="btn-cmt-del" type="button" title="' +
                               (own ? '답 삭제' : '관리자 삭제') + '"' +
                               (own ? '' : ' data-admin="1"') + '>×</button>' : '') +
