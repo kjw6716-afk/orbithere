@@ -19,7 +19,9 @@
     var canvas = document.createElement('canvas');
     canvas.style.cssText = 'position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform-origin:0 0;';
     var ctx = canvas.getContext('2d');
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // 화면 배율. 브라우저 확대/축소를 바꾸면 값이 달라지므로 resize마다 다시 읽는다.
+    // (한 번만 읽어두면 축소한 채로 새로고침하지 않는 한 낡은 값이 계속 쓰인다)
+    var dpr = 1;
     var vv = window.visualViewport || null;
 
     // 보이는 영역: 크기(w,h), 레이아웃 뷰포트 기준 오프셋(x,y), 확대 배율(s)
@@ -41,8 +43,28 @@
         canvas.style.transform = 'translate(' + view.x + 'px,' + view.y + 'px)';
     }
 
+    // 캔버스를 통째로 비운다.
+    //
+    // clearRect는 "현재 변환"의 영향을 받는다. ctx에는 setTransform(dpr)이 걸려 있어서
+    // clearRect(0, 0, canvas.width, canvas.height)를 그대로 부르면
+    // 실제로 지워지는 범위가 canvas.width*dpr × canvas.height*dpr CSS픽셀이 된다.
+    //
+    // dpr이 1 이상이면 필요보다 넘치게 지워서 아무 문제가 없다. 그런데 브라우저를
+    // 100% 미만으로 축소하면 devicePixelRatio가 1보다 작아지고, 지워지는 영역이
+    // 화면의 dpr²까지 줄어든다. (85%면 약 70%) 그 바깥으로 날아간 파티클은
+    // 매 프레임 덮어 그려지기만 하고 지워지지 않아 잔상으로 눌어붙는다.
+    //
+    // 그래서 변환을 걷어낸 좌표계에서 지운다 — 배율이 얼마든 캔버스 전체가 확실히 비워진다.
+    function clearAll() {
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+    }
+
     function resize() {
         measure();
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
         canvas.style.width = view.w + 'px';
         canvas.style.height = view.h + 'px';
         canvas.width = Math.round(view.w * dpr);   // 대입 자체가 캔버스를 비운다
@@ -79,7 +101,10 @@
 
     function burst(x, y) {
         // 젤리 별 — 위로 살짝 던져진 뒤 중력으로 떨어지며 회전
-        var n = 7 + Math.floor(Math.random() * 5);
+        // 개수는 한 번 줄였다(7~11 → 4~7). 연타하게 되는 버튼들이 있어서
+        // 원래 값이면 화면이 별로 뒤덮였다. 터질 때의 인상은 개수보다
+        // 흩어지는 속도와 반짝임이 만들기 때문에 줄여도 심심해지지 않는다.
+        var n = 4 + Math.floor(Math.random() * 4);
         for (var i = 0; i < n; i++) {
             var ang = Math.random() * Math.PI * 2;
             var spd = 2.2 + Math.random() * 3.4;
@@ -95,7 +120,7 @@
             });
         }
         // 잔 반짝이 — 가볍게 떠다니며 깜빡임
-        for (var j = 0; j < 6; j++) {
+        for (var j = 0; j < 4; j++) {
             var a2 = Math.random() * Math.PI * 2;
             var s2 = 1 + Math.random() * 2.4;
             parts.push({
@@ -121,8 +146,8 @@
     function tick(now) {
         var dt = Math.min((now - last) / 16.67, 2); // 프레임 드랍 시에도 속도 일정
         last = now;
-        // 백킹 스토어 전체를 지운다 — 보이는 영역이 바뀌어도 잔상이 남지 않는다
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // 캔버스 전체를 지운다 — 보이는 영역이 바뀌어도 잔상이 남지 않는다
+        clearAll();
 
         for (var i = parts.length - 1; i >= 0; i--) {
             var p = parts[i];
@@ -176,7 +201,7 @@
         ctx.globalAlpha = 1;
 
         if (parts.length) requestAnimationFrame(tick);
-        else { running = false; ctx.clearRect(0, 0, canvas.width, canvas.height); }
+        else { running = false; clearAll(); }
     }
 
     function isTextField(el) {
