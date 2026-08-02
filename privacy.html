@@ -82,7 +82,7 @@
         <div class="hero">
             <h1>Orbit <strong>개인정보처리방침</strong></h1>
             <p>Orbit은 회원가입 없이 쓰는 서비스라 모으는 정보 자체가 아주 적어요. 그래도 무엇을, 왜, 어떻게 다루는지 투명하게 적어둡니다.</p>
-            <div class="effective">시행일: 2026년 7월 28일</div>
+            <div class="effective">시행일: 2026년 8월 2일 <span style="color:#64748B;">(직전 시행일: 2026년 7월 28일)</span></div>
         </div>
 
         <div class="doc">
@@ -91,8 +91,16 @@
             <table>
                 <tr><th>항목</th><th>내용</th><th>저장 위치</th></tr>
                 <tr><td>닉네임</td><td>이용자가 직접 입력한 별칭</td><td>이용자 브라우저(localStorage), 글 작성 시 데이터베이스</td></tr>
-                <tr><td>게시물</td><td>대화 광장에 작성한 글·리액션과 작성 시각</td><td>데이터베이스(Supabase)</td></tr>
+                <tr><td>게시물</td><td>작성한 글·답(댓글)·리액션과 작성 시각</td><td>데이터베이스(Supabase)</td></tr>
+                <tr><td><strong>기기 식별자</strong></td><td>브라우저가 처음 접속할 때 무작위로 만들어 저장하는 값(UUID). 실명·계정과 연결되지 않으며, 어느 기기에서 쓴 글인지만 구분합니다.</td><td>이용자 브라우저(localStorage), 글·답·리액션·신고 작성 시 데이터베이스</td></tr>
             </table>
+            <p>기기 식별자는 로그인 없이 아래 세 가지를 하기 위해 필요합니다.</p>
+            <ul>
+                <li><strong>내 글을 나만 지울 수 있게</strong> — 작성한 기기가 일치할 때만 삭제됩니다(<code>author_device</code>)</li>
+                <li><strong>리액션을 한 번만 세도록</strong> — 같은 기기가 같은 글에 같은 이모지를 중복으로 누르지 못하게 합니다(<code>device_id</code>)</li>
+                <li><strong>도배와 중복 신고를 막도록</strong> — 일정 시간 안의 작성 횟수를 제한하고, 같은 대상에 대한 반복 신고를 한 건으로 처리합니다(<code>reporter_device</code>)</li>
+            </ul>
+            <p>이 값은 <strong>다른 이용자에게 공개되지 않습니다.</strong> 리액션 정보는 개수와 "내가 눌렀는지" 여부만 계산해서 내려주고, 신고 내역은 운영자만 열람할 수 있습니다.</p>
             <ul>
                 <li>이름, 이메일, 전화번호, 위치정보 등 <strong>실명 기반 개인정보는 수집하지 않습니다.</strong></li>
                 <li>서비스 자체적으로 별도의 방문자 추적(analytics) 도구를 사용하지 않습니다.</li>
@@ -101,13 +109,15 @@
 
             <h2>2. 이용 목적</h2>
             <ul>
-                <li>닉네임: 커뮤니티 내 작성자 표시 및 프로필 기능 제공</li>
-                <li>게시물: 대화 광장 서비스 제공(모든 이용자에게 공개 표시)</li>
+                <li>닉네임: 커뮤니티 내 작성자 표시</li>
+                <li>게시물: 커뮤니티 서비스 제공(모든 이용자에게 공개 표시)</li>
+                <li>기기 식별자: 본인 게시물 삭제 권한 확인, 리액션 중복 방지, 도배·중복 신고 방지</li>
             </ul>
 
             <h2>3. 보관 및 파기</h2>
             <ul>
-                <li>닉네임(localStorage)은 이용자가 로그아웃하거나 브라우저 데이터를 지우면 즉시 삭제됩니다.</li>
+                <li>닉네임과 기기 식별자(localStorage)는 이용자가 브라우저 데이터를 지우면 즉시 삭제됩니다. 이 경우 그 전에 쓴 글에 대한 삭제 권한도 함께 사라집니다.</li>
+                <li>게시물에 함께 저장된 기기 식별자는 해당 게시물이 삭제될 때 같이 삭제됩니다.</li>
                 <li>게시물은 이용자가 직접 삭제하거나 운영자가 운영 정책에 따라 삭제할 때까지 보관됩니다.</li>
                 <li>베타 기간 중 서비스 개편으로 데이터가 일괄 초기화될 수 있습니다.</li>
             </ul>
@@ -116,8 +126,10 @@
             <p>서비스는 로그인 대신 브라우저 저장소에 아래 값을 저장합니다. 모두 이용자 기기에만 저장되며, 브라우저 설정에서 언제든 삭제할 수 있습니다.</p>
             <ul>
                 <li><code>orbit_nickname</code> — 닉네임</li>
-                <li><code>orbit_joindate</code>, <code>orbit_jointime</code> — 궤도 진입(가입) 시점</li>
+                <li><code>orbit_joindate</code>, <code>orbit_jointime</code> — 궤도 진입 시점</li>
+                <li><code>orbit_device_id</code> — 기기 식별자(무작위 UUID). 위 1항의 용도로 쓰입니다</li>
             </ul>
+            <p>지난 버전에서 쓰던 <code>orbit_zodiac</code>, <code>orbit_animal</code>(운세 페이지에서 고른 별자리·띠)이 브라우저에 남아 있을 수 있습니다. 해당 기능을 내리면서 더 이상 저장하거나 읽지 않으며, 브라우저 데이터를 지우면 함께 삭제됩니다.</p>
 
             <h2>5. 제3자 제공 및 처리 위탁</h2>
             <p>수집한 정보를 제3자에게 판매하거나 제공하지 않습니다. 다만 서비스 운영을 위해 아래 인프라를 이용합니다.</p>
@@ -134,8 +146,8 @@
             <h2>7. 이용자의 권리</h2>
             <ul>
                 <li>이용자는 본인이 작성한 게시물을 언제든 직접 삭제할 수 있습니다.</li>
-                <li>브라우저 데이터를 삭제하면 서비스에 저장된 닉네임 연결이 해제됩니다.</li>
-                <li>기타 삭제 요청이나 문의는 <a href="lounge.html">대화 광장</a>을 통해 남겨주세요.</li>
+                <li>브라우저 데이터를 삭제하면 닉네임과 기기 식별자가 함께 사라집니다. 다만 이미 올린 게시물은 그대로 남으며, 삭제 권한이 사라지므로 지우고 싶은 글은 미리 삭제하시거나 아래 경로로 요청해 주세요.</li>
+                <li>기타 삭제 요청이나 문의는 <a href="lounge.html">글 남기기</a>를 통해 남겨주세요.</li>
             </ul>
 
             <h2>8. 방침의 변경</h2>
@@ -150,10 +162,8 @@
     <footer class="site-footer">
         <div class="foot-links">
             <a href="main.html">커뮤니티 홈</a>
-            <a href="lounge.html">대화 광장</a>
-            <a href="lucky.html">로또 번호 생성기</a>
-            <a href="fortune.html">오늘의 운세</a>
             <a href="sky.html">밤하늘 달력</a>
+            <a href="lounge.html">글 남기기</a>
             <a href="terms.html">이용약관</a>
             <a href="privacy.html">개인정보처리방침</a>
         </div>

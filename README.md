@@ -1,23 +1,35 @@
 # 🪐 Orbit — 궤도에서 너를 만나다
 
-비슷한 궤도를 도는 사람들이 만나는 커뮤니티, [orbithere.com](https://orbithere.com)
+밤하늘을 같이 보는 사람들이 모이는 커뮤니티, [orbithere.com](https://orbithere.com)
 
 ## 페이지 구성
 
 | 페이지 | 설명 |
 |---|---|
 | `index.html` | 랜딩 — 유성우와 젤리별이 도는 입구 |
-| `main.html` | 커뮤니티 홈 — 사이드바 대시보드, 업데이트 기록 |
-| `lounge.html` | 대화 광장 — 궤도(채널)별 글·리액션 (Supabase) |
-| `lucky.html` | Lucky Orbit — 로또 6/45 · 연금복권 720+ 번호 추첨기 |
-| `fortune.html` | 오늘의 운세 — 별자리 · 띠 운세 |
-| `profile.html` | 프로필 — 궤도 진입(닉네임) 시스템 |
+| `main.html` | 커뮤니티 홈 — 밤하늘 달력 · 글 남기기 두 탭, 궤도 진입(닉네임) 대화상자 |
+| `sky.html` | 밤하늘 달력 — 유성우 · 일식 · 월식 · 슈퍼문 일정, 달 위상 계산 |
+| `lounge.html` | 글 남기기 — 궤도(채널)별 글·답·리액션·신고 (Supabase) |
+| `admin.html` | 관제실 — 운영자 로그인, 신고함, 업데이트 기록 |
 | `terms.html` / `privacy.html` | 이용약관 · 개인정보처리방침 |
+| `404.html` | 커스텀 404 |
+
+궤도(채널)는 **관측 후기 · 장비 · 실시간 하늘 · 질문** 네 개입니다.
+채널을 늘리거나 바꿀 때는 `lounge.html`의 `ORBIT_LIST`와 DB의 `posts_orbit_check` 제약을
+**같이** 고쳐야 합니다 (`supabase/migration_008_sky_orbits.sql` 참고).
+
+`_archive/`에는 사이트에서 내렸지만 지우지 않은 페이지가 있습니다 — `_archive/README.md` 참고.
 
 ## 기술
 
-- 프레임워크 없는 순수 HTML/CSS/JS 정적 사이트
+- 프레임워크 없는 순수 HTML/CSS/JS 정적 사이트 (빌드 스텝 없음)
 - 호스팅: GitHub Pages · 데이터베이스: Supabase · 폰트: Pretendard
+- 로그인 없음. 닉네임과 기기 식별자를 localStorage에 두고, 권한 판정은 전부 Postgres RLS가 합니다
+
+## Supabase 설정
+
+`supabase/` 안의 SQL을 **번호 순서대로** SQL Editor에서 실행하세요.
+`schema.sql`만 실행하면 채널 제약이 옛 값에 머물러 글 작성이 23514로 막힙니다.
 
 ---
 

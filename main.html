@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orbit | Community</title>
-    <meta name="description" content="우리의 관심사가 교차하고 새로운 궤도가 만들어지는 곳 — 오빗 커뮤니티.">
+    <meta name="description" content="밤하늘을 같이 보는 사람들이 모이는 곳 — 오빗 커뮤니티.">
     <meta name="theme-color" content="#0F172A">
     <link rel="canonical" href="https://orbithere.com/main.html">
     <link rel="icon" href="/favicon.ico" sizes="any">
@@ -16,7 +16,7 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Orbit">
     <meta property="og:title" content="Orbit | Community">
-    <meta property="og:description" content="우리의 관심사가 교차하고 새로운 궤도가 만들어지는 곳 — 오빗 커뮤니티.">
+    <meta property="og:description" content="밤하늘을 같이 보는 사람들이 모이는 곳 — 오빗 커뮤니티.">
     <meta property="og:image" content="https://orbithere.com/images/og.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -90,99 +90,116 @@
             background: rgba(255,159,67,0.15); display: flex; align-items: center; justify-content: center; font-size: 13px;
         }
 
+        /* 칩 옆 베타 안내 — 닉네임을 정하는 바로 그 버튼 옆에 둔다.
+           색은 사이트에서 베타 표시에 쓰는 보라(광장의 β 배지)와 맞췄다.
+           좁은 화면에서는 칩만 남기고 접는다 — 상단바가 두 줄로 밀리는 걸 막는다. */
+        .topbar-right { display: flex; align-items: center; gap: 10px; min-width: 0; }
+        .beta-hint {
+            font-size: 10.5px; line-height: 1.45; color: #64748B;
+            text-align: right; white-space: nowrap;
+        }
+        .beta-hint b { color: #9F7AEA; font-weight: 700; }
+
         .panel-wrap { padding: 30px 32px 60px; flex: 1; }
 
         /* 본문 칼럼은 콘텐츠 영역 가운데로.
            푸터가 가운데 정렬이라 칼럼을 왼쪽에 붙여두면 둘의 중심이 어긋난다. */
-        .home-grid, .lucky-wrap { margin-left: auto; margin-right: auto; }
+        .embed-wrap { margin-left: auto; margin-right: auto; }
         .panel { display: none; }
         .panel.on { display: block; animation: panel-in 0.25s ease; }
         @keyframes panel-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 공통 카드 */
-        .card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,159,67,0.15);
-            border-radius: 20px; padding: 26px;
-            transition: all 0.3s ease; position: relative;
-        }
-        .card:hover { border-color: rgba(255,159,67,0.4); }
-        .card-tag {
-            display: inline-block; padding: 4px 12px;
-            background: rgba(255,159,67,0.1); color: var(--accent);
-            border-radius: 99px; font-size: 0.75rem; font-weight: 600; margin-bottom: 16px;
-        }
-        .card-title { font-size: 1.3rem; font-weight: 600; margin: 0 0 10px; line-height: 1.4; }
-        .card-desc { color: #94A3B8; font-size: 0.95rem; line-height: 1.6; margin: 0; }
-
-        /* 홈 패널 */
-        .home-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; max-width: 940px; }
-        .home-grid .span2 { grid-column: 1 / -1; }
-
-        .join-form { display: flex; flex-direction: column; gap: 12px; margin-top: 18px; }
-        .join-form input {
-            background: rgba(15,23,42,0.5);
-            border: 1px solid rgba(255,159,67,0.3);
-            border-radius: 12px; padding: 12px 15px;
-            color: white; font-family: 'Pretendard'; outline: none;
-            transition: border-color 0.2s;
-        }
-        .join-form input:focus { border-color: var(--accent); }
-        /* 모바일에서 16px 미만이면 iOS Safari가 포커스 순간 페이지를 자동 확대한다 */
-        @media (max-width: 768px) { .join-form input { font-size: 16px; } }
-        .join-form input.error { border-color: #FC8181; }
-        .join-error { font-size: 11px; color: #FC8181; display: none; margin-top: -6px; }
-        .btn-mint {
-            background: var(--accent); color: #0F172A;
-            border: none; border-radius: 12px; padding: 12px;
-            font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Pretendard';
-        }
-        .btn-mint:hover { opacity: 0.9; transform: scale(0.98); }
-        .already-joined { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
-        .joined-badge {
-            display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px;
-            background: rgba(255,159,67,0.08); border: 1px solid rgba(255,159,67,0.2);
-            border-radius: 12px; font-size: 13px; color: var(--accent); font-weight: 600;
-        }
-        .btn-outline {
-            background: transparent; color: var(--accent);
-            border: 1.5px solid rgba(255,159,67,0.3);
-            border-radius: 12px; padding: 11px;
-            font-weight: 600; cursor: pointer; transition: 0.2s;
-            font-family: 'Pretendard'; font-size: 13px;
-        }
-        .btn-outline:hover { background: rgba(255,159,67,0.08); border-color: var(--accent); }
-
-        /* 닉네임 베타 안내 — 닉을 정하는 바로 그 자리에서 읽히도록 카드 안에 둔다.
-           따로 떼어 두면 정작 이름을 입력할 때는 안 보인다.
-           색은 사이트에서 베타 표시에 쓰는 보라(광장의 β 배지, 업데이트 태그)와 맞췄다. */
-        .join-note {
-            margin: 14px 0 0; padding: 10px 12px;
-            background: rgba(159,122,234,0.07);
-            border: 1px solid rgba(159,122,234,0.2);
-            border-radius: 10px;
-            font-size: 11.5px; line-height: 1.65; color: #94A3B8;
-        }
-        .join-note b { color: #9F7AEA; font-weight: 700; }
-
-        /* 대화 광장 iframe */
+        /* 글 남기기 iframe */
         .lounge-frame {
             width: 100%; height: calc(100vh - 152px);
             border: none; border-radius: 16px; background: transparent;
         }
 
-
-        /* ===== Lucky Orbit (lucky.html iframe 임베드) ===== */
-        .lucky-wrap { max-width: 680px; }
-        .lucky-frame {
+        /* ===== 임베드 패널 (sky.html iframe) ===== */
+        .embed-wrap { max-width: 680px; }
+        .embed-frame {
             width: 100%; height: 620px;
             border: none; border-radius: 16px; background: transparent;
         }
-        .lucky-out {
+        .embed-out {
             display: inline-block; margin-top: 10px; font-size: 12px;
             color: #64748B; text-decoration: none; transition: color 0.2s;
         }
-        .lucky-out:hover { color: var(--accent); }
+        .embed-out:hover { color: var(--accent); }
+
+        /* ===== 궤도 진입(닉네임) 대화상자 =====
+           홈 패널을 없애면서 닉네임을 정할 자리가 사라졌다.
+           상단바의 칩이 유일한 입구이므로, 칩을 누르면 여기서 정하도록 한다.
+           (광장에서 "궤도 진입하러 가기"를 눌러도 이 상자가 열린다) */
+        .join-back {
+            position: fixed; inset: 0; z-index: 200;
+            background: rgba(8,13,26,0.62); backdrop-filter: blur(3px);
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+            animation: join-fade 0.15s ease;
+        }
+        @keyframes join-fade { from { opacity: 0; } }
+        .join-box {
+            width: 100%; max-width: 360px;
+            background: #151E36; border: 1px solid rgba(255,159,67,0.2);
+            border-radius: 18px; padding: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: join-in 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        @keyframes join-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } }
+        .join-box h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 5px; color: var(--text-main); }
+        .join-box h2 span { color: var(--accent); }
+        .join-box .jb-sub { font-size: 11.5px; color: #64748B; line-height: 1.6; margin: 0 0 16px; }
+
+        .join-form { display: flex; flex-direction: column; gap: 10px; }
+        .join-form input {
+            background: rgba(15,23,42,0.5);
+            border: 1px solid rgba(255,159,67,0.3);
+            border-radius: 12px; padding: 12px 15px;
+            color: var(--text-main); font-family: 'Pretendard'; font-size: 14px;
+            outline: none; transition: border-color 0.2s;
+        }
+        .join-form input:focus { border-color: var(--accent); }
+        /* 모바일에서 16px 미만이면 iOS Safari가 포커스 순간 페이지를 자동 확대한다 */
+        @media (max-width: 768px) { .join-form input { font-size: 16px; } }
+        .join-form input.error { border-color: #FC8181; }
+        .join-error { font-size: 11px; color: #FC8181; display: none; margin-top: -4px; }
+        .btn-mint {
+            background: var(--accent); color: #0F172A;
+            border: none; border-radius: 12px; padding: 12px;
+            font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Pretendard';
+            font-size: 13.5px;
+        }
+        .btn-mint:hover { opacity: 0.9; transform: scale(0.98); }
+        .btn-outline {
+            background: transparent; color: #94A3B8;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 11px;
+            font-weight: 600; cursor: pointer; transition: 0.2s;
+            font-family: 'Pretendard'; font-size: 12.5px;
+        }
+        .btn-outline:hover { border-color: rgba(255,159,67,0.35); color: var(--accent); }
+        .btn-leave {
+            background: none; border: none; padding: 4px; margin-top: 2px;
+            color: #64748B; font-family: 'Pretendard'; font-size: 11.5px;
+            cursor: pointer; transition: color 0.2s;
+        }
+        .btn-leave:hover { color: #FC8181; }
+
+        .joined-badge {
+            display: flex; align-items: center; gap: 9px; padding: 11px 14px;
+            background: rgba(255,159,67,0.08); border: 1px solid rgba(255,159,67,0.2);
+            border-radius: 12px; font-size: 13.5px; color: var(--accent); font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .join-note {
+            margin: 14px 0 0; padding: 10px 12px;
+            background: rgba(159,122,234,0.07);
+            border: 1px solid rgba(159,122,234,0.2);
+            border-radius: 10px;
+            font-size: 11px; line-height: 1.65; color: #94A3B8;
+        }
+        .join-note b { color: #9F7AEA; font-weight: 700; }
 
         /* ===== 공통 푸터 ===== */
         /* 사이드바 옆 본문 폭을 그대로 쓰는 푸터 — 공통 푸터의 720px 제한을 푼다 */
@@ -262,10 +279,10 @@
 
             .topbar { padding: 16px 18px; }
             .panel-wrap { padding: 20px 18px 50px; }
-            .home-grid { grid-template-columns: 1fr; }
-            .game-inner { grid-template-columns: 1fr; }
-            .result-panel { padding-left: 0; border-left: none; border-top: 1px solid rgba(255,159,67,0.08); padding-top: 12px; }
             .lounge-frame { height: calc(100vh - 132px); }
+            /* 베타 안내는 칩 옆에 두면 상단바가 두 줄로 밀린다 — 좁은 화면에서는 접는다.
+               (같은 내용을 진입 대화상자 안에서 다시 보여주므로 정보가 사라지진 않는다) */
+            .beta-hint { display: none; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -285,16 +302,13 @@
         <aside class="sidebar">
             <a class="side-logo" href="index.html">ORBIT.</a>
             <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="sideNav" aria-label="메뉴 열기">
-                <span class="nt-ic" id="navToggleIc">🏠</span>
-                <span class="nt-lbl" id="navToggleLbl">홈</span>
+                <span class="nt-ic" id="navToggleIc">🔭</span>
+                <span class="nt-lbl" id="navToggleLbl">밤하늘 달력</span>
                 <span class="nt-arrow" aria-hidden="true"></span>
             </button>
             <nav class="side-nav" id="sideNav">
-                <button class="nav-item on" data-panel="home"><span class="ic">🏠</span><span class="lbl">홈</span></button>
-                <button class="nav-item" data-panel="lounge"><span class="ic">💬</span><span class="lbl">대화 광장</span></button>
-                <button class="nav-item" data-panel="lucky"><span class="ic">🎰</span><span class="lbl">Lucky Orbit</span></button>
-                <button class="nav-item" data-panel="fortune"><span class="ic">🌠</span><span class="lbl">오늘의 운세</span></button>
-                <button class="nav-item" data-panel="sky"><span class="ic">🔭</span><span class="lbl">밤하늘 달력</span></button>
+                <button class="nav-item on" data-panel="sky"><span class="ic">🔭</span><span class="lbl">밤하늘 달력</span></button>
+                <button class="nav-item" data-panel="lounge"><span class="ic">💬</span><span class="lbl">글 남기기</span></button>
             </nav>
         </aside>
         <div class="nav-scrim" id="navScrim"></div>
@@ -302,94 +316,36 @@
         <!-- 콘텐츠 -->
         <div class="content">
             <div class="topbar">
-                <h1 class="panel-title" id="panelTitle">Connect in <span>Orbit</span></h1>
-                <button class="profile-chip" id="profileChip" type="button">
-                    <span class="pc-av">🦦</span><span id="profileChipText">내 프로필 보기</span>
-                </button>
+                <h1 class="panel-title" id="panelTitle">밤하늘 <span>달력</span></h1>
+                <div class="topbar-right">
+                    <span class="beta-hint">
+                        <b>β 베타</b> — 닉네임은 이 기기에만<br>저장돼요. 선점되지 않습니다.
+                    </span>
+                    <button class="profile-chip" id="profileChip" type="button">
+                        <span class="pc-av">🦦</span><span id="profileChipText">궤도 진입하기</span>
+                    </button>
+                </div>
             </div>
 
             <div class="panel-wrap">
-                <!-- 홈 -->
-                <section class="panel on" id="panel-home">
-                    <div class="home-grid">
-                        <div class="card span2">
-                            <span class="card-tag">Notice</span>
-                            <h3 class="card-title">🚀 새로운 궤도에 합류하신 것을 환영합니다!</h3>
-                            <p class="card-desc">orbithere는 서로의 성장을 응원하고 지식을 공유하는 커뮤니티입니다.<br>가이드라인을 확인하고 첫 번째 궤적을 남겨보세요.</p>
-                        </div>
-
-                        <!-- Join Us 카드 -->
-                        <div class="card" id="joinCard">
-                            <span class="card-tag">Join Us</span>
-                            <h3 class="card-title" id="joinTitle">궤도 진입하기</h3>
-                            <div class="join-form" id="joinForm">
-                                <input type="text" id="nicknameInput" placeholder="닉네임을 입력하세요" maxlength="12">
-                                <div class="join-error" id="joinError"></div>
-                                <button class="btn-mint" id="joinBtn">참여 신청</button>
-                            </div>
-                            <div class="already-joined" id="alreadyJoined" style="display:none;">
-                                <div class="joined-badge">
-                                    <span>🌟</span>
-                                    <span id="joinedNickname">—</span>
-                                </div>
-                                <p style="font-size:13px;color:#64748B;margin:0;">이미 궤도에 진입해 있어요!</p>
-                                <button class="btn-outline" onclick="location.href='profile.html'">내 프로필 보기</button>
-                            </div>
-                            <!-- 진입 전·후 모두 보이도록 폼 바깥에 둔다 -->
-                            <p class="join-note">
-                                <b>β 베타</b> — 닉네임은 아직 먼저 쓴 사람이 임자가 되는 방식이 아니에요.
-                                같은 이름을 다른 분이 쓸 수도 있습니다.
-                                대신 내가 남긴 궤적과 답은 <b>이 기기에서만</b> 지울 수 있어요.
-                            </p>
-                        </div>
-
-                        <!-- 실제 광장 데이터로 채워진다 — 글이 없으면 카드 자체를 숨긴다 -->
-                        <div class="card" id="trendCard" style="display:none;">
-                            <span class="card-tag" id="trendTag">🔥 지금 뜨는 궤적</span>
-                            <h3 class="card-title" id="trendTitle">가장 뜨거운 궤적</h3>
-                            <p class="card-desc" id="trendDesc"></p>
-                            <button class="btn-outline" id="trendGo" style="margin-top:16px;">광장에서 보기</button>
-                        </div>
+                <!-- 밤하늘 달력 — 첫 화면 -->
+                <section class="panel on" id="panel-sky">
+                    <div class="embed-wrap">
+                        <iframe class="embed-frame" id="skyFrame" title="밤하늘 달력 — 유성우 · 일식 · 월식 일정" data-src="sky.html?embed=1"></iframe>
+                        <a class="embed-out" href="sky.html">전체 화면으로 열기 · 관측 방법과 FAQ 보기 →</a>
                     </div>
                 </section>
 
-                <!-- 대화 광장 -->
+                <!-- 글 남기기 -->
                 <section class="panel" id="panel-lounge">
-                    <iframe class="lounge-frame" id="loungeFrame" title="대화 광장" data-src="lounge.html?embed=1"></iframe>
+                    <iframe class="lounge-frame" id="loungeFrame" title="글 남기기" data-src="lounge.html?embed=1"></iframe>
                 </section>
-
-                <!-- Lucky Orbit -->
-                <section class="panel" id="panel-lucky">
-                    <div class="lucky-wrap">
-                        <iframe class="lucky-frame" id="luckyFrame" title="Lucky Orbit — 로또 번호 생성기" data-src="lucky.html?embed=1"></iframe>
-                        <a class="lucky-out" href="lucky.html">전체 화면으로 열기 · 사용법과 FAQ 보기 →</a>
-                    </div>
-                </section>
-
-                <!-- 오늘의 운세 -->
-                <section class="panel" id="panel-fortune">
-                    <div class="lucky-wrap">
-                        <iframe class="lucky-frame" id="fortuneFrame" title="오늘의 운세 — 별자리 · 띠 운세" data-src="fortune.html?embed=1"></iframe>
-                        <a class="lucky-out" href="fortune.html">전체 화면으로 열기 · 운세 보는 법과 FAQ 보기 →</a>
-                    </div>
-                </section>
-
-                <!-- 밤하늘 달력 -->
-                <section class="panel" id="panel-sky">
-                    <div class="lucky-wrap">
-                        <iframe class="lucky-frame" id="skyFrame" title="밤하늘 달력 — 유성우 · 일식 · 월식 일정" data-src="sky.html?embed=1"></iframe>
-                        <a class="lucky-out" href="sky.html">전체 화면으로 열기 · 관측 방법과 FAQ 보기 →</a>
-                    </div>
-                </section>
-
             </div>
 
             <footer class="site-footer">
                 <div class="foot-links">
-                    <a href="lounge.html">대화 광장</a>
-                    <a href="lucky.html">로또 번호 생성기</a>
-                    <a href="fortune.html">오늘의 운세</a>
                     <a href="sky.html">밤하늘 달력</a>
+                    <a href="lounge.html">글 남기기</a>
                     <a href="terms.html">이용약관</a>
                     <a href="privacy.html">개인정보처리방침</a>
                 </div>
@@ -402,17 +358,49 @@
         </div>
     </div>
 
+    <!-- 궤도 진입(닉네임) 대화상자 — 기본은 닫힘. JS가 열고 닫는다. -->
+    <div class="join-back" id="joinBack" style="display:none;">
+        <div class="join-box" role="dialog" aria-modal="true" aria-labelledby="joinTitle">
+            <h2 id="joinTitle">궤도 <span>진입하기</span></h2>
+            <p class="jb-sub" id="joinSub">닉네임만 정하면 바로 글을 남길 수 있어요. 가입도 로그인도 없습니다.</p>
+
+            <!-- 미진입 -->
+            <div id="joinNew">
+                <div class="join-form">
+                    <input type="text" id="nicknameInput" placeholder="닉네임을 입력하세요" maxlength="12" autocomplete="off">
+                    <div class="join-error" id="joinError"></div>
+                    <button class="btn-mint" id="joinBtn" type="button">궤도 진입</button>
+                </div>
+            </div>
+
+            <!-- 진입 완료 -->
+            <div id="joinDone" style="display:none;">
+                <div class="joined-badge">
+                    <span id="joinedAvatar">🌟</span>
+                    <span id="joinedNickname">—</span>
+                </div>
+                <button class="btn-outline" id="btnRename" type="button" style="width:100%;">닉네임 바꾸기</button>
+                <button class="btn-leave" id="btnLeave" type="button" style="width:100%;">이 기기에서 닉네임 지우기</button>
+            </div>
+
+            <p class="join-note">
+                <b>β 베타</b> — 닉네임은 아직 먼저 쓴 사람이 임자가 되는 방식이 아니에요.
+                같은 이름을 다른 분이 쓸 수도 있습니다.
+                대신 내가 남긴 궤적과 답은 <b>이 기기에서만</b> 지울 수 있어요.
+            </p>
+            <button class="btn-outline" id="joinClose" type="button" style="width:100%;margin-top:12px;">닫기</button>
+        </div>
+    </div>
+
     <script>
     // ===== 패널 전환 =====
     (function(){
         var TITLES = {
-            home:    'Connect in <span>Orbit</span>',
-            lounge:  '대화 <span>광장</span>',
-            lucky:   '<span>Lucky</span> Orbit',
-            fortune: '오늘의 <span>운세</span>',
-            sky:     '밤하늘 <span>달력</span>'
+            sky:    '밤하늘 <span>달력</span>',
+            lounge: '글 <span>남기기</span>'
         };
-        var loungeLoaded = false, luckyLoaded = false, fortuneLoaded = false, skyLoaded = false;
+        var DEFAULT_PANEL = 'sky';
+        var loungeLoaded = false, skyLoaded = false;
 
         // ===== 모바일 탭 메뉴 (버튼 → 탭 목록 펼치기) =====
         var sidebar   = document.querySelector('.sidebar');
@@ -436,13 +424,11 @@
         });
 
         function switchPanel(name){
-            if(!TITLES[name]) name = 'home';
-            var found = false;
+            if(!TITLES[name]) name = DEFAULT_PANEL;
             document.querySelectorAll('.nav-item').forEach(function(b){
                 var on = b.getAttribute('data-panel') === name;
                 b.classList.toggle('on', on);
                 if(on){
-                    found = true;
                     document.getElementById('navToggleIc').textContent  = b.querySelector('.ic').textContent;
                     document.getElementById('navToggleLbl').textContent = b.querySelector('.lbl').textContent;
                 }
@@ -452,21 +438,11 @@
                 p.classList.toggle('on', p.id === 'panel-' + name);
             });
             document.getElementById('panelTitle').innerHTML = TITLES[name];
-            // 광장·Lucky Orbit은 처음 열 때만 iframe 로드 (지연 로딩)
+            // 처음 열 때만 iframe 로드 (지연 로딩)
             if(name === 'lounge' && !loungeLoaded){
                 var fr = document.getElementById('loungeFrame');
                 fr.src = fr.getAttribute('data-src');
                 loungeLoaded = true;
-            }
-            if(name === 'lucky' && !luckyLoaded){
-                var lf = document.getElementById('luckyFrame');
-                lf.src = lf.getAttribute('data-src');
-                luckyLoaded = true;
-            }
-            if(name === 'fortune' && !fortuneLoaded){
-                var ff = document.getElementById('fortuneFrame');
-                ff.src = ff.getAttribute('data-src');
-                fortuneLoaded = true;
             }
             if(name === 'sky' && !skyLoaded){
                 var sf = document.getElementById('skyFrame');
@@ -480,157 +456,142 @@
             if(!btn) return;
             switchPanel(btn.getAttribute('data-panel'));
         });
-        window.addEventListener('hashchange', function(){ switchPanel(location.hash.slice(1)); });
+        window.addEventListener('hashchange', function(){
+            // #join은 패널이 아니라 대화상자를 여는 신호다 (광장에서 단독 페이지로 넘어올 때)
+            if(location.hash === '#join'){ openJoin(); return; }
+            switchPanel(location.hash.slice(1));
+        });
 
-        // 임베드된 광장(iframe)에서 보내는 패널 전환 요청 수신
+        // 임베드된 광장(iframe)에서 보내는 요청 수신
         window.addEventListener('message', function(ev){
             if(ev.origin !== window.location.origin) return;
-            if(ev.data && ev.data.orbit === 'goHome'){
-                switchPanel('home');
-                var inp = document.getElementById('nicknameInput');
-                if(inp) inp.focus();
+            // 예전 이름(goHome)도 같이 받는다 — 캐시에 남은 옛 lounge.html이
+            // 아직 그 이름으로 보내고 있어도 진입 대화상자가 열리게.
+            if(ev.data && (ev.data.orbit === 'join' || ev.data.orbit === 'goHome')){
+                openJoin();
             }
-            // 임베드된 페이지들은 탭·필터·줄 수에 따라 높이가 변한다.
+            // 임베드된 페이지는 탭·필터에 따라 높이가 변한다.
             // 고정 높이로 두면 iframe 안에 스크롤바가 따로 생기므로 콘텐츠에 맞춰 늘려준다.
             // 상한을 두는 건 잘못된 값이 와도 페이지가 끝없이 길어지지 않게 하기 위함이다.
-            var frameOf = { luckyHeight: 'luckyFrame', fortuneHeight: 'fortuneFrame', skyHeight: 'skyFrame' };
-            if(ev.data && frameOf[ev.data.orbit]){
+            if(ev.data && ev.data.orbit === 'skyHeight'){
                 var h = parseInt(ev.data.height, 10);
-                if(h > 0 && h < 8000) document.getElementById(frameOf[ev.data.orbit]).style.height = h + 'px';
+                if(h > 0 && h < 8000) document.getElementById('skyFrame').style.height = h + 'px';
             }
         });
 
-        // 프로필 칩 — 가입 상태 반영
-        var nick = localStorage.getItem('orbit_nickname');
-        var chip = document.getElementById('profileChip');
-        if(nick){
-            document.getElementById('profileChipText').textContent = nick;
-            chip.addEventListener('click', function(){ location.href = 'profile.html'; });
-        } else {
-            document.getElementById('profileChipText').textContent = '궤도 진입하기';
-            chip.addEventListener('click', function(){
-                switchPanel('home');
-                var inp = document.getElementById('nicknameInput');
-                if(inp) inp.focus();
-            });
+        // ===== 궤도 진입(닉네임) 대화상자 =====
+        // 홈 패널이 없어졌으므로 닉네임을 정하는 자리는 여기 하나뿐이다.
+        var EMOJIS = ['🌟','⭐','🪐','🌙','☄️','🔭','🛸','💫','🌌','✨'];
+        function avatarOf(nick){ return EMOJIS[nick.charCodeAt(0) % EMOJIS.length]; }
+
+        var back  = document.getElementById('joinBack');
+        var input = document.getElementById('nicknameInput');
+        var errEl = document.getElementById('joinError');
+
+        function nickname(){ return localStorage.getItem('orbit_nickname'); }
+
+        // 상단바 칩 — 진입 여부를 그대로 보여준다
+        function syncChip(){
+            var n = nickname();
+            document.getElementById('profileChipText').textContent = n || '궤도 진입하기';
+            document.querySelector('#profileChip .pc-av').textContent = n ? avatarOf(n) : '🦦';
         }
 
-        // 초기 패널 (해시 우선)
-        switchPanel((location.hash || '#home').slice(1));
-    })();
-    </script>
-
-    <script>
-
-    // ===== Join Us 로직 =====
-    (function(){
-        var saved = localStorage.getItem('orbit_nickname');
-        if(saved){
-            // 이미 가입 — 폼 숨기고 프로필 표시
-            document.getElementById('joinForm').style.display='none';
-            document.getElementById('alreadyJoined').style.display='flex';
-            document.getElementById('joinedNickname').textContent = saved;
-            document.getElementById('joinTitle').textContent = '궤도에 있어요!';
+        function openJoin(){
+            var n = nickname();
+            document.getElementById('joinNew').style.display  = n ? 'none' : '';
+            document.getElementById('joinDone').style.display = n ? '' : 'none';
+            document.getElementById('joinTitle').innerHTML = n
+                ? '궤도에 <span>있어요</span>' : '궤도 <span>진입하기</span>';
+            document.getElementById('joinSub').textContent = n
+                ? '이 기기는 아래 닉네임으로 글을 남기고 있어요.'
+                : '닉네임만 정하면 바로 글을 남길 수 있어요. 가입도 로그인도 없습니다.';
+            if(n){
+                document.getElementById('joinedNickname').textContent = n;
+                document.getElementById('joinedAvatar').textContent = avatarOf(n);
+            } else {
+                input.value = '';
+                input.classList.remove('error');
+                errEl.style.display = 'none';
+            }
+            back.style.display = '';
+            if(!n) setTimeout(function(){ input.focus(); }, 50);
+            document.addEventListener('keydown', onEsc);
         }
+        function closeJoin(){
+            back.style.display = 'none';
+            document.removeEventListener('keydown', onEsc);
+            // 대화상자를 여는 신호로 쓴 해시를 남겨두면 새로고침 때 다시 열린다
+            if(location.hash === '#join') history.replaceState(null, '', '#' + DEFAULT_PANEL);
+        }
+        function onEsc(e){ if(e.key === 'Escape') closeJoin(); }
 
-        document.getElementById('joinBtn').addEventListener('click', function(){
-            var input = document.getElementById('nicknameInput');
-            var val = input.value.trim();
-            var errEl = document.getElementById('joinError');
+        back.addEventListener('click', function(e){ if(e.target === back) closeJoin(); });
+        document.getElementById('joinClose').addEventListener('click', closeJoin);
+        document.getElementById('profileChip').addEventListener('click', openJoin);
 
-            // 유효성 검사
-            input.classList.remove('error');
-            errEl.style.display='none';
-
-            if(!val){
-                showError(input, errEl, '닉네임을 입력해주세요');
-                return;
-            }
-            if(val.length < 2){
-                showError(input, errEl, '닉네임은 2자 이상이어야 해요');
-                return;
-            }
-            if(val.length > 12){
-                showError(input, errEl, '닉네임은 12자 이하여야 해요');
-                return;
-            }
-            if(/[<>\"\'\/\\]/.test(val)){
-                showError(input, errEl, '사용할 수 없는 문자가 포함되어 있어요');
-                return;
-            }
-
-            // 저장 & 이동
-            localStorage.setItem('orbit_nickname', val);
-            var joinDate = new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
-            localStorage.setItem('orbit_joindate', joinDate);
-            localStorage.setItem('orbit_jointime', Date.now());
-            window.location.href = 'profile.html';
-        });
-
-        // 엔터키 지원
-        document.getElementById('nicknameInput').addEventListener('keydown', function(e){
-            if(e.key==='Enter') document.getElementById('joinBtn').click();
-        });
-
-        function showError(input, errEl, msg){
+        function showError(msg){
             input.classList.add('error');
             errEl.textContent = msg;
             errEl.style.display = 'block';
             input.focus();
         }
-    })();
-    </script>
 
-    <script>
-    // ===== Trending — 광장에서 실제로 가장 뜨거운 궤적 =====
-    // 가짜 하드코딩 문구 대신 리액션이 가장 많은 실제 글을 보여준다.
-    // SDK 없이 REST 두 번이면 충분해서 supabase-js는 싣지 않는다.
-    // 글이 하나도 없거나 요청이 실패하면 카드를 아예 보여주지 않는다.
-    (function(){
-        var SB_URL = 'https://unwxpuvfqyjhgrcrmuhu.supabase.co';
-        var SB_KEY = 'sb_publishable_KnyriHKUHNWw0QyIAXBmOA_0KaHPcXI'; // 공개용 키 (publishable)
-        function get(path){
-            return fetch(SB_URL + '/rest/v1/' + path, {
-                headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
-            }).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+        document.getElementById('joinBtn').addEventListener('click', function(){
+            var val = input.value.trim();
+            input.classList.remove('error');
+            errEl.style.display = 'none';
+
+            // 서버(posts.nick check 제약)가 2~12자를 요구하므로 여기서 같은 기준으로 걸러준다
+            if(!val)            return showError('닉네임을 입력해주세요');
+            if(val.length < 2)  return showError('닉네임은 2자 이상이어야 해요');
+            if(val.length > 12) return showError('닉네임은 12자 이하여야 해요');
+            if(/[<>\"\'\/\\]/.test(val)) return showError('사용할 수 없는 문자가 포함되어 있어요');
+
+            localStorage.setItem('orbit_nickname', val);
+            localStorage.setItem('orbit_joindate', new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}));
+            localStorage.setItem('orbit_jointime', Date.now());
+            syncChip();
+            closeJoin();
+            // 광장이 이미 로드돼 있으면 미진입 상태의 글쓰기 카드를 들고 있다.
+            // 새 닉네임을 반영하려면 다시 읽혀야 하므로 프레임을 새로 띄운다.
+            reloadLounge();
+            switchPanel('lounge');
+        });
+        input.addEventListener('keydown', function(e){
+            if(e.key === 'Enter') document.getElementById('joinBtn').click();
+        });
+
+        document.getElementById('btnRename').addEventListener('click', function(){
+            localStorage.removeItem('orbit_nickname');
+            syncChip();
+            openJoin();
+        });
+        document.getElementById('btnLeave').addEventListener('click', function(){
+            if(!confirm('이 기기에서 닉네임을 지울까요?\n이미 남긴 글은 그대로 남고, 지울 권한도 이 기기에 남아 있어요.')) return;
+            localStorage.removeItem('orbit_nickname');
+            localStorage.removeItem('orbit_joindate');
+            localStorage.removeItem('orbit_jointime');
+            syncChip();
+            closeJoin();
+            reloadLounge();
+        });
+
+        // 광장 iframe을 아직 안 열었으면 건드리지 않는다 — 열 때 어차피 새로 읽는다
+        function reloadLounge(){
+            if(!loungeLoaded) return;
+            var fr = document.getElementById('loungeFrame');
+            fr.src = fr.getAttribute('data-src');
         }
-        function rpc(fn, body){
-            return fetch(SB_URL + '/rest/v1/rpc/' + fn, {
-                method: 'POST',
-                headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify(body || {})
-            }).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+
+        // ===== 초기 상태 =====
+        syncChip();
+        if(location.hash === '#join'){
+            switchPanel(DEFAULT_PANEL);
+            openJoin();
+        } else {
+            switchPanel((location.hash || '#' + DEFAULT_PANEL).slice(1));
         }
-        Promise.all([
-            get('posts?select=id,nick,text&order=created_at.desc&limit=50'),
-            // reactions는 직접 읽지 않는다 — 행에 device_id가 실려 나가기 때문에
-            // 테이블 읽기를 닫고 집계 함수만 열어두었다. 여기선 개수만 있으면 된다.
-            rpc('reaction_counts', {})
-        ]).then(function(res){
-            var posts = res[0] || [];
-            if(!posts.length) return; // 광장이 비어 있으면 카드 비노출
-            var count = {};
-            (res[1] || []).forEach(function(r){ count[r.post_id] = Number(r.n) || 0; });
-            var top = null, topN = 0;
-            posts.forEach(function(p){
-                var n = count[p.id] || 0;
-                if(n > topN){ top = p; topN = n; }
-            });
-            var p = top || posts[0]; // 아직 리액션이 없으면 최신 궤적
-            var text = p.text.length > 64 ? p.text.slice(0, 64) + '…' : p.text;
-            // textContent로만 넣는다 — 사용자 글이므로 HTML로 해석되면 안 된다
-            document.getElementById('trendDesc').textContent = top
-                ? '"' + text + '" — ' + p.nick + ' 님의 궤적이 리액션 ' + topN + '개로 가장 뜨겁습니다.'
-                : '"' + text + '" — ' + p.nick + ' 님이 방금 남기고 간 최신 궤적입니다.';
-            // 리액션이 아직 하나도 없으면 이건 "뜨는 글"이 아니라 그냥 최신 글이다.
-            // 태그까지 같이 바꿔야 제목과 어긋나지 않는다.
-            if(!top){
-                document.getElementById('trendTitle').textContent = '방금 지나간 궤적';
-                document.getElementById('trendTag').textContent = '✨ 가장 최근 궤적';
-            }
-            document.getElementById('trendGo').addEventListener('click', function(){ location.hash = '#lounge'; });
-            document.getElementById('trendCard').style.display = '';
-        }).catch(function(){ /* 연결 실패 시 카드 숨김 유지 */ });
     })();
     </script>
 </body>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orbit | 광장</title>
-    <meta name="description" content="비슷한 궤도를 도는 사람들의 이야기가 흘러가는 광장.">
+    <title>Orbit | 글 남기기</title>
+    <meta name="description" content="어젯밤 뭘 보셨나요 — 관측 후기와 장비, 실시간 하늘 이야기를 남기는 곳.">
     <meta name="theme-color" content="#0F172A">
     <link rel="canonical" href="https://orbithere.com/lounge.html">
     <link rel="icon" href="/favicon.ico" sizes="any">
@@ -15,8 +15,8 @@
     <link rel="manifest" href="/site.webmanifest">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Orbit">
-    <meta property="og:title" content="Orbit | 광장">
-    <meta property="og:description" content="비슷한 궤도를 도는 사람들의 이야기가 흘러가는 광장.">
+    <meta property="og:title" content="Orbit | 글 남기기">
+    <meta property="og:description" content="어젯밤 뭘 보셨나요 — 관측 후기와 장비, 실시간 하늘 이야기를 남기는 곳.">
     <meta property="og:image" content="https://orbithere.com/images/og.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -388,6 +388,12 @@
         .embed nav { display: none; }
         .embed .container { margin-top: 28px; }
         .embed .site-footer { display: none; }
+        /* 메인의 패널 제목이 이미 "글 남기기"라 제목·소개가 그대로 한 번 더 나온다.
+           단독 페이지에서는 검색과 첫인상에 필요하므로 남기고, 임베드일 때만 접는다.
+           상태 배지(#loungeStatus)는 오류를 알리는 자리라 계속 보여야 한다. */
+        .embed header h1,
+        .embed header p { display: none; }
+        .embed .mock-badge { margin-top: 0; }
     </style>
     <script>if(new URLSearchParams(location.search).get('embed'))document.documentElement.classList.add('embed');</script>
     <script src="effects.js" defer></script>
@@ -403,8 +409,8 @@
     <main class="container">
         <header>
             <div class="header-text">
-                <h1>광장, <span>궤적</span>이 모이는 곳</h1>
-                <p>비슷한 궤도를 도는 사람들의 이야기가 흘러갑니다</p>
+                <h1>글 <span>남기기</span></h1>
+                <p>어젯밤 뭘 보셨나요 — 같은 하늘을 본 사람들에게 남겨보세요</p>
                 <span class="mock-badge" id="loungeStatus">β 베타 — 궤적은 모두에게 공개 저장돼요</span>
             </div>
         </header>
@@ -423,10 +429,8 @@
     <footer class="site-footer">
         <div class="foot-links">
             <a href="main.html">커뮤니티 홈</a>
-            <a href="lounge.html">대화 광장</a>
-            <a href="lucky.html">로또 번호 생성기</a>
-            <a href="fortune.html">오늘의 운세</a>
             <a href="sky.html">밤하늘 달력</a>
+            <a href="lounge.html">글 남기기</a>
             <a href="terms.html">이용약관</a>
             <a href="privacy.html">개인정보처리방침</a>
         </div>
@@ -446,17 +450,20 @@
 
     // ===== 기본 데이터 =====
     // ===== 채널(궤도) 단일 설정 — 여기 한 줄만 추가하면 새 채널이 생깁니다 =====
+    // 2026-08 개편: 잡담형 채널(자유·재테크·운동·반려동물)을 관측 주제로 갈아끼웠다.
+    // 옛 id(free/money/dawn/pet)를 재사용하지 않고 새 id를 쓴다 — 재사용하면 예전
+    // 재테크 글이 '장비'처럼 엉뚱한 이름표를 달게 된다. 옛 글은 아래 orbitInfo의
+    // 폴백을 타서 🛰️ 칩으로 그대로 보인다.
+    //
+    // 새 궤도를 더할 때는 DB의 posts_orbit_check 제약도 같이 풀어야 한다.
+    // (supabase/migration_008_sky_orbits.sql 참고) 안 그러면 글 작성이 23514로 막힌다.
     var ORBIT_LIST = [
-        { id:'free',  icon:'💬', label:'자유 궤도',     desc:'아무 말이나 편하게 — 잡담·일상·혼잣말 환영이에요.' },
-        { id:'money', icon:'📈', label:'재테크 궤도',   desc:'투자·절약·돈 이야기를 함께 나누는 궤도예요.' },
-        // id는 'dawn' 그대로 둔다 — 이미 이 궤도에 쌓인 글들이 붙어 있는 값이라
-        // 바꾸면 DB의 orbit 제약과 기존 글이 전부 어긋난다. 보이는 이름만 넓혔다.
-        { id:'dawn',  icon:'💪', label:'운동 궤도',     desc:'러닝·헬스·홈트·새벽운동 — 오늘 몸 쓴 이야기를 남기는 궤도예요.' },
-        // 새 궤도를 더할 때는 DB의 posts_orbit_check 제약도 같이 풀어야 한다.
-        // (supabase/migration_006_pet_orbit.sql 참고) 안 그러면 글 작성이 23514로 막힌다.
-        { id:'pet',   icon:'🐾', label:'반려동물 궤도', desc:'강아지·고양이·물고기까지 — 우리 집 식구 자랑하는 궤도예요.' }
+        { id:'report', icon:'📝', label:'관측 후기',   desc:'어젯밤 뭘 보셨나요 — 관측 기록과 후기를 남기는 궤도예요.' },
+        { id:'gear',   icon:'🔭', label:'장비',        desc:'망원경·쌍안경·적도의·카메라 — 장비 이야기를 나누는 궤도예요.' },
+        { id:'live',   icon:'🌌', label:'실시간 하늘', desc:'지금 하늘이 어떤가요 — 구름·시상·오로라 속보를 바로 올리는 궤도예요.' },
+        { id:'ask',    icon:'❓', label:'질문',        desc:'뭐부터 봐야 할지, 저건 뭔지 — 무엇이든 물어보는 궤도예요.' }
     ];
-    var ALL_ORBIT = { id:'all', icon:'🌌', label:'전체', desc:'모든 궤도의 궤적이 한데 흐르는 광장이에요.' };
+    var ALL_ORBIT = { id:'all', icon:'🌠', label:'전체', desc:'모든 궤도의 궤적이 한데 흐르는 곳이에요.' };
     // 호환용 파생 맵 / 조회 헬퍼
     var ORBITS = {};
     ORBIT_LIST.forEach(function(o){ ORBITS[o.id] = o.label; });
@@ -478,10 +485,12 @@
     // 이 값을 브라우저에서 조작해도 남의 글은 지워지지 않는다. 버튼 표시용일 뿐이다.
     var isAdmin = false;
 
-    // 임베드(메인 패널 안)일 땐 부모에게 홈 패널 전환을 요청, 단독 페이지일 땐 일반 이동
+    // 닉네임을 정하는 곳은 main.html의 진입 대화상자 하나뿐이다.
+    // 임베드(메인 패널 안)일 땐 부모에게 열어달라고 요청하고,
+    // 단독 페이지일 땐 #join 해시를 달고 넘어간다 — main.html이 그 해시를 보고 연다.
     function goJoin(){
-        if(EMBED && window.parent !== window){ window.parent.postMessage({ orbit: 'goHome' }, window.location.origin); }
-        else { location.href = 'main.html'; }
+        if(EMBED && window.parent !== window){ window.parent.postMessage({ orbit: 'join' }, window.location.origin); }
+        else { location.href = 'main.html#join'; }
     }
 
     // 익명 리액션 식별용 기기 ID
