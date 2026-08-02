@@ -54,6 +54,10 @@
         .orbit-tab:hover { border-color: rgba(255,159,67,0.45); color: var(--accent); }
         .orbit-tab.on { background: var(--accent); border-color: var(--accent); color: #0F172A; font-weight: 700; }
         .orbit-tab .ic { margin-right: 1px; }
+        /* 유성우 기간에는 후기 궤도가 주인공 — 나머지 채널은 남기되 한 톤 낮춘다.
+           빈 채널 네 개가 똑같이 크게 보이면 "빈 방 4개"로 읽힌다. */
+        .orbit-tab.minor { opacity: 0.6; }
+        .orbit-tab.minor:hover, .orbit-tab.minor.on { opacity: 1; }
 
         /* 채널 헤더 — 선택한 궤도의 장소감 */
         .channel-header {
@@ -397,6 +401,7 @@
     </style>
     <script>if(new URLSearchParams(location.search).get('embed'))document.documentElement.classList.add('embed');</script>
     <script src="effects.js" defer></script>
+    <script src="visits.js" defer></script>
 </head>
 <body>
     <div class="bg-glow"></div>
@@ -459,9 +464,9 @@
     // (supabase/migration_008_sky_orbits.sql 참고) 안 그러면 글 작성이 23514로 막힌다.
     var ORBIT_LIST = [
         { id:'report', icon:'📝', label:'관측 후기',   desc:'어젯밤 뭘 보셨나요 — 관측 기록과 후기를 남기는 궤도예요.' },
-        { id:'gear',   icon:'🔭', label:'장비',        desc:'망원경·쌍안경·적도의·카메라 — 장비 이야기를 나누는 궤도예요.' },
-        { id:'live',   icon:'🌌', label:'실시간 하늘', desc:'지금 하늘이 어떤가요 — 구름·시상·오로라 속보를 바로 올리는 궤도예요.' },
-        { id:'ask',    icon:'❓', label:'질문',        desc:'뭐부터 봐야 할지, 저건 뭔지 — 무엇이든 물어보는 궤도예요.' }
+        { id:'gear',   icon:'🔭', label:'장비',        desc:'망원경·쌍안경·적도의·카메라 — 장비 이야기를 나누는 궤도예요.', minor:true },
+        { id:'live',   icon:'🌌', label:'실시간 하늘', desc:'지금 하늘이 어떤가요 — 구름·시상·오로라 속보를 바로 올리는 궤도예요.', minor:true },
+        { id:'ask',    icon:'❓', label:'질문',        desc:'뭐부터 봐야 할지, 저건 뭔지 — 무엇이든 물어보는 궤도예요.', minor:true }
     ];
     var ALL_ORBIT = { id:'all', icon:'🌠', label:'전체', desc:'모든 궤도의 궤적이 한데 흐르는 곳이에요.' };
     // 호환용 파생 맵 / 조회 헬퍼
@@ -477,7 +482,16 @@
     function avatarOf(nick){ return EMOJIS[nick.charCodeAt(0) % EMOJIS.length]; }
 
     var nickname = localStorage.getItem('orbit_nickname');
-    var currentOrbit = 'all';
+    // 첫 진입 기본 채널은 후기 궤도 — 관측 → 후기가 이 사이트의 핵심 동선이고,
+    // 글이 없는 시기에는 한 채널에 모여 있어야 살아 있는 곳으로 보인다.
+    // sky.html의 CTA는 #report 해시를 달고 들어온다. (#all로 전체 보기도 가능)
+    function orbitFromHash(){
+        var h = (location.hash || '').slice(1);
+        if(h === 'all') return 'all';
+        for(var i = 0; i < ORBIT_LIST.length; i++){ if(ORBIT_LIST[i].id === h) return h; }
+        return null;
+    }
+    var currentOrbit = orbitFromHash() || 'report';
     var EMBED = document.documentElement.classList.contains('embed');
 
     // 관리자 모드. 로그인만으로는 켜지지 않고 admins 테이블에 등록된 계정이어야 한다.
@@ -1056,7 +1070,7 @@
         var html = '<button class="orbit-tab' + (currentOrbit==='all'?' on':'') +
                    '" data-orbit="all"><span class="ic">' + ALL_ORBIT.icon + '</span> 전체</button>';
         ORBIT_LIST.forEach(function(o){
-            html += '<button class="orbit-tab' + (currentOrbit===o.id?' on':'') +
+            html += '<button class="orbit-tab' + (currentOrbit===o.id?' on':'') + (o.minor?' minor':'') +
                     '" data-orbit="' + o.id + '"><span class="ic">' + o.icon + '</span> ' + escapeHtml(o.label) + '</button>';
         });
         document.getElementById('orbitTabs').innerHTML = html;
@@ -1092,16 +1106,48 @@
         });
     });
 
-    document.getElementById('orbitTabs').addEventListener('click', function(e){
-        var tab = e.target.closest('.orbit-tab');
-        if(!tab) return;
-        document.querySelectorAll('.orbit-tab').forEach(function(t){ t.classList.remove('on'); });
-        tab.classList.add('on');
-        currentOrbit = tab.getAttribute('data-orbit');
+    function selectOrbit(id){
+        currentOrbit = id;
+        document.querySelectorAll('.orbit-tab').forEach(function(t){
+            t.classList.toggle('on', t.getAttribute('data-orbit') === id);
+        });
         renderChannelHeader();
         var sel = document.getElementById('orbitSelect');
         if(sel && currentOrbit !== 'all') sel.value = currentOrbit; // 보던 방으로 글쓰기 기본값 맞춤
+        syncLivePoll();
         loadPosts();
+    }
+
+    document.getElementById('orbitTabs').addEventListener('click', function(e){
+        var tab = e.target.closest('.orbit-tab');
+        if(!tab) return;
+        selectOrbit(tab.getAttribute('data-orbit'));
+    });
+
+    // 이미 열린 광장에서 #report 같은 해시 링크를 눌러도 채널이 따라가게
+    window.addEventListener('hashchange', function(){
+        var o = orbitFromHash();
+        if(o && o !== currentOrbit) selectOrbit(o);
+    });
+
+    // ===== live 채널 30초 폴링 =====
+    // 이름이 "실시간 하늘"이니 이 채널만은 새로고침 없이 새 궤적이 나타나야 한다.
+    // 다른 채널까지 폴링하면 요청만 늘어서, 기대를 만들어 둔 채널만 지킨다.
+    var livePoll = null;
+    function syncLivePoll(){
+        var want = currentOrbit === 'live';
+        if(want && !livePoll){
+            livePoll = setInterval(function(){
+                if(!document.hidden) loadPosts({ quiet: true });   // 안 보는 탭에서는 쉰다
+            }, 30000);
+        } else if(!want && livePoll){
+            clearInterval(livePoll);
+            livePoll = null;
+        }
+    }
+    // 탭을 벗어났다 돌아오면 다음 폴링까지 기다리지 않고 바로 따라잡는다
+    document.addEventListener('visibilitychange', function(){
+        if(!document.hidden && currentOrbit === 'live') loadPosts({ quiet: true });
     });
 
     // ===== 관리자 확인 =====
@@ -1134,6 +1180,7 @@
     checkAdmin().then(function(ok){
         isAdmin = ok;
         if(ok) showAdminBadge();
+        syncLivePoll();   // 해시로 live에 바로 들어온 경우
         loadPosts();
     });
     </script>
