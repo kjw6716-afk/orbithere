@@ -39,6 +39,10 @@ alter table public.posts
 -- ===== 옛 글을 정리하고 싶다면 =====
 -- 아래는 실행하지 않아도 서비스는 정상 동작한다. 필요할 때만 골라 쓸 것.
 --
+-- ⚠️ 2026-08 추가: 'free'가 자유게시판으로 되살아났다(lounge.html의 ORBIT_LIST).
+--    아래 2)·3)은 free를 '지난 궤도'로 보고 지우는 쿼리라 이제 실행하면 안 된다.
+--    꼭 정리해야 한다면 대상에서 free를 빼고 money/dawn/pet만 다룰 것.
+--
 -- 1) 옛 글이 몇 건이나 남아 있는지 본다
 -- select orbit, count(*) from public.posts
 --  where orbit in ('free','money','dawn','pet')
