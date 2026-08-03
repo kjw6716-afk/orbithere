@@ -119,6 +119,16 @@
         }
         .nx-note strong { color: var(--mint); font-weight: 700; }
 
+        /* 다음 현상이 멀 때 오늘 밤 볼 것으로 보내는 줄 */
+        .nx-alt {
+            display: block; margin-top: 12px; padding: 12px 15px;
+            border-radius: 12px; text-decoration: none;
+            background: rgba(255,159,67,0.08); border: 1px solid rgba(255,159,67,0.22);
+            font-size: 12.5px; color: #A5B4C4; line-height: 1.65; transition: 0.2s;
+        }
+        .nx-alt:hover { border-color: rgba(255,159,67,0.5); background: rgba(255,159,67,0.13); }
+        .nx-alt b { color: var(--accent); font-weight: 700; }
+
         /* ===== 오늘의 달 ===== */
         .moon-card {
             margin-top: 16px; display: flex; align-items: center; gap: 20px;
@@ -262,6 +272,8 @@
             </div>
             <div class="cd-units" id="nxUnits"></div>
             <div class="nx-note" id="nxNote"></div>
+            <!-- 다음 현상이 멀거나 일정이 동났을 때 오늘 밤 볼 것으로 이어준다. JS가 채운다. -->
+            <a class="nx-alt" id="nxAlt" href="planets.html" style="display:none;"></a>
         </section>
 
         <!-- 오늘의 달 -->
@@ -610,12 +622,31 @@
             .sort(function (a, b) { return a.t - b.t; });
     }
 
+    // 다음 현상이 멀거나 일정표가 동났을 때 오늘 밤 볼 것으로 이어준다.
+    // 이 달력의 이벤트는 하드코딩이라 마지막 항목(2027-08-02)을 지나면 카드가 빈다.
+    // 행성 페이지는 계산식이라 그날이 언제든 오늘 밤 하늘을 알려주므로, 여기서 넘긴다.
+    function showAlt(html) {
+        var el = $('nxAlt');
+        el.innerHTML = html;
+        el.style.display = 'block';
+    }
+
     function renderNext() {
         var list = upcoming();
         if (!list.length) {
-            $('nxName').textContent = '예정된 현상이 없습니다';
-            $('nxWhen').textContent = '달력을 업데이트할 시기입니다';
+            $('nxName').textContent = '다음 일정을 준비하고 있습니다';
+            $('nxWhen').textContent = '유성우·일식 일정은 사람이 직접 채워 넣습니다';
             $('nxDday').textContent = '—';
+            $('nxDdaySub').textContent = '';
+            // 마지막 현상이 지나가는 순간 tick()이 여기로 들어온다. 그때 숫자판을 비우고
+            // 1초 타이머도 멈추지 않으면, 방금 지나간 현상의 «9일 7시간 55분»이
+            // 화면에 그대로 굳은 채 남는다.
+            $('nxUnits').innerHTML = '';
+            if (window.__nxTimer) { clearInterval(window.__nxTimer); window.__nxTimer = null; }
+            $('nxNote').innerHTML = '앞으로의 천문 현상 일정이 아직 채워지지 않았습니다. ' +
+                                    '그동안에도 <strong>행성은 매일 밤 떠 있습니다.</strong>';
+            showAlt('오늘 밤 어느 방향에 무엇이 떠 있는지 → <b>오늘 밤 행성 보기</b><br>' +
+                    '<span style="color:#64748B;">그날 날짜로 직접 계산하는 페이지라 일정표와 달리 비는 날이 없습니다.</span>');
             return;
         }
         var e = list[0].e, t = list[0].t;
@@ -637,6 +668,19 @@
             noteHtml = e.best || e.desc.split('.')[0] + '.';
         }
         $('nxNote').innerHTML = noteHtml;
+
+        // 다음 현상이 국내에서 안 보이거나 한참 남았으면, 그때까지 손 놓고 기다릴 일이 아니다.
+        // 유성우는 한 해에 몇 번뿐이지만 행성은 오늘 밤에도 떠 있다.
+        var daysLeft = (t - Date.now()) / MS_DAY;
+        if (e.kr === false) {
+            showAlt('이 현상은 국내에서 볼 수 없습니다. 대신 <b>오늘 밤 행성 보기</b> →<br>' +
+                    '<span style="color:#64748B;">오늘 밤 어느 방향 몇 도에 무엇이 떠 있는지 계산해 드립니다.</span>');
+        } else if (daysLeft > 21) {
+            showAlt('D-' + Math.floor(daysLeft) + '까지 기다릴 것 없이 <b>오늘 밤 행성 보기</b> →<br>' +
+                    '<span style="color:#64748B;">행성은 유성우와 달리 도심에서도 맨눈으로 보입니다.</span>');
+        } else {
+            $('nxAlt').style.display = 'none';
+        }
 
         function tick() {
             var left = fmtDday(t - Date.now());

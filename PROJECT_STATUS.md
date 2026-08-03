@@ -13,6 +13,10 @@
 > DB·마이그레이션 변경 없음. localStorage 키 `orbit_place` 하나가 늘었다(`privacy.html` 4항 반영 완료).
 > main의 탭이 2개 → 3개가 됐다.
 >
+> **2026-08-03 (3)** — **레포에 처음으로 자동 검사가 생겼다.** `tests/` 세 개 + GitHub Actions.
+> 사이트 자체는 여전히 빌드 스텝이 없고, `package.json`은 검사 스크립트 전용이다.
+> 밤하늘 달력의 «다음 현상» 카드가 일정이 비거나 멀 때 오늘 밤 행성으로 이어진다.
+>
 > **이 문서를 고쳐야 하는 때** — 파일을 추가·삭제했을 때, 마이그레이션을 추가했을 때,
 > localStorage 키를 늘렸을 때(`privacy.html`도 같이), 채널 구성을 바꿨을 때.
 > 틀린 인수인계 문서는 없느니만 못하다.
@@ -27,6 +31,12 @@ orbithere/
 ├── main.html           커뮤니티 홈 (앱 셸 · 사이드바 2탭 + 궤도 진입 대화상자)
 ├── sky.html            밤하늘 달력  ← 첫 화면
 ├── planets.html        오늘 밤 행성 (행성 위치·밝기 계산 · 하늘 지도 · 시각 스크러버)
+├── tests/              자동 검사 — 사이트 배포물이 아니다
+│   ├── astronomy.mjs   planets.html의 계산부만 떼어내 검증 (브라우저 불필요)
+│   ├── links.mjs       내부 링크 · sitemap · canonical/OG · localStorage 키 문서화 (브라우저 불필요)
+│   └── render.mjs      실제로 그려보고 검사 (playwright)
+├── package.json        검사 스크립트 전용. 사이트에는 빌드 스텝이 없다
+├── .github/workflows/checks.yml   push(main) · PR 마다 위 셋을 돌린다
 ├── lounge.html         글 남기기 (Supabase 게시판)
 ├── admin.html          관제실 (관리자 로그인 · 신고함 · 업데이트 기록)
 ├── terms.html          이용약관
@@ -59,7 +69,7 @@ orbithere/
 └── README.md
 ```
 
-빌드 산출물·의존성 디렉터리 없음(`node_modules`, `dist`, `.github` 모두 부재).
+빌드 산출물 없음(`node_modules`는 `.gitignore`, `dist` 없음). `.github`는 검사 워크플로 하나뿐이다.
 
 ---
 
@@ -73,7 +83,8 @@ orbithere/
 | 백엔드/DB | **Supabase** (PostgreSQL + PostgREST + Auth). 프로젝트 URL `unwxpuvfqyjhgrcrmuhu.supabase.co`, publishable 키가 소스에 하드코딩 — `lounge.html`, `admin.html`, `visits.js` **3곳 중복** (방문 집계가 들어오면서 2곳 → 3곳). `visits.js`만 supabase-js 없이 REST(`/rest/v1/rpc/...`)를 직접 부른다 |
 | 서버 코드 | 없음. Edge Function 없음. 모든 권한 판정은 Postgres RLS + `security definer` 함수 |
 | 인증 | Supabase Auth (이메일/비번) — **관리자 전용**. 일반 사용자 인증 없음 |
-| 배포 | **GitHub Pages**, 레포 루트를 그대로 서빙. `CNAME`으로 커스텀 도메인. CI/워크플로 파일 없음 → Pages 설정은 레포 설정 화면에 있고 코드에 없음. 푸시 = 배포 |
+| 배포 | **GitHub Pages**, 레포 루트를 그대로 서빙. `CNAME`으로 커스텀 도메인. Pages 설정은 레포 설정 화면에 있고 코드에 없음. 푸시 = 배포 |
+| 검사 | `.github/workflows/checks.yml` — push(main)·PR마다 `tests/` 셋을 돌린다. **배포를 막지는 못한다**(Pages가 워크플로를 거치지 않으므로). 무엇이 깨졌는지 알려줄 뿐이다 |
 | SEO | 페이지별 canonical/OG/twitter 메타, `sky.html`·`planets.html`에 JSON-LD (WebApplication + FAQPage), sitemap 7개 URL, `admin.html`·`_archive/*`는 noindex + robots Disallow |
 | 접근성 | `prefers-reduced-motion` 전역 처리 (`orbit.css:154-173`, `effects.js:12-13`), iOS 자동확대 방지용 input 16px |
 
@@ -187,11 +198,14 @@ orbithere/
 ## 7. 안 돌아가는 것 / 깨진 것
 
 **실제 결함**
-1. `sky.html` — 하드코딩된 마지막 이벤트가 **2027-08-02**. 그 이후에는 카운트다운이 "예정된 현상이 없습니다"로, 타임라인은 빈 상태로 고정된다. 수동 갱신 필요. **첫 화면이 되면서 체감 우선순위가 올라갔다** (`planets.html`은 계산식이라 이 문제가 없다)
+1. `sky.html` — 하드코딩된 마지막 이벤트가 **2027-08-02**. 그 이후 타임라인은 빈 상태로 고정되고 수동 갱신이 필요하다. 다만 «다음 현상» 카드는 더 이상 죽지 않는다 — 일정이 비면 오늘 밤 행성으로 안내한다(`sky.html:showAlt`). **일정 갱신 자체는 여전히 사람 몫이다**
 2. `schema.sql` 의 orbit check는 여전히 `('free','money','dawn')`뿐이다. **새 Supabase 프로젝트에 schema.sql만 실행하면 글 작성이 23514로 실패**한다. `schema.sql → 002 → 003 → … → 009 → 010` 순서대로 전부 실행해야 함
 3. 마이그레이션 실행 순서 의존 — migration_003 적용 후 `schema.sql`을 다시 돌리면 마지막 환영 글 insert가 실패한다 (author_device 없음)
 
 **2026-08-03에 고친 것**
+- ~~`sky.html`의 마지막 현상이 지나가는 순간 숫자판에 «9일 7시간 55분»이 굳은 채 남고 1초 타이머도 계속 돌았다~~ → 빈 상태에서 `nxUnits`를 비우고 `__nxTimer`를 정리한다 (`tests/render.mjs`가 지킨다)
+- ~~하늘 지도에서 행성이 몰리면 이름표가 위로만 밀려나 이웃 행성 점에 붙었다 (실제로 «화성»이 천왕성 점에 붙음)~~ → 점 둘레 여덟 방향 + 이웃 반대쪽에서 자리를 찾고, 자기 점이 가장 가까운 자리만 쓰며, 글자색을 천체 색에 맞추고, 그래도 떨어지면 선으로 잇는다
+- ~~`terms.html`·`privacy.html`에 og:image가 없어 링크 미리보기가 빈 카드였다~~ → 추가 (`tests/links.mjs`가 지킨다)
 - ~~`record_visit`에 도배 방지가 없어 콘솔에서 반복 호출하면 숫자를 얼마든지 올릴 수 있었다~~ → 하루 한 번 제한을 서버(`visit_pings`)로 옮김. localStorage는 요청을 아끼는 역할만 한다
 - ~~조작 가능한 방문자 수를 페이지에 그대로 노출~~ → `record_visit`은 아무것도 반환하지 않고, 숫자는 관제실 `visit_stats`로만 본다
 - ~~privacy.html이 `orbit_visit_day` 누락~~ → 저장소 목록·수집 표·이용 목적·보관 파기 반영, 시행일 2026-08-03로 갱신
@@ -215,6 +229,9 @@ orbithere/
 **`_archive/` 노출 위험**: 밑줄로 시작하는 디렉터리는 GitHub Pages의 Jekyll 빌드에서 제외되므로 공개되지 않는다. 다만 `.nojekyll`을 추가하거나 Pages 배포를 GitHub Actions로 바꾸면 **그대로 공개된다.** 안전망으로 두 파일에 noindex meta와 robots Disallow를 넣어 두었다.
 
 **`planets.html` 계산 검증 (2026-08-03)**: 헤드리스 브라우저와 Node로 다음을 확인했다 — 태양 적경·적위(오차 0.2° 이내), 지구 근일점·원일점(1월 초 0.9833 au / 7월 초 1.0167 au), 수성·금성 최대이각(27.8° / 46.9°), 행성별 태양거리 범위, **서울 일출·일몰이 공표값과 1분 이내**(하지·동지·연초 3개 날짜), 같은 값을 시간각 해석식으로 다시 구해 교차검증(4개 날짜, 2분 이내), 남중 방위 180.1°, 달 근지점·원지점 거리와 8월 삭 날짜(2026-08-13 — 밤하늘 달력의 «8월 12일이 신월» 서술과 일치), 행성 7개의 연중 밝기 범위, 밤 시간대 36개 프레임에서 지도 라벨 겹침 0건.
+
+**자동 검사가 지키는 것** (`npm test`): 천문 계산 11항목, 내부 링크·sitemap·canonical/OG·localStorage 키 문서화, 하늘 지도 이름표의 주인·겹침(오늘 밤 54개 시각 + 일부러 몰아 놓은 배치), 지도와 요약 문장의 일치, 관측지 8곳, 좁은 화면 가로 넘침과 글자 크기, 임베드 높이 동기화, 키보드 조작, 밤하늘 달력의 빈 일정 처리.
+> 검사가 실제로 버그를 잡는지 확인하려면 고친 로직을 되돌려 보면 된다 — 옛 이름표 배치로 되돌리면 `[2] 몰린 배치` 항목이 «화성 → 천왕성 점에 더 가깝다»로 실패한다.
 
 **확인 못 한 것**: 라이브 사이트 실제 동작, Supabase 프로젝트의 실제 마이그레이션 적용 상태, GitHub Pages 설정값 — 레포 코드만으로는 알 수 없다.
 
