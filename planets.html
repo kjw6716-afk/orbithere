@@ -155,6 +155,12 @@
         }
         .conj-t { font-size: 13px; font-weight: 700; color: var(--mint); margin-bottom: 5px; }
         .conj-d { font-size: 12.5px; color: #A5B4C4; line-height: 1.7; }
+        .conj-d b { color: var(--mint); font-weight: 700; }
+        .conj-more {
+            margin-top: 11px; padding-top: 9px;
+            border-top: 1px solid rgba(79,209,197,0.14);
+            font-size: 11.5px; color: #64748B; line-height: 1.6;
+        }
 
         /* ===== 행성 카드 ===== */
         .plist { display: flex; flex-direction: column; gap: 10px; margin-top: 26px; }
@@ -501,25 +507,25 @@
     // ---------- 행성 정보 ----------
     // dia: 1au 거리에서의 겉보기 지름(초각)
     var PLANETS = [
-        { key:'mercury', ko:'수성', en:'Mercury', color:'#B9A88F', dia:6.74, inner:true,
+        { key:'mercury', ko:'수성', en:'Mercury', color:'#B9A88F', dia:6.74, inner:true, tone:'노르스름한 점',
           tip:'해 진 직후 서쪽, 또는 해 뜨기 직전 동쪽 지평선 근처에서 30분 남짓만 보입니다. 그쪽 하늘이 트인 장소를 미리 찾아두세요.',
           desc:'태양에서 가장 가까운 행성입니다. 하늘에서도 태양 곁을 벗어나지 못해 1년에 몇 번, 그것도 짧게만 볼 수 있습니다. 맨눈으로 보이는 다섯 행성 중 가장 어렵습니다.' },
-        { key:'venus',   ko:'금성', en:'Venus',   color:'#F2DDAE', dia:16.92, inner:true,
+        { key:'venus',   ko:'금성', en:'Venus',   color:'#F2DDAE', dia:16.92, inner:true, tone:'주변에서 가장 밝은 흰 점',
           tip:'맨눈으로 보이는 천체 중 해와 달 다음으로 밝습니다. 쌍안경을 고정해서 보면 달처럼 차고 기운 모양이 확인됩니다.',
           desc:'새벽의 샛별과 초저녁의 개밥바라기가 모두 금성입니다. 두꺼운 구름이 햇빛을 그대로 반사해 압도적으로 밝습니다. 다만 태양 곁을 크게 벗어나지 못해 한밤중에는 볼 수 없습니다.' },
-        { key:'mars',    ko:'화성', en:'Mars',    color:'#E07A5F', dia:9.36,
+        { key:'mars',    ko:'화성', en:'Mars',    color:'#E07A5F', dia:9.36, tone:'붉은 기가 도는 점',
           tip:'붉은 기가 도는 것이 맨눈으로도 느껴집니다. 표면 무늬는 지구와 가까워지는 충 무렵에만 망원경으로 보입니다.',
           desc:'약 2년 2개월마다 지구와 가까워집니다. 그 시기에는 크고 밝아져 망원경으로 극관과 어두운 무늬까지 보이지만, 시기를 벗어나면 큰 망원경으로도 작은 오렌지색 점에 가깝습니다.' },
-        { key:'jupiter', ko:'목성', en:'Jupiter', color:'#E8BE86', dia:196.94,
+        { key:'jupiter', ko:'목성', en:'Jupiter', color:'#E8BE86', dia:196.94, tone:'깜빡이지 않는 밝은 노란 점',
           tip:'쌍안경만 있어도 갈릴레이 위성 네 개가 양옆에 점으로 늘어선 것이 보입니다. 밤마다 위치가 바뀝니다.',
           desc:'입문자에게 가장 추천하는 대상입니다. 400년 전 갈릴레이가 본 것과 같은 장면을 값싼 쌍안경으로 볼 수 있습니다. 작은 망원경이면 가로줄 무늬까지 드러납니다.' },
-        { key:'saturn',  ko:'토성', en:'Saturn',  color:'#EBD9A8', dia:165.6, ring:true,
+        { key:'saturn',  ko:'토성', en:'Saturn',  color:'#EBD9A8', dia:165.6, ring:true, tone:'차분한 누런빛 점',
           tip:'고리는 배율 30배부터 구분됩니다. 입문용 소형 망원경으로도 «귀가 달린 모양»이 확인됩니다.',
           desc:'맨눈으로는 누런 별처럼 보입니다. 처음 직접 고리를 보면 사진처럼 선명하지 않아 놀라지만, 자기 눈으로 본 고리는 인쇄물과 전혀 다른 경험으로 남습니다.' },
-        { key:'uranus',  ko:'천왕성', en:'Uranus', color:'#A8DDE8', dia:65.8,
+        { key:'uranus',  ko:'천왕성', en:'Uranus', color:'#A8DDE8', dia:65.8, tone:'아주 어두운 청록빛 점',
           tip:'아주 어두운 곳에서 맨눈 한계에 겨우 걸칩니다. 주변 별과 구별하려면 성도나 별지도 앱이 필요합니다.',
           desc:'망원경으로 발견된 첫 행성입니다. 쌍안경으로는 그냥 어두운 별처럼 보이고, 망원경에서 아주 작은 청록색 원반으로 확인되는 순간이 목적지입니다.' },
-        { key:'neptune', ko:'해왕성', en:'Neptune', color:'#7C97E8', dia:62.2,
+        { key:'neptune', ko:'해왕성', en:'Neptune', color:'#7C97E8', dia:62.2, tone:'별과 구별되지 않는 점',
           tip:'맨눈으로는 볼 수 없습니다. 쌍안경으로도 작은 별처럼 보여 위치를 미리 알고 찾아야 합니다.',
           desc:'계산으로 위치를 먼저 예측하고 그 자리를 봐서 찾아낸 행성입니다. 태양계에서 가장 바깥이라 빛이 도달하는 데만 네 시간이 넘게 걸립니다.' }
     ];
@@ -787,49 +793,114 @@
 
         items.sort(function (a, b) { return a.x - b.x; });
 
-        // 라벨 자리 잡기 — 행성이 한곳에 몰리면 이름이 서로 덮이고,
-        // 달처럼 큰 원반에 이름이 통째로 먹히기도 한다.
-        // 천체 원반들을 먼저 장애물로 깔아두고, 위·아래로 물러나며 빈자리를 찾는다.
+        // 라벨 자리 잡기.
+        // 처음에는 자리가 없으면 위로만 밀어냈는데, 그러면 라벨이 자기 점에서
+        // 멀어지다 못해 이웃 행성 쪽으로 넘어가 «화성»이 천왕성 점에 붙어 보였다.
+        // 세로로 도망치는 대신 (1) 점 둘레 여덟 방향에서 가장 가까운 빈자리를 쓰고,
+        // (2) 글자색을 그 천체 색에 맞춰 눈으로도 짝이 지어지게 하고,
+        // (3) 그래도 떨어진 자리면 가는 선으로 점과 이어 준다.
         var placed = items.map(function (it) {
             return { x: it.x, y: it.y, w: it.r * 2 + 8, h: it.r * 2 + 4 };
         });
         function labelSpot(it) {
-            var box = { w: it.label.length * 12 * k + 6, h: LH };
-            var g = LH / 2 + 6;
-            var cands = [-(it.r + g), it.r + g + LH * 0.6, -(it.r + g + LH), it.r + g + LH * 1.6,
-                         -(it.r + g + LH * 2), it.r + g + LH * 2.6];
+            var w = it.label.length * 12 * k + 6, h = LH;
+            var gy = it.r + h / 2 + 4, gx = it.r + 6;
+            // 가장 가까운 이웃의 «반대쪽»을 첫 후보로 둔다.
+            // 두 천체가 거의 포개진 순간에는 이름표가 빠져나갈 방향이 거기뿐이다
+            // (위·아래·좌·우를 순서대로 훑기만 하면 먼저 온 쪽이 좋은 자리를 다 가져간다).
+            var cands = [];
+            var nb = null, nbd = Infinity;
+            for (var m = 0; m < items.length; m++) {
+                if (items[m] === it) continue;
+                var dd = Math.hypot(it.x - items[m].x, it.y - items[m].y);
+                if (dd < nbd) { nbd = dd; nb = items[m]; }
+            }
+            if (nb && nbd < 46) {
+                var ang = Math.atan2(it.y - nb.y, it.x - nb.x);
+                var R = it.r + h + 6;
+                var ex = Math.cos(ang) * R, ey = Math.sin(ang) * R;
+                cands.push({ dx: ex, dy: ey + h * 0.32,
+                             a: ex > 6 ? 'start' : (ex < -6 ? 'end' : 'middle'), lead: 1 });
+            }
+            // 그다음은 점 둘레의 가까운 자리부터. lead=1은 «떨어져 있으니 선을 그어라»는 뜻.
+            cands = cands.concat([
+                { dx: 0,   dy: -gy,        a: 'middle', lead: 0 },
+                { dx: 0,   dy: gy,         a: 'middle', lead: 0 },
+                { dx: -gx, dy: h * 0.32,   a: 'end',    lead: 0 },
+                { dx: gx,  dy: h * 0.32,   a: 'start',  lead: 0 },
+                { dx: -gx, dy: -gy,        a: 'end',    lead: 1 },
+                { dx: gx,  dy: -gy,        a: 'start',  lead: 1 },
+                { dx: -gx, dy: gy,         a: 'end',    lead: 1 },
+                { dx: gx,  dy: gy,         a: 'start',  lead: 1 },
+                { dx: 0,   dy: -(gy + h),  a: 'middle', lead: 1 },
+                { dx: 0,   dy: gy + h,     a: 'middle', lead: 1 }
+            ]);
+            // 자리가 비어 있다고 끝이 아니다. 이름표는 «가장 가까운 점»의 것으로 읽히므로,
+            // 남의 점에 더 가까운 자리는 비어 있어도 쓰면 안 된다.
+            function ownsIt(cx, cy) {
+                var mine = Math.hypot(cx - it.x, cy - it.y);
+                for (var n = 0; n < items.length; n++) {
+                    if (items[n] === it) continue;
+                    if (Math.hypot(cx - items[n].x, cy - items[n].y) <= mine) return false;
+                }
+                return true;
+            }
+            var free = null;
             for (var c = 0; c < cands.length; c++) {
-                var y = it.y + cands[c];
-                if (y < MAP.yTop + 10 || y > MAP.yHor + 16) continue;
+                var q = cands[c], y = it.y + q.dy;
+                // 글자가 뻗는 방향이 anchor마다 달라 상자 중심이 달라진다
+                var cx = it.x + q.dx + (q.a === 'end' ? -w / 2 : q.a === 'start' ? w / 2 : 0);
+                if (y < MAP.yTop + h || y > MAP.yHor + 16) continue;
+                if (cx - w / 2 < MAP.x0 - 36 || cx + w / 2 > MAP.x1 + 36) continue;
                 var clash = false;
                 for (var i = 0; i < placed.length; i++) {
                     var p = placed[i];
-                    if (Math.abs(it.x - p.x) < (box.w + p.w) / 2 &&
-                        Math.abs(y - p.y) < (box.h + p.h) / 2) { clash = true; break; }
+                    if (Math.abs(cx - p.x) < (w + p.w) / 2 &&
+                        Math.abs(y - p.y) < (h + p.h) / 2) { clash = true; break; }
                 }
-                if (!clash) { placed.push({ x: it.x, y: y, w: box.w, h: box.h }); return y; }
+                if (clash) continue;
+                var spot = { x: it.x + q.dx, y: y, anchor: q.a, lead: q.lead, bx: cx };
+                if (ownsIt(cx, y - h * 0.35)) {
+                    placed.push({ x: cx, y: y, w: w, h: h });
+                    return spot;
+                }
+                if (!free) free = spot;   // 주인 조건은 못 맞췄지만 비어는 있는 자리
             }
-            var fy = it.y - it.r - LH / 2 - 6;
-            placed.push({ x: it.x, y: fy, w: box.w, h: box.h });
-            return fy;
+            // 어디를 놔도 남의 점이 더 가깝다면(아주 몰린 순간) 빈자리에 놓고
+            // 반드시 선으로 이어 어느 점의 이름인지 밝힌다.
+            var fb = free || { x: it.x, y: it.y - gy, anchor: 'middle', bx: it.x };
+            placed.push({ x: fb.bx, y: fb.y, w: w, h: h });
+            return { x: fb.x, y: fb.y, anchor: fb.anchor, lead: 1 };
         }
 
-        items.forEach(function (it) {
+        // 잇는 선은 점 밑에 깔려야 하므로 층을 나눠 그린다
+        var spots = items.map(labelSpot);
+        var leads = '', dots = '', labels = '';
+        items.forEach(function (it, n) {
+            var sp = spots[n];
+            if (sp.lead) {
+                leads += '<line data-lead="' + it.label + '" x1="' + it.x.toFixed(1) + '" y1="' + it.y.toFixed(1) +
+                         '" x2="' + sp.x.toFixed(1) + '" y2="' + (sp.y - LH * 0.3).toFixed(1) +
+                         '" stroke="' + it.c + '" stroke-width="1" opacity="0.4"/>';
+            }
             if (it.moon) {
                 var mp = moonPath(it.moon.illum, it.moon.waxing, it.r);
-                svg += '<g transform="translate(' + it.x.toFixed(1) + ',' + it.y.toFixed(1) + ')">' +
-                       '<circle r="' + it.r + '" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>' +
-                       '<g transform="' + mp.flip + '"><path d="' + mp.d + '" fill="#FFD08A"/></g></g>';
+                dots += '<g data-dot="' + it.label + '" transform="translate(' + it.x.toFixed(1) + ',' + it.y.toFixed(1) + ')">' +
+                        '<circle r="' + it.r + '" fill="#0F172A" stroke="rgba(255,255,255,0.14)"/>' +
+                        '<g transform="' + mp.flip + '"><path d="' + mp.d + '" fill="#FFD08A"/></g></g>';
             } else {
-                svg += '<circle cx="' + it.x.toFixed(1) + '" cy="' + it.y.toFixed(1) + '" r="' + (it.r + 4) +
-                       '" fill="' + it.c + '" opacity="0.16"/>';
-                svg += '<circle cx="' + it.x.toFixed(1) + '" cy="' + it.y.toFixed(1) + '" r="' + it.r +
-                       '" fill="' + it.c + '"/>';
+                dots += '<circle cx="' + it.x.toFixed(1) + '" cy="' + it.y.toFixed(1) + '" r="' + (it.r + 4) +
+                        '" fill="' + it.c + '" opacity="0.16"/>' +
+                        '<circle data-dot="' + it.label + '" cx="' + it.x.toFixed(1) + '" cy="' + it.y.toFixed(1) +
+                        '" r="' + it.r + '" fill="' + it.c + '"/>';
             }
-            var ly = labelSpot(it);
-            svg += '<text x="' + it.x.toFixed(1) + '" y="' + ly.toFixed(1) +
-                   '" text-anchor="middle" font-size="' + FS + '" font-weight="600" fill="#E2E8F0">' + it.label + '</text>';
+            // data-label / data-dot 은 «이름표가 제 점에 붙어 있는지»를
+            // 자동 검사(tests/render.mjs)가 확인하기 위한 표식이다.
+            labels += '<text data-label="' + it.label + '" x="' + sp.x.toFixed(1) + '" y="' + sp.y.toFixed(1) +
+                      '" text-anchor="' + sp.anchor + '" font-size="' + FS +
+                      '" font-weight="700" fill="' + it.c + '">' + it.label + '</text>';
         });
+        svg += leads + dots + labels;
 
         if (!items.length) {
             svg += '<text x="375" y="150" text-anchor="middle" font-size="' + (13 * k).toFixed(1) + '" fill="#64748B">' +
@@ -843,38 +914,98 @@
     }
 
     // ---------- 근접(합) ----------
+    // 어느 방향을 보고 서든 방위각은 시계 방향으로 늘어난다.
+    // 그래서 «방위각이 큰 쪽 = 내 오른쪽»은 남쪽이든 동쪽이든 늘 성립한다.
+    function relDir(from, to) {
+        var dAlt = to.alt - from.alt;
+        var dAz = to.az - from.az;
+        if (dAz > 180) dAz -= 360;
+        if (dAz < -180) dAz += 360;
+        var h = dAz > 1 ? '오른쪽' : (dAz < -1 ? '왼쪽' : '');
+        var v = dAlt > 1 ? '위' : (dAlt < -1 ? '아래' : '');
+        return (h && v) ? h + ' ' + v : (h || v || '');
+    }
+
+    // 팔을 쭉 뻗었을 때 — 새끼손가락 하나가 약 1도, 손가락 세 개가 약 5도, 주먹 하나가 약 10도
+    function handSize(d) {
+        if (d < 1)   return '새끼손가락 하나 폭';
+        if (d < 2.5) return '새끼손가락 두세 개 폭';
+        if (d < 5)   return '손가락 세 개 폭';
+        return '주먹 하나 폭';
+    }
+
     function renderConj(idx) {
         var s = state.samples[idx], list = [], box = document.getElementById('conjBox');
-        var bodies = PLANETS.map(function (p) { return { ko: p.ko, o: s.b[p.key] }; });
-        bodies.push({ ko: '달', o: s.b.moon });
+        var bodies = PLANETS.map(function (p) {
+            return { ko: p.ko, o: s.b[p.key], tone: p.tone, mag: s.b[p.key].mag, isMoon: false };
+        });
+        bodies.push({ ko: '달', o: s.b.moon, mag: -12, isMoon: true });
 
         for (var i = 0; i < bodies.length; i++) {
             for (var j = i + 1; j < bodies.length; j++) {
                 var a = bodies[i], b = bodies[j];
                 if (a.o.alt < MIN_ALT && b.o.alt < MIN_ALT) continue;
                 var dg = sep(a.o, b.o);
-                if (dg < 8) list.push({ a: a.ko, b: b.ko, d: dg });
+                if (dg < 8) list.push({ a: a, b: b, d: dg });
             }
         }
         if (!list.length) { box.innerHTML = ''; return; }
         list.sort(function (x, y) { return x.d - y.d; });
 
-        var html = '';
-        list.slice(0, 3).forEach(function (c) {
-            // 각도를 손으로 재는 법 — 팔을 쭉 뻗었을 때
-            // 새끼손가락 하나가 약 1도, 손가락 세 개가 약 5도, 주먹 하나가 약 10도다.
-            var how = c.d < 1
-                ? '보름달 두 개 폭 안쪽입니다. 맨눈으로는 거의 붙어 보이고, 쌍안경 한 시야에 둘이 함께 들어옵니다.'
-                : (c.d < 2.5
-                    ? '쌍안경 한 시야에 둘이 함께 들어옵니다. 팔을 뻗어 새끼손가락 두어 개를 대면 딱 그만큼입니다.'
-                    : (c.d < 5
-                        ? '팔을 쭉 뻗었을 때 손가락 세 개 폭쯤 됩니다. 맨눈으로 한눈에 들어옵니다.'
-                        : '팔을 쭉 뻗었을 때 주먹 하나 폭 안쪽입니다. 둘을 잇는 선이 바로 행성들이 지나다니는 길, 황도입니다.'));
-            html += '<div class="conj"><div class="conj-t">✨ ' + c.a + josa(c.a, '과', '와') + ' ' +
-                    c.b + josa(c.b, '이', '가') + ' ' + c.d.toFixed(1) + '° 거리에 있습니다</div>' +
-                    '<div class="conj-d">' + how + '</div></div>';
-        });
-        box.innerHTML = html;
+        // 가장 가까운 한 쌍만 자세히 쓴다. 같은 문장 틀을 세 번 늘어놓으면
+        // 정보가 세 배가 되는 게 아니라 그냥 지루해진다.
+        var c = list[0];
+        // 눈에 먼저 들어오는 쪽(달이 끼어 있으면 달)을 길잡이로 삼는다
+        var anchor = c.a.mag <= c.b.mag ? c.a : c.b;
+        var other  = anchor === c.a ? c.b : c.a;
+        var dir = relDir(anchor.o, other.o);
+
+        var find = anchor.ko + '을 먼저 찾으세요. ' +
+            (dir ? '거기서 <b>' + dir + '</b> 방향, ' : '거의 같은 자리, ') +
+            '팔을 쭉 뻗어 ' + handSize(c.d) + '만큼 떨어진 곳입니다. ' +
+            (other.mag > 6
+                ? '그 방향에 ' + other.ko + '이 있지만 망원경이 있어야 보입니다.'
+                : '그 자리의 ' + other.tone + '이 ' + other.ko + '입니다.');
+
+        // 달은 하루 13도씩 옮겨 가고 행성은 거의 제자리다 — 안내가 달라야 한다
+        var nr = nightRange();
+        var move;
+        if (c.a.isMoon || c.b.isMoon) {
+            var d0 = sepAt(nr.a, c), d1 = sepAt(nr.b, c);
+            move = '달은 하늘에서 하루 <b>13°</b>씩 동쪽으로 옮겨 갑니다. 오늘 밤 사이에도 간격이 ' +
+                   d0.toFixed(1) + '° → ' + d1.toFixed(1) + '°로 ' +
+                   (d1 < d0 ? '좁아집니다' : '벌어집니다') +
+                   '. 내일 밤이면 아예 다른 자리에 있습니다.';
+        } else {
+            move = '행성끼리는 하루 사이에 거의 움직이지 않습니다. 이 배치는 <b>며칠 동안</b> 이어지니, ' +
+                   '오늘 흐리면 내일이나 모레 같은 자리에서 다시 보면 됩니다.';
+        }
+
+        var rest = '';
+        if (list.length > 1) {
+            var more = list.slice(1, 3).map(function (x) {
+                return x.a.ko + josa(x.a.ko, '과', '와') + ' ' + x.b.ko + ' ' + x.d.toFixed(1) + '°';
+            });
+            rest = '<div class="conj-more">그 밖에 ' + more.join(' · ') + ' 거리에 있습니다.</div>';
+        }
+
+        box.innerHTML = '<div class="conj">' +
+            '<div class="conj-t">✨ ' + c.a.ko + josa(c.a.ko, '과', '와') + ' ' +
+            c.b.ko + josa(c.b.ko, '이', '가') + ' ' + c.d.toFixed(1) + '° 거리에 있습니다</div>' +
+            '<div class="conj-d">' + find + '</div>' +
+            '<div class="conj-d" style="margin-top:7px;">' + move + '</div>' +
+            rest + '</div>';
+    }
+
+    // 같은 쌍의 각거리를 다른 시각에 다시 잰다
+    function sepAt(i, c) {
+        var s = state.samples[i];
+        var pick = function (bd) {
+            if (bd.isMoon) return s.b.moon;
+            for (var n = 0; n < PLANETS.length; n++) if (PLANETS[n].ko === bd.ko) return s.b[PLANETS[n].key];
+            return null;
+        };
+        return sep(pick(c.a), pick(c.b));
     }
 
     // ---------- 행성 카드 ----------

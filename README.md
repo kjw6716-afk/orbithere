@@ -43,6 +43,24 @@
 
 새 기능이 localStorage 키를 추가하거나 서버에 새 값을 보내면
 **`privacy.html`과 `PROJECT_STATUS.md`를 같은 커밋에서 함께 고칩니다.**
+(`npm run test:links`가 이걸 검사합니다 — 방침에 없는 `orbit_*` 키가 있으면 실패합니다.)
+
+## 검사
+
+```bash
+npm install          # playwright 만 받습니다. 사이트에는 빌드 스텝이 없습니다
+npx playwright install chromium
+npm test
+```
+
+| 스크립트 | 무엇을 보는가 |
+|---|---|
+| `test:astronomy` | `planets.html`의 천문 계산. 서울 일출·일몰을 공표값과 대조하고, 같은 값을 시간각 해석식으로 다시 구해 교차검증합니다 |
+| `test:links` | 깨진 내부 링크, sitemap 누락, canonical·OG, 방침에 없는 localStorage 키 |
+| `test:render` | 실제로 그려본 화면 — 하늘 지도 이름표가 제 점에 붙는지, 좁은 화면에서 읽히는지, 키보드로 되는지 |
+
+`push`(main)와 PR마다 GitHub Actions가 같은 것을 돌립니다. 다만 **배포를 막지는 못합니다** —
+GitHub Pages는 워크플로를 거치지 않고 푸시된 파일을 그대로 올리기 때문입니다.
 
 ---
 
