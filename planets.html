@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘 밤 행성 보기 — 지금 목성 · 토성 · 금성이 어디에 떠 있나 | Orbit</title>
+    <meta name="description" content="저 밝은 별, 사실 행성입니다. 오늘 밤 어느 방향 몇 도에 어떤 행성이 떠 있는지, 맨눈으로 보이는지 계산해서 알려드립니다. 도시별 뜨고 지는 시각과 달·행성 근접까지.">
+    <meta name="theme-color" content="#0F172A">
+    <link rel="canonical" href="https://orbithere.com/planets.html">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="/apple-touch-icon-precomposed.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Orbit">
+    <meta property="og:title" content="오늘 밤 행성 보기 — 저 밝은 별, 사실 행성입니다">
+    <meta property="og:description" content="오늘 밤 하늘 어디에 어떤 행성이 떠 있는지. 방향과 고도, 맨눈으로 보이는지까지 계산해 드립니다.">
+    <meta property="og:image" content="https://orbithere.com/images/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://orbithere.com/planets.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Orbit 오늘 밤 행성 보기",
+      "url": "https://orbithere.com/planets.html",
+      "applicationCategory": "ReferenceApplication",
+      "operatingSystem": "All",
+      "inLanguage": "ko",
+      "description": "오늘 밤 행성의 방향·고도·밝기를 계산해 보여주는 관측 도구.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "저 밝은 별이 행성인지 어떻게 알 수 있나요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "깜빡이는지 보면 됩니다. 별은 아주 먼 점으로 보이기 때문에 대기가 흔들릴 때마다 빛이 반짝거립니다. 행성은 가까워서 아주 작은 원반으로 보이고, 그 흔들림이 서로 상쇄되어 흔들림 없이 차분하게 빛납니다. 또 행성은 해와 달이 지나간 길(황도) 위에만 있습니다." }
+        },
+        {
+          "@type": "Question",
+          "name": "도시에서도 행성이 보이나요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "보입니다. 유성우나 은하수와 달리 금성·목성·토성·화성은 도심 한복판에서도 맨눈으로 보입니다. 밝기가 웬만한 가로등 불빛을 이기기 때문입니다. 별 보기를 처음 시작한다면 행성이 가장 실패가 적은 대상입니다." }
+        },
+        {
+          "@type": "Question",
+          "name": "토성 고리를 보려면 어떤 장비가 필요한가요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "배율 30배 이상이면 고리를 구분할 수 있습니다. 입문용 소형 망원경으로도 '귀가 달린 듯한' 모양이 확인되고, 50배가 넘어가면 고리 사이의 틈이 보이기 시작합니다. 쌍안경으로는 고리까지는 어렵고 살짝 길쭉한 점으로 보입니다." }
+        },
+        {
+          "@type": "Question",
+          "name": "수성은 왜 보기 어렵나요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "수성은 태양에 가장 가까워서 하늘에서도 태양 곁을 벗어나지 못합니다. 그래서 해가 진 직후 서쪽 지평선 근처, 또는 해 뜨기 직전 동쪽 지평선 근처에서 30분 남짓만 보입니다. 시야가 트인 곳이 필요하고, 기회 자체가 1년에 몇 번뿐입니다." }
+        },
+        {
+          "@type": "Question",
+          "name": "행성이 한 줄로 서는 '행성 정렬'은 정말 드문 일인가요?",
+          "acceptedAnswer": { "@type": "Answer", "text": "행성은 모두 황도라는 같은 길 위를 돌기 때문에 하늘에서는 늘 한 줄에 가깝게 늘어서 있습니다. 뉴스에 나오는 '정렬'은 대개 그중 여러 개가 같은 시간대에 동시에 보이는 상태를 말합니다. 실제로 드물고 볼 만한 것은 두 천체가 1도 안쪽까지 붙는 '근접(합)'입니다." }
+        }
+      ]
+    }
+    </script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
+    <link rel="stylesheet" href="/orbit.css">
+    <style>
+        :root { --mint: #4FD1C5; }
+        body { touch-action: manipulation; }
+
+        .container { max-width: 720px; margin: 130px auto 80px; padding: 0 20px; }
+
+        /* 한국어는 단어 중간에서 줄이 바뀌면 «행성입니 / 다» 처럼 읽히므로 어절 단위로 끊는다 */
+        .hero h1 { word-break: keep-all; }
+
+        .card-tag {
+            display: inline-flex; align-items: center; justify-content: center;
+            height: 24px; padding: 0 11px; line-height: 1;
+            font-size: 11px; font-weight: 600;
+            color: var(--accent); background: rgba(255,159,67,0.1);
+            border-radius: 99px;
+        }
+
+        /* ===== 관측지 선택 ===== */
+        .place-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+        .place-label { font-size: 11.5px; color: #64748B; margin-right: 2px; }
+        .pbtn {
+            display: inline-flex; align-items: center; justify-content: center;
+            height: 28px; padding: 0 13px; line-height: 1;
+            font-size: 12px; border-radius: 99px;
+            border: 1.5px solid rgba(255,159,67,0.22); background: transparent;
+            cursor: pointer; color: #94A3B8; transition: all 0.2s;
+            font-family: 'Pretendard'; font-weight: 500;
+        }
+        .pbtn:hover { color: var(--text-main); border-color: rgba(255,159,67,0.45); }
+        .pbtn.on { background: var(--accent); border-color: var(--accent); color: #0F172A; font-weight: 700; }
+
+        /* ===== 하늘 지도 ===== */
+        .sky-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,159,67,0.15);
+            border-radius: 20px; padding: 20px 20px 16px; position: relative; overflow: hidden;
+        }
+        .sky-card::before {
+            content:''; position:absolute; top:-70px; right:-70px; width:230px; height:230px;
+            background:radial-gradient(circle,rgba(255,159,67,0.07) 0%,transparent 70%); pointer-events:none;
+        }
+        .sky-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+        .sky-when { font-size: 10.5px; color: #64748B; }
+        .sky-sum { font-size: 14px; color: #CBD5E1; line-height: 1.65; margin: 12px 0 6px; }
+        .sky-sum b { color: var(--accent); font-weight: 700; }
+        .sky-map { width: 100%; height: auto; display: block; margin: 4px 0 2px; }
+        .sky-hint { font-size: 11px; color: #64748B; line-height: 1.6; }
+
+        /* 시각 스크러버 */
+        .scrub { margin-top: 14px; }
+        .scrub-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+        .scrub-now { font-size: 13px; font-weight: 700; color: var(--mint); font-variant-numeric: tabular-nums; }
+        .scrub-ends { font-size: 10.5px; color: #64748B; font-variant-numeric: tabular-nums; }
+        input[type=range].scrub-range {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 4px; border-radius: 99px; outline: none;
+            background: linear-gradient(90deg, rgba(79,209,197,0.45), rgba(255,159,67,0.45));
+            margin: 0;
+        }
+        input[type=range].scrub-range::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 18px; height: 18px; border-radius: 50%;
+            background: var(--mint); border: 3px solid #0F172A;
+            box-shadow: 0 0 0 1px rgba(79,209,197,0.6); cursor: pointer;
+        }
+        input[type=range].scrub-range::-moz-range-thumb {
+            width: 14px; height: 14px; border-radius: 50%;
+            background: var(--mint); border: 3px solid #0F172A; cursor: pointer;
+        }
+        .scrub-back {
+            display: none; margin-top: 9px; font-size: 11px;
+            background: transparent; border: 1px solid rgba(79,209,197,0.3);
+            color: var(--mint); border-radius: 99px; padding: 4px 12px;
+            cursor: pointer; font-family: 'Pretendard';
+        }
+        .scrub-back.on { display: inline-block; }
+
+        /* ===== 근접 알림 ===== */
+        .conj {
+            margin-top: 16px; padding: 15px 17px; border-radius: 14px;
+            background: rgba(79,209,197,0.07); border: 1px solid rgba(79,209,197,0.22);
+        }
+        .conj-t { font-size: 13px; font-weight: 700; color: var(--mint); margin-bottom: 5px; }
+        .conj-d { font-size: 12.5px; color: #A5B4C4; line-height: 1.7; }
+
+        /* ===== 행성 카드 ===== */
+        .plist { display: flex; flex-direction: column; gap: 10px; margin-top: 26px; }
+        .pl {
+            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 15px 17px; cursor: pointer;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .pl:hover { border-color: rgba(255,159,67,0.35); transform: translateY(-1px); }
+        .pl:focus-visible { border-color: rgba(255,159,67,0.5); outline: none; }
+        .pl.open { border-color: rgba(255,159,67,0.4); }
+        .pl.off { opacity: 0.55; }
+        .pl.off:hover { opacity: 0.8; }
+        .pl-top { display: flex; align-items: center; gap: 13px; }
+        .pl-disc { flex-shrink: 0; width: 34px; height: 34px; }
+        .pl-mid { flex: 1; min-width: 0; }
+        .pl-name { font-size: 14.5px; font-weight: 600; }
+        .pl-name .en { font-size: 10.5px; color: #64748B; font-weight: 400; margin-left: 5px; }
+        .pl-sub { font-size: 11.5px; color: #64748B; margin-top: 2px; }
+        .pl-alt {
+            flex-shrink: 0; text-align: right;
+            font-size: 12px; font-weight: 700; color: var(--accent);
+            font-variant-numeric: tabular-nums;
+        }
+        .pl-alt small { display: block; font-size: 10px; color: #64748B; font-weight: 500; margin-top: 2px; }
+
+        .pl-badges { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+        .pb {
+            display: inline-flex; align-items: center; justify-content: center;
+            height: 23px; padding: 0 10px; line-height: 1;
+            font-size: 10.5px; font-weight: 600; border-radius: 99px;
+            border: 1px solid transparent; white-space: nowrap;
+        }
+        .pb.now  { color: #4FD1C5; background: rgba(79,209,197,0.1);  border-color: rgba(79,209,197,0.3); }
+        .pb.soon { color: #A3D977; background: rgba(163,217,119,0.1); border-color: rgba(163,217,119,0.28); }
+        .pb.hard { color: #FFB74D; background: rgba(255,183,77,0.1);  border-color: rgba(255,183,77,0.28); }
+        .pb.no   { color: #64748B; background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.07); }
+        .pb.mag  { color: #94A3B8; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.09); font-variant-numeric: tabular-nums; }
+
+        .pl-body { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.07); }
+        .pl.open .pl-body { display: block; animation: rise 0.25s ease; }
+        @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .pl-desc { font-size: 13px; color: #94A3B8; line-height: 1.8; margin: 0 0 12px; }
+        .pl-rows { display: flex; flex-direction: column; gap: 8px; }
+        .pl-row {
+            display: flex; gap: 10px; align-items: flex-start;
+            padding: 10px 12px; border-radius: 10px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+        }
+        .pl-row .rl { flex-shrink: 0; width: 92px; font-size: 11.5px; color: #64748B; }
+        .pl-row .rv { flex: 1; font-size: 12.5px; color: #CBD5E1; line-height: 1.6; }
+
+        .notice a { color: #94A3B8; }
+
+        @media (max-width: 768px) {
+            .container { margin-top: 110px; }
+            .pl-row { flex-direction: column; gap: 3px; }
+            .pl-row .rl { width: auto; }
+        }
+        /* 좁은 화면에서 시각과 일몰·일출이 한 줄에서 서로를 밀어낸다 */
+        @media (max-width: 520px) {
+            .scrub-top { flex-direction: column; align-items: flex-start; gap: 3px; }
+        }
+
+        ::selection { background-color: #4FD1C5; color: #0F172A; }
+
+        /* ===== 공통 푸터 ===== */
+        .site-footer { margin: 0 auto; }
+
+        /* 메인 패널에 iframe으로 임베드될 때 */
+        .embed nav { display: none; }
+        .embed .container { margin: 0 auto; padding: 0; max-width: 680px; }
+        .embed .hero, .embed .seo-content, .embed .site-footer { display: none; }
+    </style>
+    <script>if(new URLSearchParams(location.search).get('embed'))document.documentElement.classList.add('embed');</script>
+    <script src="effects.js" defer></script>
+    <script src="visits.js" defer></script>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <nav class="site-topbar">
+        <a class="logo" href="index.html">ORBIT.</a>
+        <button class="nav-back" onclick="location.href='main.html'">← 커뮤니티 홈</button>
+    </nav>
+
+    <main class="container">
+        <div class="hero">
+            <h1><strong>오늘 밤 행성 보기</strong> — 저 밝은 별, 사실 행성입니다</h1>
+            <p>해가 지고 나면 하늘에서 가장 먼저 눈에 띄는 밝은 점들은 대개 별이 아니라 행성입니다. 오늘 밤 어느 방향 몇 도 높이에 무엇이 떠 있는지, 맨눈으로 보이는지 망원경이 필요한지 계산해서 알려드립니다. 유성우와 달리 <strong>도심에서도 보입니다.</strong></p>
+        </div>
+
+        <!-- 관측지 -->
+        <div class="place-row" id="placeRow">
+            <span class="place-label">관측지</span>
+        </div>
+
+        <!-- 하늘 지도 -->
+        <section class="sky-card">
+            <div class="sky-head">
+                <span class="card-tag">🪐 오늘 밤 하늘</span>
+                <span class="sky-when" id="skyWhen">한국 표준시(KST) 기준</span>
+            </div>
+
+            <div class="sky-sum" id="skySum">계산하는 중…</div>
+
+            <svg class="sky-map" id="skyMap" viewBox="0 0 720 320" role="img" aria-labelledby="skyMapTitle">
+                <title id="skyMapTitle">오늘 밤 행성 위치 지도</title>
+            </svg>
+            <div class="sky-hint">가로는 방위, 세로는 지평선에서의 높이(고도)입니다. <b style="color:#94A3B8;">가운데가 남쪽</b>이니, 남쪽을 보고 서면 그림 그대로 보입니다. 하늘 한 바퀴를 좌우로 눌러 담은 그림이라 <b style="color:#94A3B8;">좌우 간격은 실제보다 가깝게</b> 보입니다 — 정확한 각도는 아래 근접 안내를 보세요.</div>
+
+            <div class="scrub">
+                <div class="scrub-top">
+                    <span class="scrub-now" id="scrubNow">—</span>
+                    <span class="scrub-ends" id="scrubEnds"></span>
+                </div>
+                <input type="range" class="scrub-range" id="scrubRange" min="0" max="1" value="0" step="1" aria-label="시각 이동">
+                <button class="scrub-back" id="scrubBack" type="button">지금 시각으로 되돌리기</button>
+            </div>
+        </section>
+
+        <!-- 근접(합) 알림 -->
+        <div id="conjBox"></div>
+
+        <!-- 행성 목록 -->
+        <div class="plist" id="plist"></div>
+
+        <!-- SEO 본문 -->
+        <section class="seo-content">
+            <h2>밤하늘에서 행성을 찾는 법</h2>
+            <p>별자리를 하나도 몰라도 행성은 찾을 수 있습니다. 오히려 <strong>별 보기를 처음 시작할 때 가장 실패가 적은 대상</strong>이 행성입니다. 밝고, 도시에서도 보이고, 어디를 봐야 할지 정해져 있기 때문입니다.</p>
+
+            <h3>1. 깜빡이지 않으면 행성입니다</h3>
+            <p>별은 아무리 커도 너무 멀어서 하늘에서는 <strong>크기 없는 점</strong>으로 보입니다. 그 점 하나가 대기의 흔들림을 그대로 받기 때문에 반짝반짝 깜빡입니다. 행성은 가까워서 아주 작은 <strong>원반</strong>으로 보이고, 원반 위 여러 지점의 흔들림이 서로 상쇄되어 차분하게 빛납니다. 밝은데 깜빡이지 않으면 십중팔구 행성입니다.</p>
+
+            <h3>2. 행성은 늘 같은 길 위에 있습니다</h3>
+            <p>행성은 태양계라는 거의 평평한 원반 위를 돌기 때문에, 지구에서 보면 <strong>해와 달이 지나간 길(황도)</strong> 위에서만 움직입니다. 그래서 북쪽 하늘 높은 곳에는 절대 행성이 없습니다. 낮에 해가 지나간 궤적을 기억해 두면, 밤에 그 길만 훑어도 행성을 다 찾을 수 있습니다.</p>
+
+            <h3>3. 밝기 순서만 외워두면 구분됩니다</h3>
+            <p>맨눈에 보이는 행성은 다섯 개뿐입니다. 밝은 순서는 대체로 <strong>금성 → 목성 → 화성·수성 → 토성</strong> 순입니다. 압도적으로 밝은 하나가 초저녁 서쪽이나 새벽 동쪽에 있으면 금성, 한밤중에 높이 떠서 노랗게 빛나면 목성, 붉은 기가 돌면 화성, 목성보다 어둡고 누런빛이면 토성입니다.</p>
+
+            <h3>4. 지평선에 가까울수록 불리합니다</h3>
+            <p>고도가 낮으면 그만큼 두꺼운 대기를 통과해서 오기 때문에 빛이 흐려지고 심하게 일렁입니다. 고도 <strong>20도 아래는 건물과 산에 가리기도 쉽습니다.</strong> 이 페이지가 방향뿐 아니라 고도를 함께 보여주는 이유입니다. 30도가 넘으면 편안하고, 50도가 넘으면 아주 좋은 조건입니다.</p>
+
+            <h2>행성별 관측 요령</h2>
+            <h3>금성 — 가장 밝지만 가장 짧게</h3>
+            <p>맨눈으로 보이는 천체 중 해와 달 다음으로 밝습니다. 새벽의 <strong>샛별</strong>과 초저녁의 <strong>개밥바라기</strong>가 둘 다 금성입니다. 태양 곁을 크게 벗어나지 못해서 한밤중에는 볼 수 없고, 해 뜨기 전이나 해 진 직후에만 보입니다. 쌍안경을 고정해서 보면 달처럼 차고 기우는 모양이 확인됩니다.</p>
+            <h3>목성 — 쌍안경 한 대의 감동</h3>
+            <p>입문자에게 가장 추천하는 대상입니다. <strong>쌍안경만 있어도 갈릴레이 위성 네 개</strong>가 목성 양옆에 점으로 늘어선 것이 보입니다. 하룻밤 사이에도 위치가 바뀌고, 다음 날 보면 순서가 달라져 있습니다. 400년 전 갈릴레이가 본 것과 같은 장면입니다.</p>
+            <h3>토성 — 배율 30배의 문턱</h3>
+            <p>맨눈으로는 그냥 누런 별처럼 보입니다. 고리는 <strong>배율 30배</strong>부터 구분되기 시작해서, 입문용 소형 망원경으로도 '귀가 달린 모양'이 확인됩니다. 처음 직접 보면 대개 인쇄물처럼 선명하지 않은데, 그래도 자기 눈으로 본 고리는 사진과 전혀 다른 경험입니다.</p>
+            <h3>화성 — 2년 2개월마다 오는 기회</h3>
+            <p>붉은 기가 도는 것은 맨눈으로도 느껴집니다. 다만 표면 무늬를 보려면 지구와 가까워지는 <strong>충(衝) 전후 몇 달</strong>이어야 합니다. 그 시기를 벗어나면 큰 망원경으로도 작은 오렌지색 점에 가깝습니다.</p>
+            <h3>수성 — 1년에 몇 번뿐인 손님</h3>
+            <p>태양에서 가장 가까워 하늘에서도 태양 곁을 벗어나지 못합니다. 해 진 직후 서쪽, 또는 해 뜨기 직전 동쪽 <strong>지평선 근처에서 30분 남짓</strong>만 보입니다. 서쪽이나 동쪽이 탁 트인 장소가 필요합니다. 코페르니쿠스가 평생 한 번도 못 봤다는 이야기가 전해질 만큼 까다로운 대상입니다.</p>
+            <h3>천왕성 · 해왕성 — 찾았다는 사실이 재미</h3>
+            <p>천왕성은 아주 어두운 곳에서 맨눈 한계에 겨우 걸치고, 해왕성은 맨눈으로 볼 수 없습니다. 둘 다 <strong>쌍안경으로는 그냥 별처럼</strong> 보여서, 주변 별과 구별하려면 성도나 별지도 앱이 필요합니다. 망원경에서 작은 청록색 원반으로 확인되는 순간이 이 둘의 목적지입니다.</p>
+
+            <h2>등급(광도)은 어떻게 읽나요?</h2>
+            <p>천문학에서 밝기는 <strong>등급</strong>으로 나타내고, 숫자가 작을수록 밝습니다. 마이너스면 아주 밝다는 뜻입니다. 1등급 차이가 약 2.5배이고, 5등급 차이가 정확히 100배입니다.</p>
+            <ul>
+                <li><strong>-4등급</strong> — 금성. 밤에 그림자가 생길 정도입니다</li>
+                <li><strong>-2등급</strong> — 목성. 하늘에서 가장 눈에 띄는 점입니다</li>
+                <li><strong>0등급</strong> — 아주 밝은 별. 직녀성·아르크투루스 수준</li>
+                <li><strong>+6등급</strong> — 아주 어두운 시골에서 맨눈으로 보이는 한계</li>
+                <li><strong>+4등급</strong> — 도시에서 맨눈으로 보이는 대략적인 한계</li>
+            </ul>
+
+            <h2>도시에서도 보이나요?</h2>
+            <p>이것이 행성 관측의 가장 큰 장점입니다. 유성우와 은하수는 빛공해에 아주 취약해서 도심에서는 거의 볼 수 없지만, <strong>행성은 밝아서 서울 한복판에서도 그대로 보입니다.</strong> 아파트 베란다에서도, 퇴근길 육교 위에서도 보입니다.</p>
+            <p>그래서 별 보기를 시작하는 가장 현실적인 순서는 이렇습니다. 오늘 밤 집 앞에서 행성을 하나 찾아보고, 다음에 쌍안경으로 목성의 위성을 보고, 그다음에 어두운 곳으로 유성우를 보러 가는 것입니다. <strong>첫 단계는 오늘 밤 당장, 아무 장비 없이 할 수 있습니다.</strong></p>
+
+            <div class="notice">
+                <strong style="color:#94A3B8;">계산 안내 ·</strong>
+                행성의 위치는 미국 항공우주국 제트추진연구소(JPL)가 공개한 <b>근사 궤도요소</b>로 이 페이지에서 직접 계산합니다.
+                1800년~2050년 구간에 대해 설계된 값이라 관측 목적으로 쓰기에 충분한 정확도이며,
+                하드코딩된 일정표가 아니므로 몇 년 뒤에 열어도 그날의 하늘을 그대로 계산해 보여줍니다.<br><br>
+                밝기(등급)와 겉보기 크기는 표준 근사식으로 구한 값이라 실제와 0.1~0.3등급 정도 차이가 날 수 있습니다.
+                특히 토성은 고리가 기울어진 정도에 따라 밝기가 크게 달라지는데 그 보정은 넣지 않았습니다.
+                고도와 방위에는 대기 굴절과 지형·건물의 가림을 반영하지 않았고, 날씨와 구름은 당연히 알 수 없습니다.
+                정확한 공식 정보는 <a href="https://astro.kasi.re.kr/" target="_blank" rel="noopener">한국천문연구원 천문우주지식정보</a>를 확인해 주세요.
+            </div>
+
+            <a class="cta-lounge" href="lounge.html#report">
+                <div class="ct">오늘 밤 하나라도 찾았다면 →</div>
+                <div class="cd">어느 방향에서 뭘 봤는지, 쌍안경으로 위성이 몇 개 보였는지 관측 후기 궤도에 남겨주세요. 같은 하늘을 본 사람들이 모여 있습니다.</div>
+            </a>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="foot-links">
+            <a href="main.html">커뮤니티 홈</a>
+            <a href="sky.html">밤하늘 달력</a>
+            <a href="planets.html">오늘 밤 행성</a>
+            <a href="lounge.html">글 남기기</a>
+            <a href="terms.html">이용약관</a>
+            <a href="privacy.html">개인정보처리방침</a>
+        </div>
+        <div class="foot-sign">
+            © 2026 Orbit · Made with
+            <svg class="foot-star" viewBox="0 0 100 100" aria-hidden="true"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg>
+            in orbit
+        </div>
+    </footer>
+
+    <script>
+    // ============================================================
+    //  오늘 밤 행성 보기
+    //  - 행성 위치: JPL "Keplerian Elements for Approximate Positions
+    //    of the Major Planets" (Standish, 1800~2050) 로 직접 계산
+    //  - 달 위치: 저정밀 달 이론(Meeus 47장 주요항)
+    //  - 하드코딩된 일정표가 없다. 몇 년 뒤에 열어도 그날 하늘이 나온다.
+    //    (밤하늘 달력이 2027-08 이후 빈 화면이 되는 것과 정반대 성질)
+    // ============================================================
+
+    var RAD = Math.PI / 180, DEG = 180 / Math.PI;
+    var MS_MIN = 60000;
+
+    function norm360(x) { x = x % 360; return x < 0 ? x + 360 : x; }
+    function toJD(d) { return d.getTime() / 86400000 + 2440587.5; }
+    function sinD(x) { return Math.sin(x * RAD); }
+    function cosD(x) { return Math.cos(x * RAD); }
+
+    // ---------- KST 도우미 ----------
+    // 한국 도시의 하늘을 보는 페이지이므로 보는 사람의 기기 시간대와 무관하게
+    // 항상 KST로 계산하고 표시한다. KST는 서머타임이 없어 +9 고정 산술로 충분하다.
+    function kstParts(ms) {
+        var k = new Date(ms + 9 * 3600000);
+        return { y: k.getUTCFullYear(), mo: k.getUTCMonth(), d: k.getUTCDate(),
+                 h: k.getUTCHours(), mi: k.getUTCMinutes() };
+    }
+    function kstMs(y, mo, d, h, mi) { return Date.UTC(y, mo, d, h - 9, mi || 0); }
+    function pad2(n) { return (n < 10 ? '0' : '') + n; }
+    function fmtTime(ms) { var p = kstParts(ms); return pad2(p.h) + ':' + pad2(p.mi); }
+    // 자정을 넘긴 시각은 그냥 04:12라고만 쓰면 오늘 저녁으로 오해하기 쉽다.
+    function fmtTimeRel(ms, baseDay) {
+        var p = kstParts(ms);
+        var pre = (p.d !== baseDay) ? '익일 ' : '';
+        return pre + pad2(p.h) + ':' + pad2(p.mi);
+    }
+
+    // ---------- JPL 근사 궤도요소 ----------
+    // [a(au), e, I(도), L(도), 근일점경도, 승교점경도] 와 세기당 변화율
+    var ELEM = {
+        mercury: [[0.38709927, 0.20563593,  7.00497902, 252.25032350,  77.45779628,  48.33076593],
+                  [0.00000037, 0.00001906, -0.00594749, 149472.67411175, 0.16047689, -0.12534081]],
+        venus:   [[0.72333566, 0.00677672,  3.39467605, 181.97909950, 131.60246718,  76.67984255],
+                  [0.00000390,-0.00004107, -0.00078890,  58517.81538729, 0.00268329, -0.27769418]],
+        earth:   [[1.00000261, 0.01671123, -0.00001531, 100.46457166, 102.93768193,   0.0],
+                  [0.00000562,-0.00004392, -0.01294668,  35999.37244981, 0.32327364,  0.0]],
+        mars:    [[1.52371034, 0.09339410,  1.84969142,  -4.55343205, -23.94362959,  49.55953891],
+                  [0.00001847, 0.00007882, -0.00813131,  19140.30268499, 0.44441088, -0.29257343]],
+        jupiter: [[5.20288700, 0.04838624,  1.30439695,  34.39644051,  14.72847983, 100.47390909],
+                  [-0.00011607,-0.00013253,-0.00183714,   3034.74612775, 0.21252668,  0.20469106]],
+        saturn:  [[9.53667594, 0.05386179,  2.48599187,  49.95424423,  92.59887831, 113.66242448],
+                  [-0.00125060,-0.00050991, 0.00193609,   1222.49362201,-0.41897216, -0.28867794]],
+        uranus:  [[19.18916464,0.04725744,  0.77263783, 313.23810451, 170.95427630,  74.01692503],
+                  [-0.00196176,-0.00004397,-0.00242939,    428.48202785, 0.40805281,  0.04240589]],
+        neptune: [[30.06992276,0.00859048,  1.77004347, -55.12002969,  44.96476227, 131.78422574],
+                  [0.00026291, 0.00005105,  0.00035372,    218.45945325,-0.32241464, -0.00508664]]
+    };
+
+    // 태양 중심 황도 직교좌표(J2000, au)
+    function helio(key, T) {
+        var b = ELEM[key][0], r = ELEM[key][1];
+        var a = b[0] + r[0] * T, e = b[1] + r[1] * T, I = b[2] + r[2] * T;
+        var L = b[3] + r[3] * T, wbar = b[4] + r[4] * T, om = b[5] + r[5] * T;
+        var w = wbar - om;
+        var M = norm360(L - wbar); if (M > 180) M -= 360;
+
+        // 케플러 방정식 — 도 단위로 푼다(Standish 문서와 같은 방식)
+        var es = DEG * e, E = M + es * sinD(M);
+        for (var i = 0; i < 12; i++) {
+            var dE = (M - (E - es * sinD(E))) / (1 - e * cosD(E));
+            E += dE;
+            if (Math.abs(dE) < 1e-9) break;
+        }
+
+        var xp = a * (cosD(E) - e);
+        var yp = a * Math.sqrt(1 - e * e) * sinD(E);
+        var cw = cosD(w), sw = sinD(w), co = cosD(om), so = sinD(om), ci = cosD(I), si = sinD(I);
+        return {
+            x: (cw * co - sw * so * ci) * xp + (-sw * co - cw * so * ci) * yp,
+            y: (cw * so + sw * co * ci) * xp + (-sw * so + cw * co * ci) * yp,
+            z: (sw * si) * xp + (cw * si) * yp
+        };
+    }
+
+    var OBLIQ = 23.43928;
+    function eqFromEcl(v) {
+        var ce = cosD(OBLIQ), se = sinD(OBLIQ);
+        return { x: v.x, y: ce * v.y - se * v.z, z: se * v.y + ce * v.z };
+    }
+    function raDec(v) {
+        var r = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+        return { ra: norm360(Math.atan2(v.y, v.x) * DEG), dec: Math.asin(v.z / r) * DEG, dist: r };
+    }
+    function gmst(jd) { return norm360(280.46061837 + 360.98564736629 * (jd - 2451545.0)); }
+
+    // 지평좌표 — alt(고도), az(방위, 북=0 동=90 남=180 서=270)
+    function altAz(ra, dec, jd, lat, lon) {
+        var H = norm360(gmst(jd) + lon - ra);
+        var alt = Math.asin(sinD(dec) * sinD(lat) + cosD(dec) * cosD(lat) * cosD(H)) * DEG;
+        var az = norm360(Math.atan2(sinD(H), cosD(H) * sinD(lat) - Math.tan(dec * RAD) * cosD(lat)) * DEG + 180);
+        return { alt: alt, az: az };
+    }
+
+    // 두 천체 사이 각거리(도)
+    function sep(a, b) {
+        var c = sinD(a.dec) * sinD(b.dec) + cosD(a.dec) * cosD(b.dec) * cosD(a.ra - b.ra);
+        return Math.acos(Math.max(-1, Math.min(1, c))) * DEG;
+    }
+
+    // ---------- 달 (저정밀) ----------
+    function moonAt(jd) {
+        var T = (jd - 2451545.0) / 36525;
+        var Lp = norm360(218.3164477 + 481267.88123421 * T);
+        var D  = norm360(297.8501921 + 445267.1114034 * T);
+        var M  = norm360(357.5291092 +  35999.0502909 * T);
+        var Mp = norm360(134.9633964 + 477198.8675055 * T);
+        var F  = norm360( 93.2720950 + 483202.0175233 * T);
+
+        var lon = Lp + 6.289 * sinD(Mp) - 1.274 * sinD(Mp - 2 * D) + 0.658 * sinD(2 * D)
+                + 0.214 * sinD(2 * Mp) - 0.186 * sinD(M) - 0.114 * sinD(2 * F);
+        var lat = 5.128 * sinD(F) + 0.281 * sinD(Mp + F) - 0.278 * sinD(F - Mp) - 0.173 * sinD(F - 2 * D);
+        var par = 0.9508 + 0.0518 * cosD(Mp) + 0.0095 * cosD(Mp - 2 * D)
+                + 0.0078 * cosD(2 * D) + 0.0028 * cosD(2 * Mp);
+        var distAU = (6378.14 / sinD(par)) / 149597870.7;
+
+        var ecl = { x: distAU * cosD(lat) * cosD(lon),
+                    y: distAU * cosD(lat) * sinD(lon),
+                    z: distAU * sinD(lat) };
+        var rd = raDec(eqFromEcl(ecl));
+
+        // 위상각(Meeus 48.4) — 밝은 면의 비율
+        var i = 180 - D - 6.289 * sinD(Mp) + 2.100 * sinD(M) - 1.274 * sinD(2 * D - Mp)
+              - 0.658 * sinD(2 * D) - 0.214 * sinD(2 * Mp) - 0.110 * sinD(D);
+        rd.illum = (1 + cosD(i)) / 2;
+        rd.waxing = D < 180;
+        return rd;
+    }
+
+    // ---------- 행성 정보 ----------
+    // dia: 1au 거리에서의 겉보기 지름(초각)
+    var PLANETS = [
+        { key:'mercury', ko:'수성', en:'Mercury', color:'#B9A88F', dia:6.74, inner:true,
+          tip:'해 진 직후 서쪽, 또는 해 뜨기 직전 동쪽 지평선 근처에서 30분 남짓만 보입니다. 그쪽 하늘이 트인 장소를 미리 찾아두세요.',
+          desc:'태양에서 가장 가까운 행성입니다. 하늘에서도 태양 곁을 벗어나지 못해 1년에 몇 번, 그것도 짧게만 볼 수 있습니다. 맨눈으로 보이는 다섯 행성 중 가장 어렵습니다.' },
+        { key:'venus',   ko:'금성', en:'Venus',   color:'#F2DDAE', dia:16.92, inner:true,
+          tip:'맨눈으로 보이는 천체 중 해와 달 다음으로 밝습니다. 쌍안경을 고정해서 보면 달처럼 차고 기운 모양이 확인됩니다.',
+          desc:'새벽의 샛별과 초저녁의 개밥바라기가 모두 금성입니다. 두꺼운 구름이 햇빛을 그대로 반사해 압도적으로 밝습니다. 다만 태양 곁을 크게 벗어나지 못해 한밤중에는 볼 수 없습니다.' },
+        { key:'mars',    ko:'화성', en:'Mars',    color:'#E07A5F', dia:9.36,
+          tip:'붉은 기가 도는 것이 맨눈으로도 느껴집니다. 표면 무늬는 지구와 가까워지는 충 무렵에만 망원경으로 보입니다.',
+          desc:'약 2년 2개월마다 지구와 가까워집니다. 그 시기에는 크고 밝아져 망원경으로 극관과 어두운 무늬까지 보이지만, 시기를 벗어나면 큰 망원경으로도 작은 오렌지색 점에 가깝습니다.' },
+        { key:'jupiter', ko:'목성', en:'Jupiter', color:'#E8BE86', dia:196.94,
+          tip:'쌍안경만 있어도 갈릴레이 위성 네 개가 양옆에 점으로 늘어선 것이 보입니다. 밤마다 위치가 바뀝니다.',
+          desc:'입문자에게 가장 추천하는 대상입니다. 400년 전 갈릴레이가 본 것과 같은 장면을 값싼 쌍안경으로 볼 수 있습니다. 작은 망원경이면 가로줄 무늬까지 드러납니다.' },
+        { key:'saturn',  ko:'토성', en:'Saturn',  color:'#EBD9A8', dia:165.6, ring:true,
+          tip:'고리는 배율 30배부터 구분됩니다. 입문용 소형 망원경으로도 «귀가 달린 모양»이 확인됩니다.',
+          desc:'맨눈으로는 누런 별처럼 보입니다. 처음 직접 고리를 보면 사진처럼 선명하지 않아 놀라지만, 자기 눈으로 본 고리는 인쇄물과 전혀 다른 경험으로 남습니다.' },
+        { key:'uranus',  ko:'천왕성', en:'Uranus', color:'#A8DDE8', dia:65.8,
+          tip:'아주 어두운 곳에서 맨눈 한계에 겨우 걸칩니다. 주변 별과 구별하려면 성도나 별지도 앱이 필요합니다.',
+          desc:'망원경으로 발견된 첫 행성입니다. 쌍안경으로는 그냥 어두운 별처럼 보이고, 망원경에서 아주 작은 청록색 원반으로 확인되는 순간이 목적지입니다.' },
+        { key:'neptune', ko:'해왕성', en:'Neptune', color:'#7C97E8', dia:62.2,
+          tip:'맨눈으로는 볼 수 없습니다. 쌍안경으로도 작은 별처럼 보여 위치를 미리 알고 찾아야 합니다.',
+          desc:'계산으로 위치를 먼저 예측하고 그 자리를 봐서 찾아낸 행성입니다. 태양계에서 가장 바깥이라 빛이 도달하는 데만 네 시간이 넘게 걸립니다.' }
+    ];
+
+    // ---------- 관측지 ----------
+    var PLACES = [
+        { id:'seoul',   ko:'서울', lat:37.5665, lon:126.9780 },
+        { id:'incheon', ko:'인천', lat:37.4563, lon:126.7052 },
+        { id:'daejeon', ko:'대전', lat:36.3504, lon:127.3845 },
+        { id:'daegu',   ko:'대구', lat:35.8714, lon:128.6014 },
+        { id:'gwangju', ko:'광주', lat:35.1595, lon:126.8526 },
+        { id:'busan',   ko:'부산', lat:35.1796, lon:129.0756 },
+        { id:'gangneung',ko:'강릉', lat:37.7519, lon:128.8761 },
+        { id:'jeju',    ko:'제주', lat:33.4996, lon:126.5312 }
+    ];
+    var PLACE_KEY = 'orbit_place';
+
+    function loadPlace() {
+        var saved;
+        try { saved = localStorage.getItem(PLACE_KEY); } catch (e) { saved = null; }
+        for (var i = 0; i < PLACES.length; i++) if (PLACES[i].id === saved) return PLACES[i];
+        return PLACES[0];
+    }
+    function savePlace(id) { try { localStorage.setItem(PLACE_KEY, id); } catch (e) {} }
+
+    // ---------- 밝기(등급) 근사식 ----------
+    // Meeus 「Astronomical Algorithms」 41장. r=태양거리, d=지구거리, i=위상각.
+    // 토성의 고리 기울기 보정은 넣지 않았다(최대 0.5등급 정도 차이).
+    function magnitude(key, r, d, i) {
+        var base = 5 * Math.log(r * d) / Math.LN10;
+        switch (key) {
+            case 'mercury': return -0.42 + base + 0.0380 * i - 0.000273 * i * i + 0.000002 * i * i * i;
+            case 'venus':   return -4.40 + base + 0.0009 * i + 0.000239 * i * i - 0.00000065 * i * i * i;
+            case 'mars':    return -1.52 + base + 0.016 * i;
+            case 'jupiter': return -9.40 + base + 0.005 * i;
+            case 'saturn':  return -8.88 + base;
+            case 'uranus':  return -7.19 + base;
+            case 'neptune': return -6.87 + base;
+        }
+        return 0;
+    }
+    function eyeLevel(mag) {
+        if (mag <= 1)   return { t:'맨눈으로 아주 잘 보임', cls:'now' };
+        if (mag <= 3.5) return { t:'맨눈으로 보임', cls:'now' };
+        if (mag <= 5.5) return { t:'어두운 곳이면 맨눈 · 쌍안경 권장', cls:'soon' };
+        if (mag <= 8)   return { t:'쌍안경 이상 필요', cls:'hard' };
+        return { t:'망원경 필요', cls:'hard' };
+    }
+
+    // ---------- 오늘 밤 표본 만들기 ----------
+    // KST 정오부터 24시간을 5분 간격으로 훑는다. 새벽에 열었다면 어제 정오부터
+    // 시작해서 «지금 진행 중인 밤»이 창 안에 들어오게 한다.
+    var STEP_MIN = 5;
+    // 지평선 바로 위는 건물·산과 두꺼운 대기 때문에 사실상 보이지 않는다.
+    // 지도·요약 문장·행성 카드가 모두 이 기준 하나를 써야
+    // «지도에는 점이 찍혔는데 문장에는 없는» 어긋남이 생기지 않는다.
+    var MIN_ALT = 5;
+    var state = { place: loadPlace(), samples: [], idx: 0, nowIdx: 0, scrubbed: false, baseDay: 1 };
+
+    function buildSamples() {
+        var now = Date.now();
+        var p = kstParts(now);
+        var startDay = p.d, startMo = p.mo, startY = p.y;
+        var start = kstMs(startY, startMo, startDay, 12, 0);
+        if (p.h < 12) start -= 24 * 3600000;   // 새벽이면 어제 정오부터
+        state.baseDay = kstParts(start).d;
+
+        var lat = state.place.lat, lon = state.place.lon;
+        var n = (24 * 60) / STEP_MIN + 1;
+        var out = [];
+        for (var i = 0; i < n; i++) {
+            var ms = start + i * STEP_MIN * MS_MIN;
+            var jd = toJD(new Date(ms));
+            var T = (jd - 2451545.0) / 36525;
+
+            var earth = helio('earth', T);
+            var sunEq = raDec(eqFromEcl({ x: -earth.x, y: -earth.y, z: -earth.z }));
+            var s = { ms: ms, jd: jd, sunAlt: altAz(sunEq.ra, sunEq.dec, jd, lat, lon).alt, b: {} };
+            s.b.sun = { ra: sunEq.ra, dec: sunEq.dec, dist: sunEq.dist };
+
+            for (var k = 0; k < PLANETS.length; k++) {
+                var key = PLANETS[k].key;
+                var hp = helio(key, T);
+                var geo = { x: hp.x - earth.x, y: hp.y - earth.y, z: hp.z - earth.z };
+                var rd = raDec(eqFromEcl(geo));
+                var aa = altAz(rd.ra, rd.dec, jd, lat, lon);
+                var rSun = Math.sqrt(hp.x * hp.x + hp.y * hp.y + hp.z * hp.z);
+                var R = sunEq.dist, d = rd.dist;
+                var cosi = (rSun * rSun + d * d - R * R) / (2 * rSun * d);
+                var phase = Math.acos(Math.max(-1, Math.min(1, cosi))) * DEG;
+                rd.alt = aa.alt; rd.az = aa.az; rd.r = rSun; rd.phase = phase;
+                rd.mag = magnitude(key, rSun, d, phase);
+                rd.elong = sep(rd, sunEq);
+                s.b[key] = rd;
+            }
+            var mn = moonAt(jd);
+            var maa = altAz(mn.ra, mn.dec, jd, lat, lon);
+            mn.alt = maa.alt; mn.az = maa.az;
+            s.b.moon = mn;
+            out.push(s);
+        }
+        state.samples = out;
+
+        // 지금에 가장 가까운 표본
+        var best = 0, bestD = Infinity;
+        for (var j = 0; j < out.length; j++) {
+            var dd = Math.abs(out[j].ms - now);
+            if (dd < bestD) { bestD = dd; best = j; }
+        }
+        state.nowIdx = best;
+    }
+
+    // 밤 구간(민간박명이 끝나 하늘이 어두워진 뒤)
+    function nightRange() {
+        var s = state.samples, a = -1, b = -1;
+        for (var i = 0; i < s.length; i++) {
+            if (s[i].sunAlt < -6) { if (a < 0) a = i; b = i; }
+        }
+        // 정오에서 시작하므로 밤은 한 덩어리로 이어진다
+        return { a: a < 0 ? 0 : a, b: b < 0 ? s.length - 1 : b };
+    }
+
+    // 오늘 밤 가장 볼 만한 시각.
+    // 낮에 이 페이지를 열었을 때 «일몰 직후»를 기본으로 보여줬더니
+    // 아직 아무것도 안 뜬 빈 하늘이 첫 화면이 되는 문제가 있었다.
+    // 밝은 행성이 높이 떠 있는 정도로 점수를 매겨 그 순간을 기본값으로 삼는다.
+    function bestViewIdx(nr) {
+        var s = state.samples, bi = nr.a, bs = -1;
+        for (var i = nr.a; i <= nr.b; i++) {
+            var sc = 0;
+            for (var k = 0; k < PLANETS.length; k++) {
+                var o = s[i].b[PLANETS[k].key];
+                if (o.alt <= MIN_ALT || o.mag > 6) continue;
+                // 고도는 60도 위로는 더 쳐주지 않는다(그 위는 어차피 편하게 보인다)
+                sc += Math.min(o.alt, 60) * (6 - Math.max(o.mag, -5));
+            }
+            // 박명 보정 — 해가 겨우 6도 내려간 시각은 하늘이 아직 훤하다.
+            // 이 보정이 없으면 «새벽 5시 05분»처럼 밤이 끝나기 직전이 늘 1등으로 뽑힌다.
+            sc *= Math.min(1, Math.max(0.25, (-s[i].sunAlt - 6) / 9));
+            if (sc > bs) { bs = sc; bi = i; }
+        }
+        return bi;
+    }
+
+    // 해가 지평선(-0.833도)을 지나는 시각
+    function sunCross(down) {
+        var s = state.samples;
+        for (var i = 1; i < s.length; i++) {
+            var p = s[i - 1].sunAlt, c = s[i].sunAlt;
+            if (down && p > -0.833 && c <= -0.833) return s[i].ms;
+            if (!down && p < -0.833 && c >= -0.833) return s[i].ms;
+        }
+        return null;
+    }
+
+    // ---------- 행성별 오늘 밤 요약 ----------
+    function summarize(key) {
+        var s = state.samples, nr = nightRange();
+        var bestI = -1, bestAlt = -99, firstUp = -1, lastUp = -1;
+        for (var i = nr.a; i <= nr.b; i++) {
+            var o = s[i].b[key];
+            if (o.alt > bestAlt) { bestAlt = o.alt; bestI = i; }
+            if (o.alt > MIN_ALT) { if (firstUp < 0) firstUp = i; lastUp = i; }
+        }
+        var cur = s[state.nowIdx].b[key];
+        var visibleNow = s[state.nowIdx].sunAlt < -6 && cur.alt > MIN_ALT
+                         && state.nowIdx >= nr.a && state.nowIdx <= nr.b;
+        return {
+            key: key,
+            bestI: bestI, bestAlt: bestAlt,
+            bestAz: bestI >= 0 ? s[bestI].b[key].az : 0,
+            bestMs: bestI >= 0 ? s[bestI].ms : 0,
+            firstMs: firstUp >= 0 ? s[firstUp].ms : null,
+            lastMs:  lastUp  >= 0 ? s[lastUp].ms  : null,
+            visibleNow: visibleNow,
+            nowAlt: cur.alt, nowAz: cur.az,
+            mag: s[bestI >= 0 ? bestI : state.nowIdx].b[key].mag,
+            elong: cur.elong,
+            data: s[bestI >= 0 ? bestI : state.nowIdx].b[key]
+        };
+    }
+
+    // 앞말의 받침 유무로 조사를 고른다. «토성 과(와) 달 이(가)» 같은
+    // 괄호 표기를 쓰지 않기 위한 것 — 한글 음절은 (코드-0xAC00)%28 이 0이면 받침이 없다.
+    function josa(word, withJong, noJong) {
+        var c = word.charCodeAt(word.length - 1);
+        var hasJong = c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 !== 0;
+        return hasJong ? withJong : noJong;
+    }
+
+    // 등급 표기 — -0.04 를 그대로 반올림하면 «-0.0등급»이 된다
+    function magText(m) {
+        var r = Math.round(m * 10) / 10;
+        return (r > 0 ? '+' : '') + r.toFixed(1);
+    }
+
+    // ---------- 방위 이름 ----------
+    var DIRS = ['북', '북동', '동', '남동', '남', '남서', '서', '북서'];
+    function dirName(az) { return DIRS[Math.round(norm360(az) / 45) % 8]; }
+
+    // ---------- 하늘 지도 ----------
+    var MAP = { x0: 44, x1: 706, yTop: 30, yHor: 262 };
+    function mapX(az) { return MAP.x0 + (norm360(az) / 360) * (MAP.x1 - MAP.x0); }
+    function mapY(alt) { return MAP.yHor - (Math.max(0, Math.min(90, alt)) / 90) * (MAP.yHor - MAP.yTop); }
+
+    function moonPath(illum, waxing, r) {
+        var rx = (r * Math.abs(2 * illum - 1)).toFixed(2);
+        var sweep = illum < 0.5 ? 0 : 1;
+        var d = 'M 0 ' + (-r) + ' A ' + r + ' ' + r + ' 0 0 1 0 ' + r +
+                ' A ' + rx + ' ' + r + ' 0 0 ' + sweep + ' 0 ' + (-r) + ' Z';
+        return { d: d, flip: waxing ? '' : 'scale(-1,1)' };
+    }
+
+    function renderMap(idx) {
+        var s = state.samples[idx], svg = '';
+
+        // viewBox(720)가 화면 폭에 맞춰 줄어들면 글자도 같은 비율로 작아진다.
+        // 휴대폰에서는 5~6px이 되어 읽을 수 없으므로, 축소된 만큼 글자를 키워
+        // 화면에서의 실제 크기가 일정하게 보이도록 되돌린다.
+        var shown = document.getElementById('skyMap').clientWidth || 720;
+        var k = Math.max(1, Math.min(2.2, 720 / shown));
+        var FS = (11.5 * k).toFixed(1);      // 천체 이름
+        var AX = (10.5 * k).toFixed(1);      // 축 눈금
+        var LH = 13 * k;                     // 글자 한 줄 높이
+
+        // 하늘 배경 · 지평선 · 땅
+        svg += '<defs><linearGradient id="skyg" x1="0" y1="0" x2="0" y2="1">' +
+               '<stop offset="0%" stop-color="rgba(79,209,197,0.05)"/>' +
+               '<stop offset="100%" stop-color="rgba(255,159,67,0.06)"/></linearGradient></defs>';
+        svg += '<rect x="' + MAP.x0 + '" y="' + MAP.yTop + '" width="' + (MAP.x1 - MAP.x0) +
+               '" height="' + (MAP.yHor - MAP.yTop) + '" fill="url(#skyg)" rx="8"/>';
+        svg += '<rect x="' + MAP.x0 + '" y="' + MAP.yHor + '" width="' + (MAP.x1 - MAP.x0) +
+               '" height="22" fill="rgba(255,255,255,0.04)"/>';
+        svg += '<line x1="' + MAP.x0 + '" y1="' + MAP.yHor + '" x2="' + MAP.x1 + '" y2="' + MAP.yHor +
+               '" stroke="rgba(255,159,67,0.45)" stroke-width="1.5"/>';
+
+        // 고도 눈금
+        [30, 60].forEach(function (a) {
+            var y = mapY(a);
+            svg += '<line x1="' + MAP.x0 + '" y1="' + y + '" x2="' + MAP.x1 + '" y2="' + y +
+                   '" stroke="rgba(255,255,255,0.07)" stroke-dasharray="3 5"/>';
+            svg += '<text x="' + (MAP.x0 - 8) + '" y="' + (y + LH / 3) +
+                   '" text-anchor="end" font-size="' + AX + '" fill="#64748B">' + a + '°</text>';
+        });
+        svg += '<text x="' + (MAP.x0 - 8) + '" y="' + (MAP.yHor + LH / 3) +
+               '" text-anchor="end" font-size="' + AX + '" fill="#64748B">0°</text>';
+
+        // 방위 눈금
+        for (var d = 0; d <= 360; d += 45) {
+            var x = mapX(d === 360 ? 359.999 : d);
+            svg += '<line x1="' + x + '" y1="' + MAP.yTop + '" x2="' + x + '" y2="' + MAP.yHor +
+                   '" stroke="rgba(255,255,255,0.05)"/>';
+            svg += '<text x="' + x + '" y="' + (MAP.yHor + 26 + LH) + '" text-anchor="middle" font-size="' + AX +
+                   '" fill="' + (d === 180 ? '#FF9F43' : '#64748B') + '">' + DIRS[(d / 45) % 8] + '</text>';
+        }
+
+        // 천체 모으기 (실제로 볼 수 있는 높이 위만)
+        var items = [];
+        PLANETS.forEach(function (p) {
+            var o = s.b[p.key];
+            if (o.alt > MIN_ALT) items.push({ x: mapX(o.az), y: mapY(o.alt), c: p.color, label: p.ko, r: 6.5 });
+        });
+        var mo = s.b.moon;
+        if (mo.alt > MIN_ALT) items.push({ x: mapX(mo.az), y: mapY(mo.alt), c: '#FFD08A', label: '달', r: 11, moon: mo });
+
+        items.sort(function (a, b) { return a.x - b.x; });
+
+        // 라벨 자리 잡기 — 행성이 한곳에 몰리면 이름이 서로 덮이고,
+        // 달처럼 큰 원반에 이름이 통째로 먹히기도 한다.
+        // 천체 원반들을 먼저 장애물로 깔아두고, 위·아래로 물러나며 빈자리를 찾는다.
+        var placed = items.map(function (it) {
+            return { x: it.x, y: it.y, w: it.r * 2 + 8, h: it.r * 2 + 4 };
+        });
+        function labelSpot(it) {
+            var box = { w: it.label.length * 12 * k + 6, h: LH };
+            var g = LH / 2 + 6;
+            var cands = [-(it.r + g), it.r + g + LH * 0.6, -(it.r + g + LH), it.r + g + LH * 1.6,
+                         -(it.r + g + LH * 2), it.r + g + LH * 2.6];
+            for (var c = 0; c < cands.length; c++) {
+                var y = it.y + cands[c];
+                if (y < MAP.yTop + 10 || y > MAP.yHor + 16) continue;
+                var clash = false;
+                for (var i = 0; i < placed.length; i++) {
+                    var p = placed[i];
+                    if (Math.abs(it.x - p.x) < (box.w + p.w) / 2 &&
+                        Math.abs(y - p.y) < (box.h + p.h) / 2) { clash = true; break; }
+                }
+                if (!clash) { placed.push({ x: it.x, y: y, w: box.w, h: box.h }); return y; }
+            }
+            var fy = it.y - it.r - LH / 2 - 6;
+            placed.push({ x: it.x, y: fy, w: box.w, h: box.h });
+            return fy;
+        }
+
+        items.forEach(function (it) {
+            if (it.moon) {
+                var mp = moonPath(it.moon.illum, it.moon.waxing, it.r);
+                svg += '<g transform="translate(' + it.x.toFixed(1) + ',' + it.y.toFixed(1) + ')">' +
+                       '<circle r="' + it.r + '" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>' +
+                       '<g transform="' + mp.flip + '"><path d="' + mp.d + '" fill="#FFD08A"/></g></g>';
+            } else {
+                svg += '<circle cx="' + it.x.toFixed(1) + '" cy="' + it.y.toFixed(1) + '" r="' + (it.r + 4) +
+                       '" fill="' + it.c + '" opacity="0.16"/>';
+                svg += '<circle cx="' + it.x.toFixed(1) + '" cy="' + it.y.toFixed(1) + '" r="' + it.r +
+                       '" fill="' + it.c + '"/>';
+            }
+            var ly = labelSpot(it);
+            svg += '<text x="' + it.x.toFixed(1) + '" y="' + ly.toFixed(1) +
+                   '" text-anchor="middle" font-size="' + FS + '" font-weight="600" fill="#E2E8F0">' + it.label + '</text>';
+        });
+
+        if (!items.length) {
+            svg += '<text x="375" y="150" text-anchor="middle" font-size="' + (13 * k).toFixed(1) + '" fill="#64748B">' +
+                   '이 시각에는 볼 수 있는 높이에 행성도 달도 없습니다</text>';
+        }
+
+        var el = document.getElementById('skyMap');
+        // 글자를 키운 만큼 아래 방위 이름이 밖으로 밀리므로 그림 높이도 같이 늘린다
+        el.setAttribute('viewBox', '0 0 720 ' + Math.round(300 + LH * 1.6));
+        el.innerHTML = '<title id="skyMapTitle">오늘 밤 행성 위치 지도</title>' + svg;
+    }
+
+    // ---------- 근접(합) ----------
+    function renderConj(idx) {
+        var s = state.samples[idx], list = [], box = document.getElementById('conjBox');
+        var bodies = PLANETS.map(function (p) { return { ko: p.ko, o: s.b[p.key] }; });
+        bodies.push({ ko: '달', o: s.b.moon });
+
+        for (var i = 0; i < bodies.length; i++) {
+            for (var j = i + 1; j < bodies.length; j++) {
+                var a = bodies[i], b = bodies[j];
+                if (a.o.alt < MIN_ALT && b.o.alt < MIN_ALT) continue;
+                var dg = sep(a.o, b.o);
+                if (dg < 8) list.push({ a: a.ko, b: b.ko, d: dg });
+            }
+        }
+        if (!list.length) { box.innerHTML = ''; return; }
+        list.sort(function (x, y) { return x.d - y.d; });
+
+        var html = '';
+        list.slice(0, 3).forEach(function (c) {
+            // 각도를 손으로 재는 법 — 팔을 쭉 뻗었을 때
+            // 새끼손가락 하나가 약 1도, 손가락 세 개가 약 5도, 주먹 하나가 약 10도다.
+            var how = c.d < 1
+                ? '보름달 두 개 폭 안쪽입니다. 맨눈으로는 거의 붙어 보이고, 쌍안경 한 시야에 둘이 함께 들어옵니다.'
+                : (c.d < 2.5
+                    ? '쌍안경 한 시야에 둘이 함께 들어옵니다. 팔을 뻗어 새끼손가락 두어 개를 대면 딱 그만큼입니다.'
+                    : (c.d < 5
+                        ? '팔을 쭉 뻗었을 때 손가락 세 개 폭쯤 됩니다. 맨눈으로 한눈에 들어옵니다.'
+                        : '팔을 쭉 뻗었을 때 주먹 하나 폭 안쪽입니다. 둘을 잇는 선이 바로 행성들이 지나다니는 길, 황도입니다.'));
+            html += '<div class="conj"><div class="conj-t">✨ ' + c.a + josa(c.a, '과', '와') + ' ' +
+                    c.b + josa(c.b, '이', '가') + ' ' + c.d.toFixed(1) + '° 거리에 있습니다</div>' +
+                    '<div class="conj-d">' + how + '</div></div>';
+        });
+        box.innerHTML = html;
+    }
+
+    // ---------- 행성 카드 ----------
+    function discSVG(p) {
+        var s = '<svg class="pl-disc" viewBox="0 0 40 40" aria-hidden="true">';
+        s += '<defs><radialGradient id="g' + p.key + '" cx="36%" cy="32%">' +
+             '<stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.55"/>' +
+             '<stop offset="100%" stop-color="' + p.color + '"/></radialGradient></defs>';
+        if (p.ring) {
+            s += '<ellipse cx="20" cy="20" rx="18" ry="6" fill="none" stroke="' + p.color +
+                 '" stroke-width="1.6" opacity="0.75" transform="rotate(-18 20 20)"/>';
+        }
+        s += '<circle cx="20" cy="20" r="11" fill="url(#g' + p.key + ')"/>';
+        if (p.ring) {
+            s += '<path d="M 3.2 25 A 18 6 -18 0 0 36.8 15" fill="none" stroke="' + p.color +
+                 '" stroke-width="1.6" opacity="0.75"/>';
+        }
+        return s + '</svg>';
+    }
+
+    function renderList() {
+        var sums = PLANETS.map(function (p) { return summarize(p.key); });
+        var byKey = {};
+        sums.forEach(function (s) { byKey[s.key] = s; });
+
+        // 오늘 밤 볼 만한 순서 — 지금 보이는 것, 밤에 높이 뜨는 것, 밝은 것 순
+        var order = PLANETS.slice().sort(function (a, b) {
+            var sa = byKey[a.key], sb = byKey[b.key];
+            var oa = sa.bestAlt > MIN_ALT ? 0 : 1, ob = sb.bestAlt > MIN_ALT ? 0 : 1;
+            if (oa !== ob) return oa - ob;
+            if (sa.visibleNow !== sb.visibleNow) return sa.visibleNow ? -1 : 1;
+            return sa.mag - sb.mag;
+        });
+
+        var baseDay = state.baseDay, nr = nightRange();
+        var html = '';
+        order.forEach(function (p) {
+            var s = byKey[p.key], eye = eyeLevel(s.mag);
+            var visible = s.bestAlt > MIN_ALT;
+
+            var badges = '';
+            var altText, altSub;
+            if (s.visibleNow) {
+                badges += '<span class="pb now">지금 보입니다</span>';
+                altText = Math.round(s.nowAlt) + '°';
+                altSub = dirName(s.nowAz) + '쪽 하늘';
+            } else if (visible) {
+                badges += '<span class="pb soon">오늘 밤 보입니다</span>';
+                altText = Math.round(s.bestAlt) + '°';
+                altSub = '최고 · ' + dirName(s.bestAz) + '쪽';
+            } else {
+                badges += '<span class="pb no">오늘은 어렵습니다</span>';
+                altText = '—';
+                altSub = '';
+            }
+            badges += '<span class="pb mag">' + magText(s.mag) + '등급</span>';
+            badges += '<span class="pb ' + eye.cls + '">' + eye.t + '</span>';
+            // 아무리 밝아도 지평선 근처면 건물·산에 가리고 대기에 흐려진다.
+            // 밝기 배지만 보고 «잘 보이겠네»로 읽히지 않도록 따로 알린다.
+            if (visible && s.bestAlt < 15) badges += '<span class="pb hard">지평선 근처 · 트인 곳 필요</span>';
+
+            var sub;
+            if (visible && s.firstMs) {
+                // 최고 고도가 밤 구간의 양 끝에 걸리면 «그때가 남중»이 아니라
+                // 아직 오르는 중(또는 이미 지는 중)이라는 뜻이다. 그대로 시각만
+                // 적으면 오해를 부르므로 상황을 말로 풀어준다.
+                var peak = (s.bestI >= nr.b) ? '동틀 때까지 계속 높아집니다'
+                         : (s.bestI <= nr.a) ? '어두워지는 때가 가장 높습니다'
+                         : '가장 높은 때 ' + fmtTimeRel(s.bestMs, baseDay);
+                sub = '오늘 밤 ' + fmtTimeRel(s.firstMs, baseDay) + ' ~ ' + fmtTimeRel(s.lastMs, baseDay) +
+                      ' · ' + peak;
+            } else if (s.elong < 15) {
+                sub = '태양과 ' + Math.round(s.elong) + '° 밖에 떨어져 있지 않아 햇빛에 묻힙니다';
+            } else {
+                sub = '오늘 밤에는 지평선 위로 충분히 올라오지 않습니다';
+            }
+
+            var d = s.data;
+            var angSize = p.dia / d.dist;
+            var lightMin = d.dist * 499.005 / 60;
+            var lightText = lightMin < 60
+                ? lightMin.toFixed(0) + '분'
+                : Math.floor(lightMin / 60) + '시간 ' + Math.round(lightMin % 60) + '분';
+
+            html += '<article class="pl' + (visible ? '' : ' off') + '" tabindex="0" data-key="' + p.key + '">' +
+                '<div class="pl-top">' + discSVG(p) +
+                    '<div class="pl-mid">' +
+                        '<div class="pl-name">' + p.ko + '<span class="en">' + p.en + '</span></div>' +
+                        '<div class="pl-sub">' + sub + '</div>' +
+                    '</div>' +
+                    '<div class="pl-alt">' + altText + (altSub ? '<small>' + altSub + '</small>' : '') + '</div>' +
+                '</div>' +
+                '<div class="pl-badges">' + badges + '</div>' +
+                '<div class="pl-body">' +
+                    '<p class="pl-desc">' + p.desc + '</p>' +
+                    '<div class="pl-rows">' +
+                        '<div class="pl-row"><div class="rl">관측 요령</div><div class="rv">' + p.tip + '</div></div>' +
+                        '<div class="pl-row"><div class="rl">지금 거리</div><div class="rv">' +
+                            (d.dist * 1.495978707).toFixed(2) + '억 km · 빛으로 ' + lightText + ' 거리</div></div>' +
+                        '<div class="pl-row"><div class="rl">겉보기 크기</div><div class="rv">' +
+                            angSize.toFixed(1) + '초각' + (p.ring ? ' (고리 제외한 본체)' : '') + '</div></div>' +
+                        '<div class="pl-row"><div class="rl">태양과의 각도</div><div class="rv">' +
+                            Math.round(s.elong) + '°' +
+                            (s.elong < 15 ? ' — 너무 가까워 관측이 어렵습니다'
+                                          : (s.elong > 150 ? ' — 한밤중 남쪽 하늘에서 볼 수 있는 시기입니다' : '')) +
+                        '</div></div>' +
+                        (p.inner ? '<div class="pl-row"><div class="rl">차고 기움</div><div class="rv">' +
+                            Math.round((1 + cosD(d.phase)) / 2 * 100) + '% 밝은 면이 보입니다 (달처럼 위상이 변합니다)</div></div>' : '') +
+                    '</div>' +
+                '</div>' +
+            '</article>';
+        });
+        document.getElementById('plist').innerHTML = html;
+    }
+
+    // ---------- 요약 문장 ----------
+    function renderSummary(idx) {
+        var s = state.samples[idx];
+        var up = [], naked = [], moonUp = s.b.moon.alt > 0;
+        PLANETS.forEach(function (p) {
+            var o = s.b[p.key];
+            if (o.alt <= MIN_ALT) return;
+            up.push(p.ko);
+            // 도시 하늘에서 맨눈으로 기대할 수 있는 대략적인 한계
+            if (o.mag <= 4) naked.push(p.ko);
+        });
+
+        var txt;
+        if (s.sunAlt > -6) {
+            txt = '이 시각에는 아직 하늘이 밝습니다. 아래 막대를 움직여 어두워진 뒤를 보세요.';
+        } else if (!up.length) {
+            txt = '이 시각에는 지평선 위로 올라온 행성이 없습니다. 아래 막대로 다른 시각을 확인해 보세요.';
+        } else {
+            // 지도에는 해왕성처럼 어두운 것도 찍히므로, 떠 있는 것과
+            // 맨눈으로 보이는 것을 나눠서 말해야 지도와 어긋나지 않는다.
+            txt = '이 시각 하늘에 <b>' + up.join(' · ') + '</b> ' + up.length + '개가 떠 있습니다.';
+            if (!naked.length) txt += ' 다만 모두 어두워서 쌍안경이나 망원경이 필요합니다.';
+            else if (naked.length < up.length) txt += ' 이 중 맨눈으로 보이는 것은 <b>' + naked.join(' · ') + '</b>입니다.';
+            txt += moonUp
+                ? ' 달도 함께 떠 있고, 밝은 면은 ' + Math.round(s.b.moon.illum * 100) + '%입니다.'
+                : ' 달이 없어 하늘이 어둡습니다.';
+        }
+        document.getElementById('skySum').innerHTML = txt;
+    }
+
+    // ---------- 화면 갱신 ----------
+    function renderAt(idx) {
+        state.idx = idx;
+        renderMap(idx);
+        renderConj(idx);
+        renderSummary(idx);
+        var ms = state.samples[idx].ms;
+        var tag = idx === state.nowIdx ? ' · 지금'
+                : idx === state.bestIdx ? ' · 오늘 밤 가장 볼 만한 때' : '';
+        document.getElementById('scrubNow').textContent = fmtTimeRel(ms, state.baseDay) + tag;
+        document.getElementById('scrubBack').classList.toggle('on', idx !== state.defaultIdx);
+    }
+
+    function renderAll() {
+        buildSamples();
+        var nr = nightRange();
+        var range = document.getElementById('scrubRange');
+        range.min = nr.a; range.max = nr.b;
+
+        // 지금이 밤이면 지금을, 낮에 열었다면 오늘 밤 가장 볼 만한 시각을 보여준다
+        state.bestIdx = bestViewIdx(nr);
+        var start = (state.nowIdx >= nr.a && state.nowIdx <= nr.b) ? state.nowIdx : state.bestIdx;
+        state.defaultIdx = start;
+        range.value = start;
+
+        document.getElementById('scrubBack').textContent =
+            (start === state.nowIdx) ? '지금 시각으로 되돌리기' : '가장 볼 만한 때로 되돌리기';
+
+        var sunset = sunCross(true), sunrise = sunCross(false);
+        document.getElementById('scrubEnds').textContent =
+            (sunset ? '일몰 ' + fmtTime(sunset) : '') +
+            (sunrise ? ' · 일출 ' + fmtTimeRel(sunrise, state.baseDay) : '');
+
+        var p = kstParts(Date.now());
+        document.getElementById('skyWhen').textContent =
+            (p.mo + 1) + '월 ' + p.d + '일 · ' + state.place.ko + ' 기준 · 한국 표준시(KST)';
+
+        renderList();
+        renderAt(start);
+    }
+
+    // ---------- 관측지 버튼 ----------
+    (function () {
+        var row = document.getElementById('placeRow');
+        PLACES.forEach(function (pl) {
+            var b = document.createElement('button');
+            b.className = 'pbtn' + (pl.id === state.place.id ? ' on' : '');
+            b.type = 'button';
+            b.textContent = pl.ko;
+            b.setAttribute('data-place', pl.id);
+            row.appendChild(b);
+        });
+        row.addEventListener('click', function (e) {
+            var b = e.target.closest('.pbtn');
+            if (!b) return;
+            var id = b.getAttribute('data-place');
+            for (var i = 0; i < PLACES.length; i++) if (PLACES[i].id === id) state.place = PLACES[i];
+            savePlace(id);
+            row.querySelectorAll('.pbtn').forEach(function (x) { x.classList.toggle('on', x === b); });
+            state.scrubbed = false;
+            renderAll();
+        });
+    })();
+
+    // ---------- 스크러버 ----------
+    document.getElementById('scrubRange').addEventListener('input', function () {
+        state.scrubbed = true;
+        renderAt(parseInt(this.value, 10));
+    });
+    document.getElementById('scrubBack').addEventListener('click', function () {
+        state.scrubbed = false;
+        document.getElementById('scrubRange').value = state.defaultIdx;
+        renderAt(state.defaultIdx);
+    });
+
+    // ---------- 카드 펼치기 ----------
+    document.getElementById('plist').addEventListener('click', function (e) {
+        var card = e.target.closest('.pl');
+        if (card) card.classList.toggle('open');
+    });
+    document.getElementById('plist').addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        var card = e.target.closest('.pl');
+        if (!card) return;
+        e.preventDefault();
+        card.classList.toggle('open');
+    });
+
+    renderAll();
+
+    // 5분마다 «지금»을 다시 잡는다. 사용자가 막대를 직접 움직였다면 건드리지 않는다.
+    setInterval(function () {
+        if (state.scrubbed) return;
+        renderAll();
+    }, 5 * 60 * 1000);
+
+    // ===== 임베드될 때 부모에게 콘텐츠 높이 알리기 =====
+    // (밤하늘 달력과 같은 방식 — 고정 높이로 두면 iframe 안에 스크롤바가 하나 더 생긴다)
+    (function () {
+        if (!document.documentElement.classList.contains('embed')) return;
+        var box = document.querySelector('.container');
+        var last = 0;
+        function report() {
+            var h = Math.ceil(box.getBoundingClientRect().height);
+            if (h && h !== last) {
+                last = h;
+                parent.postMessage({ orbit: 'planetHeight', height: h }, window.location.origin);
+            }
+        }
+        if (window.ResizeObserver) new ResizeObserver(report).observe(box);
+        else setInterval(report, 500);
+        window.addEventListener('load', report);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(report);
+        report();
+    })();
+    </script>
+</body>
+</html>

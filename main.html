@@ -309,6 +309,7 @@
             </button>
             <nav class="side-nav" id="sideNav">
                 <button class="nav-item on" data-panel="sky"><span class="ic">🔭</span><span class="lbl">밤하늘 달력</span></button>
+                <button class="nav-item" data-panel="planets"><span class="ic">🪐</span><span class="lbl">오늘 밤 행성</span></button>
                 <button class="nav-item" data-panel="lounge"><span class="ic">💬</span><span class="lbl">글 남기기</span></button>
             </nav>
         </aside>
@@ -337,6 +338,14 @@
                     </div>
                 </section>
 
+                <!-- 오늘 밤 행성 -->
+                <section class="panel" id="panel-planets">
+                    <div class="embed-wrap">
+                        <iframe class="embed-frame" id="planetFrame" title="오늘 밤 행성 — 지금 하늘의 행성 위치" data-src="planets.html?embed=1"></iframe>
+                        <a class="embed-out" href="planets.html">전체 화면으로 열기 · 행성 찾는 법과 FAQ 보기 →</a>
+                    </div>
+                </section>
+
                 <!-- 글 남기기 -->
                 <section class="panel" id="panel-lounge">
                     <iframe class="lounge-frame" id="loungeFrame" title="글 남기기" data-src="lounge.html?embed=1"></iframe>
@@ -346,6 +355,7 @@
             <footer class="site-footer">
                 <div class="foot-links">
                     <a href="sky.html">밤하늘 달력</a>
+                    <a href="planets.html">오늘 밤 행성</a>
                     <a href="lounge.html">글 남기기</a>
                     <a href="terms.html">이용약관</a>
                     <a href="privacy.html">개인정보처리방침</a>
@@ -397,11 +407,12 @@
     // ===== 패널 전환 =====
     (function(){
         var TITLES = {
-            sky:    '밤하늘 <span>달력</span>',
-            lounge: '글 <span>남기기</span>'
+            sky:     '밤하늘 <span>달력</span>',
+            planets: '오늘 밤 <span>행성</span>',
+            lounge:  '글 <span>남기기</span>'
         };
         var DEFAULT_PANEL = 'sky';
-        var loungeLoaded = false, skyLoaded = false;
+        var loungeLoaded = false, skyLoaded = false, planetsLoaded = false;
 
         // ===== 모바일 탭 메뉴 (버튼 → 탭 목록 펼치기) =====
         var sidebar   = document.querySelector('.sidebar');
@@ -450,6 +461,11 @@
                 sf.src = sf.getAttribute('data-src');
                 skyLoaded = true;
             }
+            if(name === 'planets' && !planetsLoaded){
+                var pf = document.getElementById('planetFrame');
+                pf.src = pf.getAttribute('data-src');
+                planetsLoaded = true;
+            }
             if(location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
         }
         document.getElementById('sideNav').addEventListener('click', function(e){
@@ -477,6 +493,10 @@
             if(ev.data && ev.data.orbit === 'skyHeight'){
                 var h = parseInt(ev.data.height, 10);
                 if(h > 0 && h < 8000) document.getElementById('skyFrame').style.height = h + 'px';
+            }
+            if(ev.data && ev.data.orbit === 'planetHeight'){
+                var ph = parseInt(ev.data.height, 10);
+                if(ph > 0 && ph < 8000) document.getElementById('planetFrame').style.height = ph + 'px';
             }
         });
 
