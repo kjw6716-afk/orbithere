@@ -107,6 +107,32 @@
         .tl-tag.purple { background: rgba(159,122,234,0.1); color: #9F7AEA; }
         .tl-tag.gray { background: rgba(100,116,139,0.15); color: #64748B; }
 
+        /* ===== 방문 집계 =====
+           원래 이 위젯은 방문자가 보는 페이지에 떠 있었다. 지금 오빗은 시작 단계라
+           숫자가 한 자리인데, 그러면 들어온 사람이 제일 먼저 보는 게 "여기 아무도 없다"는
+           증거가 된다. 세는 건 그대로 두고 보는 자리만 이곳으로 옮겼다. */
+        .vs-card {
+            background: var(--card-bg); border: 1px solid rgba(255,159,67,0.15);
+            border-radius: 20px; padding: 20px 22px;
+        }
+        .vs-nums { display: flex; gap: 26px; flex-wrap: wrap; }
+        .vs-cell { min-width: 64px; }
+        .vs-cap { font-size: 10px; color: #64748B; letter-spacing: 0.02em; margin-bottom: 3px; }
+        .vs-num {
+            font-size: 21px; font-weight: 700; color: var(--text-main);
+            font-variant-numeric: tabular-nums; line-height: 1.2;
+        }
+        .vs-num.dim { color: #94A3B8; font-size: 17px; }
+        /* 막대는 최근 며칠의 모양만 본다 — 정확한 값은 위 숫자와 툴팁에 있다 */
+        .vs-bars { display: flex; align-items: flex-end; gap: 3px; height: 42px; margin-top: 18px; }
+        .vs-bar {
+            flex: 1; min-width: 3px; border-radius: 3px 3px 0 0;
+            background: rgba(255,159,67,0.35); min-height: 2px;
+        }
+        .vs-bar.today { background: var(--accent); }
+        .vs-foot { font-size: 10.5px; color: #64748B; margin-top: 9px; line-height: 1.5; }
+        .vs-empty { font-size: 12px; color: #64748B; }
+
         /* ===== 신고함 ===== */
         .rq-head { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; }
         .rq-head h2 {
@@ -208,6 +234,14 @@
 
             <div class="note" id="note"></div>
         </div>
+
+        <!-- 방문 집계 — 로그인한 관리자에게만 보인다 -->
+        <section class="log-panel" id="visitPanel" style="display:none;">
+            <h2>📈 방문</h2>
+            <div class="vs-card" id="vsCard">
+                <div class="vs-empty">불러오는 중...</div>
+            </div>
+        </section>
 
         <!-- 신고함 — 로그인한 관리자에게만 보인다 -->
         <section class="log-panel" id="reportPanel" style="display:none;">
@@ -404,6 +438,63 @@
         function showLog(on){
             document.getElementById('logPanel').style.display = on ? '' : 'none';
             document.getElementById('reportPanel').style.display = on ? '' : 'none';
+            document.getElementById('visitPanel').style.display = on ? '' : 'none';
+        }
+
+        // ===== 방문 집계 =====
+        // 날짜 기준은 서버와 같은 한국 시간이다. 브라우저가 다른 시간대에 있어도
+        // "오늘"이 어긋나지 않도록 KST로 맞춘 문자열을 만들어 비교한다.
+        function kstDay(offsetDays){
+            var t = Date.now() + (offsetDays || 0) * 86400000;
+            return new Date(t + 9 * 3600000).toISOString().slice(0, 10);
+        }
+
+        async function loadVisits(){
+            var card = document.getElementById('vsCard');
+            var r = await sb.rpc('visit_stats');
+            if(r.error){
+                card.innerHTML = '<div class="vs-empty">방문 집계를 불러오지 못했어요 — ' + esc(r.error.message) +
+                    '<br>migration_010_visit_guard.sql이 아직 실행되지 않았을 수 있어요.</div>';
+                return;
+            }
+            var rows = r.data || [];              // 최신 날짜부터 최대 60일
+            if(!rows.length){
+                card.innerHTML = '<div class="vs-empty">아직 집계된 방문이 없어요.</div>';
+                return;
+            }
+
+            var byDay = {};
+            rows.forEach(function(x){ byDay[x.day] = Number(x.count) || 0; });
+            var today = byDay[kstDay(0)] || 0;
+            var yesterday = byDay[kstDay(-1)] || 0;
+            var week = 0;
+            for(var i = 0; i < 7; i++) week += byDay[kstDay(-i)] || 0;
+            var total = Number(rows[0].total) || 0;   // 모든 행이 같은 값을 물고 온다
+
+            // 막대는 오래된 날이 왼쪽에 오도록 뒤집고, 최근 14일만 본다
+            var recent = rows.slice(0, 14).reverse();
+            var peak = Math.max.apply(null, recent.map(function(x){ return Number(x.count) || 0; })) || 1;
+            var todayKey = kstDay(0);
+
+            card.innerHTML =
+                '<div class="vs-nums">' +
+                cell('오늘', today) + cell('어제', yesterday, true) +
+                cell('최근 7일', week, true) + cell('누적', total, true) +
+                '</div>' +
+                '<div class="vs-bars">' + recent.map(function(x){
+                    var n = Number(x.count) || 0;
+                    return '<div class="vs-bar' + (x.day === todayKey ? ' today' : '') + '"' +
+                        ' style="height:' + Math.max(4, Math.round(n / peak * 100)) + '%"' +
+                        ' title="' + esc(x.day) + ' · ' + n + '"></div>';
+                }).join('') + '</div>' +
+                '<div class="vs-foot">최근 ' + recent.length + '일 · 한국 시간 기준. ' +
+                '같은 기기는 하루 한 번만 셉니다 — 브라우저 저장소를 지우고 다시 들어오면 ' +
+                '새 기기로 잡히니 정확한 수치가 아니라 추세로 보세요.</div>';
+
+            function cell(cap, n, dim){
+                return '<div class="vs-cell"><div class="vs-cap">' + cap + '</div>' +
+                    '<div class="vs-num' + (dim ? ' dim' : '') + '">' + n.toLocaleString('ko-KR') + '</div></div>';
+            }
         }
 
         // ===== 신고함 =====
@@ -510,6 +601,7 @@
                 document.getElementById('whoRole').textContent = '관리자';
                 showLog(true);
                 loadReports();
+                loadVisits();
                 say('광장에서 모든 궤적과 답에 삭제 버튼이 보입니다.', 'ok');
             } else {
                 document.getElementById('whoRole').textContent = '일반 계정 (권한 없음)';
