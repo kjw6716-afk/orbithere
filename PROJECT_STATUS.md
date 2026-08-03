@@ -1,10 +1,17 @@
 # PROJECT STATUS — Orbit (orbithere.com)
 
-> 인수인계용 현황 문서. 2026-08-02 기준, 코드에서 확인된 사실만 기록. 추측·계획·마케팅 문구 없음.
+> 인수인계용 현황 문서. 2026-08-03 기준, 코드에서 확인된 사실만 기록. 추측·계획·마케팅 문구 없음.
 > 각 항목 옆 `파일:줄` 은 근거 위치.
 >
 > **2026-08-02 방향 전환** — 생활밀착형 잡담 커뮤니티에서 **밤하늘 관측 커뮤니티**로 좁혔다.
 > Lucky Orbit(복권 추첨기)·오늘의 운세는 `_archive/`로 내렸고, 홈 패널과 프로필 페이지는 없앴다.
+>
+> **2026-08-03** — 방문 집계(`visits.js`)의 하루 한 번 제한을 서버로 옮기고,
+> 방문자에게 보이던 숫자 위젯을 관제실로 내렸다. `live` 채널 30초 폴링 추가.
+>
+> **이 문서를 고쳐야 하는 때** — 파일을 추가·삭제했을 때, 마이그레이션을 추가했을 때,
+> localStorage 키를 늘렸을 때(`privacy.html`도 같이), 채널 구성을 바꿨을 때.
+> 틀린 인수인계 문서는 없느니만 못하다.
 
 ---
 
@@ -22,6 +29,8 @@ orbithere/
 ├── 404.html
 ├── orbit.css           공통 스타일 (색 변수 · 상단바 · 푸터 · reduced-motion)
 ├── effects.js          클릭 파티클 (canvas + rAF)
+├── visits.js           방문 집계 — record_visit RPC를 하루 한 번 호출만 한다(화면 출력 없음)
+│                       index · main · sky · lounge 네 페이지에 <script defer>로 들어간다
 ├── _archive/           사이트에서 내렸지만 보관 중 — README.md 참고
 │   ├── lucky.html      Lucky Orbit (로또 / 연금복권 추첨기)
 │   ├── fortune.html    오늘의 운세
@@ -35,6 +44,9 @@ orbithere/
 │   ├── migration_006_pet_orbit.sql  orbit 제약에 'pet' 추가
 │   ├── migration_007_reports.sql    reports · report_queue · resolve_report
 │   ├── migration_008_sky_orbits.sql orbit 제약에 관측 채널 4개 추가  ← 미적용 시 글 작성 불가
+│   ├── migration_009_visits.sql     visits 테이블 · record_visit(boolean)
+│   ├── migration_010_visit_guard.sql visit_pings(기기별 하루 도장) · record_visit(text) · visit_stats
+│   │                                 ← 009의 record_visit을 drop하므로 009 다음에 실행
 │   └── migrate_emoji_2026-07.sql    🥹→🥰, 🫶→❤️ 이전
 ├── images/{og.png, otter.png}
 ├── favicon.* / icon-192.png / icon-512.png / apple-touch-icon*.png
@@ -53,7 +65,7 @@ orbithere/
 | 프레임워크 | **없음.** 순수 HTML/CSS/JS. 빌드 스텝·번들러·패키지 매니저 없음 |
 | JS | ES5 스타일 IIFE 위주, 일부 `async/await`. 각 페이지 `<script>` 인라인 |
 | 외부 라이브러리 | Pretendard 폰트 (jsDelivr CDN), `@supabase/supabase-js@2` (CDN, `lounge.html`·`admin.html` 두 곳만) |
-| 백엔드/DB | **Supabase** (PostgreSQL + PostgREST + Auth). 프로젝트 URL `unwxpuvfqyjhgrcrmuhu.supabase.co`, publishable 키가 소스에 하드코딩 — `lounge.html:447-448`, `admin.html:384-385` **2곳 중복** (홈 트렌딩 카드를 없애면서 3곳 → 2곳) |
+| 백엔드/DB | **Supabase** (PostgreSQL + PostgREST + Auth). 프로젝트 URL `unwxpuvfqyjhgrcrmuhu.supabase.co`, publishable 키가 소스에 하드코딩 — `lounge.html`, `admin.html`, `visits.js` **3곳 중복** (방문 집계가 들어오면서 2곳 → 3곳). `visits.js`만 supabase-js 없이 REST(`/rest/v1/rpc/...`)를 직접 부른다 |
 | 서버 코드 | 없음. Edge Function 없음. 모든 권한 판정은 Postgres RLS + `security definer` 함수 |
 | 인증 | Supabase Auth (이메일/비번) — **관리자 전용**. 일반 사용자 인증 없음 |
 | 배포 | **GitHub Pages**, 레포 루트를 그대로 서빙. `CNAME`으로 커스텀 도메인. CI/워크플로 파일 없음 → Pages 설정은 레포 설정 화면에 있고 코드에 없음. 푸시 = 배포 |
@@ -70,9 +82,21 @@ orbithere/
 | `main.html` | 사이드바 + 패널 앱 셸. **밤하늘 달력 / 글 남기기 2탭**, 둘 다 `?embed=1` iframe. 상단 칩을 누르면 궤도 진입(닉네임) 대화상자 |
 | `sky.html` | 유성우·일식·월식·슈퍼문 일정표 + 실시간 카운트다운 + 달 위상 계산. **첫 화면** |
 | `lounge.html` | 궤도(채널)별 게시판. 글쓰기·리액션·댓글·삭제·신고. 유일한 실제 커뮤니티 화면 |
-| `admin.html` | 운영자 로그인 → 신고함 처리 + 업데이트 기록(v0.1~v1.5) 열람 |
+| `admin.html` | 운영자 로그인 → **방문 집계** + 신고함 처리 + 업데이트 기록(v0.1~v1.5) 열람 |
 | `terms.html` / `privacy.html` | 이용약관 / 개인정보처리방침 (전문 작성됨) |
 | `404.html` | 커스텀 404 |
+
+**궤도(채널) 구성** — `lounge.html`의 `ORBIT_LIST` 한 곳에서 정의한다. DB의 `posts_orbit_check` 제약과 **같이** 고쳐야 한다.
+
+| id | 라벨 | 비고 |
+|---|---|---|
+| `report` | 📝 관측 후기 | **첫 진입 기본 채널.** 해시가 없으면 여기로 온다 (`lounge.html:494`). `sky.html` CTA도 `#report`로 들어온다 |
+| `gear` | 🔭 장비 | `minor:true` |
+| `live` | 🌌 실시간 하늘 | `minor:true` · **이 채널만 30초 폴링** |
+| `ask` | ❓ 질문 | `minor:true` |
+| `all` | 🌠 전체 | 목록에 없는 특수 탭. `#all`로 진입 |
+
+`minor:true`는 탭을 `opacity:0.6`으로 한 톤 낮춘다(`lounge.html:57-60`). 빈 채널 네 개가 똑같이 크게 보이면 "빈 방 4개"로 읽히므로, 유입이 몰리는 시기에는 후기 궤도만 또렷하게 두려는 장치다. hover·선택 시에는 100%로 돌아온다.
 
 ---
 
@@ -83,7 +107,9 @@ orbithere/
 | **로그인** | **없음** (일반 사용자) / **완성** (관리자만) | 일반 사용자는 인증 자체가 없다. 닉네임을 localStorage에 저장하는 게 전부 — 비밀번호·세션·서버 계정 없음. 관리자는 `admin.html:528` Supabase `signInWithPassword` + `admins` 테이블 등재 여부(`is_admin()`)로 판정, 실제 동작 |
 | **프로필** | **없음** | `profile.html` 삭제(2026-08-02). 레벨·XP·스탯이 전부 정적 값이라 내렸다. 지금은 상단 칩에 닉네임이 뜨는 것이 전부 |
 | **글쓰기** | **완성** | `lounge.html` posts insert. 500자 제한, 채널 선택, DB check 제약, 기기당 1분 3개/1시간 20개 rate limit, 작성 기기 기준 삭제, 댓글(300자), 신고까지 |
-| **피드** | **완성** | 채널별/전체 최신 50개 + 리액션 집계 RPC + 댓글 일괄 로드 + 채널 새로고침. 실시간 구독·페이지네이션은 없음(50개가 상한) |
+| **피드** | **완성** | 채널별/전체 최신 50개 + 리액션 집계 RPC + 댓글 일괄 로드 + 채널 새로고침. 페이지네이션 없음(50개가 상한) |
+| **live 채널 폴링** | 완성 | `lounge.html:1133-1151`. `live` 탭에 있을 때만 30초 `setInterval`, `document.hidden`이면 건너뛰고 `visibilitychange`로 돌아올 때 즉시 따라잡는다. Realtime 구독은 아니고 폴링이다. **요청 예산**은 아래 7항 참고 |
+| **방문 집계** | 완성 (비공개) | `visits.js` + migration_009/010. 하루 한 번 `record_visit(p_device)` 호출. 숫자는 **방문자에게 보이지 않고** 관제실에서만 본다 |
 | **레벨링** | **없음** | 유일한 UI였던 `profile.html`과 함께 제거. XP를 더하거나 레벨을 올리는 코드는 원래도 없었다 |
 | **매칭** | **없음** | 매칭·추천·팔로우·친구·DM 관련 코드·UI·테이블이 전무 |
 | 궤도 진입(닉네임) | **완성** | `main.html` 대화상자. 2~12자 검증(서버 check 제약과 동일 기준), 닉네임 바꾸기·지우기. 광장에서 `postMessage({orbit:'join'})` 또는 `main.html#join`으로도 열린다 |
@@ -112,16 +138,23 @@ orbithere/
 **reactions** — id bigint identity / post_id → posts(cascade) / emoji ∈ `⭐🔥😂🥰👏❤️` / device_id 8~64 / created_at / **unique(post_id, emoji, device_id)**
 **reports** — id uuid / target_type ∈ `post`,`comment` / target_id uuid / reason ∈ `spam,abuse,adult,privacy,etc` / detail ≤200 / reporter_device 8~64 / handled bool / created_at / **unique(target_type, target_id, reporter_device)**
 **admins** — user_id uuid PK → auth.users(cascade) / note / created_at. RLS 켜고 정책 0개 = REST로 아무도 못 읽음
+**visits** — day date PK / count bigint. 날짜별 방문 수 하나가 전부. RLS 켜고 정책 0개
+**visit_pings** — day date + token text 복합 PK. token은 `md5(기기ID || ':' || 날짜)` — 원본 기기 ID를 쌓지 않으면서 "같은 기기 같은 날 한 번"을 서버에서 강제한다. 날짜가 바뀌면 값이 완전히 달라져 날짜 간 연결이 안 된다. 3일보다 오래된 행은 새 도장을 찍을 때 함께 지운다. RLS 켜고 정책 0개
 
 **RLS 요약**: posts·comments·reactions·reports 모두 insert는 누구나. select는 posts·comments만 공개(reactions·reports는 닫힘). delete 정책은 관리자에게만. 일반 사용자 삭제는 `delete_post` / `delete_comment` / `delete_reaction` RPC(기기 일치 시에만)로만.
-**RPC**: `delete_post` `delete_comment` `delete_reaction` `reaction_summary` `reaction_counts` `is_admin` `report_queue` `resolve_report`
+**RPC**: `delete_post` `delete_comment` `delete_reaction` `reaction_summary` `reaction_counts` `is_admin` `report_queue` `resolve_report` `record_visit`(anon, returns void) `visit_stats`(관리자 전용)
 **트리거**: posts/comments/reports 각각 insert rate limit (3·20 / 5·50 / 5·30 per 분·시간)
+**방문 집계의 도배 방지**는 트리거가 아니라 `visit_pings`의 복합 PK다. 같은 기기의 두 번째 호출부터 `on conflict do nothing`에 걸려 `visits.count`가 움직이지 않는다 — 기기 기준 "분당 N회" 트리거보다 강하다. 이유는 `migration_010` 주석 참고.
 
 > `reaction_counts` 는 홈 트렌딩 카드 전용이었다. 카드를 없애면서 **호출하는 곳이 사라졌지만 함수는 남겨 두었다** — 지우려면 별도 마이그레이션이 필요하다.
 
 **localStorage**
-`orbit_nickname` `orbit_joindate` `orbit_jointime` `orbit_device_id`
+`orbit_nickname` `orbit_joindate` `orbit_jointime` `orbit_device_id` `orbit_visit_day`
 (레거시: `orbit_zodiac` `orbit_animal` — 운세 페이지를 내리면서 더 이상 읽고 쓰지 않음)
+
+> **키를 추가할 때는 `privacy.html` 4항(브라우저 저장소 목록)을 반드시 같이 고칠 것.**
+> `orbit_device_id`가 한 번 누락됐고(2026-08-02 수정), `orbit_visit_day`가 같은 이유로 또 누락됐다(2026-08-03 수정).
+> 서버에 새로 보내는 값이 생기면 1항 수집 표·2항 이용 목적·3항 보관 파기·시행일까지 함께 본다.
 
 ---
 
@@ -146,8 +179,13 @@ orbithere/
 
 **실제 결함**
 1. `sky.html` — 하드코딩된 마지막 이벤트가 **2027-08-02**. 그 이후에는 카운트다운이 "예정된 현상이 없습니다"로, 타임라인은 빈 상태로 고정된다. 수동 갱신 필요. **첫 화면이 되면서 체감 우선순위가 올라갔다**
-2. `schema.sql` 의 orbit check는 여전히 `('free','money','dawn')`뿐이다. **새 Supabase 프로젝트에 schema.sql만 실행하면 글 작성이 23514로 실패**한다. migration_008까지 순서대로 실행해야 함
+2. `schema.sql` 의 orbit check는 여전히 `('free','money','dawn')`뿐이다. **새 Supabase 프로젝트에 schema.sql만 실행하면 글 작성이 23514로 실패**한다. `schema.sql → 002 → 003 → … → 009 → 010` 순서대로 전부 실행해야 함
 3. 마이그레이션 실행 순서 의존 — migration_003 적용 후 `schema.sql`을 다시 돌리면 마지막 환영 글 insert가 실패한다 (author_device 없음)
+
+**2026-08-03에 고친 것**
+- ~~`record_visit`에 도배 방지가 없어 콘솔에서 반복 호출하면 숫자를 얼마든지 올릴 수 있었다~~ → 하루 한 번 제한을 서버(`visit_pings`)로 옮김. localStorage는 요청을 아끼는 역할만 한다
+- ~~조작 가능한 방문자 수를 페이지에 그대로 노출~~ → `record_visit`은 아무것도 반환하지 않고, 숫자는 관제실 `visit_stats`로만 본다
+- ~~privacy.html이 `orbit_visit_day` 누락~~ → 저장소 목록·수집 표·이용 목적·보관 파기 반영, 시행일 2026-08-03로 갱신
 
 **2026-08-02에 고친 것**
 - ~~privacy.html이 기기 식별자(`author_device`/`device_id`/`reporter_device`) 수집을 누락~~ → 수집 표·이용 목적·보관 파기·localStorage 목록에 모두 반영, 시행일 갱신
@@ -157,8 +195,10 @@ orbithere/
 **설계상 한계 (코드 주석에 이미 명시된 것들)**
 - 익명 기기 ID 기반이라 localStorage를 지우면 새 기기가 되어 rate limit·중복 신고 방지를 우회할 수 있다
 - 닉네임 선점 없음 — 같은 닉을 여러 명이 쓸 수 있고, 그래서 '나' 배지·삭제 권한을 닉이 아닌 `author_device`로 판단한다
-- 광장은 최신 50개 고정. 페이지네이션·무한스크롤·실시간 구독 없음
-- Supabase URL/키가 2개 파일에 복붙돼 있어 프로젝트 교체 시 2곳을 고쳐야 한다
+- 광장은 최신 50개 고정. 페이지네이션·무한스크롤 없음. Supabase Realtime 구독도 없다 — `live` 채널의 30초 폴링이 유일한 자동 갱신이다
+- **폴링 요청 예산** — `loadPosts()` 한 번이 쿼리 3개(글 50개 + `reaction_summary` RPC + 댓글 일괄 조회)다. `live` 탭을 열어둔 브라우저 하나가 시간당 120회 × 3쿼리를 쓴다. 탭을 켜둔 채 밤을 넘기면 하룻밤에 천 회에 가까워진다. 지금 인원으로는 무료 플랜에 여유가 있지만, **유입이 몰리는 날에는 Supabase 대시보드에서 사용량을 확인할 것.** 부담되면 `lounge.html:1142`의 `30000`을 `60000`으로 올리면 된다
+- 방문 집계는 기기당 하루 한 번이지만, localStorage를 지우거나 UUID를 새로 만들어 부르면 새 기기로 잡힌다 — posts·reports의 rate limit이 안고 있는 한계와 같다. 기기 기준 트리거로도 막히지 않는 종류이므로 **정확한 수치가 아니라 추세로 읽어야 한다**
+- Supabase URL/키가 3개 파일에 복붙돼 있어 프로젝트 교체 시 3곳을 고쳐야 한다
 - Supabase가 일시정지되면 광장 전체가 "서버에 연결할 수 없어요"로 죽는다
 - 옛 궤도(`free`/`money`/`dawn`/`pet`) 글은 '전체' 탭에서 🛰️ 폴백 칩(원래 id 표시)으로 보인다. 정리 쿼리는 migration_008 주석 참고
 

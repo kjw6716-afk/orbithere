@@ -14,7 +14,12 @@
 | `terms.html` / `privacy.html` | 이용약관 · 개인정보처리방침 |
 | `404.html` | 커스텀 404 |
 
-궤도(채널)는 **관측 후기 · 장비 · 실시간 하늘 · 질문** 네 개입니다.
+공통 스크립트는 `orbit.css` · `effects.js`(클릭 파티클) · `visits.js`(방문 집계) 세 개입니다.
+`visits.js`는 하루 한 번 방문 수만 세고 **화면에는 아무것도 그리지 않습니다** — 그 숫자는
+관제실(`admin.html`)에서만 봅니다.
+
+궤도(채널)는 **관측 후기 · 장비 · 실시간 하늘 · 질문** 네 개이고, 첫 진입 기본 채널은
+**관측 후기**입니다. 나머지 셋은 `minor`로 표시해 탭을 한 톤 낮춰 둡니다.
 채널을 늘리거나 바꿀 때는 `lounge.html`의 `ORBIT_LIST`와 DB의 `posts_orbit_check` 제약을
 **같이** 고쳐야 합니다 (`supabase/migration_008_sky_orbits.sql` 참고).
 
@@ -28,8 +33,12 @@
 
 ## Supabase 설정
 
-`supabase/` 안의 SQL을 **번호 순서대로** SQL Editor에서 실행하세요.
-`schema.sql`만 실행하면 채널 제약이 옛 값에 머물러 글 작성이 23514로 막힙니다.
+`supabase/` 안의 SQL을 **번호 순서대로**(`schema.sql` → `002` → … → `010`) SQL Editor에서
+실행하세요. `schema.sql`만 실행하면 채널 제약이 옛 값에 머물러 글 작성이 23514로 막히고,
+`010`은 `009`가 만든 함수를 바꾸므로 순서를 건너뛰면 실패합니다.
+
+새 기능이 localStorage 키를 추가하거나 서버에 새 값을 보내면
+**`privacy.html`과 `PROJECT_STATUS.md`를 같은 커밋에서 함께 고칩니다.**
 
 ---
 
