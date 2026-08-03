@@ -9,6 +9,10 @@
 > **2026-08-03** — 방문 집계(`visits.js`)의 하루 한 번 제한을 서버로 옮기고,
 > 방문자에게 보이던 숫자 위젯을 관제실로 내렸다. `live` 채널 30초 폴링 추가.
 >
+> **2026-08-03 (2)** — 콘텐츠 페이지 `planets.html`(오늘 밤 행성) 추가.
+> DB·마이그레이션 변경 없음. localStorage 키 `orbit_place` 하나가 늘었다(`privacy.html` 4항 반영 완료).
+> main의 탭이 2개 → 3개가 됐다.
+>
 > **이 문서를 고쳐야 하는 때** — 파일을 추가·삭제했을 때, 마이그레이션을 추가했을 때,
 > localStorage 키를 늘렸을 때(`privacy.html`도 같이), 채널 구성을 바꿨을 때.
 > 틀린 인수인계 문서는 없느니만 못하다.
@@ -22,6 +26,7 @@ orbithere/
 ├── index.html          랜딩
 ├── main.html           커뮤니티 홈 (앱 셸 · 사이드바 2탭 + 궤도 진입 대화상자)
 ├── sky.html            밤하늘 달력  ← 첫 화면
+├── planets.html        오늘 밤 행성 (행성 위치·밝기 계산 · 하늘 지도 · 시각 스크러버)
 ├── lounge.html         글 남기기 (Supabase 게시판)
 ├── admin.html          관제실 (관리자 로그인 · 신고함 · 업데이트 기록)
 ├── terms.html          이용약관
@@ -30,7 +35,7 @@ orbithere/
 ├── orbit.css           공통 스타일 (색 변수 · 상단바 · 푸터 · reduced-motion)
 ├── effects.js          클릭 파티클 (canvas + rAF)
 ├── visits.js           방문 집계 — record_visit RPC를 하루 한 번 호출만 한다(화면 출력 없음)
-│                       index · main · sky · lounge 네 페이지에 <script defer>로 들어간다
+│                       index · main · sky · planets · lounge 다섯 페이지에 <script defer>로 들어간다
 ├── _archive/           사이트에서 내렸지만 보관 중 — README.md 참고
 │   ├── lucky.html      Lucky Orbit (로또 / 연금복권 추첨기)
 │   ├── fortune.html    오늘의 운세
@@ -50,7 +55,7 @@ orbithere/
 │   └── migrate_emoji_2026-07.sql    🥹→🥰, 🫶→❤️ 이전
 ├── images/{og.png, otter.png}
 ├── favicon.* / icon-192.png / icon-512.png / apple-touch-icon*.png
-├── CNAME (orbithere.com) · robots.txt · sitemap.xml · site.webmanifest
+├── CNAME (orbithere.com) · robots.txt · sitemap.xml(7개 URL) · site.webmanifest
 └── README.md
 ```
 
@@ -69,7 +74,7 @@ orbithere/
 | 서버 코드 | 없음. Edge Function 없음. 모든 권한 판정은 Postgres RLS + `security definer` 함수 |
 | 인증 | Supabase Auth (이메일/비번) — **관리자 전용**. 일반 사용자 인증 없음 |
 | 배포 | **GitHub Pages**, 레포 루트를 그대로 서빙. `CNAME`으로 커스텀 도메인. CI/워크플로 파일 없음 → Pages 설정은 레포 설정 화면에 있고 코드에 없음. 푸시 = 배포 |
-| SEO | 페이지별 canonical/OG/twitter 메타, `sky.html`에 JSON-LD (WebApplication + FAQPage), sitemap 6개 URL, `admin.html`·`_archive/*`는 noindex + robots Disallow |
+| SEO | 페이지별 canonical/OG/twitter 메타, `sky.html`·`planets.html`에 JSON-LD (WebApplication + FAQPage), sitemap 7개 URL, `admin.html`·`_archive/*`는 noindex + robots Disallow |
 | 접근성 | `prefers-reduced-motion` 전역 처리 (`orbit.css:154-173`, `effects.js:12-13`), iOS 자동확대 방지용 input 16px |
 
 ---
@@ -79,8 +84,9 @@ orbithere/
 | 파일 | 한 줄 설명 |
 |---|---|
 | `index.html` | 유성우 + 공전하는 별 애니메이션 랜딩. 아무 데나 클릭하면 700ms 뒤 `main.html`로 이동 |
-| `main.html` | 사이드바 + 패널 앱 셸. **밤하늘 달력 / 글 남기기 2탭**, 둘 다 `?embed=1` iframe. 상단 칩을 누르면 궤도 진입(닉네임) 대화상자 |
+| `main.html` | 사이드바 + 패널 앱 셸. **밤하늘 달력 / 오늘 밤 행성 / 글 남기기 3탭**, 셋 다 `?embed=1` iframe. 상단 칩을 누르면 궤도 진입(닉네임) 대화상자 |
 | `sky.html` | 유성우·일식·월식·슈퍼문 일정표 + 실시간 카운트다운 + 달 위상 계산. **첫 화면** |
+| `planets.html` | 행성 7개의 방향·고도·밝기·거리를 그날 날짜로 계산. 하늘 지도(SVG) + 밤 시간대 스크러버 + 관측지 8곳 + 근접(합) 안내. **하드코딩된 일정표가 없다** |
 | `lounge.html` | 궤도(채널)별 게시판. 글쓰기·리액션·댓글·삭제·신고. 유일한 실제 커뮤니티 화면 |
 | `admin.html` | 운영자 로그인 → **방문 집계** + 신고함 처리 + 업데이트 기록(v0.1~v1.5) 열람 |
 | `terms.html` / `privacy.html` | 이용약관 / 개인정보처리방침 (전문 작성됨) |
@@ -118,6 +124,7 @@ orbithere/
 | 신고 | 완성 | 5개 사유 + 상세, (대상,기기) 유니크, 관제실 신고함에서 삭제/무시 처리 |
 | 관리자 삭제 | 완성 | RLS `is_admin()` 기반. 클라이언트 `isAdmin` 변수는 버튼 표시용일 뿐 |
 | 밤하늘 달력 | 완성 | 달 위상 천문 계산 직접 구현. 이벤트 일정은 하드코딩 |
+| **오늘 밤 행성** | 완성 | `planets.html`. JPL 근사 궤도요소(Standish, 1800~2050)로 행성 위치를 직접 계산 → 지평좌표 변환. KST 정오부터 24시간을 5분 간격 289개 표본으로 훑어 뜨고 지는 시각·최고 고도를 구한다. 서버 호출 0회 |
 | 업데이트 기록 | 완성 | 관제실에서만 열람 |
 
 ---
@@ -149,7 +156,8 @@ orbithere/
 > `reaction_counts` 는 홈 트렌딩 카드 전용이었다. 카드를 없애면서 **호출하는 곳이 사라졌지만 함수는 남겨 두었다** — 지우려면 별도 마이그레이션이 필요하다.
 
 **localStorage**
-`orbit_nickname` `orbit_joindate` `orbit_jointime` `orbit_device_id` `orbit_visit_day`
+`orbit_nickname` `orbit_joindate` `orbit_jointime` `orbit_device_id` `orbit_visit_day` `orbit_place`
+(`orbit_place`는 `planets.html`의 관측 도시 id. 서버로 가지 않는 화면 설정값이다)
 (레거시: `orbit_zodiac` `orbit_animal` — 운세 페이지를 내리면서 더 이상 읽고 쓰지 않음)
 
 > **키를 추가할 때는 `privacy.html` 4항(브라우저 저장소 목록)을 반드시 같이 고칠 것.**
@@ -168,6 +176,7 @@ orbithere/
   - `sky.html:451-586` — 천문 이벤트 14건 전부 하드코딩 (2026-08 ~ 2027-08)
   - `admin.html` — 업데이트 기록 v0.1~v1.5 타임라인이 정적 HTML
   - `lounge.html` — 채널 목록 `ORBIT_LIST` 상수 (DB에 채널 테이블 없음)
+  - `planets.html` — `ELEM`(JPL 궤도요소 표)·`PLANETS`(행성 설명)·`PLACES`(관측지 8곳). 궤도요소는 **1800~2050년용 상수표**라 2050년 이후에는 오차가 커진다
   - `schema.sql:63-64` — 환영 글 1건을 seed로 insert
 - **가짜 더미 데이터는 없다.**
 - 사용되지 않는 파일: `images/otter.png`(어디서도 참조 안 됨 — 마스코트는 상단 칩의 🦦 이모지), `apple-touch-icon-180x180.png`(참조 0건)
@@ -178,7 +187,7 @@ orbithere/
 ## 7. 안 돌아가는 것 / 깨진 것
 
 **실제 결함**
-1. `sky.html` — 하드코딩된 마지막 이벤트가 **2027-08-02**. 그 이후에는 카운트다운이 "예정된 현상이 없습니다"로, 타임라인은 빈 상태로 고정된다. 수동 갱신 필요. **첫 화면이 되면서 체감 우선순위가 올라갔다**
+1. `sky.html` — 하드코딩된 마지막 이벤트가 **2027-08-02**. 그 이후에는 카운트다운이 "예정된 현상이 없습니다"로, 타임라인은 빈 상태로 고정된다. 수동 갱신 필요. **첫 화면이 되면서 체감 우선순위가 올라갔다** (`planets.html`은 계산식이라 이 문제가 없다)
 2. `schema.sql` 의 orbit check는 여전히 `('free','money','dawn')`뿐이다. **새 Supabase 프로젝트에 schema.sql만 실행하면 글 작성이 23514로 실패**한다. `schema.sql → 002 → 003 → … → 009 → 010` 순서대로 전부 실행해야 함
 3. 마이그레이션 실행 순서 의존 — migration_003 적용 후 `schema.sql`을 다시 돌리면 마지막 환영 글 insert가 실패한다 (author_device 없음)
 
@@ -198,11 +207,14 @@ orbithere/
 - 광장은 최신 50개 고정. 페이지네이션·무한스크롤 없음. Supabase Realtime 구독도 없다 — `live` 채널의 30초 폴링이 유일한 자동 갱신이다
 - **폴링 요청 예산** — `loadPosts()` 한 번이 쿼리 3개(글 50개 + `reaction_summary` RPC + 댓글 일괄 조회)다. `live` 탭을 열어둔 브라우저 하나가 시간당 120회 × 3쿼리를 쓴다. 탭을 켜둔 채 밤을 넘기면 하룻밤에 천 회에 가까워진다. 지금 인원으로는 무료 플랜에 여유가 있지만, **유입이 몰리는 날에는 Supabase 대시보드에서 사용량을 확인할 것.** 부담되면 `lounge.html:1142`의 `30000`을 `60000`으로 올리면 된다
 - 방문 집계는 기기당 하루 한 번이지만, localStorage를 지우거나 UUID를 새로 만들어 부르면 새 기기로 잡힌다 — posts·reports의 rate limit이 안고 있는 한계와 같다. 기기 기준 트리거로도 막히지 않는 종류이므로 **정확한 수치가 아니라 추세로 읽어야 한다**
+- `planets.html`의 궤도요소는 1800~2050년용 근사표다. 2050년을 넘기면 오차가 눈에 띄게 커지고, 그때는 표를 갈아야 한다. 밝기(등급)는 근사식이고 **토성의 고리 기울기 보정이 빠져 있어** 최대 0.5등급쯤 어긋날 수 있다. 대기 굴절·지형 가림·날씨는 반영하지 않는다 (이 한계들은 페이지의 «계산 안내» 상자에 그대로 적어 두었다)
 - Supabase URL/키가 3개 파일에 복붙돼 있어 프로젝트 교체 시 3곳을 고쳐야 한다
 - Supabase가 일시정지되면 광장 전체가 "서버에 연결할 수 없어요"로 죽는다
 - 옛 궤도(`free`/`money`/`dawn`/`pet`) 글은 '전체' 탭에서 🛰️ 폴백 칩(원래 id 표시)으로 보인다. 정리 쿼리는 migration_008 주석 참고
 
 **`_archive/` 노출 위험**: 밑줄로 시작하는 디렉터리는 GitHub Pages의 Jekyll 빌드에서 제외되므로 공개되지 않는다. 다만 `.nojekyll`을 추가하거나 Pages 배포를 GitHub Actions로 바꾸면 **그대로 공개된다.** 안전망으로 두 파일에 noindex meta와 robots Disallow를 넣어 두었다.
+
+**`planets.html` 계산 검증 (2026-08-03)**: 헤드리스 브라우저와 Node로 다음을 확인했다 — 태양 적경·적위(오차 0.2° 이내), 지구 근일점·원일점(1월 초 0.9833 au / 7월 초 1.0167 au), 수성·금성 최대이각(27.8° / 46.9°), 행성별 태양거리 범위, **서울 일출·일몰이 공표값과 1분 이내**(하지·동지·연초 3개 날짜), 같은 값을 시간각 해석식으로 다시 구해 교차검증(4개 날짜, 2분 이내), 남중 방위 180.1°, 달 근지점·원지점 거리와 8월 삭 날짜(2026-08-13 — 밤하늘 달력의 «8월 12일이 신월» 서술과 일치), 행성 7개의 연중 밝기 범위, 밤 시간대 36개 프레임에서 지도 라벨 겹침 0건.
 
 **확인 못 한 것**: 라이브 사이트 실제 동작, Supabase 프로젝트의 실제 마이그레이션 적용 상태, GitHub Pages 설정값 — 레포 코드만으로는 알 수 없다.
 
