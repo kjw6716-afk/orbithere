@@ -4,12 +4,16 @@
   "description": "orbithere.com 검사 스크립트 전용. 사이트 자체는 빌드 스텝이 없는 정적 HTML/CSS/JS 그대로이며, 이 파일은 tests/ 를 돌리기 위한 것입니다. GitHub Pages 배포에는 아무 영향이 없습니다.",
   "type": "module",
   "scripts": {
-    "test": "npm run test:astronomy && npm run test:links && npm run test:render",
+    "test": "npm run test:astronomy && npm run test:links && npm run test:security && npm run test:render && npm run test:community",
     "test:astronomy": "node tests/astronomy.mjs",
     "test:links": "node tests/links.mjs",
-    "test:render": "node tests/render.mjs"
+    "test:render": "node tests/render.mjs",
+    "test:security": "node tests/security.mjs",
+    "test:community": "node tests/community.mjs"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "@supabase/supabase-js": "2.116.0",
     "playwright": "1.56.1"
   }
 }

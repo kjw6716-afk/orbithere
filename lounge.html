@@ -37,7 +37,7 @@
         header p { color: #94A3B8; margin-top: 10px; font-size: 0.95rem; }
         .mock-badge {
             display: inline-block; margin-top: 12px;
-            font-size: 10px; padding: 3px 10px; border-radius: 99px;
+            font-size: 12px; padding: 3px 10px; border-radius: 99px;
             background: rgba(159,122,234,0.1); color: #9F7AEA;
             border: 1px solid rgba(159,122,234,0.25); font-weight: 600;
             letter-spacing: 0.04em;
@@ -75,7 +75,7 @@
         }
         .channel-header .ch-text { min-width: 0; }
         .channel-header .ch-name { font-size: 14px; font-weight: 700; color: var(--text-main); }
-        .channel-header .ch-desc { font-size: 11.5px; color: #94A3B8; margin-top: 3px; line-height: 1.45; }
+        .channel-header .ch-desc { font-size: 12px; color: #94A3B8; margin-top: 3px; line-height: 1.45; }
 
         /* 새로고침 — 이 궤도의 궤적만 다시 불러온다 */
         .btn-refresh {
@@ -83,7 +83,7 @@
             display: inline-flex; align-items: center; gap: 6px;
             background: transparent; color: #94A3B8;
             border: 1px solid rgba(255,159,67,0.18); border-radius: 99px;
-            padding: 7px 13px; font-size: 11.5px; font-weight: 600;
+            padding: 7px 13px; font-size: 12px; font-weight: 600;
             font-family: 'Pretendard'; cursor: pointer; transition: all 0.15s;
         }
         .btn-refresh:hover { border-color: rgba(255,159,67,0.45); color: var(--accent); }
@@ -119,7 +119,7 @@
         }
         .write-nick { font-size: 13px; font-weight: 600; color: #CBD5E1; }
         .write-orbit-select {
-            margin-left: auto; font-size: 11px; color: var(--accent);
+            margin-left: auto; font-size: 12px; color: var(--accent);
             background: rgba(255,159,67,0.08); border: 1px solid rgba(255,159,67,0.2);
             border-radius: 8px; padding: 5px 8px; font-family: 'Pretendard';
             outline: none; cursor: pointer;
@@ -135,9 +135,9 @@
         .write-card textarea:focus { border-color: var(--accent); }
         /* 모바일에서 16px 미만이면 iOS Safari가 포커스 순간 페이지를 자동 확대한다 */
         @media (max-width: 768px) { .write-card textarea { font-size: 16px; } }
-        .write-card textarea::placeholder { color: #64748B; }
+        .write-card textarea::placeholder { color: #A8B7CA; }
         .write-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
-        .write-count { font-size: 11px; color: #64748B; }
+        .write-count { font-size: 12px; color: #A8B7CA; }
         .btn-trace {
             background: var(--accent); color: #0F172A; border: none;
             border-radius: 10px; padding: 9px 20px;
@@ -149,7 +149,7 @@
 
         /* 미가입 상태 안내 */
         .need-join { text-align: center; padding: 8px 0; }
-        .need-join p { font-size: 13px; color: #64748B; margin: 0 0 12px; }
+        .need-join p { font-size: 13px; color: #A8B7CA; margin: 0 0 12px; }
         .btn-go-join {
             background: transparent; color: var(--accent);
             border: 1.5px solid rgba(255,159,67,0.3); border-radius: 10px;
@@ -182,9 +182,9 @@
         }
         .post-meta { flex: 1; min-width: 0; }
         .post-nick { font-size: 13px; font-weight: 600; color: #CBD5E1; }
-        .post-sub { font-size: 10px; color: #64748B; margin-top: 2px; }
+        .post-sub { font-size: 12px; color: #A8B7CA; margin-top: 2px; }
         .post-orbit-chip {
-            font-size: 10px; padding: 3px 9px; border-radius: 8px;
+            font-size: 12px; padding: 3px 9px; border-radius: 8px;
             background: rgba(255,159,67,0.08); color: var(--accent);
             font-weight: 600; flex-shrink: 0;
         }
@@ -204,13 +204,13 @@
             padding: 5px 11px; font-size: 13px; cursor: pointer;
             transition: all 0.15s; font-family: 'Pretendard';
         }
-        .rx-chip .n { font-size: 11px; font-weight: 600; }
+        .rx-chip .n { font-size: 12px; font-weight: 600; }
         .rx-chip:hover { border-color: rgba(255,159,67,0.4); }
         .rx-chip.mine { background: rgba(255,159,67,0.13); border-color: rgba(255,159,67,0.45); color: var(--accent); }
         .rx-add {
             width: 28px; height: 28px; border-radius: 50%;
             display: inline-flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.03); color: #64748B;
+            background: rgba(255,255,255,0.03); color: #A8B7CA;
             border: 1px dashed rgba(255,255,255,0.15);
             font-size: 15px; cursor: pointer; transition: all 0.15s; font-family: 'Pretendard';
         }
@@ -235,7 +235,7 @@
             width: 28px; height: 28px; border-radius: 8px;
             display: inline-flex; align-items: center; justify-content: center;
             background: transparent; border: 1px solid rgba(255,255,255,0.07);
-            color: #64748B; cursor: pointer; transition: all 0.15s;
+            color: #A8B7CA; cursor: pointer; transition: all 0.15s;
         }
         .btn-del:hover { border-color: rgba(252,129,129,0.5); color: #FC8181; background: rgba(252,129,129,0.06); }
         .btn-del svg { width: 13px; height: 13px; }
@@ -250,14 +250,14 @@
         }
         .btn-cmt:hover { border-color: rgba(255,159,67,0.4); color: var(--accent); }
         .btn-cmt.on { background: rgba(255,159,67,0.13); border-color: rgba(255,159,67,0.45); color: var(--accent); }
-        .btn-cmt .cn { font-size: 11px; font-weight: 600; }
+        .btn-cmt .cn { font-size: 12px; font-weight: 600; }
 
         .cmt-thread {
             margin-top: 14px; padding-top: 14px;
             border-top: 1px solid rgba(255,159,67,0.1);
         }
         .cmt-list { display: flex; flex-direction: column; gap: 13px; margin-bottom: 13px; }
-        .cmt-empty { font-size: 12px; color: #64748B; margin-bottom: 13px; }
+        .cmt-empty { font-size: 12px; color: #A8B7CA; margin-bottom: 13px; }
         .cmt { display: flex; gap: 9px; align-items: flex-start; }
         .cmt-av {
             width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
@@ -267,14 +267,14 @@
         .cmt-main { flex: 1; min-width: 0; }
         .cmt-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; flex-wrap: wrap; }
         .cmt-nick { font-size: 12px; font-weight: 600; color: #CBD5E1; }
-        .cmt-me { font-size: 9px; color: #9F7AEA; }
-        .cmt-time { font-size: 10px; color: #64748B; }
+        .cmt-me { font-size: 12px; color: #9F7AEA; }
+        .cmt-time { font-size: 12px; color: #A8B7CA; }
         .cmt-body { font-size: 12.5px; line-height: 1.65; color: #94A3B8; white-space: pre-wrap; word-break: break-word; }
         .btn-cmt-del {
             flex-shrink: 0; width: 22px; height: 22px; border-radius: 6px;
             display: inline-flex; align-items: center; justify-content: center;
             background: transparent; border: 1px solid rgba(255,255,255,0.06);
-            color: #64748B; cursor: pointer; transition: all 0.15s;
+            color: #A8B7CA; cursor: pointer; transition: all 0.15s;
             font-size: 14px; line-height: 1; font-family: 'Pretendard';
         }
         .btn-cmt-del:hover { border-color: rgba(252,129,129,0.5); color: #FC8181; }
@@ -288,7 +288,7 @@
             outline: none; transition: border-color 0.2s;
         }
         .cmt-write input:focus { border-color: var(--accent); }
-        .cmt-write input::placeholder { color: #64748B; }
+        .cmt-write input::placeholder { color: #A8B7CA; }
         /* 모바일에서 16px 미만이면 iOS Safari가 포커스 순간 페이지를 자동 확대한다 */
         @media (max-width: 768px) { .cmt-write input { font-size: 16px; } }
         .btn-cmt-send {
@@ -298,7 +298,7 @@
         }
         .btn-cmt-send:hover { opacity: 0.88; }
         .btn-cmt-send:disabled { opacity: 0.35; cursor: default; }
-        .cmt-need-join { font-size: 12px; color: #64748B; }
+        .cmt-need-join { font-size: 12px; color: #A8B7CA; }
         .cmt-need-join button {
             background: none; border: none; padding: 0; cursor: pointer;
             color: var(--accent); font-family: 'Pretendard'; font-size: 12px;
@@ -337,7 +337,7 @@
         }
         @keyframes rp-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } }
         .rp-box h3 { font-size: 15px; font-weight: 700; margin: 0 0 4px; color: var(--text-main); }
-        .rp-box .rp-sub { font-size: 11.5px; color: #64748B; line-height: 1.6; margin: 0 0 16px; }
+        .rp-box .rp-sub { font-size: 12px; color: #A8B7CA; line-height: 1.6; margin: 0 0 16px; }
         .rp-quote {
             font-size: 12px; color: #94A3B8; line-height: 1.6;
             background: rgba(255,255,255,0.03); border-left: 2px solid rgba(255,159,67,0.3);
@@ -375,7 +375,7 @@
         .rp-send:disabled { opacity: 0.35; cursor: default; }
 
         .empty-state {
-            text-align: center; padding: 40px 0; color: #64748B; font-size: 13px;
+            text-align: center; padding: 40px 0; color: #A8B7CA; font-size: 13px;
         }
         .empty-state p { margin: 0; line-height: 1.6; }
 
@@ -398,9 +398,20 @@
         .embed header h1,
         .embed header p { display: none; }
         .embed .mock-badge { margin-top: 0; }
-    </style>
+
+        button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 2px solid #4FD1C5; outline-offset: 4px; }
+        .pbtn, .fbtn, .orbit-tab { min-height: 40px; }
+        .sky-hint, .pl-sub, .ch-desc { line-height: 1.75; }
+        .pl-desc, .post-body, .cmt-body { font-size: 16px; }
+        .embed-out { font-size: 14px; }
+        .load-error { text-align: center; padding: 28px 16px; color: #CBD5E1; line-height: 1.8; }
+        .load-error a { color: #4FD1C5; }
+        .load-error button { padding: 12px 20px; margin: 12px; border-radius: 99px; background: #FF9F43; color: #0F172A; border: 0; font: inherit; cursor: pointer; }
+        .write-hint { font-size: 13px; color: #CBD5E1; line-height: 1.7; margin: 12px 0; }
+        </style>
     <script>if(new URLSearchParams(location.search).get('embed'))document.documentElement.classList.add('embed');</script>
     <script src="effects.js" defer></script>
+    <script src="orbit-config.js"></script>
     <script src="visits.js" defer></script>
 </head>
 <body>
@@ -416,7 +427,7 @@
             <div class="header-text">
                 <h1>글 <span>남기기</span></h1>
                 <p>어젯밤 뭘 보셨나요 — 같은 하늘을 본 사람들에게 남겨보세요</p>
-                <span class="mock-badge" id="loungeStatus">β 베타 — 궤적은 모두에게 공개 저장돼요</span>
+                <span class="mock-badge" id="loungeStatus" role="status" aria-live="polite">β 베타 — 궤적은 모두에게 공개 저장돼요</span>
             </div>
         </header>
 
@@ -447,12 +458,11 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
+    <script src="orbit-backend.js"></script>
     <script>
     // ===== Supabase =====
-    var SB_URL = 'https://unwxpuvfqyjhgrcrmuhu.supabase.co';
-    var SB_KEY = 'sb_publishable_KnyriHKUHNWw0QyIAXBmOA_0KaHPcXI'; // 공개용 키 (publishable)
-    var sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null;
+    var sb = window.createOrbitBackend();
 
     // ===== 기본 데이터 =====
     // ===== 채널(궤도) 단일 설정 — 여기 한 줄만 추가하면 새 채널이 생깁니다 =====
@@ -504,7 +514,49 @@
     // 관리자 모드. 로그인만으로는 켜지지 않고 admins 테이블에 등록된 계정이어야 한다.
     // 여기서 true여도 실제 삭제를 허용하는 건 서버의 RLS라서,
     // 이 값을 브라우저에서 조작해도 남의 글은 지워지지 않는다. 버튼 표시용일 뿐이다.
-    var isAdmin = false;
+    var isAdmin = false, currentUserId = null, writerPromise = null, securityVersion = null;
+    var versionPromise = null;
+    async function readSecurityVersion(){
+        if(securityVersion === 2) return 2;
+        if(versionPromise) return versionPromise;
+        versionPromise = (async function(){
+            var result = await sb.rpc('community_version');
+            if(result.error && result.error.code !== 'PGRST202' && result.error.code !== '42883') throw result.error;
+            securityVersion = result.error ? 1 : result.data;
+            return securityVersion;
+        })();
+        try { return await versionPromise; } finally { versionPromise = null; }
+    }
+    function postColumns(){ return 'id,nick,orbit,text,created_at' + (securityVersion === 2 ? ',author_id' : ''); }
+    function commentColumns(){ return 'id,post_id,nick,text,created_at' + (securityVersion === 2 ? ',author_id' : ''); }
+    async function ensureWriter(){
+        if(writerPromise) return writerPromise;
+        writerPromise = (async function(){
+            if(!sb) throw new Error('연결을 준비하지 못했어요. 새로고침 후 다시 시도해주세요.');
+            if(securityVersion !== 2){
+                var version = await readSecurityVersion();
+                if(version !== 2) throw new Error('글쓰기 보안 업데이트를 준비하고 있어요. 잠시 후 다시 시도해주세요.');
+                securityVersion = 2;
+            }
+            var session = await sb.auth.getSession();
+            if(session.error) throw session.error;
+            var user = session.data && session.data.session && session.data.session.user;
+            if(!user){
+                var signed = await sb.auth.signInAnonymously();
+                if(signed.error) throw signed.error;
+                user = signed.data.user;
+            }
+            if(!user) throw new Error('작성 권한을 확인하지 못했어요. 다시 시도해주세요.');
+            currentUserId = user.id;
+            return user.id;
+        })();
+        try { return await writerPromise; } finally { writerPromise = null; }
+    }
+    async function writeAction(action){
+        try { await ensureWriter(); return await action(); }
+        catch(error) { return { error: error }; }
+    }
+    var loadSequence = 0, feedAvailable = false, panelActive = !document.documentElement.classList.contains('embed');
 
     // 닉네임을 정하는 곳은 main.html의 진입 대화상자 하나뿐이다.
     // 임베드(메인 패널 안)일 땐 부모에게 열어달라고 요청하고,
@@ -530,7 +582,7 @@
     var cmts = {};
     // 펼쳐 둔 댓글창: { postId: true }
     // 새로고침해도 보고 있던 스레드가 접히지 않도록 렌더 사이에 남긴다.
-    var openThreads = {};
+    var openThreads = {}, pendingReactions = {};
 
     function escapeHtml(s){
         // 작은따옴표까지 막는다. 지금은 모든 속성을 큰따옴표로 쓰지만,
@@ -572,9 +624,10 @@
             '<div class="write-head">' +
             '<div class="write-avatar">' + avatarOf(nickname) + '</div>' +
             '<div class="write-nick">' + escapeHtml(nickname) + '</div>' +
-            '<select class="write-orbit-select" id="orbitSelect">' + orbitOptions + '</select>' +
+            '<select class="write-orbit-select" id="orbitSelect" aria-label="글을 남길 채널">' + orbitOptions + '</select>' +
             '</div>' +
-            '<textarea id="postInput" maxlength="500" placeholder="오늘 어떤 궤적을 남기실 건가요?"></textarea>' +
+            '<textarea id="postInput" maxlength="500" aria-label="게시글 내용" placeholder="무엇을 보셨나요? 관측한 시각과 대략적인 지역도 함께 적어주세요."></textarea>' +
+            '<p class="write-hint">관측 후기라면 본 대상 · 시각 · 시·군 정도의 지역 · 사용한 장비를 적어주세요. 자세한 주소는 남기지 마세요.</p>' +
             '<div class="write-foot">' +
             '<span class="write-count" id="charCount">0 / 500</span>' +
             '<button class="btn-trace" id="btnTrace" disabled>궤적 남기기</button>' +
@@ -596,12 +649,12 @@
             btn.dataset.sending = '1';
             btn.disabled = true;
             btn.textContent = '남기는 중...';
-            var res = await sb.from('posts').insert({
+            var res = await writeAction(function(){ return sb.from('posts').insert({
                 nick: nickname,
                 orbit: document.getElementById('orbitSelect').value,
                 text: text,
-                author_device: deviceId
-            });
+                author_device: currentUserId, author_id: currentUserId
+            }); });
             delete btn.dataset.sending;
             btn.textContent = '궤적 남기기';
             if(res.error){
@@ -621,6 +674,7 @@
     // opts.quiet — 새로고침처럼 이미 보고 있는 목록을 갱신하는 경우.
     // 로딩 문구로 목록을 지우지 않고, 실패해도 보던 궤적을 남겨둔다.
     async function loadPosts(opts){
+        var requestId = ++loadSequence, requestOrbit = currentOrbit;
         var quiet = !!(opts && opts.quiet);
         var list = document.getElementById('postList');
         if(!sb){
@@ -630,44 +684,56 @@
         }
         if(!quiet) list.innerHTML = '<div class="empty-state">궤적을 불러오는 중...</div>';
         try {
-            var q = sb.from('posts').select('*').order('created_at', { ascending: false }).limit(50);
-            if(currentOrbit !== 'all') q = q.eq('orbit', currentOrbit);
+            await readSecurityVersion();
+            if(requestId !== loadSequence) return;
+            var q = sb.from('posts').select(postColumns()).order('created_at', { ascending: false }).limit(50);
+            if(requestOrbit !== 'all') q = q.eq('orbit', requestOrbit);
             var res = await q;
+            if(requestId !== loadSequence) return;
             if(res.error) throw res.error;
             var posts = res.data || [];
 
-            rxCount = {}; rxMine = {}; cmts = {};
+            var nextRxCount = {}, nextRxMine = {}, nextComments = {};
             if(posts.length){
                 var ids = posts.map(function(p){ return p.id; });
                 // 예전에는 reactions 행을 통째로 받아 device_id를 직접 비교했다.
                 // 그러면 남의 기기 ID가 모두 노출돼 그 값으로 남의 리액션을 지울 수 있었다.
                 // 이제 서버가 개수와 "내가 눌렀는지"만 계산해서 돌려준다.
-                var r = await sb.rpc('reaction_summary', { p_post_ids: ids, p_device: deviceId });
+                var r = await sb.rpc('reaction_summary', { p_post_ids: ids, p_device: null });
                 if(r.error) throw r.error;
                 (r.data || []).forEach(function(row){
-                    (rxCount[row.post_id] = rxCount[row.post_id] || {})[row.emoji] = Number(row.n) || 0;
+                    (nextRxCount[row.post_id] = nextRxCount[row.post_id] || {})[row.emoji] = Number(row.n) || 0;
                     if(row.mine){
-                        (rxMine[row.post_id] = rxMine[row.post_id] || {})[row.emoji] = true;
+                        (nextRxMine[row.post_id] = nextRxMine[row.post_id] || {})[row.emoji] = true;
                     }
                 });
 
                 // 댓글도 한 번에 받아둔다 — 펼칠 때마다 요청하면 반응이 굼뜨다.
                 // limit는 안전장치다. 여기 걸릴 만큼 댓글이 쌓이면
                 // 개수만 세는 조회와 본문 조회를 나누는 게 다음 단계.
-                var cm = await sb.from('comments').select('*')
+                var cm = await sb.from('comments').select(commentColumns())
                     .in('post_id', ids).order('created_at', { ascending: true }).limit(500);
                 if(cm.error) throw cm.error;
                 (cm.data || []).forEach(function(row){
-                    (cmts[row.post_id] = cmts[row.post_id] || []).push(row);
+                    (nextComments[row.post_id] = nextComments[row.post_id] || []).push(row);
                 });
             }
+            if(requestId !== loadSequence) return;
+            rxCount = nextRxCount; rxMine = nextRxMine; cmts = nextComments;
+            feedAvailable = true;
+            setStatus(isAdmin ? '🛰️ 관리자 모드' : '게시글은 모두에게 공개됩니다');
             renderPosts(posts, quiet);
         } catch(err){
+            if(requestId !== loadSequence) return;
             console.error(err);
             // 조용한 갱신이 실패했을 때 목록을 에러 문구로 갈아치우면
             // 잘 보고 있던 궤적이 통째로 사라진다 — 상태 배지로만 알린다.
-            if(quiet) setStatus('새로고침 실패 — ' + errHint(err), true);
-            else list.innerHTML = '<div class="empty-state">광장을 불러오지 못했어요.<br>' + escapeHtml(errHint(err)) + '</div>';
+            if(quiet && feedAvailable) setStatus('새로고침 실패 — ' + errHint(err), true);
+            else {
+                feedAvailable = false;
+                list.innerHTML = '<div class="load-error" role="status"><strong>지금은 게시판에 연결할 수 없어요</strong><p>잠시 후 다시 시도해주세요. 작성 중인 내용은 이 화면에 남아 있어요.</p><button type="button" id="retryFeed">다시 불러오기</button><br><a href="planets.html" target="_top">오늘 밤 하늘 먼저 보기 →</a></div>';
+                document.getElementById('retryFeed').addEventListener('click', function(){ loadPosts(); });
+            }
         }
     }
 
@@ -681,15 +747,16 @@
             return '답을 너무 빠르게 남기고 있어요 — 잠시 쉬었다가 다시 남겨주세요';
         if(/orbit_rate_limit/i.test(m))
             return '궤적을 너무 빠르게 남기고 있어요 — 잠시 쉬었다가 다시 남겨주세요';
-        if(/Failed to fetch|NetworkError|Load failed/i.test(m))
-            return '서버에 연결할 수 없어요 (프로젝트가 일시정지됐거나 네트워크 문제)';
+        if(/Failed to fetch|NetworkError|Load failed|AbortError|aborted/i.test(m))
+            return '연결이 지연되고 있어요. 잠시 후 다시 시도해주세요.';
         if(err.code === '42501' || /row-level security/i.test(m))
-            return '서버 권한 설정(RLS) 문제예요';
+            return '작성 권한을 확인하지 못했어요. 새로고침 후 다시 시도해주세요.';
         if(err.code === '23514' || /check constraint/i.test(m))
             return '입력값이 규칙에 맞지 않아요 (닉네임 2~12자, 글 1~500자)';
         if(/JWT|api key|Invalid authentication/i.test(m))
-            return 'API 키 인증 문제예요';
-        return m.slice(0, 80) || ('오류 코드 ' + (err.code || err.status || '?'));
+            return '연결을 확인하고 있어요. 잠시 후 다시 시도해주세요.';
+        if(/[가-힣]/.test(m)) return m.slice(0, 120);
+        return '요청을 처리하지 못했어요. 잠시 후 다시 시도해주세요.';
     }
 
     // quiet일 때는 등장 애니메이션을 생략한다. 새로고침마다 목록 전체가
@@ -703,9 +770,9 @@
         }
         posts.forEach(function(p, i){
             // "나"는 닉네임이 아니라 작성 기기로 판단한다.
-            // 닉네임은 자유 입력이라 남이 같은 닉을 쓰면 그 사람 글에 '나' 배지가 붙는다.
-            // 삭제 권한이 이미 쓰고 있던 기준(author_device)과 하나로 맞췄다.
-            var isMine = !!(p.author_device && p.author_device === deviceId);
+            // 닉네임은 자유 입력이므로 소유권의 근거가 될 수 없다.
+            // 서버가 발급한 사용자 ID(author_id)로만 내 글을 판단한다. 이전 글은 관리자에게 삭제를 요청한다.
+            var isMine = !!(p.author_id && p.author_id === currentUserId);
             var canDelete = isMine || isAdmin;
             var post = document.createElement('article');
             post.className = 'post';
@@ -715,7 +782,7 @@
                 '<div class="post-head">' +
                 '<div class="post-avatar">' + avatarOf(p.nick) + '</div>' +
                 '<div class="post-meta">' +
-                '<div class="post-nick">' + escapeHtml(p.nick) + (isMine ? ' <span style="font-size:9px;color:#9F7AEA;">나</span>' : '') + '</div>' +
+                '<div class="post-nick">' + escapeHtml(p.nick) + (isMine ? ' <span style="font-size: 12px;color:#9F7AEA;">나</span>' : '') + '</div>' +
                 '<div class="post-sub">' + timeAgo(p.created_at) + '</div>' +
                 '</div>' +
                 '<span class="post-orbit-chip' + (isMine?' mine':'') + '">' + orbitInfo(p.orbit).icon + ' ' + escapeHtml(orbitInfo(p.orbit).label) + '</span>' +
@@ -808,8 +875,17 @@
             '</div></div>';
         document.body.appendChild(back);
 
-        var close = function(){ back.remove(); document.removeEventListener('keydown', onKey); };
-        function onKey(ev){ if(ev.key === 'Escape') close(); }
+        var previousFocus = document.activeElement;
+        var close = function(){ back.remove(); document.removeEventListener('keydown', onKey); if(previousFocus && previousFocus.isConnected) previousFocus.focus(); };
+        function onKey(ev){
+            if(ev.key === 'Escape') { close(); return; }
+            if(ev.key !== 'Tab') return;
+            var controls = Array.from(back.querySelectorAll('input,textarea,button')).filter(function(el){return !el.disabled;});
+            var first = controls[0], last = controls[controls.length-1];
+            if(ev.shiftKey && document.activeElement === first){ ev.preventDefault(); last.focus(); }
+            else if(!ev.shiftKey && document.activeElement === last){ ev.preventDefault(); first.focus(); }
+        }
+        back.querySelector('input').focus();
         document.addEventListener('keydown', onKey);
         back.addEventListener('click', function(ev){ if(ev.target === back) close(); });
         back.querySelector('.rp-cancel').addEventListener('click', close);
@@ -828,10 +904,10 @@
             send.dataset.busy = '1'; send.disabled = true; send.textContent = '보내는 중...';
             var reason = back.querySelector('input[name="rp"]:checked').value;
             var detail = back.querySelector('.rp-detail').value.trim();
-            var res = await sb.from('reports').insert({
+            var res = await writeAction(function(){ return sb.from('reports').insert({
                 target_type: type, target_id: id, reason: reason,
-                detail: detail || null, reporter_device: deviceId
-            });
+                detail: detail || null, reporter_device: currentUserId, author_id: currentUserId
+            }); });
             delete send.dataset.busy;
 
             // 유니크 제약(23505) = 이미 신고한 대상. 실패가 아니라 이미 접수된 상태다.
@@ -862,7 +938,7 @@
             list.forEach(function(c){
                 // '나' 배지는 내가 쓴 것에만, 삭제 버튼은 내 것 + 관리자.
                 // 둘을 한 변수로 묶으면 관리자에게 남의 답이 전부 '나'로 보인다.
-                var own = !!(c.author_device && c.author_device === deviceId);
+                var own = !!(c.author_id && c.author_id === currentUserId);
                 var canDel = own || isAdmin;
                 html +=
                     '<div class="cmt" data-cid="' + escapeHtml(c.id) + '">' +
@@ -922,7 +998,7 @@
     // 이 글의 댓글만 다시 받아 스레드와 개수를 갱신한다 (전체 목록은 건드리지 않음)
     async function refreshThread(p, post){
         try {
-            var r = await sb.from('comments').select('*')
+            var r = await sb.from('comments').select(commentColumns())
                 .eq('post_id', p.id).order('created_at', { ascending: true }).limit(500);
             if(r.error) throw r.error;
             cmts[p.id] = r.data || [];
@@ -942,9 +1018,9 @@
         send.dataset.sending = '1';
         send.disabled = true;
         send.textContent = '...';
-        var res = await sb.from('comments').insert({
-            post_id: p.id, nick: nickname, text: text, author_device: deviceId
-        });
+        var res = await writeAction(function(){ return sb.from('comments').insert({
+            post_id: p.id, nick: nickname, text: text, author_device: currentUserId, author_id: currentUserId
+        }); });
         delete send.dataset.sending;
         send.textContent = '등록';
         if(res.error){
@@ -961,9 +1037,8 @@
         if(!sb || !cid) return;
         if(!confirm(asAdmin ? '[관리자] 이 답을 삭제할까요? 되돌릴 수 없어요.'
                             : '이 답을 삭제할까요? 되돌릴 수 없어요.')) return;
-        var res = asAdmin
-            ? await sb.from('comments').delete().eq('id', cid)
-            : await sb.rpc('delete_comment', { p_id: cid, p_device: deviceId });
+        var res = await writeAction(function(){ return sb.from('comments').delete().eq('id', cid).select('id'); });
+        if(!res.error && (!res.data || !res.data.length)) res.error = new Error('삭제 권한을 확인하지 못했어요.');
         if(res.error){
             console.error(res.error);
             setStatus('삭제 실패 — 잠시 후 다시 시도해주세요', true);
@@ -973,17 +1048,16 @@
     }
 
     // ===== 궤적 삭제 (작성한 기기 또는 관리자) =====
-    // 내 글은 기기를 확인하는 RPC로, 관리자는 REST delete로 지운다.
+    // 내 글과 관리자 삭제 모두 서버 RLS가 인증된 사용자를 확인한다.
     // 관리자 경로가 통과되는 근거는 서버의 RLS 정책(is_admin())이지
     // 아래 isAdmin 변수가 아니다 — 변수는 어느 요청을 보낼지만 고른다.
     async function deletePost(p, el){
         if(!sb) return;
-        var mine = !!(p.author_device && p.author_device === deviceId);
+        var mine = !!(p.author_id && p.author_id === currentUserId);
         if(!confirm(mine ? '이 궤적을 삭제할까요? 되돌릴 수 없어요.'
                          : '[관리자] ' + p.nick + ' 님의 궤적을 삭제할까요? 되돌릴 수 없어요.')) return;
-        var res = mine
-            ? await sb.rpc('delete_post', { p_id: p.id, p_device: deviceId })
-            : await sb.from('posts').delete().eq('id', p.id);
+        var res = await writeAction(function(){ return sb.from('posts').delete().eq('id', p.id).select('id'); });
+        if(!res.error && (!res.data || !res.data.length)) res.error = new Error('삭제 권한을 확인하지 못했어요.');
         if(res.error){
             console.error(res.error);
             setStatus('삭제 실패 — 잠시 후 다시 시도해주세요', true);
@@ -1026,6 +1100,9 @@
 
     async function toggleRx(p, emo, row){
         if(!sb) return;
+        var reactionKey = p.id + ':' + emo;
+        if(pendingReactions[reactionKey]) return;
+        pendingReactions[reactionKey] = true;
         var mine = rxMine[p.id] = rxMine[p.id] || {};
         var counts = rxCount[p.id] = rxCount[p.id] || {};
         var turningOn = !mine[emo];
@@ -1037,11 +1114,13 @@
 
         // 취소는 REST delete가 아니라 RPC로 한다 — 정책이 관리자에게만 열려 있고,
         // 이 함수가 기기가 일치하는 행만 지운다.
-        var res = turningOn
-            ? await sb.from('reactions').insert({ post_id: p.id, emoji: emo, device_id: deviceId })
-            : await sb.rpc('delete_reaction', { p_post_id: p.id, p_emoji: emo, p_device: deviceId });
+        var res = await writeAction(function(){ return turningOn
+            ? sb.from('reactions').insert({ post_id: p.id, emoji: emo, device_id: currentUserId, author_id: currentUserId })
+            : sb.rpc('delete_reaction', { p_post_id: p.id, p_emoji: emo, p_device: currentUserId }); });
 
+        delete pendingReactions[reactionKey];
         if(res.error){
+            setStatus('리액션을 저장하지 못했어요 — ' + errHint(res.error), true);
             console.error(res.error);
             if(turningOn){ delete mine[emo]; counts[emo] = Math.max(0, counts[emo] - 1); }
             else { mine[emo] = true; counts[emo] = (counts[emo] || 0) + 1; }
@@ -1115,6 +1194,8 @@
 
     function selectOrbit(id){
         currentOrbit = id;
+        feedAvailable = false;
+        if(location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
         document.querySelectorAll('.orbit-tab').forEach(function(t){
             t.classList.toggle('on', t.getAttribute('data-orbit') === id);
         });
@@ -1142,10 +1223,10 @@
     // 다른 채널까지 폴링하면 요청만 늘어서, 기대를 만들어 둔 채널만 지킨다.
     var livePoll = null;
     function syncLivePoll(){
-        var want = currentOrbit === 'live';
+        var want = currentOrbit === 'live' && panelActive;
         if(want && !livePoll){
             livePoll = setInterval(function(){
-                if(!document.hidden) loadPosts({ quiet: true });   // 안 보는 탭에서는 쉰다
+                if(!document.hidden && panelActive) loadPosts({ quiet: true });   // 안 보는 탭에서는 쉰다
             }, 30000);
         } else if(!want && livePoll){
             clearInterval(livePoll);
@@ -1154,8 +1235,17 @@
     }
     // 탭을 벗어났다 돌아오면 다음 폴링까지 기다리지 않고 바로 따라잡는다
     document.addEventListener('visibilitychange', function(){
-        if(!document.hidden && currentOrbit === 'live') loadPosts({ quiet: true });
+        if(!document.hidden && panelActive && currentOrbit === 'live') loadPosts({ quiet: true });
     });
+
+    window.addEventListener('message', function(ev){
+        if(ev.origin !== location.origin || ev.source !== parent || !ev.data || ev.data.orbit !== 'panelActive') return;
+        var resumed = !panelActive && ev.data.active === true;
+        panelActive = ev.data.active === true;
+        syncLivePoll();
+        if(resumed && currentOrbit === 'live') loadPosts({quiet:true});
+    });
+    if(EMBED) parent.postMessage({orbit:'loungeReady'}, location.origin);
 
     // ===== 관리자 확인 =====
     // 로그인 세션이 있으면 admins에 등록된 계정인지 서버에 물어본다.
@@ -1166,6 +1256,7 @@
         try {
             var s = await sb.auth.getSession();
             if(!s.data || !s.data.session) return false;
+            currentUserId = s.data.session.user.id;
             var r = await sb.rpc('is_admin');
             return !r.error && r.data === true;
         } catch(e){ return false; }
