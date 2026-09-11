@@ -78,16 +78,6 @@ select:focus-visible,
   padding: 24px 28px;
   position: relative;
 }
-.logo {
-  font-size: 1.15rem;
-  letter-spacing: 0.12em;
-  font-weight: 800;
-  text-decoration: none;
-  color: #e2e8f0;
-}
-.logo::first-letter {
-  color: var(--board-mint);
-}
 .nav-back {
   font-size: 0.875rem;
   text-decoration: none;
