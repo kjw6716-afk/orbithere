@@ -35,4 +35,6 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+  <url><loc>https://orbithere.com/guide.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://orbithere.com/about.html</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
 </urlset>

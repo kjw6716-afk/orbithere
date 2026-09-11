@@ -16,9 +16,14 @@
     var LIGHT  = '#FFD08A';   // 별 라이트
     var MINT   = '#4FD1C5';   // 반짝이 포인트 (대문의 민트와 연결)
 
+    var layer = document.createElement('div');
+    layer.className = 'orbit-effects';
+    layer.setAttribute('aria-hidden', 'true');
+    layer.style.cssText = 'position:fixed;inset:0;overflow:hidden;contain:strict;pointer-events:none;z-index:9999;';
     var canvas = document.createElement('canvas');
-    canvas.style.cssText = 'position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform-origin:0 0;';
+    canvas.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;transform-origin:0 0;';
     var ctx = canvas.getContext('2d');
+    if (!ctx) return;
     // 화면 배율. 브라우저 확대/축소를 바꾸면 값이 달라지므로 resize마다 다시 읽는다.
     // (한 번만 읽어두면 축소한 채로 새로고침하지 않는 한 낡은 값이 계속 쓰인다)
     var dpr = 1;
@@ -81,7 +86,8 @@
         vv.addEventListener('resize', resize);
         vv.addEventListener('scroll', onViewportScroll);
     }
-    document.body.appendChild(canvas);
+    layer.appendChild(canvas);
+    document.body.appendChild(layer);
     resize();
 
     var parts = [];
@@ -214,7 +220,7 @@
         measure();
 
         // 확대된 상태에서는 파티클을 띄우지 않는다 (좌표·배율이 어긋나 화면을 뒤덮는다)
-        if (view.s > 1.05) return;
+        if (Math.abs(view.s - 1) > 0.05) return;
 
         // 입력창 탭은 키보드를 여닫으며 레이아웃을 흔든다 — 이펙트 대상에서 제외
         if (isTextField(e.target) || (e.target.closest && e.target.closest('input,textarea,select,[contenteditable]'))) return;

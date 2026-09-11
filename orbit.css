@@ -16,6 +16,7 @@
    ============================================================ */
 
 :root {
+    color-scheme: dark;
     --bg-color:  #0F172A;
     --accent:    #FF9F43;
     --text-main: #E2E8F0;
@@ -169,5 +170,5 @@ body {
     /* 대문의 "아무곳이나 클릭" 힌트는 기본 opacity가 0이고 애니메이션으로만
        나타난다. 애니메이션을 1회로 줄이면 힌트가 영영 안 보이므로,
        여기서는 애니메이션 없이 고정된 밝기로 보여준다. */
-    .click-hint { animation: none !important; opacity: 0.5 !important; }
+    .click-hint { animation: none !important; opacity: 1 !important; }
 }
