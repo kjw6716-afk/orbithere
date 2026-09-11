@@ -12,7 +12,7 @@
     "test:community": "node tests/community.mjs",
     "test:landing": "node tests/landing.mjs",
     "test:content": "node tests/content.mjs",
-    "test:news": "python3 -m unittest discover -s tests -p 'test_news.py'"
+    "test:news": "python3 -m unittest discover -s tests -p 'test_news.py' && node tests/news-brief.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.8",

@@ -308,11 +308,14 @@
     <script src="effects.js?v=20260911-layout" defer></script>
     <script src="orbit-config.js"></script>
     <script src="visits.js" defer></script>
+    <link rel="stylesheet" href="news-brief.css?v=20260912-discovery">
+    <script src="news-data.js?v=20260912-discovery" defer></script>
+    <script src="news-brief.js?v=20260912-discovery" defer></script>
 </head>
 <body>
     <div class="bg-glow"></div>
 
-    <div class="app">
+    <div class="app news-layout">
         <!-- 사이드바 -->
         <aside class="sidebar">
             <a class="side-logo" href="index.html">ORBIT.</a>
@@ -366,8 +369,24 @@
 
                 <!-- 글 남기기 -->
                 <section class="panel" id="panel-lounge">
-                    <iframe class="lounge-frame" id="loungeFrame" title="별빛 게시판" data-src="lounge.html?embed=1&v=20260912-board"></iframe>
+                    <iframe class="lounge-frame" id="loungeFrame" title="별빛 게시판" data-src="lounge.html?embed=1&v=20260912-discovery"></iframe>
                 </section>
+                <aside class="news-brief news-brief--rail" data-news-brief aria-labelledby="newsBriefHeading">
+                  <h2 class="news-brief-heading" id="newsBriefHeading">최신 우주 뉴스</h2>
+                  <ul class="news-brief-list" aria-label="최신 뉴스 미리보기" aria-live="off"></ul>
+                  <p class="news-brief-notice">공식 기관의 우주 소식을 모았어요.</p>
+                  <div class="news-brief-footer">
+                    <a class="news-brief-all" href="news.html" target="_top">우주 뉴스 전체보기 →</a>
+                    <div class="news-brief-controls" role="group" aria-label="뉴스 넘기기" hidden>
+                      <button type="button" data-news-prev aria-label="이전 뉴스">‹</button>
+                      <span class="news-brief-count" aria-hidden="true"></span>
+                      <button type="button" data-news-next aria-label="다음 뉴스">›</button>
+                      <button type="button" data-news-toggle aria-label="뉴스 자동 전환 정지">정지</button>
+                    </div>
+                    <button class="text-button" type="button" data-news-retry hidden>다시 불러오기</button>
+                  </div>
+                  <span class="news-brief-sr" role="status" aria-live="polite"></span>
+                </aside>
             </div>
 
             <footer class="site-footer">
