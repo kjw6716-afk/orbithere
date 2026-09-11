@@ -22,9 +22,34 @@ const A='11111111-1111-4111-8111-111111111111', P='44444444-4444-4444-8444-44444
 const now=()=>new Date().toISOString();
 let checks=0;
 function ok(name,condition=true){assert.ok(condition,name);checks++;console.log('✓ '+name);}
+const uid=n=>'aaaaaaaa-aaaa-4aaa-8aaa-'+n.toString(16).padStart(12,'0');
+// An independent HTTP fixture implements the Data API ordering and filters.
+// Assertions below cover stable cursors and literal search via the real SDK.
+function filteredRows(rows,url){
+  const params=url.searchParams;
+  let result=rows.slice();
+  for(const key of ['id','post_id']){const v=params.get(key);if(v)result=result.filter(row=>row[key]===v.slice(3));}
+  const search=params.get('text');
+  if(search){
+    assert.ok(search.startsWith('ilike.%')&&search.endsWith('%'));
+    const literal=search.slice(7,-1).replace(/\\(.)/g,'$1');
+    result=result.filter(row=>row.text.toLowerCase().includes(literal.toLowerCase()));
+  }
+  const cursor=params.get('or');
+  if(cursor){
+    const match=/^\(created_at\.(lt|gt)\.([^,]+),and\(created_at\.eq\.([^,]+),id\.(lt|gt)\.([0-9a-f-]+)\)\)$/.exec(cursor);
+    assert.ok(match,'valid Data API cursor');assert.equal(match[1],match[4]);assert.equal(match[2],match[3]);
+    result=result.filter(row=>{const cmp=row.created_at.localeCompare(match[2])||row.id.localeCompare(match[5]);return match[1]==='lt'?cmp<0:cmp>0;});
+  }
+  const order=params.get('order');
+  assert.ok(['created_at.desc,id.desc','created_at.asc,id.asc'].includes(order));
+  const direction=order.includes('desc')?-1:1;
+  result.sort((a,b)=>direction*(a.created_at.localeCompare(b.created_at)||a.id.localeCompare(b.id)));
+  return result.slice(0,Number(params.get('limit'))||1000);
+}
 async function fixture({nickname='관측자',version=2}={}){
   const context=await browser.newContext({viewport:{width:1200,height:900}});
-  const state={posts:[{id:P,nick:'기존작성자',orbit:'report',text:'기존 관측 후기',created_at:now(),author_id:null}],getFail:false,postFail:false,version,signups:0,inserts:0,selects:[],reads:0,delays:{}};
+  const state={comments:[],commentFail:false,reactionFail:false,reportBodies:[],queries:[],posts:[{id:P,nick:'기존작성자',orbit:'report',text:'기존 관측 후기',created_at:now(),author_id:null}],getFail:false,postFail:false,version,signups:0,inserts:0,selects:[],reads:0,delays:{}};
   const errors=[];
   await context.addInitScript(n=>{if(n)localStorage.setItem('orbit_nickname',n);},nickname);
   await context.route('**/*',async route=>{
@@ -43,12 +68,14 @@ async function fixture({nickname='관측자',version=2}={}){
     if(url.pathname.endsWith('/rpc/community_version'))return state.version===2?json(2):json({code:'PGRST202',message:'function not found'},404);
     if(url.pathname.endsWith('/rpc/is_admin'))return json(false);
     if(url.pathname.endsWith('/rpc/record_visit'))return json(null);
-    if(url.pathname.endsWith('/rpc/reaction_summary'))return json([]);
+    if(url.pathname.endsWith('/rpc/reaction_summary'))return state.reactionFail?json({message:'reaction outage'},503):json([]);
+    if(url.pathname==='/rest/v1/reports' && req.method()==='POST'){state.reportBodies.push(req.postDataJSON());return json(null,201);}
     if(url.pathname==='/rest/v1/posts'){
       if(req.method()==='GET'){
         state.reads++;state.selects.push(url.searchParams.get('select'));
         const orbit=(url.searchParams.get('orbit')||'').replace('eq.','');
-        const snapshot=state.posts.filter(p=>!orbit||p.orbit===orbit);
+        state.queries.push(url);
+        const snapshot=filteredRows(state.posts.filter(p=>!orbit||p.orbit===orbit),url);
         if(state.delays[orbit])await new Promise(r=>setTimeout(r,state.delays[orbit]));
         if(state.getFail)return json({message:'temporary fixture failure'},503);
         return json(snapshot);
@@ -63,10 +90,19 @@ async function fixture({nickname='관측자',version=2}={}){
         return json(null,201);
       }
     }
-    if(url.pathname==='/rest/v1/comments')return json([]);
+    if(url.pathname==='/rest/v1/comments'){
+      if(req.method()==='GET'){
+        state.queries.push(url);
+        return state.commentFail?json({message:'comment outage'},503):json(filteredRows(state.comments,url));
+      }
+      if(req.method()==='POST'){
+        const body=req.postDataJSON();
+        state.comments.push({...body,id:uid(999),created_at:now()});return json(null,201);
+      }
+    }
     return json({message:'unexpected fixture request '+url.pathname},400);
   });
-  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
+  const page=await context.newPage();page.on('dialog',dialog=>dialog.accept());page.on('pageerror',e=>errors.push(e.message));
   return {context,page,state,errors,close:async()=>{ok('no browser exceptions',errors.length===0);await context.close();}};
 }
 try{
@@ -99,6 +135,91 @@ try{
     await page.getByText('서울에서 토성을 봤어요',{exact:true}).waitFor();
     await page.waitForTimeout(400); // Wait beyond the explicitly delayed fixture response.
     ok('late previous-channel response cannot overwrite the current channel',await page.locator('.post-body').filter({hasText:'늦게 도착하는'}).count()===0);
+    await f.close();
+  }
+  {
+    const f=await fixture();const {page,state}=f;
+    state.posts=Array.from({length:63},(_,i)=>({id:uid(i+1),nick:'관측자',orbit:'report',text:i===0?'오래된 토성 기록':'관측 '+(i+1),created_at:'2026-09-10T12:00:00.000Z',author_id:null}));
+    await page.goto(base+'/lounge.html');
+    await page.locator('#feedContext').filter({hasText:'20개 표시'}).waitFor();
+    ok('first page is bounded to 20 posts',await page.locator('.post').count()===20);
+    ok('closed threads do not download comments',!state.queries.some(url=>url.pathname.endsWith('/comments')));
+    state.getFail=true;
+    await page.getByRole('button',{name:'이전 글 더 보기',exact:true}).click();
+    await page.locator('#pageStatus').filter({hasText:'불러오지 못했어요'}).waitFor();
+    ok('pagination failure preserves visible posts',await page.locator('.post').count()===20);
+    state.getFail=false;
+    state.posts.push({id:uid(500),nick:'새글',orbit:'report',text:'중간에 들어온 새 글',created_at:'2026-09-11T12:00:00.000Z',author_id:null});
+    state.posts=state.posts.filter(row=>row.id!==uid(55));
+    for(const total of [40,60,63]){
+      await page.getByRole('button',{name:'이전 글 더 보기',exact:true}).click();
+      await page.locator('#feedContext').filter({hasText:total+'개 표시'}).waitFor();
+    }
+    const ids=await page.locator('.post').evaluateAll(nodes=>nodes.map(node=>node.id));
+    ok('same-time posts remain reachable despite insertion/deletion',ids.length===63&&new Set(ids).size===63&&ids.includes('post-'+uid(1)));
+    ok('last page hides the more button',!await page.locator('#loadMore').isVisible());
+    state.posts.push({id:uid(800),nick:'검색자',orbit:'report',text:'구름 50%_조건',created_at:now(),author_id:null});
+    await page.getByLabel('게시글 찾기').fill('50%_');
+    await page.getByRole('button',{name:'검색',exact:true}).click();
+    await page.getByText('구름 50%_조건',{exact:true}).waitFor();
+    ok('SQL wildcard characters are treated as literal search text',await page.locator('.post').count()===1&&state.queries.at(-1).searchParams.get('text')==='ilike.%50\\%\\_%');
+    await page.getByLabel('게시글 찾기').fill('토성');
+    await page.getByRole('button',{name:'검색',exact:true}).click();
+    await page.getByText('오래된 토성 기록',{exact:true}).waitFor();
+    ok('search finds a post beyond the former 50-row limit',await page.locator('.post').count()===1&&new URL(page.url()).searchParams.get('q')==='토성');
+    await page.getByRole('button',{name:'글 공유',exact:true}).click();
+    const field=page.getByLabel('공유할 글 주소');
+    await field.waitFor();
+    const shared=await field.inputValue();
+    ok('clipboard denial exposes a selectable permanent link',new URL(shared).searchParams.get('post')===uid(1));
+    await page.goto(shared);
+    await page.getByText('오래된 토성 기록',{exact:true}).waitFor();
+    ok('direct link loads only the requested old post',await page.locator('.post').count()===1&&await page.locator('#feedSearch').isHidden());
+    await page.getByRole('link',{name:'← 채널의 모든 글 보기'}).click();
+    await page.locator('#feedContext').filter({hasText:'20개 표시'}).waitFor();
+    ok('returning from a shared post restores the channel',!new URL(page.url()).searchParams.has('post'));
+    await page.goto(base+'/lounge.html?post='+uid(9999));
+    await page.getByText('이 글을 찾을 수 없어요.',{exact:false}).waitFor();
+    ok('deleted or missing shared post has a recovery link',await page.locator('#backToFeed').isVisible());
+    await f.close();
+  }
+  {
+    const f=await fixture();const {page,state}=f;
+    state.comments=Array.from({length:527},(_,i)=>({id:uid(i+1),post_id:P,nick:'답변자',text:'답변 '+(i+1),created_at:'2026-09-10T12:00:00.000Z',author_id:null}));
+    await page.goto(base+'/lounge.html');
+    await page.getByText('기존 관측 후기',{exact:true}).waitFor();
+    state.commentFail=true;
+    await page.locator('.btn-cmt').click();
+    await page.getByRole('button',{name:'댓글 다시 불러오기'}).waitFor();
+    await page.getByLabel('댓글 내용').fill('아직 작성 중인 답');
+    state.commentFail=false;
+    await page.getByRole('button',{name:'댓글 다시 불러오기'}).click();
+    await page.locator('.cmt-list').waitFor();
+    ok('thread failure and retry preserve its draft',await page.getByLabel('댓글 내용').inputValue()==='아직 작성 중인 답');
+    for(let i=0;i<26;i++){
+      await page.getByRole('button',{name:'이전 댓글 더 보기',exact:true}).click();
+      await page.waitForFunction(n=>document.querySelectorAll('.cmt').length===Math.min(n,527),(i+2)*20);
+    }
+    ok('all 527 comments are reachable in bounded pages',await page.locator('.cmt').count()===527&&!await page.locator('.cmt-more').count());
+    ok('each comment request is bounded to 21 rows',state.queries.filter(url=>url.pathname.endsWith('/comments')).every(url=>url.searchParams.get('limit')==='21'));
+    await page.locator('.btn-refresh').click();
+    await page.locator('#postList[aria-busy="false"]').waitFor();
+    ok('feed refresh preserves an open thread and unfinished reply',await page.getByLabel('댓글 내용').inputValue()==='아직 작성 중인 답'&&await page.locator('.cmt').count()===527);
+    await page.getByLabel('댓글 내용').fill('새로 남긴 답');
+    await page.getByRole('button',{name:'등록',exact:true}).click();
+    await page.getByText('새로 남긴 답',{exact:true}).waitFor();
+    ok('a new reply appears first even on a long thread',await page.locator('.cmt-body').first().textContent()==='새로 남긴 답'&&await page.getByLabel('댓글 내용').inputValue()==='');
+    await page.locator('.post-foot > .btn-report').click();
+    await page.getByLabel('기타 · 내 글 삭제 요청').check();
+    await page.getByLabel('신고 또는 삭제 요청 설명').fill('이전 브라우저에서 쓴 글의 삭제를 요청합니다.');
+    await page.getByRole('dialog',{name:'신고하기',exact:true}).getByRole('button',{name:'신고하기',exact:true}).click();
+    await page.locator('#loungeStatus').filter({hasText:'신고를 접수했어요'}).waitFor();
+    ok('private deletion request uses the restricted reports table',state.reportBodies.length===1&&state.reportBodies[0].reason==='etc'&&state.reportBodies[0].author_id===A);
+    state.reactionFail=true;
+    await page.locator('.btn-refresh').click();
+    await page.locator('#loungeStatus').filter({hasText:'리액션을 확인하지 못했어요'}).waitFor();
+    ok('reaction outage does not hide readable posts',await page.getByText('기존 관측 후기',{exact:true}).isVisible());
+    ok('unknown reaction state cannot cause an incorrect toggle',await page.locator('.rx-add').isDisabled());
     await f.close();
   }
   {

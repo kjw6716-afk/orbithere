@@ -1,6 +1,6 @@
 // Execute the actual migrations against PostgreSQL in WASM. Nothing touches the live DB.
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,readdirSync} from 'node:fs';
 import {PGlite} from '@electric-sql/pglite';
 const db = new PGlite();
 const sql = p => readFileSync(new URL('../supabase/' + p, import.meta.url), 'utf8');
@@ -21,6 +21,10 @@ await db.exec(`insert into admins(user_id) values('${ADMIN}');`);
 await db.exec(sql('migration_011_authenticated_ownership.sql'));
 // The migration must also be safe to rerun.
 await db.exec(sql('migration_011_authenticated_ownership.sql'));
+for(const name of readdirSync(new URL('../supabase/migrations/',import.meta.url)).filter(n=>n.endsWith('.sql')).sort()) {
+  await db.exec(sql('migrations/'+name));
+  await db.exec(sql('migrations/'+name));
+}
 async function as(role,id,query){
   await db.exec('reset role');
   await db.query(`select set_config('request.jwt.claim.sub',$1,false)`, [id||'']);
@@ -61,5 +65,43 @@ await denied('changing device ID or backdating cannot bypass rate limit','authen
 check('owner can delete own comment',(await as('authenticated',A,`delete from comments where id='${comment}' returning id`)).rows.length===1);
 check('owner can delete own post',(await as('authenticated',A,`delete from posts where id='${post.id}' returning id`)).rows.length===1);
 check('administrator retains legacy moderation',(await as('authenticated',ADMIN,`delete from posts where id='${legacy}' returning id`)).rows.length===1);
+await as('authenticated',A,`insert into reports(target_type,target_id,reason,detail,reporter_device) values('post','${post.id}','etc','private deletion request','ignored-device')`);
+check('private requests are hidden from public readers',(await as('anon',null,'select detail from reports')).rows.length===0);
+check('private requests are hidden from other writers',(await as('authenticated',B,'select detail from reports')).rows.length===0);
+check('a reporter cannot read the moderator inbox',(await as('authenticated',A,'select detail from reports')).rows.length===0);
+check('administrator can read the private request',(await as('authenticated',ADMIN,'select detail from reports')).rows[0].detail==='private deletion request');
+await denied('deleting a post does not reset its write limit','authenticated',A,`insert into posts(nick,orbit,text) values('관측','report','deleted then reposted')`);
+await denied('write history is inaccessible to public readers','anon',null,'select * from orbit_private.write_events');
+await denied('writers cannot change their write history','authenticated',A,`delete from orbit_private.write_events where actor='${A}'`);
+await denied('anonymous callers cannot access the moderator RPC','anon',null,'select * from report_queue()');
+await denied('anonymous callers cannot access visit statistics','anon',null,'select * from visit_stats()');
+check('non-admin authenticated callers cannot read the moderator RPC',(await as('authenticated',B,'select * from report_queue()')).rows.length===0);
+await denied('non-admin authenticated callers cannot resolve reports','authenticated',B,`select resolve_report('${post.id}',true)`);
+check('administrator retains the moderator RPC',(await as('authenticated',ADMIN,'select * from report_queue()')).rows.length===1);
+check('trigger-only functions have no API execute grant',(await as('authenticated',A,`select has_function_privilege('authenticated','public.posts_rate_limit()','execute') as allowed`)).rows[0].allowed===false);
+
+// A single bulk statement must not sidestep the limit, and rejected writes must
+// not consume quota. Real parallel transactions are serialized by the DB lock;
+// PGlite is single-connection, so this test does not claim a concurrency load test.
+await denied('a bulk insert cannot bypass the per-minute limit','authenticated',B,`insert into posts(nick,orbit,text) select '관측','report','bulk '||g from generate_series(1,4) g`);
+await db.exec('reset role');
+check('a rejected statement rolls back all content and quota',(await db.query(`select (select count(*) from posts where author_id='${B}') + (select count(*) from orbit_private.write_events where actor='${B}' and kind='posts') as n`)).rows[0].n===0);
+const second=(await as('authenticated',B,`insert into posts(nick,orbit,text) values('관측','report','after rollback') returning id`)).rows[0].id;
+for(let i=0;i<5;i++) {
+  const id=(await as('authenticated',B,`insert into comments(post_id,nick,text) values('${second}','관측','reply') returning id`)).rows[0].id;
+  await as('authenticated',B,`delete from comments where id='${id}'`);
+}
+await denied('deleting comments does not reset their write limit','authenticated',B,`insert into comments(post_id,nick,text) values('${second}','관측','sixth reply')`);
+await db.exec('reset role');
+// Move only test ledger timestamps; no waiting and no live data mutation.
+await db.exec(`update orbit_private.write_events set occurred_at=now()-interval '2 minutes' where actor='${B}';
+insert into orbit_private.write_events(actor,kind,source_id,occurred_at)
+select '${B}','posts',gen_random_uuid(),now()-interval '2 minutes' from generate_series(1,19);`);
+await denied('hourly limit remains after minute window expires','authenticated',B,`insert into posts(nick,orbit,text) values('관측','report','hourly excess')`);
+await db.exec('reset role');
+await db.exec(`update orbit_private.write_events set occurred_at=now()-interval '2 hours' where actor='${B}';`);
+await as('authenticated',B,`insert into posts(nick,orbit,text) values('관측','report','new window')`);
+await db.exec('reset role');
+check('expired ledger rows are removed on the next successful write',(await db.query(`select count(*) as n from orbit_private.write_events where occurred_at < now()-interval '1 hour'`)).rows[0].n===0);
 await db.close();
 console.log(`Security: ${count} checks passed`);

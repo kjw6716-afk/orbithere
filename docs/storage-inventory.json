@@ -1,4 +1,8 @@
 {
+  "orbit_observation_draft": {
+    "section": "storage-note",
+    "purpose": "이용자가 선택한 관측 기록 한 건의 기기 저장·복원"
+  },
   "orbit_nickname": {
     "section": "storage-profile",
     "purpose": "닉네임 기억"
