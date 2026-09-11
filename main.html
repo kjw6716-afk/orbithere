@@ -24,7 +24,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
-    <link rel="stylesheet" href="/orbit.css">
+    <link rel="stylesheet" href="/orbit.css?v=20260911-layout">
     <style>
         body { touch-action: manipulation; }   /* 나머지 기본값은 orbit.css */
 
@@ -59,6 +59,7 @@
             color: #94A3B8; font-family: 'Pretendard'; font-size: 14px; font-weight: 600;
             cursor: pointer; transition: all 0.15s; text-align: left;
         }
+        .nav-link { text-decoration: none; }
         .nav-item .ic { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
         .nav-item:hover { background: rgba(255,159,67,0.07); color: var(--text-main); }
         .nav-item.on { background: rgba(255,159,67,0.13); color: var(--accent); }
@@ -243,6 +244,7 @@
             .side-nav {
                 position: absolute; top: calc(100% - 4px); left: 10px; right: 10px;
                 flex-direction: column; gap: 4px; padding: 8px;
+                max-height: calc(100vh - 80px); max-height: calc(100dvh - 80px); overflow-y: auto; overscroll-behavior: contain;
                 border-radius: 18px;
                 background: #151E36; backdrop-filter: blur(14px);
                 border: 1px solid rgba(255,159,67,0.18);
@@ -302,7 +304,7 @@
         .load-error button { padding: 12px 20px; margin: 12px; border-radius: 99px; background: #FF9F43; color: #0F172A; border: 0; font: inherit; cursor: pointer; }
         .write-hint { font-size: 13px; color: #CBD5E1; line-height: 1.7; margin: 12px 0; }
         </style>
-    <script src="effects.js" defer></script>
+    <script src="effects.js?v=20260911-layout" defer></script>
     <script src="orbit-config.js"></script>
     <script src="visits.js" defer></script>
 </head>
@@ -318,10 +320,12 @@
                 <span class="nt-lbl" id="navToggleLbl">밤하늘 달력</span>
                 <span class="nt-arrow" aria-hidden="true"></span>
             </button>
-            <nav class="side-nav" id="sideNav">
+            <nav class="side-nav" id="sideNav" aria-label="주요 메뉴">
                 <button class="nav-item on" data-panel="sky"><span class="ic">🔭</span><span class="lbl">밤하늘 달력</span></button>
                 <button class="nav-item" data-panel="planets"><span class="ic">🪐</span><span class="lbl">오늘 밤 행성</span></button>
                 <button class="nav-item" data-panel="lounge"><span class="ic">💬</span><span class="lbl">글 남기기</span></button>
+                <a class="nav-item nav-link" href="guide.html"><span class="ic">📖</span><span class="lbl">관측 가이드</span></a>
+                <a class="nav-item nav-link" href="about.html"><span class="ic">✦</span><span class="lbl">소개·문의</span></a>
             </nav>
         </aside>
         <div class="nav-scrim" id="navScrim"></div>
@@ -344,7 +348,7 @@
                 <!-- 밤하늘 달력 — 첫 화면 -->
                 <section class="panel on" id="panel-sky">
                     <div class="embed-wrap">
-                        <iframe class="embed-frame" id="skyFrame" title="밤하늘 달력 — 유성우 · 일식 · 월식 일정" data-src="sky.html?embed=1"></iframe>
+                        <iframe class="embed-frame" id="skyFrame" title="밤하늘 달력 — 유성우 · 일식 · 월식 일정" data-src="sky.html?embed=1&v=20260911-layout"></iframe>
                         <a class="embed-out" href="sky.html">전체 화면으로 열기 · 관측 방법과 FAQ 보기 →</a>
                     </div>
                 </section>
@@ -352,19 +356,21 @@
                 <!-- 오늘 밤 행성 -->
                 <section class="panel" id="panel-planets">
                     <div class="embed-wrap">
-                        <iframe class="embed-frame" id="planetFrame" title="오늘 밤 행성 — 지금 하늘의 행성 위치" data-src="planets.html?embed=1"></iframe>
+                        <iframe class="embed-frame" id="planetFrame" title="오늘 밤 행성 — 지금 하늘의 행성 위치" data-src="planets.html?embed=1&v=20260911-layout"></iframe>
                         <a class="embed-out" href="planets.html">전체 화면으로 열기 · 행성 찾는 법과 FAQ 보기 →</a>
                     </div>
                 </section>
 
                 <!-- 글 남기기 -->
                 <section class="panel" id="panel-lounge">
-                    <iframe class="lounge-frame" id="loungeFrame" title="글 남기기" data-src="lounge.html?embed=1"></iframe>
+                    <iframe class="lounge-frame" id="loungeFrame" title="글 남기기" data-src="lounge.html?embed=1&v=20260911-layout"></iframe>
                 </section>
             </div>
 
             <footer class="site-footer">
                 <div class="foot-links">
+                    <a href="guide.html">관측 가이드</a>
+                    <a href="about.html">소개·문의</a>
                     <a href="sky.html">밤하늘 달력</a>
                     <a href="planets.html">오늘 밤 행성</a>
                     <a href="lounge.html">글 남기기</a>
@@ -450,7 +456,7 @@
         function switchPanel(name, addHistory){
             if(!Object.prototype.hasOwnProperty.call(TITLES, name)) name = DEFAULT_PANEL;
             activePanel = name;
-            document.querySelectorAll('.nav-item').forEach(function(b){
+            document.querySelectorAll('.nav-item[data-panel]').forEach(function(b){
                 var on = b.getAttribute('data-panel') === name;
                 b.classList.toggle('on', on);
                 b.setAttribute('aria-current', on ? 'page' : 'false');
@@ -484,7 +490,7 @@
             if (loungeLoaded) document.getElementById('loungeFrame').contentWindow.postMessage({ orbit: 'panelActive', active: name === 'lounge' }, location.origin);
         }
         document.getElementById('sideNav').addEventListener('click', function(e){
-            var btn = e.target.closest('.nav-item');
+            var btn = e.target.closest('.nav-item[data-panel]');
             if(!btn) return;
             switchPanel(btn.getAttribute('data-panel'), true);
         });

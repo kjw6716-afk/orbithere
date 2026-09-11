@@ -39,3 +39,6 @@ jobs:
 
       - name: 렌더링 검증
         run: node tests/render.mjs
+
+      - name: 모바일 첫 화면 · 메뉴 검증
+        run: node tests/landing.mjs
