@@ -16,8 +16,12 @@ Supabase가 게시물과 작성자 인증을 담당합니다. 사이트 자체�
 1. 기존 Supabase 프로젝트가 일시정지되었다면 대시보드에서 재개합니다.
 2. SQL Editor에서 `supabase/migration_011_authenticated_ownership.sql`을 실행합니다.
    기존 프로젝트는 010까지 적용되어 있어야 합니다. 새 프로젝트는 `schema.sql` → 002…011 순서대로 실행합니다.
-3. Authentication의 Anonymous Sign-Ins를 활성화합니다. 사용자 화면에 이메일·비밀번호 입력은 생기지 않습니다.
+3. Authentication → Sign In / Providers에서 **Allow new users to sign up**과 **Allow anonymous sign-ins**를 활성화합니다. 신규 가입 전체가 차단되어 있으면 익명 인증도 발급되지 않습니다. 사용자 화면에 이메일·비밀번호 입력은 생기지 않습니다.
 4. 새 글·댓글 작성, 본인 삭제, 다른 브라우저의 삭제 차단, 관리자 삭제를 점검합니다.
+
+현재 `orbithere.com` 운영 프로젝트에는 2026-09-11에 SQL 011과 위 인증 설정을 적용했습니다.
+PR #42의 검사·Pages 배포 성공, 기존 콘텐츠 보존, 공개 조회 성공, 기기 식별값 조회 및 미인증 삭제 RPC 차단을 확인했습니다.
+새 프로젝트를 만들거나 DB를 복원할 때는 위 절차를 다시 확인하세요.
 
 이번 변경은 공개되어 있던 기기 ID를 삭제 권한에 쓰던 경로를 없앱니다.
 새 글의 소유권은 서버가 발급한 익명 인증 계정으로 확인합니다.
