@@ -95,7 +95,7 @@
            좁은 화면에서는 칩만 남기고 접는다 — 상단바가 두 줄로 밀리는 걸 막는다. */
         .topbar-right { display: flex; align-items: center; gap: 10px; min-width: 0; }
         .beta-hint {
-            font-size: 10.5px; line-height: 1.45; color: #64748B;
+            font-size: 12px; line-height: 1.45; color: #A8B7CA;
             text-align: right; white-space: nowrap;
         }
         .beta-hint b { color: #9F7AEA; font-weight: 700; }
@@ -123,7 +123,7 @@
         }
         .embed-out {
             display: inline-block; margin-top: 10px; font-size: 12px;
-            color: #64748B; text-decoration: none; transition: color 0.2s;
+            color: #A8B7CA; text-decoration: none; transition: color 0.2s;
         }
         .embed-out:hover { color: var(--accent); }
 
@@ -148,7 +148,7 @@
         @keyframes join-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } }
         .join-box h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 5px; color: var(--text-main); }
         .join-box h2 span { color: var(--accent); }
-        .join-box .jb-sub { font-size: 11.5px; color: #64748B; line-height: 1.6; margin: 0 0 16px; }
+        .join-box .jb-sub { font-size: 12px; color: #A8B7CA; line-height: 1.6; margin: 0 0 16px; }
 
         .join-form { display: flex; flex-direction: column; gap: 10px; }
         .join-form input {
@@ -162,7 +162,7 @@
         /* 모바일에서 16px 미만이면 iOS Safari가 포커스 순간 페이지를 자동 확대한다 */
         @media (max-width: 768px) { .join-form input { font-size: 16px; } }
         .join-form input.error { border-color: #FC8181; }
-        .join-error { font-size: 11px; color: #FC8181; display: none; margin-top: -4px; }
+        .join-error { font-size: 12px; color: #FC8181; display: none; margin-top: -4px; }
         .btn-mint {
             background: var(--accent); color: #0F172A;
             border: none; border-radius: 12px; padding: 12px;
@@ -180,7 +180,7 @@
         .btn-outline:hover { border-color: rgba(255,159,67,0.35); color: var(--accent); }
         .btn-leave {
             background: none; border: none; padding: 4px; margin-top: 2px;
-            color: #64748B; font-family: 'Pretendard'; font-size: 11.5px;
+            color: #A8B7CA; font-family: 'Pretendard'; font-size: 12px;
             cursor: pointer; transition: color 0.2s;
         }
         .btn-leave:hover { color: #FC8181; }
@@ -197,7 +197,7 @@
             background: rgba(159,122,234,0.07);
             border: 1px solid rgba(159,122,234,0.2);
             border-radius: 10px;
-            font-size: 11px; line-height: 1.65; color: #94A3B8;
+            font-size: 12px; line-height: 1.65; color: #94A3B8;
         }
         .join-note b { color: #9F7AEA; font-weight: 700; }
 
@@ -291,8 +291,19 @@
         }
 
         ::selection { background-color: #4FD1C5; color: #0F172A; }
-    </style>
+
+        button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 2px solid #4FD1C5; outline-offset: 4px; }
+        .pbtn, .fbtn, .orbit-tab { min-height: 40px; }
+        .sky-hint, .pl-sub, .ch-desc { line-height: 1.75; }
+        .pl-desc, .post-body, .cmt-body { font-size: 16px; }
+        .embed-out { font-size: 14px; }
+        .load-error { text-align: center; padding: 28px 16px; color: #CBD5E1; line-height: 1.8; }
+        .load-error a { color: #4FD1C5; }
+        .load-error button { padding: 12px 20px; margin: 12px; border-radius: 99px; background: #FF9F43; color: #0F172A; border: 0; font: inherit; cursor: pointer; }
+        .write-hint { font-size: 13px; color: #CBD5E1; line-height: 1.7; margin: 12px 0; }
+        </style>
     <script src="effects.js" defer></script>
+    <script src="orbit-config.js"></script>
     <script src="visits.js" defer></script>
 </head>
 <body>
@@ -373,7 +384,7 @@
     <div class="join-back" id="joinBack" style="display:none;">
         <div class="join-box" role="dialog" aria-modal="true" aria-labelledby="joinTitle">
             <h2 id="joinTitle">궤도 <span>진입하기</span></h2>
-            <p class="jb-sub" id="joinSub">닉네임만 정하면 바로 글을 남길 수 있어요. 가입도 로그인도 없습니다.</p>
+            <p class="jb-sub" id="joinSub">닉네임만 정하면 바로 글을 남길 수 있어요. 이메일·비밀번호 없이 시작하며, 작성 권한은 이 브라우저에 저장돼요.</p>
 
             <!-- 미진입 -->
             <div id="joinNew">
@@ -411,7 +422,8 @@
             planets: '오늘 밤 <span>행성</span>',
             lounge:  '글 <span>남기기</span>'
         };
-        var DEFAULT_PANEL = 'sky';
+        var DEFAULT_PANEL = 'planets';
+        var activePanel = DEFAULT_PANEL, joinReturnFocus = null;
         var loungeLoaded = false, skyLoaded = false, planetsLoaded = false;
 
         // ===== 모바일 탭 메뉴 (버튼 → 탭 목록 펼치기) =====
@@ -435,11 +447,13 @@
             if(window.innerWidth > 860 && sidebar.classList.contains('open')) setMenu(false);
         });
 
-        function switchPanel(name){
-            if(!TITLES[name]) name = DEFAULT_PANEL;
+        function switchPanel(name, addHistory){
+            if(!Object.prototype.hasOwnProperty.call(TITLES, name)) name = DEFAULT_PANEL;
+            activePanel = name;
             document.querySelectorAll('.nav-item').forEach(function(b){
                 var on = b.getAttribute('data-panel') === name;
                 b.classList.toggle('on', on);
+                b.setAttribute('aria-current', on ? 'page' : 'false');
                 if(on){
                     document.getElementById('navToggleIc').textContent  = b.querySelector('.ic').textContent;
                     document.getElementById('navToggleLbl').textContent = b.querySelector('.lbl').textContent;
@@ -466,12 +480,13 @@
                 pf.src = pf.getAttribute('data-src');
                 planetsLoaded = true;
             }
-            if(location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+            if(location.hash !== '#' + name) history[addHistory ? 'pushState' : 'replaceState'](null, '', '#' + name);
+            if (loungeLoaded) document.getElementById('loungeFrame').contentWindow.postMessage({ orbit: 'panelActive', active: name === 'lounge' }, location.origin);
         }
         document.getElementById('sideNav').addEventListener('click', function(e){
             var btn = e.target.closest('.nav-item');
             if(!btn) return;
-            switchPanel(btn.getAttribute('data-panel'));
+            switchPanel(btn.getAttribute('data-panel'), true);
         });
         window.addEventListener('hashchange', function(){
             // #join은 패널이 아니라 대화상자를 여는 신호다 (광장에서 단독 페이지로 넘어올 때)
@@ -482,6 +497,8 @@
         // 임베드된 광장(iframe)에서 보내는 요청 수신
         window.addEventListener('message', function(ev){
             if(ev.origin !== window.location.origin) return;
+            var frames = ['skyFrame', 'planetFrame', 'loungeFrame'];
+            if (!frames.some(function(id){ return document.getElementById(id).contentWindow === ev.source; })) return;
             // 예전 이름(goHome)도 같이 받는다 — 캐시에 남은 옛 lounge.html이
             // 아직 그 이름으로 보내고 있어도 진입 대화상자가 열리게.
             if(ev.data && (ev.data.orbit === 'join' || ev.data.orbit === 'goHome')){
@@ -490,11 +507,14 @@
             // 임베드된 페이지는 탭·필터에 따라 높이가 변한다.
             // 고정 높이로 두면 iframe 안에 스크롤바가 따로 생기므로 콘텐츠에 맞춰 늘려준다.
             // 상한을 두는 건 잘못된 값이 와도 페이지가 끝없이 길어지지 않게 하기 위함이다.
-            if(ev.data && ev.data.orbit === 'skyHeight'){
+            if(ev.data && ev.data.orbit === 'loungeReady'){
+                ev.source.postMessage({ orbit:'panelActive', active: activePanel === 'lounge' }, location.origin);
+            }
+            if(ev.data && ev.data.orbit === 'skyHeight' && ev.source === document.getElementById('skyFrame').contentWindow){
                 var h = parseInt(ev.data.height, 10);
                 if(h > 0 && h < 8000) document.getElementById('skyFrame').style.height = h + 'px';
             }
-            if(ev.data && ev.data.orbit === 'planetHeight'){
+            if(ev.data && ev.data.orbit === 'planetHeight' && ev.source === document.getElementById('planetFrame').contentWindow){
                 var ph = parseInt(ev.data.height, 10);
                 if(ph > 0 && ph < 8000) document.getElementById('planetFrame').style.height = ph + 'px';
             }
@@ -519,6 +539,7 @@
         }
 
         function openJoin(){
+            if (back.style.display === 'none') joinReturnFocus = document.activeElement;
             var n = nickname();
             document.getElementById('joinNew').style.display  = n ? 'none' : '';
             document.getElementById('joinDone').style.display = n ? '' : 'none';
@@ -526,7 +547,7 @@
                 ? '궤도에 <span>있어요</span>' : '궤도 <span>진입하기</span>';
             document.getElementById('joinSub').textContent = n
                 ? '이 기기는 아래 닉네임으로 글을 남기고 있어요.'
-                : '닉네임만 정하면 바로 글을 남길 수 있어요. 가입도 로그인도 없습니다.';
+                : '닉네임만 정하면 바로 글을 남길 수 있어요. 이메일·비밀번호 없이 시작하며, 작성 권한은 이 브라우저에 저장돼요.';
             if(n){
                 document.getElementById('joinedNickname').textContent = n;
                 document.getElementById('joinedAvatar').textContent = avatarOf(n);
@@ -536,16 +557,26 @@
                 errEl.style.display = 'none';
             }
             back.style.display = '';
-            if(!n) setTimeout(function(){ input.focus(); }, 50);
+            document.querySelector('.app').inert = true;
+            setTimeout(function(){ if (back.style.display !== 'none') (document.getElementById('joinNew').style.display === 'none' ? document.getElementById('joinClose') : input).focus(); }, 0);
             document.addEventListener('keydown', onEsc);
         }
         function closeJoin(){
             back.style.display = 'none';
+            document.querySelector('.app').inert = false;
             document.removeEventListener('keydown', onEsc);
             // 대화상자를 여는 신호로 쓴 해시를 남겨두면 새로고침 때 다시 열린다
-            if(location.hash === '#join') history.replaceState(null, '', '#' + DEFAULT_PANEL);
+            if(location.hash === '#join') history.replaceState(null, '', '#' + activePanel);
+            if(joinReturnFocus && joinReturnFocus.isConnected) joinReturnFocus.focus();
         }
-        function onEsc(e){ if(e.key === 'Escape') closeJoin(); }
+        function onEsc(e){
+            if(e.key === 'Escape') { closeJoin(); return; }
+            if(e.key !== 'Tab') return;
+            var items = Array.from(back.querySelectorAll('button, input, a[href]')).filter(function(el){ return !el.disabled && el.getClientRects().length; });
+            var first = items[0], last = items[items.length - 1];
+            if(e.shiftKey && (document.activeElement === first || !back.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
+            else if(!e.shiftKey && (document.activeElement === last || !back.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
+        }
 
         back.addEventListener('click', function(e){ if(e.target === back) closeJoin(); });
         document.getElementById('joinClose').addEventListener('click', closeJoin);
@@ -577,19 +608,21 @@
             // 광장이 이미 로드돼 있으면 미진입 상태의 글쓰기 카드를 들고 있다.
             // 새 닉네임을 반영하려면 다시 읽혀야 하므로 프레임을 새로 띄운다.
             reloadLounge();
-            switchPanel('lounge');
+            switchPanel('lounge', true);
         });
         input.addEventListener('keydown', function(e){
             if(e.key === 'Enter') document.getElementById('joinBtn').click();
         });
 
         document.getElementById('btnRename').addEventListener('click', function(){
-            localStorage.removeItem('orbit_nickname');
-            syncChip();
             openJoin();
+            document.getElementById('joinNew').style.display = '';
+            document.getElementById('joinDone').style.display = 'none';
+            input.value = nickname() || '';
+            input.focus();
         });
         document.getElementById('btnLeave').addEventListener('click', function(){
-            if(!confirm('이 기기에서 닉네임을 지울까요?\n이미 남긴 글은 그대로 남고, 지울 권한도 이 기기에 남아 있어요.')) return;
+            if(!confirm('이 기기에서 닉네임을 지울까요?\n이미 남긴 글과 브라우저의 인증 정보는 그대로 남아요.')) return;
             localStorage.removeItem('orbit_nickname');
             localStorage.removeItem('orbit_joindate');
             localStorage.removeItem('orbit_jointime');

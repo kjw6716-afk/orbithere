@@ -83,14 +83,14 @@
         .card-tag {
             display: inline-flex; align-items: center; justify-content: center;
             height: 24px; padding: 0 11px; line-height: 1;
-            font-size: 11px; font-weight: 600;
+            font-size: 12px; font-weight: 600;
             color: var(--accent); background: rgba(255,159,67,0.1);
             border-radius: 99px;
         }
 
         /* ===== 관측지 선택 ===== */
         .place-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
-        .place-label { font-size: 11.5px; color: #64748B; margin-right: 2px; }
+        .place-label { font-size: 12px; color: #A8B7CA; margin-right: 2px; }
         .pbtn {
             display: inline-flex; align-items: center; justify-content: center;
             height: 28px; padding: 0 13px; line-height: 1;
@@ -113,17 +113,17 @@
             background:radial-gradient(circle,rgba(255,159,67,0.07) 0%,transparent 70%); pointer-events:none;
         }
         .sky-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
-        .sky-when { font-size: 10.5px; color: #64748B; }
+        .sky-when { font-size: 12px; color: #A8B7CA; }
         .sky-sum { font-size: 14px; color: #CBD5E1; line-height: 1.65; margin: 12px 0 6px; }
         .sky-sum b { color: var(--accent); font-weight: 700; }
         .sky-map { width: 100%; height: auto; display: block; margin: 4px 0 2px; }
-        .sky-hint { font-size: 11px; color: #64748B; line-height: 1.6; }
+        .sky-hint { font-size: 12px; color: #A8B7CA; line-height: 1.6; }
 
         /* 시각 스크러버 */
         .scrub { margin-top: 14px; }
         .scrub-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
         .scrub-now { font-size: 13px; font-weight: 700; color: var(--mint); font-variant-numeric: tabular-nums; }
-        .scrub-ends { font-size: 10.5px; color: #64748B; font-variant-numeric: tabular-nums; }
+        .scrub-ends { font-size: 12px; color: #A8B7CA; font-variant-numeric: tabular-nums; }
         input[type=range].scrub-range {
             -webkit-appearance: none; appearance: none;
             width: 100%; height: 4px; border-radius: 99px; outline: none;
@@ -141,7 +141,7 @@
             background: var(--mint); border: 3px solid #0F172A; cursor: pointer;
         }
         .scrub-back {
-            display: none; margin-top: 9px; font-size: 11px;
+            display: none; margin-top: 9px; font-size: 12px;
             background: transparent; border: 1px solid rgba(79,209,197,0.3);
             color: var(--mint); border-radius: 99px; padding: 4px 12px;
             cursor: pointer; font-family: 'Pretendard';
@@ -159,7 +159,7 @@
         .conj-more {
             margin-top: 11px; padding-top: 9px;
             border-top: 1px solid rgba(79,209,197,0.14);
-            font-size: 11.5px; color: #64748B; line-height: 1.6;
+            font-size: 12px; color: #A8B7CA; line-height: 1.6;
         }
 
         /* ===== 행성 카드 ===== */
@@ -178,26 +178,26 @@
         .pl-disc { flex-shrink: 0; width: 34px; height: 34px; }
         .pl-mid { flex: 1; min-width: 0; }
         .pl-name { font-size: 14.5px; font-weight: 600; }
-        .pl-name .en { font-size: 10.5px; color: #64748B; font-weight: 400; margin-left: 5px; }
-        .pl-sub { font-size: 11.5px; color: #64748B; margin-top: 2px; }
+        .pl-name .en { font-size: 12px; color: #A8B7CA; font-weight: 400; margin-left: 5px; }
+        .pl-sub { font-size: 12px; color: #A8B7CA; margin-top: 2px; }
         .pl-alt {
             flex-shrink: 0; text-align: right;
             font-size: 12px; font-weight: 700; color: var(--accent);
             font-variant-numeric: tabular-nums;
         }
-        .pl-alt small { display: block; font-size: 10px; color: #64748B; font-weight: 500; margin-top: 2px; }
+        .pl-alt small { display: block; font-size: 12px; color: #A8B7CA; font-weight: 500; margin-top: 2px; }
 
         .pl-badges { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
         .pb {
             display: inline-flex; align-items: center; justify-content: center;
             height: 23px; padding: 0 10px; line-height: 1;
-            font-size: 10.5px; font-weight: 600; border-radius: 99px;
+            font-size: 12px; font-weight: 600; border-radius: 99px;
             border: 1px solid transparent; white-space: nowrap;
         }
         .pb.now  { color: #4FD1C5; background: rgba(79,209,197,0.1);  border-color: rgba(79,209,197,0.3); }
         .pb.soon { color: #A3D977; background: rgba(163,217,119,0.1); border-color: rgba(163,217,119,0.28); }
         .pb.hard { color: #FFB74D; background: rgba(255,183,77,0.1);  border-color: rgba(255,183,77,0.28); }
-        .pb.no   { color: #64748B; background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.07); }
+        .pb.no   { color: #A8B7CA; background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.07); }
         .pb.mag  { color: #94A3B8; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.09); font-variant-numeric: tabular-nums; }
 
         .pl-body { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.07); }
@@ -210,7 +210,7 @@
             padding: 10px 12px; border-radius: 10px;
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
         }
-        .pl-row .rl { flex-shrink: 0; width: 92px; font-size: 11.5px; color: #64748B; }
+        .pl-row .rl { flex-shrink: 0; width: 92px; font-size: 12px; color: #A8B7CA; }
         .pl-row .rv { flex: 1; font-size: 12.5px; color: #CBD5E1; line-height: 1.6; }
 
         .notice a { color: #94A3B8; }
@@ -234,9 +234,20 @@
         .embed nav { display: none; }
         .embed .container { margin: 0 auto; padding: 0; max-width: 680px; }
         .embed .hero, .embed .seo-content, .embed .site-footer { display: none; }
-    </style>
+
+        button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 2px solid #4FD1C5; outline-offset: 4px; }
+        .pbtn, .fbtn, .orbit-tab { min-height: 40px; }
+        .sky-hint, .pl-sub, .ch-desc { line-height: 1.75; }
+        .pl-desc, .post-body, .cmt-body { font-size: 16px; }
+        .embed-out { font-size: 14px; }
+        .load-error { text-align: center; padding: 28px 16px; color: #CBD5E1; line-height: 1.8; }
+        .load-error a { color: #4FD1C5; }
+        .load-error button { padding: 12px 20px; margin: 12px; border-radius: 99px; background: #FF9F43; color: #0F172A; border: 0; font: inherit; cursor: pointer; }
+        .write-hint { font-size: 13px; color: #CBD5E1; line-height: 1.7; margin: 12px 0; }
+        </style>
     <script>if(new URLSearchParams(location.search).get('embed'))document.documentElement.classList.add('embed');</script>
     <script src="effects.js" defer></script>
+    <script src="orbit-config.js"></script>
     <script src="visits.js" defer></script>
 </head>
 <body>
@@ -746,9 +757,9 @@
         // 휴대폰에서는 5~6px이 되어 읽을 수 없으므로, 축소된 만큼 글자를 키워
         // 화면에서의 실제 크기가 일정하게 보이도록 되돌린다.
         var shown = document.getElementById('skyMap').clientWidth || 720;
-        var k = Math.max(1, Math.min(2.2, 720 / shown));
-        var FS = (11.5 * k).toFixed(1);      // 천체 이름
-        var AX = (10.5 * k).toFixed(1);      // 축 눈금
+        var k = Math.max(1, 720 / shown);
+        var FS = (12 * k).toFixed(1);      // 천체 이름
+        var AX = (12 * k).toFixed(1);      // 축 눈금
         var LH = 13 * k;                     // 글자 한 줄 높이
 
         // 하늘 배경 · 지평선 · 땅
@@ -768,10 +779,10 @@
             svg += '<line x1="' + MAP.x0 + '" y1="' + y + '" x2="' + MAP.x1 + '" y2="' + y +
                    '" stroke="rgba(255,255,255,0.07)" stroke-dasharray="3 5"/>';
             svg += '<text x="' + (MAP.x0 - 8) + '" y="' + (y + LH / 3) +
-                   '" text-anchor="end" font-size="' + AX + '" fill="#64748B">' + a + '°</text>';
+                   '" text-anchor="end" font-size="' + AX + '" fill="#A8B7CA">' + a + '°</text>';
         });
         svg += '<text x="' + (MAP.x0 - 8) + '" y="' + (MAP.yHor + LH / 3) +
-               '" text-anchor="end" font-size="' + AX + '" fill="#64748B">0°</text>';
+               '" text-anchor="end" font-size="' + AX + '" fill="#A8B7CA">0°</text>';
 
         // 방위 눈금
         for (var d = 0; d <= 360; d += 45) {
@@ -779,7 +790,7 @@
             svg += '<line x1="' + x + '" y1="' + MAP.yTop + '" x2="' + x + '" y2="' + MAP.yHor +
                    '" stroke="rgba(255,255,255,0.05)"/>';
             svg += '<text x="' + x + '" y="' + (MAP.yHor + 26 + LH) + '" text-anchor="middle" font-size="' + AX +
-                   '" fill="' + (d === 180 ? '#FF9F43' : '#64748B') + '">' + DIRS[(d / 45) % 8] + '</text>';
+                   '" fill="' + (d === 180 ? '#FF9F43' : '#A8B7CA') + '">' + DIRS[(d / 45) % 8] + '</text>';
         }
 
         // 천체 모으기 (실제로 볼 수 있는 높이 위만)
@@ -903,7 +914,7 @@
         svg += leads + dots + labels;
 
         if (!items.length) {
-            svg += '<text x="375" y="150" text-anchor="middle" font-size="' + (13 * k).toFixed(1) + '" fill="#64748B">' +
+            svg += '<text x="375" y="150" text-anchor="middle" font-size="' + (13 * k).toFixed(1) + '" fill="#A8B7CA">' +
                    '이 시각에는 볼 수 있는 높이에 행성도 달도 없습니다</text>';
         }
 
@@ -1057,7 +1068,7 @@
                 altText = Math.round(s.bestAlt) + '°';
                 altSub = '최고 · ' + dirName(s.bestAz) + '쪽';
             } else {
-                badges += '<span class="pb no">오늘은 어렵습니다</span>';
+                badges += '<span class="pb no">오늘은 관측이 어렵습니다</span>';
                 altText = '—';
                 altSub = '';
             }
@@ -1240,6 +1251,11 @@
     });
 
     renderAll();
+    var mapWidth = 0;
+    if (window.ResizeObserver) new ResizeObserver(function(entries){
+        var width = entries[0].contentRect.width;
+        if (width > 0 && Math.abs(width - mapWidth) > 1) { mapWidth = width; renderMap(state.idx); }
+    }).observe(document.getElementById('skyMap'));
 
     // 5분마다 «지금»을 다시 잡는다. 사용자가 막대를 직접 움직였다면 건드리지 않는다.
     setInterval(function () {

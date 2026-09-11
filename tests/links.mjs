@@ -71,7 +71,7 @@ console.log('\n[4] 새 localStorage 키는 개인정보처리방침에 적혀 �
   // 실제로 두 번 빠뜨린 적이 있다. 사람 기억 대신 검사로 지킨다.
   const privacy = readFileSync(join(root, 'privacy.html'), 'utf8');
   const used = new Set();
-  for (const f of [...pages, 'visits.js']) {
+  for (const f of [...pages, ...readdirSync(root).filter(f => f.endsWith('.js'))]) {
     const src = readFileSync(join(root, f), 'utf8');
     for (const m of src.matchAll(/localStorage\.(?:getItem|setItem|removeItem)\(\s*['"]([^'"]+)['"]/g)) used.add(m[1]);
     for (const m of src.matchAll(/['"](orbit_[a-z_]+)['"]/g)) used.add(m[1]);

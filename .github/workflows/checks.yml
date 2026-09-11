@@ -28,8 +28,14 @@ jobs:
 
       - name: 브라우저 설치
         run: |
-          npm install --no-audit --no-fund
+          npm ci --no-audit --no-fund
           npx playwright install --with-deps chromium
+
+      - name: 데이터베이스 권한 검증
+        run: node tests/security.mjs
+
+      - name: 게시판·회귀 검증
+        run: node tests/community.mjs
 
       - name: 렌더링 검증
         run: node tests/render.mjs

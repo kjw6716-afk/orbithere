@@ -41,6 +41,7 @@ const pageErrors = [];
 const newPage = async (opts) => {
   const p = await browser.newPage(opts);
   p.on('pageerror', (e) => pageErrors.push(e.message));
+  await p.route('https://*.supabase.co/**', route => route.abort());
   return p;
 };
 
@@ -224,7 +225,7 @@ console.log('\n[5] 좁은 화면 — 가로 스크롤이 생기지 않는가');
       const scale = svg.getBoundingClientRect().width / svg.viewBox.baseVal.width;
       return parseFloat(t.getAttribute('font-size')) * scale;
     });
-    ok(`${w}px 지도 글자 9px 이상`, px >= 9, `${px.toFixed(1)}px`);
+    ok(`${w}px 지도 글자 12px 이상`, px >= 11.9, `${px.toFixed(1)}px`);
     await page.close();
   }
 }

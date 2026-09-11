@@ -412,12 +412,12 @@
         </section>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="orbit-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
+    <script src="orbit-backend.js"></script>
     <script>
     (function(){
-        var SB_URL = 'https://unwxpuvfqyjhgrcrmuhu.supabase.co';
-        var SB_KEY = 'sb_publishable_KnyriHKUHNWw0QyIAXBmOA_0KaHPcXI'; // 공개용 키 (publishable)
-        var sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null;
+        var sb = window.createOrbitBackend();
 
         var note = document.getElementById('note');
         function say(msg, kind){

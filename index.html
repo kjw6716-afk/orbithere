@@ -269,8 +269,18 @@
         ::-moz-selection { background-color: #FFB74D; color: #0F172A; }
 
 
+        .subtitle { color: #CBD5E1; opacity: 1; font-size: 1rem; line-height: 1.8; max-width: 34rem; margin: 18px auto 0; }
+        .entry-actions { display: flex; flex-direction: column; align-items: center; gap: 18px; margin-top: 28px; }
+        .click-hint { margin: 0; opacity: 1; animation: none; background: #4FD1C5; color: #0F172A; padding: 15px 25px; border-radius: 99px; font-size: 1rem; font-weight: 700; letter-spacing: 0; }
+        .click-hint:hover { background: #99F6E4; }
+        .entry-secondary { color: #CBD5E1; font-size: .9rem; text-underline-offset: 5px; }
+        .quick-links a { color: #CBD5E1; font-size: .8rem; min-height: 30px; display: inline-flex; align-items: center; }
+        .quick-links .foot-copy { color: #94A3B8; font-size: .75rem; }
+        body { min-height: 100svh; height: auto; padding: 40px 20px 150px; overflow-y: auto; }
+        @media (max-height: 700px) { .quick-links { position: static; margin-top: 35px; } body { padding-bottom: 24px; } }
     </style>
     <script src="effects.js" defer></script>
+    <script src="orbit-config.js"></script>
     <script src="visits.js" defer></script>
 </head>
 <body>
@@ -292,8 +302,8 @@
             </div>
         </div>
         <h1 class="title">밤하늘에서 <span class="highlight">너를</span> 만나다</h1>
-        <p class="subtitle">궤도에서 너를 만나다 · 같은 하늘을 보는 사람들이 모이는 곳</p>
-        <a class="click-hint" href="main.html">아무곳이나 클릭</a>
+        <p class="subtitle">오늘 볼 수 있는 행성을 찾고, 같은 하늘을 본 사람들과 기록을 나눠요.</p>
+        <div class="entry-actions"><a class="click-hint" href="main.html#planets">오늘 밤 하늘 보기 →</a><a class="entry-secondary" href="main.html#sky">유성우·천문 일정 보기</a></div>
     </div>
 
     <nav class="quick-links">
@@ -308,20 +318,6 @@
             in orbit</span>
     </nav>
 
-    <script>
-        document.body.style.cursor = 'pointer';
 
-        document.body.addEventListener('click', (e) => {
-            // 하단 바로가기는 각자 목적지가 있으니 입장 전환에서 제외
-            if (e.target.closest('.quick-links')) return;
-            // 힌트 링크는 즉시 이동 대신 아래의 700ms 전환을 같이 탄다
-            // (JS가 꺼져 있으면 링크 본연의 즉시 이동으로 동작)
-            if (e.target.closest('.click-hint')) e.preventDefault();
-            // 파티클은 effects.js가 그림 — 여기선 입장 전환만
-            setTimeout(() => {
-                window.location.href = 'main.html';
-            }, 700);
-        });
-    </script>
 </body>
 </html>

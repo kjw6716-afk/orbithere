@@ -83,7 +83,7 @@
         .card-tag {
             display: inline-flex; align-items: center; justify-content: center;
             height: 24px; padding: 0 11px; line-height: 1;
-            font-size: 11px; font-weight: 600;
+            font-size: 12px; font-weight: 600;
             color: var(--accent); background: rgba(255,159,67,0.1);
             border-radius: 99px; margin-bottom: 12px;
         }
@@ -101,7 +101,7 @@
         .nx-emoji { font-size: 34px; line-height: 1; }
         .nx-head { display: flex; align-items: center; gap: 12px; }
         .nx-name { font-size: 1.15rem; font-weight: 700; }
-        .nx-when { font-size: 11.5px; color: #64748B; margin-top: 3px; }
+        .nx-when { font-size: 12px; color: #A8B7CA; margin-top: 3px; }
         .dday-row { display: flex; align-items: baseline; gap: 10px; margin: 18px 0 4px; flex-wrap: wrap; }
         .dday { font-size: 2.6rem; font-weight: 700; color: var(--accent); line-height: 1; letter-spacing: -0.02em; }
         .dday-sub { font-size: 13px; color: #94A3B8; }
@@ -111,7 +111,7 @@
             border-radius: 11px; padding: 9px 13px; text-align: center; min-width: 62px;
         }
         .cd-unit b { display: block; font-size: 1.1rem; color: var(--text-main); font-weight: 700; font-variant-numeric: tabular-nums; }
-        .cd-unit span { font-size: 10px; color: #64748B; }
+        .cd-unit span { font-size: 12px; color: #A8B7CA; }
         .nx-note {
             margin-top: 16px; padding: 13px 15px; border-radius: 12px;
             background: rgba(79,209,197,0.07); border: 1px solid rgba(79,209,197,0.2);
@@ -168,7 +168,7 @@
         .ev-ic { font-size: 22px; line-height: 1; flex-shrink: 0; width: 26px; text-align: center; }
         .ev-mid { flex: 1; min-width: 0; }
         .ev-name { font-size: 14.5px; font-weight: 600; }
-        .ev-date { font-size: 11.5px; color: #64748B; margin-top: 2px; }
+        .ev-date { font-size: 12px; color: #A8B7CA; margin-top: 2px; }
         .ev-dday {
             flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
             height: 25px; padding: 0 12px; line-height: 1;
@@ -176,7 +176,7 @@
             background: rgba(255,159,67,0.1); border-radius: 99px;
             font-variant-numeric: tabular-nums;
         }
-        .ev-dday.past { color: #64748B; background: rgba(255,255,255,0.03); }
+        .ev-dday.past { color: #A8B7CA; background: rgba(255,255,255,0.03); }
 
         .badges { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
         /* 알약 배지 — 높이를 고정하고 flex로 가운데 맞춘다.
@@ -185,17 +185,17 @@
         .bdg {
             display: inline-flex; align-items: center; justify-content: center;
             height: 23px; padding: 0 10px; line-height: 1;
-            font-size: 10.5px; font-weight: 600; border-radius: 99px;
+            font-size: 12px; font-weight: 600; border-radius: 99px;
             border: 1px solid transparent; white-space: nowrap;
         }
         /* 이모지가 줄 높이를 밀어 올리지 않도록 글자와 같은 크기로 묶는다 */
-        .bdg .bi { font-size: 11px; line-height: 1; margin-right: 3px; }
+        .bdg .bi { font-size: 12px; line-height: 1; margin-right: 3px; }
         .bdg.best  { color: #4FD1C5; background: rgba(79,209,197,0.1);  border-color: rgba(79,209,197,0.3); }
         .bdg.good  { color: #A3D977; background: rgba(163,217,119,0.1); border-color: rgba(163,217,119,0.28); }
         .bdg.fair  { color: #FFB74D; background: rgba(255,183,77,0.1);  border-color: rgba(255,183,77,0.28); }
         .bdg.poor  { color: #F87171; background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.28); }
         .bdg.kr    { color: #94A3B8; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.09); }
-        .bdg.nokr  { color: #64748B; background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.07); }
+        .bdg.nokr  { color: #A8B7CA; background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.07); }
         .bdg.zhr   { color: #94A3B8; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.09); font-variant-numeric: tabular-nums; }
 
         .ev-body { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.07); }
@@ -208,7 +208,7 @@
             padding: 10px 12px; border-radius: 10px;
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
         }
-        .ev-row .rl { font-size: 11px; font-weight: 700; color: var(--accent); flex-shrink: 0; width: 74px; }
+        .ev-row .rl { font-size: 12px; font-weight: 700; color: var(--accent); flex-shrink: 0; width: 74px; }
         .ev-row .rv { font-size: 12.5px; color: #94A3B8; line-height: 1.65; flex: 1; }
 
         /* SEO 본문·notice·cta-lounge 공통 스타일은 orbit.css — 이 페이지 고유분만 */
@@ -234,9 +234,20 @@
         .embed nav { display: none; }
         .embed .container { margin: 0 auto; padding: 0; max-width: 680px; }
         .embed .hero, .embed .seo-content, .embed .site-footer { display: none; }
-    </style>
+
+        button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 2px solid #4FD1C5; outline-offset: 4px; }
+        .pbtn, .fbtn, .orbit-tab { min-height: 40px; }
+        .sky-hint, .pl-sub, .ch-desc { line-height: 1.75; }
+        .pl-desc, .post-body, .cmt-body { font-size: 16px; }
+        .embed-out { font-size: 14px; }
+        .load-error { text-align: center; padding: 28px 16px; color: #CBD5E1; line-height: 1.8; }
+        .load-error a { color: #4FD1C5; }
+        .load-error button { padding: 12px 20px; margin: 12px; border-radius: 99px; background: #FF9F43; color: #0F172A; border: 0; font: inherit; cursor: pointer; }
+        .write-hint { font-size: 13px; color: #CBD5E1; line-height: 1.7; margin: 12px 0; }
+        </style>
     <script>if(new URLSearchParams(location.search).get('embed'))document.documentElement.classList.add('embed');</script>
     <script src="effects.js" defer></script>
+    <script src="orbit-config.js"></script>
     <script src="visits.js" defer></script>
 </head>
 <body>
@@ -257,7 +268,7 @@
         <section class="next-card">
             <div style="display:flex;align-items:center;gap:10px;">
                 <span class="card-tag" style="margin-bottom:0;">🔭 다음 천문 현상</span>
-                <span style="font-size:10px;color:#64748B;">한국 표준시(KST) 기준</span>
+                <span style="font-size: 12px;color:#A8B7CA;">한국 표준시(KST) 기준</span>
             </div>
             <div class="nx-head" style="margin-top:14px;">
                 <div class="nx-emoji" id="nxEmoji">✨</div>
@@ -283,7 +294,7 @@
                 <div class="mm-name">오늘의 달 — <span id="mmPhase">…</span></div>
                 <div class="mm-line">
                     월령 <b id="mmAge">–</b> · 밝기 <b id="mmIllum">–</b><br>
-                    <span id="mmHint" style="color:#64748B;"></span>
+                    <span id="mmHint" style="color:#A8B7CA;"></span>
                 </div>
             </div>
         </section>
@@ -604,6 +615,14 @@
 
     function parseKST(s) { return new Date(s); }
 
+    function calendarDays(target, now) {
+        var offset = 9 * 3600000;
+        return Math.floor((target + offset) / MS_DAY) - Math.floor((now + offset) / MS_DAY);
+    }
+    function ddayLabel(target, now) {
+        var days = calendarDays(target, now);
+        return days <= 0 ? 'D-DAY' : 'D-' + days;
+    }
     function fmtDday(ms) {
         if (ms <= 0) return null;
         var d = Math.floor(ms / MS_DAY);
@@ -635,7 +654,7 @@
         var list = upcoming();
         if (!list.length) {
             $('nxName').textContent = '다음 일정을 준비하고 있습니다';
-            $('nxWhen').textContent = '유성우·일식 일정은 사람이 직접 채워 넣습니다';
+            $('nxWhen').textContent = '오늘 밤 하늘은 행성 지도에서 계속 확인할 수 있어요';
             $('nxDday').textContent = '—';
             $('nxDdaySub').textContent = '';
             // 마지막 현상이 지나가는 순간 tick()이 여기로 들어온다. 그때 숫자판을 비우고
@@ -646,7 +665,7 @@
             $('nxNote').innerHTML = '앞으로의 천문 현상 일정이 아직 채워지지 않았습니다. ' +
                                     '그동안에도 <strong>행성은 매일 밤 떠 있습니다.</strong>';
             showAlt('오늘 밤 어느 방향에 무엇이 떠 있는지 → <b>오늘 밤 행성 보기</b><br>' +
-                    '<span style="color:#64748B;">그날 날짜로 직접 계산하는 페이지라 일정표와 달리 비는 날이 없습니다.</span>');
+                    '<span style="color:#A8B7CA;">그날 날짜로 직접 계산하는 페이지라 일정표와 달리 비는 날이 없습니다.</span>');
             return;
         }
         var e = list[0].e, t = list[0].t;
@@ -674,10 +693,10 @@
         var daysLeft = (t - Date.now()) / MS_DAY;
         if (e.kr === false) {
             showAlt('이 현상은 국내에서 볼 수 없습니다. 대신 <b>오늘 밤 행성 보기</b> →<br>' +
-                    '<span style="color:#64748B;">오늘 밤 어느 방향 몇 도에 무엇이 떠 있는지 계산해 드립니다.</span>');
+                    '<span style="color:#A8B7CA;">오늘 밤 어느 방향 몇 도에 무엇이 떠 있는지 계산해 드립니다.</span>');
         } else if (daysLeft > 21) {
-            showAlt('D-' + Math.floor(daysLeft) + '까지 기다릴 것 없이 <b>오늘 밤 행성 보기</b> →<br>' +
-                    '<span style="color:#64748B;">행성은 유성우와 달리 도심에서도 맨눈으로 보입니다.</span>');
+            showAlt(ddayLabel(t, Date.now()) + '까지 기다릴 것 없이 <b>오늘 밤 행성 보기</b> →<br>' +
+                    '<span style="color:#A8B7CA;">행성은 유성우와 달리 도심에서도 맨눈으로 보입니다.</span>');
         } else {
             $('nxAlt').style.display = 'none';
         }
@@ -685,8 +704,10 @@
         function tick() {
             var left = fmtDday(t - Date.now());
             if (!left) { renderNext(); renderTimeline(); return; }
-            $('nxDday').textContent = 'D-' + (left.d === 0 ? 'DAY' : left.d);
-            $('nxDdaySub').textContent = left.d === 0 ? '오늘 밤입니다' : '남았습니다';
+            $('nxDday').textContent = ddayLabel(t, Date.now());
+            $('nxDdaySub').textContent = calendarDays(t, Date.now()) <= 0 ? '오늘 관측 일정입니다' : '남았습니다';
+            var currentDay = Math.floor((Date.now() + 9 * 3600000) / MS_DAY);
+            if (window.__calendarDay !== currentDay) { window.__calendarDay = currentDay; renderTimeline(); renderMoon(); }
             $('nxUnits').innerHTML =
                 '<div class="cd-unit"><b>' + left.d + '</b><span>일</span></div>' +
                 '<div class="cd-unit"><b>' + left.h + '</b><span>시간</span></div>' +
@@ -735,7 +756,7 @@
 
         $('timeline').innerHTML = rows.map(function (x) {
             var e = x.e;
-            var days = Math.ceil((x.t - now) / MS_DAY);
+            var days = calendarDays(x.t, now);
             var moon = moonInfo(new Date(x.t));
             var cond = condOf(moon.illum);
 

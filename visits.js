@@ -21,15 +21,16 @@
 (function(){
     if(document.documentElement.classList.contains('embed')) return;
 
-    var SB_URL = 'https://unwxpuvfqyjhgrcrmuhu.supabase.co';
-    var SB_KEY = 'sb_publishable_KnyriHKUHNWw0QyIAXBmOA_0KaHPcXI'; // 공개용 키 (publishable)
+    var config = window.ORBIT_CONFIG;
+    if(!config) return;
+    var SB_URL = config.url, SB_KEY = config.publishableKey;
 
-    // sv-SE 로케일은 YYYY-MM-DD 형식이라 날짜 도장으로 쓰기 좋다 (기기 시간대 기준)
+    // 서버 집계와 같은 한국 날짜를 YYYY-MM-DD 형식으로 기록한다.
     var KEY = 'orbit_visit_day';
-    var today = new Date().toLocaleDateString('sv-SE');
+    var today = new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10);
     if(localStorage.getItem(KEY) === today) return;
 
-    // 광장(lounge.html)이 쓰는 것과 같은 기기 ID. 먼저 오는 쪽이 만들고 뒤는 물려받는다.
+    // 방문 중복 집계용 기기 ID이며 게시글 작성·삭제 권한으로 쓰지 않는다.
     var device = localStorage.getItem('orbit_device_id');
     if(!device){
         device = (window.crypto && crypto.randomUUID)
@@ -42,7 +43,6 @@
         method: 'POST',
         headers: {
             'apikey': SB_KEY,
-            'Authorization': 'Bearer ' + SB_KEY,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({ p_device: device })
