@@ -60,6 +60,7 @@
             cursor: pointer; transition: all 0.15s; text-align: left;
         }
         .nav-link { text-decoration: none; }
+        .nav-item .ic svg { display:block; }
         .nav-item .ic { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
         .nav-item:hover { background: rgba(255,159,67,0.07); color: var(--text-main); }
         .nav-item.on { background: rgba(255,159,67,0.13); color: var(--accent); }
@@ -325,7 +326,8 @@
                 <button class="nav-item" data-panel="planets"><span class="ic">🪐</span><span class="lbl">오늘 밤 행성</span></button>
                 <button class="nav-item" data-panel="lounge"><span class="ic">💬</span><span class="lbl">글 남기기</span></button>
                 <a class="nav-item nav-link" href="guide.html"><span class="ic">📖</span><span class="lbl">관측 가이드</span></a>
-                <a class="nav-item nav-link" href="about.html"><span class="ic">✦</span><span class="lbl">소개·문의</span></a>
+                <a class="nav-item nav-link" href="notes.html"><span class="ic" aria-hidden="true">📝</span><span class="lbl">관측 노트</span></a>
+                <a class="nav-item nav-link" href="about.html"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="7.5" r=".8" fill="currentColor" stroke="none"/></svg></span><span class="lbl">소개·문의</span></a>
             </nav>
         </aside>
         <div class="nav-scrim" id="navScrim"></div>
@@ -369,6 +371,7 @@
 
             <footer class="site-footer">
                 <div class="foot-links">
+            <a href="notes.html">관측 노트</a>
                     <a href="guide.html">관측 가이드</a>
                     <a href="about.html">소개·문의</a>
                     <a href="sky.html">밤하늘 달력</a>

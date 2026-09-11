@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>관측 노트 — 밤하늘 기록 만들기 | 오빗 Orbit</title>
+    <meta name="description" content="관측 대상·시간·장비·하늘 상태를 정리하고 텍스트로 복사하거나 내려받는 관측 노트. 찾지 못한 경험도 다음 관측의 단서로 남겨보세요.">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#0F172A">
+    <link rel="canonical" href="https://orbithere.com/notes.html">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="/apple-touch-icon-precomposed.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Orbit">
+    <meta property="og:title" content="관측 노트 — 밤하늘 기록 만들기 | 오빗 Orbit">
+    <meta property="og:description" content="관측 대상·시간·장비·하늘 상태를 정리하고 텍스트로 복사하거나 내려받는 관측 노트. 찾지 못한 경험도 다음 관측의 단서로 남겨보세요.">
+    <meta property="og:image" content="https://orbithere.com/images/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://orbithere.com/notes.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
+    <link rel="stylesheet" href="/orbit.css?v=20260911-layout">
+    <link rel="stylesheet" href="guide.css?v=20260912-content">
+    <script src="effects.js?v=20260911-layout" defer></script>
+    <script src="orbit-config.js"></script>
+    <script src="visits.js" defer></script>
+
+
+    <script src="notes.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "headline": "관측 노트 — 밤하늘 기록 만들기 | 오빗 Orbit", "description": "관측 대상·시간·장비·하늘 상태를 정리하고 텍스트로 복사하거나 내려받는 관측 노트. 찾지 못한 경험도 다음 관측의 단서로 남겨보세요.", "url": "https://orbithere.com/notes.html", "inLanguage": "ko"}</script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">본문으로 바로가기</a>
+<header class="guide-header"><a class="logo" href="index.html">ORBIT.</a><nav aria-label="주요 메뉴">
+    <a href="main.html#planets">오늘 밤 행성</a><a href="main.html#sky">밤하늘 달력</a><a href="guide.html">관측 가이드</a>
+    <a href="notes.html" aria-current="page">관측 노트</a><a href="main.html#lounge">글 남기기</a><a href="about.html">소개·문의</a></nav></header>
+<main class="guide-main" id="main-content">
+<div class="guide-hero"><p class="eyebrow">나의 관측 노트</p><h1>본 것과 못 본 것,<br>다음 밤의 단서로</h1>
+<p>짧은 기록이면 충분해요. 관측 조건과 결과를 함께 남기면 다음에 무엇을 바꿔볼지 알 수 있어요.</p>
+<p class="small">작성 내용은 이 화면에서만 다룹니다. 자동 저장·게시되지 않으니, 떠나기 전에 복사하거나 파일로 내려받으세요.</p></div>
+<section aria-labelledby="note-heading"><h2 id="note-heading">오늘의 기록 만들기</h2>
+<form id="noteForm" class="note-form">
+<div class="note-grid">
+<label>관측 대상<input name="target" maxlength="50" placeholder="예: 달, 목성, 유성우" autocomplete="off"></label>
+<label>관측 일시 (한국 시간)<input name="when" type="datetime-local"></label>
+<label>대략적인 지역<input name="place" maxlength="50" placeholder="예: 서울, 강릉" autocomplete="off"></label>
+<div class="note-select"><label for="noteEquipment">사용한 장비</label><select id="noteEquipment" name="equipment"><option>맨눈</option><option>쌍안경</option><option>망원경</option><option>카메라</option><option>여러 장비</option></select></div>
+<div class="note-select"><label for="noteResult">관측 결과</label><select id="noteResult" name="result"><option>아직 기록 중</option><option>찾았어요</option><option>확신이 없어요</option><option>찾지 못했어요</option><option>날씨 때문에 중단했어요</option></select></div>
+<label>하늘과 주변 조건<input name="conditions" maxlength="90" placeholder="예: 구름 조금, 밝은 달, 남쪽 건물" autocomplete="off"></label>
+</div>
+<label>관찰한 모습 · 다음에 바꿔볼 점<textarea name="detail" rows="4" maxlength="200" placeholder="직접 본 모습과 추측을 구분해 적어보세요."></textarea></label>
+<p class="small">집 주소나 연락처는 적지 않아도 돼요. 게시판은 공개 공간입니다.</p>
+<div class="note-preview"><label for="noteOutput">복사할 기록</label><textarea id="noteOutput" rows="10" readonly aria-describedby="noteLength"></textarea><p id="noteLength" class="small"></p></div>
+<div class="note-actions"><button type="button" class="guide-button" id="copyNote">기록 복사</button><button type="button" class="text-button" id="downloadNote">텍스트로 내려받기</button><button type="reset" class="text-button">입력 지우기</button></div>
+<p id="noteStatus" role="status" aria-live="polite"></p>
+<a href="lounge.html#report">관측 후기 게시판 열기 →</a><p class="small">공유하고 싶을 때만 게시판에 복사한 기록을 붙여 넣어주세요.</p>
+</form><noscript><p>기록 생성에는 자바스크립트가 필요해요. 아래 다섯 가지를 메모 앱에 적어도 같은 방식으로 기록할 수 있습니다.</p></noscript></section>
+<section><h2>한 줄 감상을, 다시 쓸 수 있는 기록으로</h2>
+<p>“잘 안 보였다”는 결과도 도움이 됩니다. 같은 장소에 다시 갔을 때 비교할 조건이 함께 있으면 더 좋아요. 관측 대상, 일시, 대략적인 지역, 장비, 하늘 상태를 차례로 남겨보세요.</p>
+<div class="about-links"><article class="content-card"><h3>직접 본 것</h3><p>“밝은 점 옆에 작은 점들이 보였다”, “건물 위로 나오지 않았다”처럼 눈으로 확인한 모습을 적어요. 대상이 맞는지 불확실하면 그대로 표시하세요.</p></article>
+<article class="content-card"><h3>다음에 확인할 것</h3><p>시간을 바꾸기, 남쪽이 열린 장소 찾기, 받침대로 흔들림 줄이기 중 한 가지만 정해보세요. 장비를 사기 전에 조건 하나를 바꿔 비교할 수 있어요.</p></article></div>
+<p class="small">작성 예시(실제 관측 후기가 아닙니다): “달의 밝고 어두운 경계에 울퉁불퉁한 부분이 보였다. 손떨림이 커 다음에는 받침대를 써보고 싶다.”</p></section>
+<section><h2>함께 기록하면 더 유용한 것</h2><ul class="reading-list"><li>유성우: 관찰을 시작하고 끝낸 시간, 실제로 본 개수, 구름이나 휴식으로 못 본 시간</li><li>망원경: 구경·접안렌즈 등 알고 있는 설정, 받침대 사용 여부</li><li>사진: 눈으로 본 모습과 촬영·보정을 거친 결과를 구분</li></ul>
+<p>한 번의 기록으로 지역 전체의 관측 조건을 단정하지는 마세요. 관측 범위와 불확실성을 함께 적으면 다른 사람도 자기 상황과 비교하기 쉬워요.</p></section>
+<a class="guide-callout" href="reading-sky.html"><strong>지도 숫자는 어떻게 하늘이 되나요?</strong><span>방향과 고도를 읽는 법 →</span></a>
+</main>
+    <footer class="site-footer">
+        <nav class="foot-links" aria-label="사이트 정보">
+            <a href="notes.html">관측 노트</a>
+            <a href="main.html">커뮤니티 홈</a><a href="guide.html">관측 가이드</a><a href="about.html">소개·문의</a>
+            <a href="terms.html">이용약관</a><a href="privacy.html">개인정보처리방침</a>
+        </nav>
+        <div class="foot-sign">© 2026 Orbit · 같은 하늘을 보는 사람들</div>
+    </footer>
+</body>
+</html>
