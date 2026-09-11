@@ -24,7 +24,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
-    <link rel="stylesheet" href="/orbit.css?v=20260911-layout">
+    <link rel="stylesheet" href="/orbit.css?v=20260912-brand">
     <style>
         body { touch-action: manipulation; }   /* 나머지 기본값은 orbit.css */
 
@@ -47,11 +47,7 @@
             border-right: 1px solid rgba(255,159,67,0.1);
             background: rgba(15,23,42,0.55); backdrop-filter: blur(12px);
         }
-        .side-logo {
-            display: block; text-decoration: none;
-            font-weight: 700; letter-spacing: 2px; color: var(--accent);
-            font-size: 1.15rem; cursor: pointer; padding: 6px 12px 20px;
-        }
+        .side-logo { padding: 6px 12px 20px; }
         .side-nav { display: flex; flex-direction: column; gap: 4px; }
         .nav-item {
             display: flex; align-items: center; gap: 12px; width: 100%;
@@ -318,7 +314,7 @@
     <div class="app news-layout">
         <!-- 사이드바 -->
         <aside class="sidebar">
-            <a class="side-logo" href="index.html">ORBIT.</a>
+            <a class="side-logo orbit-brand" href="index.html" aria-label="ORBIT 홈">ORBIT.</a>
             <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="sideNav" aria-label="메뉴 열기">
                 <span class="nt-ic" id="navToggleIc">🔭</span>
                 <span class="nt-lbl" id="navToggleLbl">밤하늘 달력</span>
@@ -354,7 +350,7 @@
                 <!-- 밤하늘 달력 — 첫 화면 -->
                 <section class="panel on" id="panel-sky">
                     <div class="embed-wrap">
-                        <iframe class="embed-frame" id="skyFrame" title="밤하늘 달력 — 유성우 · 일식 · 월식 일정" data-src="sky.html?embed=1&v=20260911-layout"></iframe>
+                        <iframe class="embed-frame" id="skyFrame" title="밤하늘 달력 — 유성우 · 일식 · 월식 일정" data-src="sky.html?embed=1&v=20260912-brand"></iframe>
                         <a class="embed-out" href="sky.html">전체 화면으로 열기 · 관측 방법과 FAQ 보기 →</a>
                     </div>
                 </section>
@@ -362,14 +358,14 @@
                 <!-- 오늘 밤 행성 -->
                 <section class="panel" id="panel-planets">
                     <div class="embed-wrap">
-                        <iframe class="embed-frame" id="planetFrame" title="오늘 밤 행성 — 지금 하늘의 행성 위치" data-src="planets.html?embed=1&v=20260911-layout"></iframe>
+                        <iframe class="embed-frame" id="planetFrame" title="오늘 밤 행성 — 지금 하늘의 행성 위치" data-src="planets.html?embed=1&v=20260912-brand"></iframe>
                         <a class="embed-out" href="planets.html">전체 화면으로 열기 · 행성 찾는 법과 FAQ 보기 →</a>
                     </div>
                 </section>
 
                 <!-- 글 남기기 -->
                 <section class="panel" id="panel-lounge">
-                    <iframe class="lounge-frame" id="loungeFrame" title="별빛 게시판" data-src="lounge.html?embed=1&v=20260912-discovery"></iframe>
+                    <iframe class="lounge-frame" id="loungeFrame" title="별빛 게시판" data-src="lounge.html?embed=1&v=20260912-brand"></iframe>
                 </section>
                 <aside class="news-brief news-brief--rail" data-news-brief aria-labelledby="newsBriefHeading">
                   <h2 class="news-brief-heading" id="newsBriefHeading">최신 우주 뉴스</h2>
