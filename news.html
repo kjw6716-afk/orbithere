@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orbit | 우주 뉴스</title>
+    <meta
+      name="description"
+      content="한국천문연구원·NASA·ESA의 공식 우주 소식. 원문과 한국어 번역 링크로 읽어보세요."
+    />
+    <meta name="theme-color" content="#0F172A" />
+    <link rel="canonical" href="https://orbithere.com/news.html" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon-precomposed"
+      sizes="180x180"
+      href="/apple-touch-icon-precomposed.png"
+    />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Orbit" />
+    <meta property="og:title" content="Orbit | 우주 뉴스" />
+    <meta
+      property="og:description"
+      content="한국천문연구원·NASA·ESA의 공식 우주 소식. 원문과 한국어 번역 링크로 읽어보세요."
+    />
+    <meta property="og:image" content="https://orbithere.com/images/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://orbithere.com/news.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link
+      rel="stylesheet"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css"
+    />
+    <link rel="stylesheet" href="/orbit.css?v=20260911-layout" />
+    <link rel="stylesheet" href="board.css?v=20260912-board" />
+    <script>
+      if (new URLSearchParams(location.search).get('embed'))
+        document.documentElement.classList.add('embed');
+    </script>
+    <script src="orbit-config.js"></script>
+    <script src="visits.js" defer></script>
+  </head>
+  <body>
+    <div class="bg-glow" aria-hidden="true"></div>
+    <a class="board-skip" href="#newsMain">본문으로 바로가기</a>
+    <nav class="site-topbar">
+      <a class="logo" href="index.html">ORBIT.</a
+      ><a class="nav-back" href="main.html">← 커뮤니티 홈</a>
+    </nav>
+    <main class="board-shell" id="newsMain">
+      <header class="board-heading">
+        <div>
+          <h1>우주 뉴스</h1>
+          <p>별을 보는 일상에, 우주에서 온 소식</p>
+        </div>
+        <a class="button subtle" href="lounge.html">게시판</a>
+      </header>
+      <nav class="board-tabs" aria-label="뉴스 출처" id="newsFilters">
+        <a href="#all" data-source="all" aria-current="page">전체</a
+        ><a href="#kasi" data-source="kasi">한국천문연구원</a
+        ><a href="#nasa" data-source="nasa">NASA</a><a href="#esa" data-source="esa">ESA</a>
+      </nav>
+      <p class="field-hint news-intro">
+        공식 기관의 소식을 발행일 순으로 모았어요. 제목을 누르면 원문이 새 탭에서 열립니다. 해외
+        소식은 한국어 번역으로도 읽을 수 있어요.
+      </p>
+      <div class="list-toolbar">
+        <p id="newsChecked" role="status">소식을 불러오는 중…</p>
+        <button class="text-button" id="reloadNews" type="button">다시 불러오기</button>
+      </div>
+      <p class="board-status" id="newsStatus" role="status" hidden></p>
+      <section id="newsList" aria-label="뉴스 목록" aria-busy="true"></section>
+      <aside class="news-sources" aria-label="뉴스 출처 안내">
+        <h2>어디서 가져오나요?</h2>
+        <p>
+          한국천문연구원의 국내 천문 소식, NASA의 탐사 소식, ESA의 우주과학 소식을 모읍니다.
+          기관마다 최근 8건을 제공하며 6시간마다 새 소식을 확인합니다.
+        </p>
+        <div class="news-source-links">
+          <a
+            href="https://www.kasi.re.kr/kor/publication/post/newsMaterial"
+            target="_blank"
+            rel="noopener noreferrer"
+            >한국천문연구원 ↗</a
+          ><a
+            href="https://www.nasa.gov/centers-and-facilities/jpl/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >NASA / JPL ↗</a
+          ><a
+            href="https://www.esa.int/Science_Exploration/Space_Science"
+            target="_blank"
+            rel="noopener noreferrer"
+            >ESA 우주과학 ↗</a
+          >
+        </div>
+        <p>
+          ‘한국어 번역’은 Google 번역으로 연결됩니다. 자동 번역은 용어나 수치를 잘못 옮길 수 있으니
+          중요한 내용은 원문도 함께 확인해주세요.
+        </p>
+      </aside>
+      <noscript
+        ><p>
+          목록을 보려면 자바스크립트를 켜주세요. 위 공식 출처에서도 직접 소식을 읽을 수 있습니다.
+        </p></noscript
+      >
+    </main>
+    <footer class="site-footer">
+      <div class="foot-links">
+        <a href="notes.html">관측 노트</a>
+        <a href="guide.html">관측 가이드</a>
+        <a href="about.html">소개·문의</a>
+        <a href="main.html">커뮤니티 홈</a>
+        <a href="sky.html">밤하늘 달력</a>
+        <a href="planets.html">오늘 밤 행성</a>
+        <a href="lounge.html">별빛 게시판</a>
+        <a href="news.html">우주 뉴스</a>
+        <a href="terms.html">이용약관</a>
+        <a href="privacy.html">개인정보처리방침</a>
+      </div>
+      <div class="foot-sign">
+        © 2026 Orbit · Made with
+        <svg class="foot-star" viewBox="0 0 100 100" aria-hidden="true">
+          <path
+            d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z"
+            fill="#FF9F43"
+            stroke="#FF9F43"
+            stroke-width="14"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+          />
+        </svg>
+        in orbit
+      </div>
+    </footer>
+
+    <script src="news.js?v=20260912-board" defer></script>
+  </body>
+</html>

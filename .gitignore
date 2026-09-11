@@ -1,2 +1,4 @@
 node_modules/
 supabase/.temp/
+
+__pycache__/
