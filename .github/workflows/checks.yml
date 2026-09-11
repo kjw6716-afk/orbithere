@@ -55,4 +55,4 @@ jobs:
         run: node tests/content.mjs
 
       - name: 공식 뉴스 파서 · 장애 복구 검증
-        run: python3 -m unittest discover -s tests -p 'test_news.py'
+        run: npm run test:news

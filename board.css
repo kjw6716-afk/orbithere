@@ -786,7 +786,13 @@ select:focus-visible,
   margin: 0 0 24px;
 }
 .news-article {
+  scroll-margin-top: 24px;
   display: block;
+}
+.news-article-selected { animation: news-highlight 3s ease-out; }
+@keyframes news-highlight { from { background: #233b42; } to { background: transparent; } }
+@media (prefers-reduced-motion: reduce) {
+  .news-article-selected { animation: none; outline: 2px solid var(--board-mint); outline-offset: -2px; }
 }
 .news-article .row-title {
   margin: 8px 0 12px;
