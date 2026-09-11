@@ -1073,7 +1073,7 @@
                 altSub = '';
             }
             badges += '<span class="pb mag">' + magText(s.mag) + '등급</span>';
-            badges += '<span class="pb ' + eye.cls + '">' + eye.t + '</span>';
+            if (visible) badges += '<span class="pb ' + eye.cls + '">' + eye.t + '</span>';
             // 아무리 밝아도 지평선 근처면 건물·산에 가리고 대기에 흐려진다.
             // 밝기 배지만 보고 «잘 보이겠네»로 읽히지 않도록 따로 알린다.
             if (visible && s.bestAlt < 15) badges += '<span class="pb hard">지평선 근처 · 트인 곳 필요</span>';
