@@ -1,964 +1,1195 @@
-    // ===== Supabase =====
-    var sb = window.createOrbitBackend();
-
-    // ===== 기본 데이터 =====
-    // ===== 채널(궤도) 단일 설정 — 여기 한 줄만 추가하면 새 채널이 생깁니다 =====
-    // 2026-08 개편: 잡담형 채널(자유·재테크·운동·반려동물)을 관측 주제로 갈아끼웠다.
-    // 옛 id(money/dawn/pet)는 재사용하지 않고 새 id를 쓴다 — 재사용하면 예전
-    // 재테크 글이 '장비'처럼 엉뚱한 이름표를 달게 된다. 옛 글은 아래 orbitInfo의
-    // 폴백을 타서 🛰️ 칩으로 그대로 보인다.
-    //
-    // 다만 'free'만은 예외로 되살려 자유게시판으로 다시 쓴다. 옛 free 채널이
-    // 원래 '자유'였으므로 주제가 그대로고, 옛 글이 자유게시판 이름표를 달아도
-    // 엉뚱해지지 않는다. 덕분에 DB 제약(이미 free를 허용)도 손댈 필요가 없다.
-    // ※ migration_008 하단의 '옛 글 정리' 쿼리 2)·3)은 이제 실행하면 안 된다.
-    //
-    // 새 궤도를 더할 때는 DB의 posts_orbit_check 제약도 같이 풀어야 한다.
-    // (supabase/migration_008_sky_orbits.sql 참고) 안 그러면 글 작성이 23514로 막힌다.
-    var ORBIT_LIST = [
-        { id:'report', icon:'📝', label:'관측 후기',   desc:'어젯밤 뭘 보셨나요 — 관측 기록과 후기를 남기는 궤도예요.' },
-        { id:'gear',   icon:'🔭', label:'장비',        desc:'장비 이야기를 나누는 궤도예요.', minor:true },
-        { id:'live',   icon:'🌌', label:'실시간 하늘', desc:'지금 하늘이 어떤가요 — 속보를 바로 올리는 궤도예요.', minor:true },
-        { id:'ask',    icon:'❓', label:'질문',        desc:'뭐부터 봐야 할지, 저건 뭔지 — 무엇이든 물어보는 궤도예요.', minor:true },
-        { id:'free',   icon:'💬', label:'자유게시판',  desc:'자유로운 이야기를 하는 곳이에요.', minor:true }
-    ];
-    var ALL_ORBIT = { id:'all', icon:'🌠', label:'전체', desc:'모든 궤도의 궤적이 한데 흐르는 곳이에요.' };
-    // 호환용 파생 맵 / 조회 헬퍼
-    var ORBITS = {};
-    ORBIT_LIST.forEach(function(o){ ORBITS[o.id] = o.label; });
-    function orbitInfo(id){
-        if(id === 'all') return ALL_ORBIT;
-        for(var i=0;i<ORBIT_LIST.length;i++){ if(ORBIT_LIST[i].id === id) return ORBIT_LIST[i]; }
-        return { id:id, icon:'🛰️', label:id, desc:'' }; // 사라진 옛 채널의 글도 깨지지 않게
-    }
-    var RX_EMOJIS = ['⭐','🔥','😂','🥰','👏','❤️'];
-    var EMOJIS = ['🌟','⭐','🪐','🌙','☄️','🔭','🛸','💫','🌌','✨'];
-    function avatarOf(nick){ return EMOJIS[nick.charCodeAt(0) % EMOJIS.length]; }
-
-    function readLocal(key){ try { return localStorage.getItem(key); } catch(e){ return null; } }
-    var nickname = readLocal('orbit_nickname');
-    // 첫 진입 기본 채널은 후기 궤도 — 관측 → 후기가 이 사이트의 핵심 동선이고,
-    // 글이 없는 시기에는 한 채널에 모여 있어야 살아 있는 곳으로 보인다.
-    // sky.html의 CTA는 #report 해시를 달고 들어온다. (#all로 전체 보기도 가능)
-    function orbitFromHash(){
-        var h = (location.hash || '').slice(1);
-        if(h === 'all') return 'all';
-        for(var i = 0; i < ORBIT_LIST.length; i++){ if(ORBIT_LIST[i].id === h) return h; }
-        return null;
-    }
-    var currentOrbit = orbitFromHash() || 'report';
-    var EMBED = document.documentElement.classList.contains('embed');
-    var PAGE_SIZE = 20, COMMENT_SIZE = 20;
-    var loadedPosts = [], hasMorePosts = false, feedLoading = false;
-    var searchTerm = (new URLSearchParams(location.search).get('q') || '').trim().slice(0,80);
-    var requestedPost = new URLSearchParams(location.search).get('post');
-    var singlePost = validId(requestedPost) ? requestedPost : null;
-    var commentState = {}, commentDrafts = {}, pendingComments = {};
-    function validId(id){ return typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id); }
-    // A stable (timestamp, UUID) cursor survives new inserts and deleted rows.
-    // Only database values with a known shape reach the raw PostgREST expression.
-    function afterCursor(query, row, ascending){
-        if(!validId(row.id) || !/^\d{4}-\d\d-\d\dT[\d:.]+(?:Z|[+-]\d\d:\d\d)$/.test(row.created_at)) throw new Error('목록 위치를 확인하지 못했어요. 새로고침해주세요.');
-        var op = ascending ? 'gt' : 'lt';
-        return query.or('created_at.' + op + '.' + row.created_at + ',and(created_at.eq.' + row.created_at + ',id.' + op + '.' + row.id + ')');
-    }
-    function updateFeedLocation(){
-        var url = new URL(location.href);
-        if(searchTerm) url.searchParams.set('q',searchTerm); else url.searchParams.delete('q');
-        if(singlePost) url.searchParams.set('post',singlePost); else url.searchParams.delete('post');
-        url.hash = currentOrbit;
-        history.replaceState(null,'',url);
-        document.getElementById('searchInput').value = searchTerm;
-        document.getElementById('clearSearch').hidden = !searchTerm;
-        document.getElementById('feedSearch').hidden = !!singlePost;
-        document.getElementById('singlePostNav').hidden = !singlePost;
-        document.getElementById('backToFeed').href = 'lounge.html#' + currentOrbit;
-    }
-    function updatePagination(){
-        var button = document.getElementById('loadMore');
-        button.hidden = !!singlePost || !hasMorePosts;
-        button.disabled = feedLoading;
-        button.textContent = feedLoading ? '불러오는 중…' : '이전 글 더 보기';
-        document.getElementById('postList').setAttribute('aria-busy',String(feedLoading));
-    }
-
-    // 관리자 모드. 로그인만으로는 켜지지 않고 admins 테이블에 등록된 계정이어야 한다.
-    // 여기서 true여도 실제 삭제를 허용하는 건 서버의 RLS라서,
-    // 이 값을 브라우저에서 조작해도 남의 글은 지워지지 않는다. 버튼 표시용일 뿐이다.
-    var isAdmin = false, currentUserId = null, writerPromise = null, securityVersion = null;
-    var versionPromise = null;
-    async function readSecurityVersion(){
-        if(securityVersion === 2) return 2;
-        if(versionPromise) return versionPromise;
-        versionPromise = (async function(){
-            var result = await sb.rpc('community_version');
-            if(result.error && result.error.code !== 'PGRST202' && result.error.code !== '42883') throw result.error;
-            securityVersion = result.error ? 1 : result.data;
-            return securityVersion;
-        })();
-        try { return await versionPromise; } finally { versionPromise = null; }
-    }
-    function postColumns(){ return 'id,nick,orbit,text,created_at' + (securityVersion === 2 ? ',author_id' : ''); }
-    function commentColumns(){ return 'id,post_id,nick,text,created_at' + (securityVersion === 2 ? ',author_id' : ''); }
-    async function ensureWriter(){
-        if(writerPromise) return writerPromise;
-        writerPromise = (async function(){
-            if(!sb) throw new Error('연결을 준비하지 못했어요. 새로고침 후 다시 시도해주세요.');
-            if(securityVersion !== 2){
-                var version = await readSecurityVersion();
-                if(version !== 2) throw new Error('글쓰기 보안 업데이트를 준비하고 있어요. 잠시 후 다시 시도해주세요.');
-                securityVersion = 2;
-            }
-            var session = await sb.auth.getSession();
-            if(session.error) throw session.error;
-            var user = session.data && session.data.session && session.data.session.user;
-            if(!user){
-                var signed = await sb.auth.signInAnonymously();
-                if(signed.error) throw signed.error;
-                user = signed.data.user;
-            }
-            if(!user) throw new Error('작성 권한을 확인하지 못했어요. 다시 시도해주세요.');
-            currentUserId = user.id;
-            return user.id;
-        })();
-        try { return await writerPromise; } finally { writerPromise = null; }
-    }
-    async function writeAction(action){
-        try { await ensureWriter(); return await action(); }
-        catch(error) { return { error: error }; }
-    }
-    var loadSequence = 0, feedAvailable = false, panelActive = !document.documentElement.classList.contains('embed');
-
-    // 닉네임을 정하는 곳은 main.html의 진입 대화상자 하나뿐이다.
-    // 임베드(메인 패널 안)일 땐 부모에게 열어달라고 요청하고,
-    // 단독 페이지일 땐 #join 해시를 달고 넘어간다 — main.html이 그 해시를 보고 연다.
-    function goJoin(){
-        if(EMBED && window.parent !== window){ window.parent.postMessage({ orbit: 'join' }, window.location.origin); }
-        else { location.href = 'main.html#join'; }
-    }
-
-    // 리액션 캐시: { postId: {emoji: count} } / 내 리액션: { postId: {emoji: true} }
-    var rxCount = {}, rxMine = {}, rxUnavailable = {};
-
-    // Comments are fetched only when opened, with independent cursors per post.
-    var cmts = {};
-    // 펼쳐 둔 댓글창: { postId: true }
-    // 새로고침해도 보고 있던 스레드가 접히지 않도록 렌더 사이에 남긴다.
-    var openThreads = {}, pendingReactions = {};
-
-    function escapeHtml(s){
-        // 작은따옴표까지 막는다. 지금은 모든 속성을 큰따옴표로 쓰지만,
-        // 나중에 title='...' 같은 걸 한 줄 쓰는 순간 구멍이 되기 때문에 미리 닫아둔다.
-        return String(s)
-            .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-            .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-    }
-    function timeAgo(iso){
-        var s = (Date.now() - new Date(iso).getTime()) / 1000;
-        if(s < 60) return '방금 전';
-        if(s < 3600) return Math.floor(s/60) + '분 전';
-        if(s < 86400) return Math.floor(s/3600) + '시간 전';
-        if(s < 86400*7) return Math.floor(s/86400) + '일 전';
-        return new Date(iso).toLocaleDateString('ko-KR');
-    }
-    function setStatus(t, isErr){
-        var el = document.getElementById('loungeStatus');
-        el.textContent = t;
-        el.style.color = isErr ? '#FC8181' : '';
-        el.style.borderColor = isErr ? 'rgba(252,129,129,0.35)' : '';
-    }
-
-    // ===== 글쓰기 카드 =====
-    function renderWriteCard(){
-        var card = document.getElementById('writeCard');
-        if(!nickname){
-            card.innerHTML =
-                '<div class="need-join">' +
-                '<p>궤도에 진입하면 궤적을 남길 수 있어요</p>' +
-                '<button class="btn-go-join" onclick="goJoin()">궤도 진입하러 가기</button>' +
-                '</div>';
-            return;
-        }
-        var orbitOptions = ORBIT_LIST.map(function(o){
-            return '<option value="' + o.id + '">' + o.icon + ' ' + escapeHtml(o.label) + '</option>';
-        }).join('');
-        card.innerHTML =
-            '<div class="write-head">' +
-            '<div class="write-avatar">' + avatarOf(nickname) + '</div>' +
-            '<div class="write-nick">' + escapeHtml(nickname) + '</div>' +
-            '<select class="write-orbit-select" id="orbitSelect" aria-label="글을 남길 채널">' + orbitOptions + '</select>' +
-            '</div>' +
-            '<textarea id="postInput" maxlength="500" aria-label="게시글 내용" placeholder="무엇을 보셨나요? 관측한 시각과 대략적인 지역도 함께 적어주세요."></textarea>' +
-            '<p class="write-hint">관측 후기라면 본 대상 · 시각 · 시·군 정도의 지역 · 사용한 장비를 적어주세요. 자세한 주소는 남기지 마세요.</p>' +
-            '<div class="write-foot">' +
-            '<span class="write-count" id="charCount">0 / 500</span>' +
-            '<button class="btn-trace" id="btnTrace" disabled>궤적 남기기</button>' +
-            '</div>';
-
-        // 지금 보고 있는 채널을 기본 선택 — "이 방에 글 쓴다" 느낌
-        var sel = document.getElementById('orbitSelect');
-        if(sel && currentOrbit !== 'all') sel.value = currentOrbit;
-
-        var input = document.getElementById('postInput');
-        var btn = document.getElementById('btnTrace');
-        input.addEventListener('input', function(){
-            document.getElementById('charCount').textContent = input.value.length + ' / 500';
-            btn.disabled = input.value.trim().length === 0;
-        });
-        btn.addEventListener('click', async function(){
-            var text = input.value.trim();
-            if(!text || !sb || btn.dataset.sending) return;
-            btn.dataset.sending = '1';
-            btn.disabled = true;
-            input.disabled = true;
-            var selectedOrbit=document.getElementById('orbitSelect');
-            selectedOrbit.disabled=true;
-            btn.textContent = '남기는 중...';
-            var res = await writeAction(function(){ return sb.from('posts').insert({
-                nick: nickname,
-                orbit: document.getElementById('orbitSelect').value,
-                text: text,
-                author_device: currentUserId, author_id: currentUserId
-            }); });
-            delete btn.dataset.sending;
-            input.disabled = false;
-            selectedOrbit.disabled=false;
-            btn.textContent = '궤적 남기기';
-            if(res.error){
-                btn.disabled = false;
-                setStatus('전송 실패 — ' + errHint(res.error), true);
-                console.error(res.error);
-            } else {
-                input.value = '';
-                document.getElementById('charCount').textContent = '0 / 500';
-                setStatus('β 베타 — 궤적은 모두에게 공개 저장돼요');
-                searchTerm = ''; singlePost = null;
-                selectOrbit(document.getElementById('orbitSelect').value);
-            }
-        });
-    }
-
-    // ===== 글 불러오기 =====
-    // opts.quiet — 새로고침처럼 이미 보고 있는 목록을 갱신하는 경우.
-    // 로딩 문구로 목록을 지우지 않고, 실패해도 보던 궤적을 남겨둔다.
-    async function loadPosts(opts){
-        opts = opts || {};
-        if(opts.more && (feedLoading || !hasMorePosts)) return;
-        var requestId = ++loadSequence, requestOrbit = currentOrbit;
-        var requestSearch = searchTerm, requestPost = singlePost;
-        var quiet = !!opts.quiet, more = !!opts.more;
-        var previous = more ? loadedPosts.slice() : [];
-        var list = document.getElementById('postList');
-        var pageStatus = document.getElementById('pageStatus');
-        feedLoading = true;
-        updatePagination();
-        pageStatus.textContent = '';
-        if(!quiet && !more) list.innerHTML = '<div class="empty-state">궤적을 불러오는 중...</div>';
-        try {
-            if(!sb) throw new Error('연결을 준비하지 못했어요. 새로고침해주세요.');
-            if(requestSearch.includes('*')) throw new Error('별표(*)를 제외한 단어로 검색해주세요.');
-            await readSecurityVersion();
-            if(requestId !== loadSequence) return;
-            var q = sb.from('posts').select(postColumns()).order('created_at', {ascending:false}).order('id', {ascending:false}).limit(PAGE_SIZE + 1);
-            if(requestPost) q = q.eq('id',requestPost);
-            else {
-                if(requestOrbit !== 'all') q = q.eq('orbit',requestOrbit);
-                if(requestSearch) q = q.ilike('text','%' + requestSearch.replace(/[\\%_]/g,'\\$&') + '%');
-                if(more && previous.length) q = afterCursor(q,previous[previous.length-1],false);
-            }
-            var res = await q;
-            if(requestId !== loadSequence) return;
-            if(res.error) throw res.error;
-            var rows = res.data || [];
-            var page = rows.slice(0,PAGE_SIZE);
-            var nextRxCount = more ? Object.assign({},rxCount) : {}, nextRxMine = more ? Object.assign({},rxMine) : {};
-            var nextRxUnavailable = more ? Object.assign({},rxUnavailable) : {};
-            var reactionError = false;
-            if(page.length){
-                var r;
-                try { r = await sb.rpc('reaction_summary', {p_post_ids:page.map(function(p){return p.id;}), p_device:null}); }
-                catch(error) { r = {error:error}; }
-                if(requestId !== loadSequence) return;
-                if(r.error) reactionError = true;
-                else (r.data || []).forEach(function(row){
-                    (nextRxCount[row.post_id] = nextRxCount[row.post_id] || {})[row.emoji] = Number(row.n) || 0;
-                    if(row.mine) (nextRxMine[row.post_id] = nextRxMine[row.post_id] || {})[row.emoji] = true;
-                });
-            }
-            if(requestId !== loadSequence) return;
-            // A secondary reaction outage must not hide readable posts.
-            if(!reactionError){rxCount=nextRxCount;rxMine=nextRxMine;}
-            page.forEach(function(p){ if(reactionError) nextRxUnavailable[p.id]=true; else delete nextRxUnavailable[p.id]; });
-            rxUnavailable=nextRxUnavailable;
-            var seen = new Set(previous.map(function(p){return p.id;}));
-            loadedPosts = previous.concat(page.filter(function(p){return !seen.has(p.id);}));
-            hasMorePosts = !requestPost && rows.length > PAGE_SIZE;
-            feedAvailable = true;
-            if(requestPost && page.length){
-                currentOrbit = ORBITS[page[0].orbit] ? page[0].orbit : 'all';
-                renderOrbitTabs();renderChannelHeader();updateFeedLocation();
-                var select = document.getElementById('orbitSelect');
-                if(select && currentOrbit !== 'all') select.value = currentOrbit;
-            }
-            setStatus(reactionError ? '글은 불러왔지만 리액션을 확인하지 못했어요. 잠시 후 새로고침해주세요.' : (isAdmin ? '🛰️ 관리자 모드' : '게시글은 모두에게 공개됩니다'),reactionError);
-            document.getElementById('feedContext').textContent = requestPost ? '공유된 게시글' : (requestSearch ? '“' + requestSearch + '” · ' : '') + orbitInfo(currentOrbit).label + ' · ' + loadedPosts.length + '개 표시';
-            renderPosts(loadedPosts,quiet || more);
-            pageStatus.textContent = hasMorePosts ? '' : (loadedPosts.length && !requestPost ? '마지막 글까지 확인했어요.' : '');
-            if(more && page.length){
-                var added=document.getElementById('post-' + page[0].id);
-                if(added) added.focus({preventScroll:true});
-                pageStatus.textContent = page.length + '개를 더 불러왔어요.' + (hasMorePosts ? '' : ' 마지막 글입니다.');
-            }
-        } catch(err){
-            if(requestId !== loadSequence) return;
-            console.error(err);
-            if(more){pageStatus.textContent='이전 글을 불러오지 못했어요. 아래 버튼으로 다시 시도해주세요.';setStatus('불러오기 실패 — ' + errHint(err),true);}
-            else if(quiet && feedAvailable) setStatus('새로고침 실패 — ' + errHint(err),true);
-            else {
-                feedAvailable=false;hasMorePosts=false;
-                list.innerHTML='<div class="load-error" role="status"><strong>지금은 게시판에 연결할 수 없어요</strong><p>잠시 후 다시 시도해주세요. 작성 중인 내용은 이 화면에 남아 있어요.</p><button type="button" id="retryFeed">다시 불러오기</button><br><a href="planets.html" target="_top">오늘 밤 하늘 먼저 보기 →</a></div>';
-                document.getElementById('retryFeed').addEventListener('click',function(){loadPosts();});
-            }
-        } finally {
-            if(requestId === loadSequence){feedLoading=false;updatePagination();}
-        }
-    }
-
-    // 에러를 사람이 읽을 수 있는 힌트로 — 원인 파악용
-    function errHint(err){
-        if(!err) return '알 수 없는 오류';
-        var m = (err.message || '') + '';
-        if(/orbit_report_rate_limit/i.test(m))
-            return '신고를 너무 빠르게 보내고 있어요 — 잠시 후 다시 시도해주세요';
-        if(/orbit_comment_rate_limit/i.test(m))
-            return '답을 너무 빠르게 남기고 있어요 — 잠시 쉬었다가 다시 남겨주세요';
-        if(/orbit_rate_limit/i.test(m))
-            return '궤적을 너무 빠르게 남기고 있어요 — 잠시 쉬었다가 다시 남겨주세요';
-        if(/Failed to fetch|NetworkError|Load failed|AbortError|aborted/i.test(m))
-            return '연결이 지연되고 있어요. 잠시 후 다시 시도해주세요.';
-        if(err.code === '42501' || /row-level security/i.test(m))
-            return '작성 권한을 확인하지 못했어요. 새로고침 후 다시 시도해주세요.';
-        if(err.code === '23514' || /check constraint/i.test(m))
-            return '입력값이 규칙에 맞지 않아요 (닉네임 2~12자, 글 1~500자)';
-        if(/JWT|api key|Invalid authentication/i.test(m))
-            return '연결을 확인하고 있어요. 잠시 후 다시 시도해주세요.';
-        if(/[가-힣]/.test(m)) return m.slice(0, 120);
-        return '요청을 처리하지 못했어요. 잠시 후 다시 시도해주세요.';
-    }
-
-    // quiet일 때는 등장 애니메이션을 생략한다. 새로고침마다 목록 전체가
-    // 다시 떠오르면 바뀐 게 없어도 화면이 요동쳐서 오히려 어수선하다.
-    function renderPosts(posts, quiet){
-        var list = document.getElementById('postList');
-        list.innerHTML = '';
-        if(posts.length === 0){
-            list.innerHTML = '<div class="empty-state"><p>' + (singlePost ? '이 글을 찾을 수 없어요. 삭제되었거나 주소가 달라졌을 수 있습니다.' : searchTerm ? '검색 결과가 없어요. 다른 검색어를 입력하거나 전체 채널에서 찾아보세요.' : '아직 이 궤도에는 궤적이 없어요.<br>첫 번째 궤적을 남겨보세요!') + '</p></div>';
-            return;
-        }
-        posts.forEach(function(p, i){
-            // "나"는 닉네임이 아니라 작성 기기로 판단한다.
-            // 닉네임은 자유 입력이므로 소유권의 근거가 될 수 없다.
-            // 서버가 발급한 사용자 ID(author_id)로만 내 글을 판단한다. 이전 글은 관리자에게 삭제를 요청한다.
-            var isMine = !!(p.author_id && p.author_id === currentUserId);
-            var canDelete = isMine || isAdmin;
-            var post = document.createElement('article');
-            post.className = 'post';
-            post.id = 'post-' + p.id;
-            post.tabIndex = -1;
-            if(quiet) post.style.animation = 'none';
-            else post.style.animationDelay = (Math.min(i, 10) * 0.05) + 's';
-            post.innerHTML =
-                '<div class="post-head">' +
-                '<div class="post-avatar">' + avatarOf(p.nick) + '</div>' +
-                '<div class="post-meta">' +
-                '<div class="post-nick">' + escapeHtml(p.nick) + (isMine ? ' <span style="font-size: 12px;color:#9F7AEA;">나</span>' : '') + '</div>' +
-                '<div class="post-sub"><time datetime="' + escapeHtml(p.created_at) + '" title="' + escapeHtml(new Date(p.created_at).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'}) + ' KST') + '">' + timeAgo(p.created_at) + '</time></div>' +
-                '</div>' +
-                '<span class="post-orbit-chip' + (isMine?' mine':'') + '">' + orbitInfo(p.orbit).icon + ' ' + escapeHtml(orbitInfo(p.orbit).label) + '</span>' +
-                '</div>' +
-                '<div class="post-body">' + escapeHtml(p.text) + '</div>' +
-                '<div class="post-foot">' +
-                '<div class="reaction-row"></div>' +
-                '<button class="btn-cmt' + (openThreads[p.id] ? ' on' : '') + '" type="button" title="댓글" aria-expanded="' + !!openThreads[p.id] + '">' +
-                '<span>💬</span><span class="cn">' + commentLabel(p.id) + '</span></button>' +
-                '<button class="btn-share" type="button">글 공유</button>' +
-                // 내 글은 신고할 이유가 없다 — 지우면 되니까
-                (isMine ? '' : reportBtn('post', p.id)) +
-                (canDelete ? '<button class="btn-del" title="궤적 삭제"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg></button>' : '') +
-                '</div>' +
-                '<div class="cmt-thread"' + (openThreads[p.id] ? '' : ' style="display:none;"') + '></div>';
-            list.appendChild(post);
-            renderRxRow(post.querySelector('.reaction-row'), p);
-            post.querySelector('.btn-share').addEventListener('click',function(){sharePost(p,post);});
-            if(canDelete){
-                post.querySelector('.btn-del').addEventListener('click', function(){ deletePost(p, post); });
-            }
-
-            var btnCmt = post.querySelector('.btn-cmt');
-            btnCmt.addEventListener('click', function(){
-                var open = !openThreads[p.id];
-                if(open) openThreads[p.id] = true; else delete openThreads[p.id];
-                btnCmt.classList.toggle('on', open);
-                btnCmt.setAttribute('aria-expanded',String(open));
-                post.querySelector('.cmt-thread').style.display = open ? '' : 'none';
-                if(open){renderThread(post,p);if(!commentState[p.id] || !commentState[p.id].loaded) refreshThread(p,post);}
-            });
-            // 새로고침 전에 펼쳐져 있던 스레드는 그대로 열어둔 채로 그린다
-            if(openThreads[p.id]){renderThread(post,p);if(!commentState[p.id] || !commentState[p.id].loaded) refreshThread(p,post);}
-        });
-    }
-
-    async function sharePost(p,post){
-        var url = new URL('lounge.html',location.href);
-        url.searchParams.set('post',p.id);
-        url.hash = ORBITS[p.orbit] ? p.orbit : 'all';
-        try {
-            await navigator.clipboard.writeText(url.href);
-            setStatus('이 글의 주소를 복사했어요.');
-        } catch(e){
-            var field=post.querySelector('.share-link');
-            if(!field){field=document.createElement('input');field.className='share-link';field.readOnly=true;field.setAttribute('aria-label','공유할 글 주소');post.appendChild(field);}
-            field.value=url.href;field.focus();field.select();
-            setStatus('주소를 선택했어요. 복사 메뉴를 이용해주세요.');
-        }
-    }
-    function commentLabel(id){
-        var state=commentState[id];
-        return !state || !state.loaded ? '댓글 보기' : (cmts[id] || []).length + (state.more ? '+' : '');
-    }
-
-    // ===== 신고 =====
-    var REPORT_REASONS = [
-        { id:'spam',    label:'도배 · 광고' },
-        { id:'abuse',   label:'욕설 · 비방' },
-        { id:'adult',   label:'선정적이거나 불쾌한 내용' },
-        { id:'privacy', label:'개인정보 노출' },
-        { id:'etc',     label:'기타 · 내 글 삭제 요청' }
-    ];
-    // 이 기기가 이번 세션에서 신고한 대상 — 버튼을 눌린 상태로 유지한다.
-    // 서버에도 (대상, 기기) 유니크 제약이 있어 중복은 어차피 막힌다.
-    var reported = {};
-
-    var FLAG_ICON =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
-        'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-        '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></svg>';
-
-    function reportBtn(type, id){
-        var done = reported[type + ':' + id];
-        return '<button class="btn-report' + (done ? ' done' : '') + '" type="button"' +
-               ' data-rp-type="' + type + '" data-rp-id="' + escapeHtml(id) + '"' +
-               ' title="' + (done ? '신고함' : '신고하기') + '">' + FLAG_ICON + '</button>';
-    }
-
-    // 신고 버튼은 글·답 어디에나 있고 목록이 다시 그려지므로 문서 단위로 위임한다
-    document.addEventListener('click', function(e){
-        var btn = e.target.closest('.btn-report');
-        if(!btn || btn.classList.contains('done')) return;
-        e.stopPropagation();
-        var type = btn.getAttribute('data-rp-type');
-        var id   = btn.getAttribute('data-rp-id');
-        var box  = btn.closest(type === 'post' ? '.post' : '.cmt');
-        var body = box ? box.querySelector(type === 'post' ? '.post-body' : '.cmt-body') : null;
-        openReport(type, id, body ? body.textContent : '', btn);
+(function () {
+  'use strict';
+  var sb = window.createOrbitBackend(),
+    $ = function (id) {
+      return document.getElementById(id);
+    };
+  var channels = [
+    ['all', '전체'],
+    ['report', '관측 후기'],
+    ['gear', '장비'],
+    ['live', '지금 하늘'],
+    ['ask', '질문'],
+    ['free', '자유게시판'],
+  ];
+  var emojis = ['⭐', '🔥', '😂', '🥰', '👏', '❤️'],
+    userId = null,
+    isAdmin = false,
+    writerPromise = null;
+  var embed = document.documentElement.classList.contains('embed'),
+    route = 0,
+    commentSeq = 0,
+    view = '',
+    channel = 'all',
+    query = '',
+    posts = [],
+    more = false,
+    listBusy = false,
+    cache = null;
+  var photos = [],
+    preparing = false,
+    busy = false,
+    attempt = null,
+    detail = null,
+    comments = [],
+    commentsMore = false,
+    commentBusy = false,
+    commentDrafts = {},
+    commentAttempts = {},
+    imageURLs = new Set();
+  var reactionBusy = false,
+    reported = new Set(),
+    boardReady = false,
+    activeURL = location.href;
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
-
-    function openReport(type, id, quote, btn){
-        var back = document.createElement('div');
-        back.className = 'rp-back';
-        back.innerHTML =
-            '<div class="rp-box" role="dialog" aria-modal="true" aria-label="신고하기">' +
-            '<h3>이 ' + (type === 'post' ? '궤적' : '답') + '을 신고할까요?</h3>' +
-            '<p class="rp-sub">내용은 운영자만 확인합니다. 직접 삭제할 수 없는 내 글은 ‘기타 · 내 글 삭제 요청’을 선택해주세요. 비밀번호나 신분증은 보내지 마세요.</p>' +
-            (quote ? '<div class="rp-quote">' + escapeHtml(quote.slice(0, 120)) +
-                     (quote.length > 120 ? '…' : '') + '</div>' : '') +
-            '<div class="rp-reasons">' +
-            REPORT_REASONS.map(function(r, i){
-                return '<label class="rp-reason' + (i === 0 ? ' on' : '') + '">' +
-                       '<input type="radio" name="rp" value="' + r.id + '"' + (i === 0 ? ' checked' : '') + '>' +
-                       escapeHtml(r.label) + '</label>';
-            }).join('') +
-            '</div>' +
-            '<textarea class="rp-detail" maxlength="200" aria-label="신고 또는 삭제 요청 설명" placeholder="요청 이유와 확인에 도움이 될 내용을 적어주세요 (선택)"></textarea>' +
-            '<div class="rp-acts">' +
-            '<button class="rp-cancel" type="button">취소</button>' +
-            '<button class="rp-send" type="button">신고하기</button>' +
-            '</div></div>';
-        document.body.appendChild(back);
-
-        var previousFocus = document.activeElement;
-        var backgrounds=Array.from(document.body.children).filter(function(el){return el!==back && !el.inert;});
-        backgrounds.forEach(function(el){el.inert=true;});
-        var close = function(){ back.remove(); backgrounds.forEach(function(el){el.inert=false;});document.removeEventListener('keydown', onKey); if(previousFocus && previousFocus.isConnected) previousFocus.focus(); };
-        function onKey(ev){
-            if(ev.key === 'Escape') { close(); return; }
-            if(ev.key !== 'Tab') return;
-            var controls = Array.from(back.querySelectorAll('input,textarea,button')).filter(function(el){return !el.disabled;});
-            var first = controls[0], last = controls[controls.length-1];
-            if(ev.shiftKey && document.activeElement === first){ ev.preventDefault(); last.focus(); }
-            else if(!ev.shiftKey && document.activeElement === last){ ev.preventDefault(); first.focus(); }
-        }
-        back.querySelector('input').focus();
-        document.addEventListener('keydown', onKey);
-        back.addEventListener('click', function(ev){ if(ev.target === back) close(); });
-        back.querySelector('.rp-cancel').addEventListener('click', close);
-
-        // 라디오 선택 표시
-        back.querySelectorAll('.rp-reason').forEach(function(l){
-            l.addEventListener('click', function(){
-                back.querySelectorAll('.rp-reason').forEach(function(x){ x.classList.remove('on'); });
-                l.classList.add('on');
-            });
-        });
-
-        var send = back.querySelector('.rp-send');
-        send.addEventListener('click', async function(){
-            if(!sb || send.dataset.busy) return;
-            send.dataset.busy = '1'; send.disabled = true; send.textContent = '보내는 중...';
-            var reason = back.querySelector('input[name="rp"]:checked').value;
-            var detail = back.querySelector('.rp-detail').value.trim();
-            var res = await writeAction(function(){ return sb.from('reports').insert({
-                target_type: type, target_id: id, reason: reason,
-                detail: detail || null, reporter_device: currentUserId, author_id: currentUserId
-            }); });
-            delete send.dataset.busy;
-
-            // 유니크 제약(23505) = 이미 신고한 대상. 실패가 아니라 이미 접수된 상태다.
-            if(res.error && res.error.code !== '23505'){
-                send.disabled = false; send.textContent = '신고하기';
-                setStatus('신고 실패 — ' + errHint(res.error), true);
-                console.error(res.error);
-                return;
-            }
-            reported[type + ':' + id] = true;
-            if(btn){ btn.classList.add('done'); btn.title = '신고함'; }
-            close();
-            setStatus(res.error ? '이미 신고한 ' + (type === 'post' ? '궤적' : '답') + '이에요'
-                                : '신고를 접수했어요. 확인 후 조치할게요');
-        });
+  }
+  function validId(id) {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || '');
+  }
+  function nick() {
+    try {
+      return localStorage.getItem('orbit_nickname') || '';
+    } catch (e) {
+      return '';
     }
-
-    // ===== 댓글 =====
-    function renderThread(post, p){
-        var thread = post.querySelector('.cmt-thread');
-        var list = cmts[p.id] || [];
-        var html = '<p class="cmt-message">최근 댓글부터 표시해요. <button class="cmt-refresh" type="button">댓글 새로고침</button></p>';
-
-        var state = commentState[p.id] || {};
-        if(state.error){
-            html += '<p class="cmt-message" role="status">댓글을 불러오지 못했어요. 작성 중인 내용은 유지됩니다.</p><button class="cmt-retry" type="button">댓글 다시 불러오기</button>';
-        } else if(!state.loaded){
-            html += '<p class="cmt-message" role="status">댓글을 불러오는 중…</p>';
-        }
-        if(state.loaded && !list.length){
-            html += '<div class="cmt-empty">아직 답이 없어요. 첫 답을 남겨보세요.</div>';
-        } else if(list.length) {
-            html += '<div class="cmt-list">';
-            list.forEach(function(c){
-                // '나' 배지는 내가 쓴 것에만, 삭제 버튼은 내 것 + 관리자.
-                // 둘을 한 변수로 묶으면 관리자에게 남의 답이 전부 '나'로 보인다.
-                var own = !!(c.author_id && c.author_id === currentUserId);
-                var canDel = own || isAdmin;
-                html +=
-                    '<div class="cmt" data-cid="' + escapeHtml(c.id) + '">' +
-                    '<div class="cmt-av">' + avatarOf(c.nick) + '</div>' +
-                    '<div class="cmt-main">' +
-                    '<div class="cmt-meta">' +
-                    '<span class="cmt-nick">' + escapeHtml(c.nick) + '</span>' +
-                    (own ? '<span class="cmt-me">나</span>' : '') +
-                    '<span class="cmt-time">' + timeAgo(c.created_at) + '</span>' +
-                    '</div>' +
-                    '<div class="cmt-body">' + escapeHtml(c.text) + '</div>' +
-                    '</div>' +
-                    (own ? '' : reportBtn('comment', c.id)) +
-                    (canDel ? '<button class="btn-cmt-del" type="button" title="' +
-                              (own ? '답 삭제' : '관리자 삭제') + '"' +
-                              (own ? '' : ' data-admin="1"') + '>×</button>' : '') +
-                    '</div>';
-            });
-            html += '</div>';
-        }
-        if(state.more) html += '<button class="cmt-more" type="button"' + (state.loading ? ' disabled' : '') + '>' + (state.loading ? '불러오는 중…' : '이전 댓글 더 보기') + '</button>';
-
-        html += nickname
-            ? '<div class="cmt-write">' +
-              '<input type="text" maxlength="300" aria-label="댓글 내용" placeholder="답을 남겨보세요">' +
-              '<button class="btn-cmt-send" type="button" disabled>등록</button>' +
-              '</div>'
-            : '<div class="cmt-need-join">궤도에 진입하면 답을 남길 수 있어요 · ' +
-              '<button type="button" class="cmt-join">궤도 진입하러 가기</button></div>';
-
-        thread.innerHTML = html;
-        wireThread(post, p, thread);
+  }
+  function label(id) {
+    var c = channels.find(function (c) {
+      return c[0] === id;
+    });
+    return c ? c[1] : '이전 게시판';
+  }
+  function date(iso) {
+    var d = new Date(iso);
+    return Number.isFinite(d.getTime())
+      ? d.toLocaleString('ko-KR', {
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      : '';
+  }
+  function status(message, error) {
+    $('loungeStatus').textContent = message || '';
+    $('loungeStatus').classList.toggle('error', !!error);
+  }
+  function writeStatus(message, error) {
+    $('writeStatus').textContent = message || '';
+    $('writeStatus').classList.toggle('error', !!error);
+  }
+  function hint(error) {
+    var m = String((error && error.message) || '');
+    if (/orbit_pin_limit/.test(m))
+      return '상단 공지는 최대 3개예요. 기존 공지를 해제한 뒤 다시 시도해주세요.';
+    if (/orbit_photo_rate_limit/.test(m))
+      return '사진은 한 시간에 20장까지 준비할 수 있어요. 잠시 후 다시 시도해주세요.';
+    if (/orbit_(comment_|report_)?rate_limit/.test(m))
+      return '요청이 너무 빨라요. 잠시 쉬었다가 다시 시도해주세요.';
+    if (/orbit_photo_missing|orbit_photo_retry/.test(m))
+      return '사진 업로드를 완료하지 못했어요. 다시 시도해주세요.';
+    if (/orbit_not_admin/.test(m)) return '공지 고정은 관리자만 할 수 있어요.';
+    if (error && error.code === '23514')
+      return '닉네임 2~12자, 제목 1~80자, 내용 1~5,000자를 확인해주세요.';
+    if (error && error.code === '42501')
+      return '작성 권한을 확인하지 못했어요. 다시 로그인한 뒤 시도해주세요.';
+    return /[가-힣]/.test(m) ? m.slice(0, 180) : '연결을 확인한 뒤 다시 시도해주세요.';
+  }
+  function checked(result) {
+    if (result.error) throw result.error;
+    return result.data;
+  }
+  async function ensureWriter() {
+    if (writerPromise) return writerPromise;
+    writerPromise = (async function () {
+      if (!sb) throw new Error('서버 연결을 준비하지 못했어요. 새로고침해주세요.');
+      if (!boardReady) {
+        var v = checked(await sb.rpc('board_version'));
+        if (v !== 1)
+          throw new Error('게시판 업데이트를 준비하고 있어요. 잠시 후 다시 시도해주세요.');
+        boardReady = true;
+      }
+      var s = checked(await sb.auth.getSession()),
+        user = s.session && s.session.user;
+      if (!user) user = checked(await sb.auth.signInAnonymously()).user;
+      if (!user) throw new Error('작성 권한을 확인하지 못했어요.');
+      userId = user.id;
+      return user.id;
+    })();
+    try {
+      return await writerPromise;
+    } finally {
+      writerPromise = null;
     }
-
-    function wireThread(post, p, thread){
-        var input = thread.querySelector('.cmt-write input');
-        var send  = thread.querySelector('.btn-cmt-send');
-        if(input && send){
-            input.value=commentDrafts[p.id] || '';
-            input.disabled=!!pendingComments[p.id];
-            send.disabled=!!pendingComments[p.id] || !input.value.trim();
-            input.addEventListener('input', function(){
-                commentDrafts[p.id]=input.value;
-                send.disabled = input.value.trim().length === 0;
-            });
-            input.addEventListener('keydown', function(e){
-                if(e.key === 'Enter' && !e.isComposing && !send.disabled) send.click();
-            });
-            send.addEventListener('click', function(){ submitComment(p, post, input, send); });
-        }
-        var join = thread.querySelector('.cmt-join');
-        if(join) join.addEventListener('click', goJoin);
-        var more = thread.querySelector('.cmt-more');
-        if(more) more.addEventListener('click',function(){refreshThread(p,post,{more:true});});
-        var refresh = thread.querySelector('.cmt-refresh');
-        if(refresh) refresh.addEventListener('click',function(){refreshThread(p,post);});
-        var retry = thread.querySelector('.cmt-retry');
-        if(retry) retry.addEventListener('click',function(){refreshThread(p,post,{more:!!(commentState[p.id] && commentState[p.id].failedMore)});});
-
-        thread.querySelectorAll('.btn-cmt-del').forEach(function(b){
-            b.addEventListener('click', function(){
-                deleteComment(p, post, b.closest('.cmt').getAttribute('data-cid'),
-                              b.hasAttribute('data-admin'));
-            });
-        });
+  }
+  function join() {
+    if (embed && parent !== window) parent.postMessage({ orbit: 'join' }, location.origin);
+    else location.href = 'main.html#join';
+  }
+  function url(options) {
+    var u = new URL('lounge.html', location.href);
+    if (embed) u.searchParams.set('embed', '1');
+    if (query) u.searchParams.set('q', query);
+    u.hash = channel;
+    if (options && options.post) u.searchParams.set('post', options.post);
+    if (options && options.write) u.searchParams.set('write', '1');
+    return u.pathname + u.search + u.hash;
+  }
+  function dirty() {
+    return $('postTitle').value.trim() || $('postInput').value.trim() || photos.length;
+  }
+  function canLeave() {
+    if (busy || preparing || commentBusy) {
+      status('진행 중인 저장을 마친 뒤 이동해주세요.', true);
+      return false;
     }
-
-    // 이 글의 댓글만 다시 받아 스레드와 개수를 갱신한다 (전체 목록은 건드리지 않음)
-    async function refreshThread(p, post, opts){
-        opts=opts || {};
-        var state=commentState[p.id] || (commentState[p.id]={});
-        if(state.loading) return;
-        var previous=opts.more ? (cmts[p.id] || []).slice() : [];
-        state.loading=true;state.error=false;
-        renderThread(post,p);
-        try {
-            var q = sb.from('comments').select(commentColumns())
-                .eq('post_id',p.id).order('created_at',{ascending:false}).order('id',{ascending:false}).limit(COMMENT_SIZE+1);
-            if(opts.more && previous.length) q=afterCursor(q,previous[previous.length-1],false);
-            var r = await q;
-            if(r.error) throw r.error;
-            var rows=r.data || [], seen=new Set(previous.map(function(c){return c.id;}));
-            cmts[p.id]=previous.concat(rows.slice(0,COMMENT_SIZE).filter(function(c){return !seen.has(c.id);}));
-            state.more=rows.length>COMMENT_SIZE;state.loaded=true;state.failedMore=false;
-        } catch(err){
-            console.error(err);
-            state.error=true;state.failedMore=!!opts.more;
-            setStatus('댓글을 불러오지 못했어요 — ' + errHint(err), true);
-        } finally {
-            state.loading=false;
-            // The feed may have been redrawn while this thread was loading.
-            var current=document.getElementById('post-' + p.id);
-            if(current){
-                var cn=current.querySelector('.btn-cmt .cn');
-                if(cn) cn.textContent=commentLabel(p.id);
-                if(openThreads[p.id]) renderThread(current,p);
-            }
-        }
+    if (attempt && attempt.uncertain) {
+      status('등록 여부를 아직 확인하지 못했어요. 등록하기를 다시 눌러 확인해주세요.', true);
+      return false;
     }
-
-    async function submitComment(p, post, input, send){
-        var text = input.value.trim();
-        if(!text || !sb || pendingComments[p.id]) return;
-        pendingComments[p.id]=true;
-        send.dataset.sending = '1';
-        send.disabled = true;
-        input.disabled = true;
-        send.textContent = '...';
-        var res = await writeAction(function(){ return sb.from('comments').insert({
-            post_id: p.id, nick: nickname, text: text, author_device: currentUserId, author_id: currentUserId
-        }); });
-        delete send.dataset.sending;
-        delete pendingComments[p.id];
-        input.disabled=false;
-        send.textContent = '등록';
-        if(res.error){
-            send.disabled = false;
-            setStatus('전송 실패 — ' + errHint(res.error), true);
-            console.error(res.error);
-            var current=document.getElementById('post-' + p.id);
-            if(current && current!==post && openThreads[p.id]) renderThread(current,p);
-            return;
+    if (
+      view === 'editor' &&
+      dirty() &&
+      !confirm('작성 중인 글을 닫을까요? 이 화면으로 돌아오면 초안이 남아 있어요.')
+    )
+      return false;
+    return true;
+  }
+  function navigate(href, replace) {
+    if (!canLeave()) return;
+    if (view === 'list')
+      cache = {
+        key: channel + '|' + query,
+        posts: posts.slice(),
+        more: more,
+        pins: $('pinnedPosts').innerHTML,
+        scroll: window.scrollY,
+      };
+    history[replace ? 'replaceState' : 'pushState'](null, '', href);
+    showRoute();
+  }
+  function revokeImages() {
+    imageURLs.forEach(function (u) {
+      URL.revokeObjectURL(u);
+    });
+    imageURLs.clear();
+  }
+  async function loadImage(img, path, token) {
+    try {
+      var data = checked(await sb.storage.from('board-images').download(path));
+      if (token !== route || !img.isConnected) return;
+      var u = URL.createObjectURL(data);
+      imageURLs.add(u);
+      img.src = u;
+      img.hidden = false;
+      var retry = img.parentElement.querySelector('.photo-retry');
+      if (retry) retry.remove();
+    } catch (e) {
+      if (token !== route || !img.isConnected) return;
+      img.hidden = true;
+      if (img.closest('.detail-image') && !img.parentElement.querySelector('.photo-retry')) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'button photo-retry';
+        b.textContent = '사진 다시 불러오기';
+        b.onclick = async function () {
+          b.disabled = true;
+          await loadImage(img, path, token);
+          b.disabled = false;
+        };
+        img.parentElement.appendChild(b);
+      }
+    }
+  }
+  function hydrateImages(root, token) {
+    root.querySelectorAll('img[data-path]').forEach(function (img) {
+      loadImage(img, img.dataset.path, token);
+    });
+  }
+  function tabs() {
+    $('orbitTabs').innerHTML =
+      channels
+        .map(function (c) {
+          var u = new URL(url(), location.href);
+          u.hash = c[0];
+          return (
+            '<a data-orbit="' +
+            c[0] +
+            '" href="' +
+            esc(u.pathname + u.search + u.hash) +
+            '"' +
+            (channel === c[0] ? ' aria-current="page"' : '') +
+            '>' +
+            c[1] +
+            '</a>'
+          );
+        })
+        .join('') +
+      '<a href="news.html"' +
+      (embed ? ' target="_top"' : '') +
+      '>뉴스 ↗</a>';
+  }
+  function renderPosts() {
+    $('feedContext').textContent =
+      (query ? '“' + query + '” 검색 · ' : label(channel) + ' · ') + posts.length + '개 표시';
+    $('postList').innerHTML = posts.length
+      ? posts
+          .map(function (p) {
+            var href = url({ post: p.id }),
+              images = p.image_paths || [];
+            return (
+              '<article class="board-row" id="post-' +
+              esc(p.id) +
+              '"><div class="row-main"><div class="row-category">' +
+              esc(label(p.orbit)) +
+              '</div><a class="row-title" data-board-nav href="' +
+              esc(href) +
+              '">' +
+              esc(p.title) +
+              '</a><div class="row-meta"><span>' +
+              esc(p.nick) +
+              '</span><span aria-hidden="true">·</span><time datetime="' +
+              esc(p.created_at) +
+              '">' +
+              esc(date(p.created_at)) +
+              '</time></div></div><div class="row-side">' +
+              (images.length
+                ? '<a class="row-thumb-link" data-board-nav href="' +
+                  esc(href) +
+                  '" aria-label="' +
+                  esc(p.title) +
+                  ' 사진 보기"><img data-path="' +
+                  esc(OrbitBoardMedia.thumbnail(images[0])) +
+                  '" alt="첨부 사진 미리보기" loading="lazy"><span class="image-count">' +
+                  images.length +
+                  '</span></a>'
+                : '') +
+              '<a class="comment-count" data-board-nav href="' +
+              esc(href) +
+              '" aria-label="댓글 ' +
+              Number(p.comment_count || 0) +
+              '개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 11a8 8 0 0 1-8 8H5l-3 3V11a9 9 0 0 1 18 0Z"/></svg>' +
+              Number(p.comment_count || 0) +
+              '</a></div></article>'
+            );
+          })
+          .join('')
+      : '<div class="empty-state"><p>' +
+        (query
+          ? '검색 결과가 없어요. 다른 단어로 찾아보세요.'
+          : '아직 게시글이 없어요.<br>첫 관측 이야기를 남겨보세요.') +
+        '</p></div>';
+    $('loadMore').hidden = !more;
+    $('loadMore').disabled = listBusy;
+    hydrateImages($('postList'), route);
+  }
+  async function loadList(append) {
+    if (listBusy) return;
+    listBusy = true;
+    var token = route,
+      last = append && posts.at(-1);
+    $('postList').setAttribute('aria-busy', 'true');
+    $('loadMore').disabled = true;
+    $('refreshList').disabled = true;
+    $('pageStatus').textContent = '';
+    if (!posts.length)
+      $('postList').innerHTML = '<p class="empty-state">게시글을 불러오고 있어요…</p>';
+    try {
+      var requests = [
+        sb.rpc('board_posts', {
+          p_orbit: channel === 'all' ? null : channel,
+          p_query: query,
+          p_before: last ? last.created_at : null,
+          p_before_id: last ? last.id : null,
+          p_limit: 21,
+          p_pinned: false,
+        }),
+      ];
+      if (!append) requests.push(sb.rpc('board_posts', { p_pinned: true, p_limit: 3 }));
+      var results = await Promise.all(requests);
+      if (token !== route) return;
+      var rows = checked(results[0]);
+      more = rows.length > 20;
+      var seen = new Set(
+        append
+          ? posts.map(function (p) {
+              return p.id;
+            })
+          : [],
+      );
+      posts = (append ? posts : []).concat(
+        rows.slice(0, 20).filter(function (p) {
+          return !seen.has(p.id);
+        }),
+      );
+      revokeImages();
+      renderPosts();
+      if (!append) {
+        var pins = results[1];
+        if (!pins.error) {
+          $('pinnedPosts').innerHTML = (pins.data || [])
+            .map(function (p) {
+              return (
+                '<a class="pinned-row" data-board-nav href="' +
+                esc(url({ post: p.id })) +
+                '"><span class="pin-badge">공지</span><span class="pin-title">' +
+                esc(p.title) +
+                '</span><span class="pin-arrow" aria-hidden="true">›</span></a>'
+              );
+            })
+            .join('');
+          $('pinnedPosts').hidden = !pins.data.length;
+        } else status('게시글은 불러왔지만 공지를 확인하지 못했어요. 새로고침해주세요.', true);
+      }
+    } catch (e) {
+      if (token !== route) return;
+      status((posts.length ? '새로고침 실패 — ' : '게시판을 불러오지 못했어요. ') + hint(e), true);
+      $('pageStatus').textContent = '불러오지 못했어요. 다시 시도해주세요.';
+      if (!posts.length)
+        $('postList').innerHTML =
+          '<div class="load-error"><p>연결이 잠시 원활하지 않아요.</p><button class="button" data-action="retry-list">다시 불러오기</button></div>';
+    } finally {
+      if (token === route) {
+        listBusy = false;
+        $('postList').setAttribute('aria-busy', 'false');
+        $('loadMore').disabled = false;
+        $('refreshList').disabled = false;
+      }
+    }
+  }
+  function reportButton(type, id) {
+    return (
+      '<button type="button" class="text-button btn-report" data-report="' +
+      type +
+      '" data-id="' +
+      esc(id) +
+      '">신고·삭제 요청</button>'
+    );
+  }
+  async function loadDetail(id, token) {
+    $('postDetail').innerHTML = '<p class="empty-state">글을 불러오고 있어요…</p>';
+    try {
+      var p = checked(
+        await sb
+          .from('posts')
+          .select('id,title,nick,orbit,text,created_at,author_id,image_paths,is_pinned,pinned_at')
+          .eq('id', id)
+          .maybeSingle(),
+      );
+      if (token !== route) return;
+      if (!p) {
+        $('postDetail').innerHTML =
+          '<div class="empty-state"><h1>글을 찾을 수 없어요</h1><p>삭제된 글이거나 주소가 올바르지 않아요.</p></div>';
+        return;
+      }
+      detail = p;
+      document.title = p.title + ' | Orbit';
+      var own = p.author_id && p.author_id === userId;
+      $('postDetail').innerHTML =
+        '<div class="detail-category">' +
+        (p.is_pinned ? '<span class="pin-badge">공지</span> · ' : '') +
+        esc(label(p.orbit)) +
+        '</div><h1 class="detail-title">' +
+        esc(p.title) +
+        '</h1><div class="detail-meta"><span>' +
+        esc(p.nick) +
+        '</span><span aria-hidden="true">·</span><time datetime="' +
+        esc(p.created_at) +
+        '">' +
+        esc(date(p.created_at)) +
+        '</time></div><div class="detail-body"></div><div class="detail-images">' +
+        (p.image_paths || [])
+          .map(function (path, i) {
+            return (
+              '<figure class="detail-image"><img data-path="' +
+              esc(path) +
+              '" alt="' +
+              esc(p.title) +
+              ' · 첨부 사진 ' +
+              (i + 1) +
+              '" loading="lazy"><figcaption>첨부 사진 ' +
+              (i + 1) +
+              ' / ' +
+              p.image_paths.length +
+              '</figcaption></figure>'
+            );
+          })
+          .join('') +
+        '</div><div class="reaction-row" id="reactionRow" aria-label="공감"></div><div class="detail-actions"><button class="button subtle" type="button" data-action="share">글 공유</button><span class="spacer"></span>' +
+        (isAdmin
+          ? '<button class="text-button" type="button" data-action="pin">' +
+            (p.is_pinned ? '공지 해제' : '공지로 고정') +
+            '</button>'
+          : '') +
+        (own || isAdmin
+          ? '<button class="text-button" type="button" data-action="delete-post">글 삭제</button>'
+          : '') +
+        (!own ? reportButton('post', p.id) : '') +
+        '</div><section class="comments-section" aria-label="댓글"><div class="comments-heading"><h2>댓글</h2><button class="text-button" type="button" data-action="refresh-comments">새로고침</button></div><div id="commentList"></div><p class="comment-message" id="commentMessage" role="status"></p><button class="button subtle" type="button" id="moreComments" hidden>이전 댓글 더 보기</button><form class="comment-form" id="commentForm"><label class="sr-only" for="commentInput">댓글 내용</label><textarea id="commentInput" maxlength="300" rows="2" required placeholder="댓글을 남겨주세요 (300자 이내)"></textarea><button class="button primary" type="submit">등록</button></form></section>';
+      $('postDetail').querySelector('.detail-body').textContent = p.text;
+      $('commentInput').value = commentDrafts[p.id] || '';
+      $('commentInput').addEventListener('input', function () {
+        commentDrafts[p.id] = this.value;
+      });
+      $('commentForm').addEventListener('submit', submitComment);
+      $('moreComments').onclick = function () {
+        loadComments(true);
+      };
+      comments = [];
+      commentsMore = false;
+      hydrateImages($('postDetail'), token);
+      loadComments(false);
+      loadReactions(p, token);
+      $('postDetail').focus({ preventScroll: true });
+    } catch (e) {
+      if (token !== route) return;
+      status('글을 불러오지 못했어요. ' + hint(e), true);
+      $('postDetail').innerHTML =
+        '<div class="load-error"><p>연결을 확인하고 다시 시도해주세요.</p><button class="button" data-action="retry-detail">다시 불러오기</button></div>';
+    }
+  }
+  function afterCursor(q, row) {
+    if (!validId(row.id) || !/^\d{4}-\d\d-\d\dT[\d:.]+(?:Z|[+-]\d\d:\d\d)$/.test(row.created_at))
+      throw new Error('댓글 위치를 확인하지 못했어요. 새로고침해주세요.');
+    return q.or(
+      'created_at.lt.' +
+        row.created_at +
+        ',and(created_at.eq.' +
+        row.created_at +
+        ',id.lt.' +
+        row.id +
+        ')',
+    );
+  }
+  async function loadComments(append) {
+    var p = detail,
+      token = route,
+      seq = ++commentSeq;
+    if (!p) return;
+    $('commentMessage').textContent = '댓글을 불러오는 중…';
+    $('moreComments').disabled = true;
+    try {
+      var q = sb
+        .from('comments')
+        .select('id,post_id,nick,text,created_at,author_id')
+        .eq('post_id', p.id)
+        .order('created_at', { ascending: false })
+        .order('id', { ascending: false })
+        .limit(21);
+      if (append && comments.length) q = afterCursor(q, comments.at(-1));
+      var data = checked(await q);
+      if (token !== route || seq !== commentSeq) return;
+      commentsMore = data.length > 20;
+      comments = (append ? comments : []).concat(data.slice(0, 20));
+      $('commentList').innerHTML = comments
+        .map(function (c) {
+          var own = c.author_id && c.author_id === userId;
+          return (
+            '<article class="comment-item" id="comment-' +
+            esc(c.id) +
+            '"><div class="comment-meta"><span class="comment-author">' +
+            esc(c.nick) +
+            '</span>' +
+            (c.author_id && c.author_id === p.author_id
+              ? '<span class="author-badge">글쓴이</span>'
+              : '') +
+            '<time datetime="' +
+            esc(c.created_at) +
+            '">' +
+            esc(date(c.created_at)) +
+            '</time></div><p class="comment-body">' +
+            esc(c.text) +
+            '</p><div class="comment-actions">' +
+            (own || isAdmin
+              ? '<button class="text-button" data-delete-comment="' +
+                esc(c.id) +
+                '" type="button">댓글 삭제</button>'
+              : '') +
+            (!own ? reportButton('comment', c.id) : '') +
+            '</div></article>'
+          );
+        })
+        .join('');
+      $('commentMessage').textContent = comments.length
+        ? '최근 댓글부터 ' + comments.length + '개 표시'
+        : '첫 댓글을 남겨보세요.';
+      $('moreComments').hidden = !commentsMore;
+    } catch (e) {
+      if (token === route && seq === commentSeq)
+        $('commentMessage').textContent =
+          '댓글을 불러오지 못했어요. 새로고침으로 다시 시도해주세요.';
+    } finally {
+      if (token === route && seq === commentSeq) $('moreComments').disabled = false;
+    }
+  }
+  async function submitComment(ev) {
+    ev.preventDefault();
+    if (commentBusy) return;
+    if (!nick()) {
+      join();
+      return;
+    }
+    var input = $('commentInput'),
+      text = input.value.trim(),
+      p = detail,
+      token = route;
+    if (!text) return;
+    commentBusy = true;
+    var button = $('commentForm').querySelector('button');
+    button.disabled = true;
+    input.disabled = true;
+    try {
+      await ensureWriter();
+      var pending = commentAttempts[p.id],
+        alreadySaved = false;
+      if (pending && pending.text === text) {
+        var existing = checked(
+          await sb
+            .from('comments')
+            .select('id,post_id,text,author_id')
+            .eq('id', pending.id)
+            .maybeSingle(),
+        );
+        alreadySaved = !!(
+          existing &&
+          existing.post_id === p.id &&
+          existing.author_id === userId &&
+          existing.text === text
+        );
+      } else pending = commentAttempts[p.id] = { id: crypto.randomUUID(), text: text };
+      if (!alreadySaved)
+        checked(
+          await sb
+            .from('comments')
+            .insert({
+              id: pending.id,
+              post_id: p.id,
+              nick: nick(),
+              text: text,
+              author_id: userId,
+              author_device: userId,
+            }),
+        );
+      delete commentAttempts[p.id];
+      delete commentDrafts[p.id];
+      cache = null;
+      if (token !== route) return;
+      input.value = '';
+      status('댓글을 등록했어요.');
+      await loadComments(false);
+    } catch (e) {
+      if (token === route) status('댓글 등록 실패 — ' + hint(e), true);
+    } finally {
+      commentBusy = false;
+      if (button.isConnected) {
+        button.disabled = false;
+        input.disabled = false;
+      }
+    }
+  }
+  async function loadReactions(p, token) {
+    try {
+      var rows = checked(await sb.rpc('reaction_summary', { p_post_ids: [p.id], p_device: null }));
+      if (token !== route) return;
+      $('reactionRow').innerHTML = emojis
+        .map(function (emoji) {
+          var r =
+            rows.find(function (r) {
+              return r.emoji === emoji;
+            }) || {};
+          return (
+            '<button type="button" class="rx-chip' +
+            (r.mine ? ' mine' : '') +
+            '" data-emoji="' +
+            emoji +
+            '" aria-pressed="' +
+            !!r.mine +
+            '" aria-label="' +
+            emoji +
+            ' 공감 ' +
+            Number(r.n || 0) +
+            '개">' +
+            emoji +
+            ' ' +
+            Number(r.n || 0) +
+            '</button>'
+          );
+        })
+        .join('');
+    } catch (e) {
+      if (token === route)
+        $('reactionRow').innerHTML =
+          '<button class="text-button" type="button" data-action="retry-reactions">공감 다시 불러오기</button>';
+    }
+  }
+  async function toggleReaction(button) {
+    if (reactionBusy || !detail) return;
+    reactionBusy = true;
+    var p = detail,
+      token = route,
+      emoji = button.dataset.emoji,
+      on = button.getAttribute('aria-pressed') !== 'true';
+    $('reactionRow')
+      .querySelectorAll('button')
+      .forEach(function (b) {
+        b.disabled = true;
+      });
+    try {
+      await ensureWriter();
+      checked(
+        on
+          ? await sb
+              .from('reactions')
+              .insert({ post_id: p.id, emoji: emoji, device_id: userId, author_id: userId })
+          : await sb.rpc('delete_reaction', { p_post_id: p.id, p_emoji: emoji, p_device: userId }),
+      );
+      await loadReactions(p, token);
+    } catch (e) {
+      if (token === route) {
+        status('공감 저장 실패 — ' + hint(e), true);
+        await loadReactions(p, token);
+      }
+    } finally {
+      reactionBusy = false;
+    }
+  }
+  function openReport(type, id, button) {
+    if (reported.has(type + id)) return;
+    var dialog = document.createElement('dialog');
+    dialog.className = 'board-dialog';
+    dialog.setAttribute('aria-labelledby', 'reportTitle');
+    var reasons = [
+      ['spam', '광고·도배'],
+      ['abuse', '욕설·혐오'],
+      ['adult', '부적절한 내용'],
+      ['privacy', '개인정보 노출'],
+      ['etc', '기타 · 내 글 삭제 요청'],
+    ];
+    dialog.innerHTML =
+      '<form><h2 id="reportTitle">신고·삭제 요청</h2><p>운영자만 확인합니다. 비밀번호나 신분증은 보내지 마세요.</p>' +
+      reasons
+        .map(function (r, i) {
+          return (
+            '<label><input type="radio" name="reason" value="' +
+            r[0] +
+            '"' +
+            (!i ? ' checked' : '') +
+            '> ' +
+            r[1] +
+            '</label>'
+          );
+        })
+        .join('') +
+      '<label for="reportDetail">요청 설명 (선택)</label><textarea id="reportDetail" maxlength="200"></textarea><p class="report-status" role="status"></p><div class="dialog-actions"><button type="button" class="button cancel">취소</button><button type="submit" class="button primary">접수하기</button></div></form>';
+    document.body.appendChild(dialog);
+    dialog.addEventListener('close', function () {
+      dialog.remove();
+      if (button.isConnected) button.focus();
+    });
+    dialog.querySelector('.cancel').onclick = function () {
+      dialog.close();
+    };
+    var pending = false;
+    dialog.addEventListener('cancel', function (e) {
+      if (pending) e.preventDefault();
+    });
+    dialog.querySelector('form').onsubmit = async function (ev) {
+      ev.preventDefault();
+      if (pending) return;
+      pending = true;
+      var send = dialog.querySelector('[type=submit]'),
+        cancel = dialog.querySelector('.cancel');
+      send.disabled = cancel.disabled = true;
+      try {
+        await ensureWriter();
+        var result = await sb
+          .from('reports')
+          .insert({
+            target_type: type,
+            target_id: id,
+            reason: dialog.querySelector('[name=reason]:checked').value,
+            detail: dialog.querySelector('textarea').value.trim() || null,
+            reporter_device: userId,
+            author_id: userId,
+          });
+        if (result.error && result.error.code !== '23505') throw result.error;
+        reported.add(type + id);
+        button.textContent = '접수됨';
+        button.disabled = true;
+        dialog.close();
+        status('요청을 접수했어요. 운영자가 확인합니다.');
+      } catch (e) {
+        dialog.querySelector('.report-status').textContent = '접수 실패 — ' + hint(e);
+        send.disabled = cancel.disabled = false;
+      } finally {
+        pending = false;
+      }
+    };
+    dialog.showModal();
+  }
+  function renderPreviews() {
+    $('photoCount').textContent = photos.length + ' / 5장';
+    $('photoPreviews').innerHTML = photos
+      .map(function (p, i) {
+        return (
+          '<figure class="photo-preview"><img src="' +
+          p.url +
+          '" alt="첨부할 사진 ' +
+          (i + 1) +
+          '"><button type="button" data-remove-photo="' +
+          i +
+          '" aria-label="사진 ' +
+          (i + 1) +
+          ' 삭제">×</button><figcaption>' +
+          Math.ceil(p.full.size / 1024) +
+          'KB · ' +
+          (i + 1) +
+          '번 사진</figcaption></figure>'
+        );
+      })
+      .join('');
+  }
+  function lockEditor(locked) {
+    $('postForm')
+      .querySelectorAll('input,textarea,select,[data-remove-photo]')
+      .forEach(function (el) {
+        el.disabled = locked;
+      });
+    $('btnTrace').disabled = busy || preparing;
+    $('cancelWrite').disabled = busy || preparing || !!(attempt && attempt.uncertain);
+  }
+  async function clearAttempt() {
+    if (!attempt) return;
+    if (attempt.uncertain) throw new Error('등록하기를 다시 눌러 등록 여부를 먼저 확인해주세요.');
+    var old = attempt;
+    attempt = null;
+    if (old.paths.length) {
+      try {
+        checked(
+          await sb.storage.from('board-images').remove(
+            old.paths.flatMap(function (p) {
+              return [p, OrbitBoardMedia.thumbnail(p)];
+            }),
+          ),
+        );
+      } catch (e) {
+        /* Private abandoned files are eligible for moderator cleanup after a day. */
+      }
+    }
+  }
+  async function submitPost(ev) {
+    ev.preventDefault();
+    if (busy || preparing) return;
+    if (!nick()) {
+      join();
+      return;
+    }
+    var title = $('postTitle').value.trim(),
+      text = $('postInput').value.trim();
+    if (!title || !text) {
+      writeStatus('제목과 내용을 입력해주세요.', true);
+      return;
+    }
+    var fingerprint = JSON.stringify([
+      title,
+      text,
+      $('orbitSelect').value,
+      $('postPinned').checked,
+      photos.map(function (p) {
+        return p.url;
+      }),
+    ]);
+    busy = true;
+    lockEditor(true);
+    writeStatus('등록을 준비하고 있어요…');
+    try {
+      await ensureWriter();
+      if (attempt && attempt.fingerprint !== fingerprint) await clearAttempt();
+      if (!attempt)
+        attempt = {
+          id: crypto.randomUUID(),
+          fingerprint: fingerprint,
+          paths: [],
+          uploaded: new Set(),
+          uncertain: false,
+          payload: null,
+        };
+      if (photos.length && !attempt.paths.length)
+        attempt.paths = checked(
+          await sb.rpc('reserve_board_images', { p_post_id: attempt.id, p_count: photos.length }),
+        );
+      for (var i = 0; i < photos.length; i++) {
+        writeStatus('사진 ' + (i + 1) + ' / ' + photos.length + '장을 올리고 있어요…');
+        for (var entry of [
+          [attempt.paths[i], photos[i].full],
+          [OrbitBoardMedia.thumbnail(attempt.paths[i]), photos[i].thumb],
+        ]) {
+          if (attempt.uploaded.has(entry[0])) continue;
+          var result = await sb.storage
+            .from('board-images')
+            .upload(entry[0], entry[1], {
+              contentType: 'image/jpeg',
+              upsert: false,
+              cacheControl: '3600',
+            });
+          // A timed-out immutable upload can have succeeded. These random paths
+          // belong only to this reservation and the same in-memory photo bytes.
+          if (
+            result.error &&
+            String(result.error.statusCode) !== '409' &&
+            !/already exists|Duplicate/i.test(result.error.message || '')
+          )
+            throw result.error;
+          attempt.uploaded.add(entry[0]);
         }
-        input.value = '';
+      }
+      attempt.payload = attempt.payload || {
+        p_id: attempt.id,
+        p_nick: nick(),
+        p_title: title,
+        p_orbit: $('orbitSelect').value,
+        p_text: text,
+        p_images: attempt.paths,
+        p_pinned: isAdmin && $('postPinned').checked,
+      };
+      writeStatus('글을 등록하고 있어요…');
+      attempt.uncertain = true;
+      var saved = await sb.rpc('create_board_post', attempt.payload);
+      if (saved.error) {
+        // Constraint/auth failures roll back; network/5xx errors can be a lost
+        // response after commit. Keep the UUID and frozen payload for retry.
+        if (saved.error.code && /^(22|23|42|P0001)/.test(saved.error.code))
+          attempt.uncertain = false;
+        throw saved.error;
+      }
+      var id = checked(saved);
+      attempt = null;
+      cache = null;
+      $('postForm').reset();
+      photos.forEach(function (p) {
+        URL.revokeObjectURL(p.url);
+      });
+      photos = [];
+      renderPreviews();
+      $('charCount').textContent = '0 / 5,000';
+      writeStatus('');
+      busy = false;
+      lockEditor(false);
+      status('글을 등록했어요.');
+      navigate(url({ post: id }), true);
+    } catch (e) {
+      writeStatus(
+        (attempt && attempt.uncertain
+          ? '등록 여부를 확인하지 못했어요. 같은 글이 중복되지 않도록 등록하기를 다시 눌러 확인해주세요. '
+          : '등록 실패 — ') + hint(e),
+        true,
+      );
+    } finally {
+      busy = false;
+      lockEditor(!!(attempt && attempt.uncertain));
+    }
+  }
+  async function showRoute() {
+    activeURL = location.href;
+    var token = ++route;
+    ++commentSeq;
+    listBusy = false;
+    detail = null;
+    revokeImages();
+    var params = new URLSearchParams(location.search),
+      h = location.hash.slice(1);
+    channel = channels.some(function (c) {
+      return c[0] === h;
+    })
+      ? h
+      : 'all';
+    query = (params.get('q') || '').trim().slice(0, 80);
+    var id = params.get('post');
+    view = id ? 'detail' : params.has('write') ? 'editor' : 'list';
+    ['list', 'detail', 'editor'].forEach(function (v) {
+      $(v + 'View').hidden = v !== view;
+    });
+    document.title = 'Orbit | 별빛 게시판';
+    $('backToFeed').href = $('cancelWriteLink').href = url();
+    $('writeTop').href = $('writeBottom').href = url({ write: true });
+    window.scrollTo(0, 0);
+    if (view === 'editor') {
+      $('writerGate').hidden = !!nick();
+      $('postForm').hidden = !nick();
+      $('pinEditor').hidden = !isAdmin;
+      if (!dirty()) $('orbitSelect').value = channel === 'all' ? 'report' : channel;
+      $('postTitle').focus({ preventScroll: true });
+      return;
+    }
+    if (view === 'detail') {
+      if (validId(id)) await loadDetail(id, token);
+      else
+        $('postDetail').innerHTML =
+          '<div class="empty-state"><h1>글 주소가 올바르지 않아요</h1><p>목록에서 다시 찾아주세요.</p></div>';
+      return;
+    }
+    tabs();
+    $('searchInput').value = query;
+    $('clearSearch').hidden = !query;
+    $('pageStatus').textContent = '';
+    $('refreshList').disabled = false;
+    if (cache && cache.key === channel + '|' + query) {
+      posts = cache.posts.slice();
+      more = cache.more;
+      $('pinnedPosts').innerHTML = cache.pins;
+      $('pinnedPosts').hidden = !cache.pins;
+      renderPosts();
+      window.scrollTo(0, cache.scroll);
+    } else {
+      posts = [];
+      more = false;
+      $('pinnedPosts').hidden = true;
+      $('loadMore').hidden = true;
+      await loadList(false);
+    }
+  }
+  document.addEventListener('click', async function (ev) {
+    var link = ev.target.closest(
+      'a[data-board-nav],#writeTop,#writeBottom,#backToFeed,#cancelWriteLink,[data-orbit]',
+    );
+    if (link && !ev.ctrlKey && !ev.metaKey && !ev.shiftKey && ev.button === 0) {
+      ev.preventDefault();
+      navigate(link.href);
+      return;
+    }
+    var b = ev.target.closest('button');
+    if (!b) return;
+    if (b.dataset.report) {
+      openReport(b.dataset.report, b.dataset.id, b);
+      return;
+    }
+    if (b.dataset.emoji) {
+      toggleReaction(b);
+      return;
+    }
+    if (b.hasAttribute('data-remove-photo')) {
+      if (busy || preparing || (attempt && attempt.uncertain)) return;
+      await clearAttempt();
+      URL.revokeObjectURL(photos[Number(b.dataset.removePhoto)].url);
+      photos.splice(Number(b.dataset.removePhoto), 1);
+      renderPreviews();
+      return;
+    }
+    if (b.dataset.deleteComment) {
+      if (!confirm('댓글을 삭제할까요? 되돌릴 수 없어요.')) return;
+      b.disabled = true;
+      try {
+        await ensureWriter();
+        var deleted = checked(
+          await sb.from('comments').delete().eq('id', b.dataset.deleteComment).select('id'),
+        );
+        if (!deleted.length) throw new Error('삭제 권한을 확인하지 못했어요.');
+        cache = null;
+        await loadComments(false);
+      } catch (e) {
+        status('삭제 실패 — ' + hint(e), true);
+        b.disabled = false;
+      }
+      return;
+    }
+    var action = b.dataset.action,
+      p = detail;
+    if (action === 'retry-list') {
+      loadList(false);
+      return;
+    }
+    if (action === 'retry-detail') {
+      showRoute();
+      return;
+    }
+    if (action === 'refresh-comments') {
+      loadComments(false);
+      return;
+    }
+    if (action === 'retry-reactions' && p) {
+      loadReactions(p, route);
+      return;
+    }
+    if (action === 'share' && p) {
+      var share = new URL('lounge.html', location.href);
+      share.searchParams.set('post', p.id);
+      share.hash = p.orbit;
+      try {
+        await navigator.clipboard.writeText(share.href);
+        status('글 주소를 복사했어요.');
+      } catch (e) {
+        var input = $('shareAddress');
+        if (!input) {
+          input = document.createElement('input');
+          input.id = 'shareAddress';
+          input.className = 'share-link';
+          input.readOnly = true;
+          input.setAttribute('aria-label', '공유할 글 주소');
+          b.parentElement.appendChild(input);
+        }
+        input.value = share.href;
+        input.focus();
+        input.select();
+      }
+      return;
+    }
+    if (action === 'pin' && p) {
+      b.disabled = true;
+      try {
+        await ensureWriter();
+        var updated = checked(
+          await sb.from('posts').update({ is_pinned: !p.is_pinned }).eq('id', p.id).select('id'),
+        );
+        if (!updated.length) throw new Error('관리자 권한을 확인하지 못했어요.');
+        cache = null;
+        p.is_pinned = !p.is_pinned;
+        await showRoute();
+        status(p.is_pinned ? '공지를 상단에 고정했어요.' : '공지 고정을 해제했어요.');
+      } catch (e) {
+        status(hint(e), true);
+        b.disabled = false;
+      }
+      return;
+    }
+    if (action === 'delete-post' && p) {
+      if (!confirm('글과 댓글을 삭제할까요? 되돌릴 수 없어요.')) return;
+      b.disabled = true;
+      try {
+        await ensureWriter();
+        var removed = checked(await sb.from('posts').delete().eq('id', p.id).select('id'));
+        if (!removed.length) throw new Error('삭제 권한을 확인하지 못했어요.');
+        cache = null;
         delete commentDrafts[p.id];
-        setStatus('댓글을 등록했어요. 새 댓글이 맨 위에 표시됩니다.');
-        await refreshThread(p, post);
+        var paths = (p.image_paths || []).flatMap(function (path) {
+          return [path, OrbitBoardMedia.thumbnail(path)];
+        });
+        if (paths.length) await sb.storage.from('board-images').remove(paths);
+        status('글을 삭제했어요.');
+        navigate(url(), true);
+      } catch (e) {
+        status('삭제 실패 — ' + hint(e), true);
+        b.disabled = false;
+      }
     }
-
-    async function deleteComment(p, post, cid, asAdmin){
-        if(!sb || !cid) return;
-        if(!confirm(asAdmin ? '[관리자] 이 답을 삭제할까요? 되돌릴 수 없어요.'
-                            : '이 답을 삭제할까요? 되돌릴 수 없어요.')) return;
-        var res = await writeAction(function(){ return sb.from('comments').delete().eq('id', cid).select('id'); });
-        if(!res.error && (!res.data || !res.data.length)) res.error = new Error('삭제 권한을 확인하지 못했어요.');
-        if(res.error){
-            console.error(res.error);
-            setStatus('삭제 실패 — 잠시 후 다시 시도해주세요', true);
-            return;
+  });
+  $('orbitSelect').innerHTML = channels
+    .slice(1)
+    .map(function (c) {
+      return '<option value="' + c[0] + '">' + c[1] + '</option>';
+    })
+    .join('');
+  $('postForm').addEventListener('submit', submitPost);
+  $('postInput').addEventListener('input', function () {
+    $('charCount').textContent = this.value.length.toLocaleString('ko-KR') + ' / 5,000';
+  });
+  $('photoInput').addEventListener('change', async function () {
+    var files = Array.from(this.files);
+    this.value = '';
+    if (busy || preparing || (attempt && attempt.uncertain)) return;
+    if (photos.length + files.length > 5) {
+      writeStatus('사진은 글당 5장까지 첨부할 수 있어요.', true);
+      return;
+    }
+    preparing = true;
+    lockEditor(true);
+    writeStatus('사진을 준비하고 있어요…');
+    try {
+      await clearAttempt();
+      for (var file of files) {
+        photos.push(await OrbitBoardMedia.prepare(file));
+        renderPreviews();
+      }
+      writeStatus('사진 준비가 끝났어요. 등록하기를 누르면 함께 올라갑니다.');
+    } catch (e) {
+      writeStatus(hint(e), true);
+    } finally {
+      preparing = false;
+      lockEditor(false);
+    }
+  });
+  $('cancelWrite').onclick = function () {
+    navigate(url());
+  };
+  $('joinBoard').onclick = join;
+  $('feedSearch').onsubmit = function (ev) {
+    ev.preventDefault();
+    if (!canLeave()) return;
+    query = $('searchInput').value.trim().slice(0, 80);
+    cache = null;
+    history.pushState(null, '', url());
+    showRoute();
+  };
+  $('clearSearch').onclick = function () {
+    query = '';
+    cache = null;
+    history.pushState(null, '', url());
+    showRoute();
+  };
+  $('refreshList').onclick = function () {
+    cache = null;
+    status('');
+    loadList(false);
+  };
+  $('loadMore').onclick = function () {
+    loadList(true);
+  };
+  window.addEventListener('popstate', function () {
+    if (busy || preparing || commentBusy || (attempt && attempt.uncertain)) {
+      history.pushState(null, '', activeURL);
+      status('진행 중인 등록을 먼저 완료해주세요.', true);
+      return;
+    }
+    showRoute();
+  });
+  window.addEventListener('hashchange', function () {
+    if (view === 'list' && location.hash.slice(1) !== channel) showRoute();
+  });
+  window.addEventListener('beforeunload', function (ev) {
+    if (
+      dirty() ||
+      busy ||
+      commentBusy ||
+      Object.values(commentDrafts).some(function (s) {
+        return s.trim();
+      })
+    ) {
+      ev.preventDefault();
+      ev.returnValue = '';
+    }
+  });
+  window.addEventListener('message', function (ev) {
+    if (
+      ev.origin !== location.origin ||
+      ev.source !== parent ||
+      !ev.data ||
+      ev.data.orbit !== 'profileChanged'
+    )
+      return;
+    if (view === 'editor') {
+      $('writerGate').hidden = !!nick();
+      $('postForm').hidden = !nick();
+    }
+  });
+  if (embed) parent.postMessage({ orbit: 'loungeReady' }, location.origin);
+  (async function () {
+    try {
+      if (sb) {
+        var s = checked(await sb.auth.getSession());
+        if (s.session) {
+          userId = s.session.user.id;
+          isAdmin = checked(await sb.rpc('is_admin')) === true;
         }
-        await refreshThread(p, post);
+      }
+    } catch (e) {
+      /* Reading remains available if admin detection fails. */
     }
-
-    // ===== 궤적 삭제 (작성한 기기 또는 관리자) =====
-    // 내 글과 관리자 삭제 모두 서버 RLS가 인증된 사용자를 확인한다.
-    // 관리자 경로가 통과되는 근거는 서버의 RLS 정책(is_admin())이지
-    // 아래 isAdmin 변수가 아니다 — 변수는 어느 요청을 보낼지만 고른다.
-    async function deletePost(p, el){
-        if(!sb) return;
-        var mine = !!(p.author_id && p.author_id === currentUserId);
-        if(!confirm(mine ? '이 궤적을 삭제할까요? 되돌릴 수 없어요.'
-                         : '[관리자] ' + p.nick + ' 님의 궤적을 삭제할까요? 되돌릴 수 없어요.')) return;
-        var res = await writeAction(function(){ return sb.from('posts').delete().eq('id', p.id).select('id'); });
-        if(!res.error && (!res.data || !res.data.length)) res.error = new Error('삭제 권한을 확인하지 못했어요.');
-        if(res.error){
-            console.error(res.error);
-            setStatus('삭제 실패 — 잠시 후 다시 시도해주세요', true);
-            return;
-        }
-        el.style.transition = 'opacity 0.25s, transform 0.25s';
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(-6px)';
-        setTimeout(function(){ loadPosts({ quiet: true }); }, 250);
+    if (!sb) {
+      status('서버 연결을 준비하지 못했어요. 새로고침해주세요.', true);
+      return;
     }
-
-    // ===== 이모지 교차 리액션 =====
-    function renderRxRow(row, p){
-        var mine = rxMine[p.id] || {};
-        var counts = rxCount[p.id] || {};
-        var keys = Object.keys(counts).filter(function(e){ return counts[e] > 0; });
-
-        row.innerHTML = '';
-        keys.forEach(function(emo){
-            var chip = document.createElement('button');
-            chip.className = 'rx-chip' + (mine[emo] ? ' mine' : '');
-            chip.disabled = !!rxUnavailable[p.id];
-            chip.innerHTML = '<span>' + escapeHtml(emo) + '</span><span class="n">' + counts[emo] + '</span>';
-            chip.addEventListener('click', function(ev){
-                ev.stopPropagation();
-                toggleRx(p, emo, row);
-            });
-            row.appendChild(chip);
-        });
-
-        var add = document.createElement('button');
-        add.className = 'rx-add';
-        add.textContent = '+';
-        add.disabled = !!rxUnavailable[p.id];
-        add.title = rxUnavailable[p.id] ? '새로고침해 리액션을 다시 확인해주세요' : '교차 남기기';
-        add.setAttribute('aria-label',add.title);
-        add.addEventListener('click', function(ev){
-            ev.stopPropagation();
-            togglePalette(row, p);
-        });
-        row.appendChild(add);
-    }
-
-    async function toggleRx(p, emo, row){
-        if(!sb || rxUnavailable[p.id]) return;
-        var reactionKey = p.id + ':' + emo;
-        if(pendingReactions[reactionKey]) return;
-        pendingReactions[reactionKey] = true;
-        var mine = rxMine[p.id] = rxMine[p.id] || {};
-        var counts = rxCount[p.id] = rxCount[p.id] || {};
-        var turningOn = !mine[emo];
-
-        // 낙관적 업데이트 — 실패 시 롤백
-        if(turningOn){ mine[emo] = true; counts[emo] = (counts[emo] || 0) + 1; }
-        else { delete mine[emo]; counts[emo] = Math.max(0, (counts[emo] || 1) - 1); }
-        renderRxRow(row, p);
-
-        // 취소는 REST delete가 아니라 RPC로 한다 — 정책이 관리자에게만 열려 있고,
-        // 이 함수가 기기가 일치하는 행만 지운다.
-        var res = await writeAction(function(){ return turningOn
-            ? sb.from('reactions').insert({ post_id: p.id, emoji: emo, device_id: currentUserId, author_id: currentUserId })
-            : sb.rpc('delete_reaction', { p_post_id: p.id, p_emoji: emo, p_device: currentUserId }); });
-
-        delete pendingReactions[reactionKey];
-        if(res.error){
-            setStatus('리액션을 저장하지 못했어요 — ' + errHint(res.error), true);
-            console.error(res.error);
-            if(turningOn){ delete mine[emo]; counts[emo] = Math.max(0, counts[emo] - 1); }
-            else { mine[emo] = true; counts[emo] = (counts[emo] || 0) + 1; }
-            renderRxRow(row, p);
-        }
-    }
-
-    var openPal = null;
-    function closePalette(){ if(openPal){ openPal.remove(); openPal = null; } }
-    function togglePalette(row, p){
-        if(openPal && openPal.parentNode === row){ closePalette(); return; }
-        closePalette();
-        var pal = document.createElement('div');
-        pal.className = 'rx-palette';
-        RX_EMOJIS.forEach(function(emo){
-            var b = document.createElement('button');
-            b.className = 'rx-pal-btn';
-            b.textContent = emo;
-            b.addEventListener('click', function(ev){
-                ev.stopPropagation();
-                closePalette();
-                toggleRx(p, emo, row);
-            });
-            pal.appendChild(b);
-        });
-        row.appendChild(pal);
-        openPal = pal;
-    }
-    document.addEventListener('click', closePalette);
-
-    // ===== 궤도(채널) 탭 =====
-    function renderOrbitTabs(){
-        var html = '<button class="orbit-tab' + (currentOrbit==='all'?' on':'') +
-                   '" data-orbit="all"><span class="ic">' + ALL_ORBIT.icon + '</span> 전체</button>';
-        ORBIT_LIST.forEach(function(o){
-            html += '<button class="orbit-tab' + (currentOrbit===o.id?' on':'') + (o.minor?' minor':'') +
-                    '" data-orbit="' + o.id + '"><span class="ic">' + o.icon + '</span> ' + escapeHtml(o.label) + '</button>';
-        });
-        document.getElementById('orbitTabs').innerHTML = html;
-    }
-    var REFRESH_ICON =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-        '<path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>' +
-        '<path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M21 21v-5h-5"/>' +
-        '</svg>';
-
-    function renderChannelHeader(){
-        var o = orbitInfo(currentOrbit);
-        document.getElementById('channelHeader').innerHTML =
-            '<div class="ch-icon">' + o.icon + '</div>' +
-            '<div class="ch-text">' +
-            '<div class="ch-name">' + escapeHtml(o.label) + '</div>' +
-            '<div class="ch-desc">' + escapeHtml(o.desc) + '</div>' +
-            '</div>' +
-            '<button class="btn-refresh" type="button" title="새 궤적 불러오기">' +
-            REFRESH_ICON + '<span class="rf-lbl">새로고침</span></button>';
-    }
-
-    // 헤더는 채널을 바꿀 때마다 다시 그려지므로, 버튼에 직접 걸지 않고 위임한다
-    document.getElementById('channelHeader').addEventListener('click', function(e){
-        var btn = e.target.closest('.btn-refresh');
-        if(!btn || btn.classList.contains('spin')) return;
-        btn.classList.add('spin');
-        // 최소 한 바퀴는 돌려준다 — 응답이 즉시 와도 "눌리긴 한 건가" 싶지 않게
-        var started = Date.now();
-        loadPosts({ quiet: true }).then(function(){
-            setTimeout(function(){ btn.classList.remove('spin'); },
-                       Math.max(0, 700 - (Date.now() - started)));
-        });
-    });
-
-    function selectOrbit(id){
-        currentOrbit = id;
-        singlePost = null;
-        loadedPosts = []; hasMorePosts = false;
-        feedAvailable = false;
-        updateFeedLocation();updatePagination();
-        document.querySelectorAll('.orbit-tab').forEach(function(t){
-            t.classList.toggle('on', t.getAttribute('data-orbit') === id);
-        });
-        renderChannelHeader();
-        var sel = document.getElementById('orbitSelect');
-        if(sel && currentOrbit !== 'all') sel.value = currentOrbit; // 보던 방으로 글쓰기 기본값 맞춤
-        syncLivePoll();
-        loadPosts();
-    }
-
-    document.getElementById('feedSearch').addEventListener('submit',function(ev){
-        ev.preventDefault();
-        var term=document.getElementById('searchInput').value.trim().slice(0,80);
-        if(term.includes('*')){setStatus('별표(*)를 제외한 단어로 검색해주세요.',true);return;}
-        searchTerm=term;
-        selectOrbit(currentOrbit);
-    });
-    document.getElementById('clearSearch').addEventListener('click',function(){searchTerm='';selectOrbit(currentOrbit);document.getElementById('searchInput').focus();});
-    document.getElementById('loadMore').addEventListener('click',function(){loadPosts({more:true});});
-    document.getElementById('backToFeed').addEventListener('click',function(ev){ev.preventDefault();searchTerm='';selectOrbit(currentOrbit);});
-
-    document.getElementById('orbitTabs').addEventListener('click', function(e){
-        var tab = e.target.closest('.orbit-tab');
-        if(!tab) return;
-        selectOrbit(tab.getAttribute('data-orbit'));
-    });
-
-    // 이미 열린 광장에서 #report 같은 해시 링크를 눌러도 채널이 따라가게
-    window.addEventListener('hashchange', function(){
-        var o = orbitFromHash();
-        if(o && o !== currentOrbit) selectOrbit(o);
-    });
-
-    // ===== live 채널 30초 폴링 =====
-    // 이름이 "실시간 하늘"이니 이 채널만은 새로고침 없이 새 궤적이 나타나야 한다.
-    // 다른 채널까지 폴링하면 요청만 늘어서, 기대를 만들어 둔 채널만 지킨다.
-    var livePoll = null;
-    function canAutoRefresh(){
-        return currentOrbit === 'live' && panelActive && !document.hidden && !feedLoading && !singlePost && !searchTerm && loadedPosts.length <= PAGE_SIZE && !document.querySelector('.rp-back') && !Object.values(commentDrafts).some(function(t){return t.trim();}) && !Object.keys(pendingReactions).length;
-    }
-    function syncLivePoll(){
-        var want = currentOrbit === 'live' && panelActive && !singlePost && !searchTerm;
-        if(want && !livePoll){
-            livePoll = setInterval(function(){
-                if(canAutoRefresh()) loadPosts({ quiet: true });
-            }, 30000);
-        } else if(!want && livePoll){
-            clearInterval(livePoll);
-            livePoll = null;
-        }
-    }
-    // 탭을 벗어났다 돌아오면 다음 폴링까지 기다리지 않고 바로 따라잡는다
-    document.addEventListener('visibilitychange', function(){
-        if(canAutoRefresh()) loadPosts({ quiet: true });
-    });
-
-    window.addEventListener('message', function(ev){
-        if(ev.origin !== location.origin || ev.source !== parent || !ev.data || ev.data.orbit !== 'panelActive') return;
-        var resumed = !panelActive && ev.data.active === true;
-        panelActive = ev.data.active === true;
-        syncLivePoll();
-        if(resumed && canAutoRefresh()) loadPosts({quiet:true});
-    });
-    if(EMBED) parent.postMessage({orbit:'loungeReady'}, location.origin);
-
-    // ===== 관리자 확인 =====
-    // 로그인 세션이 있으면 admins에 등록된 계정인지 서버에 물어본다.
-    // 등록돼 있으면 모든 궤적·답에 삭제 버튼이 붙는다.
-    // 실패하거나 세션이 없으면 그냥 일반 사용자로 둔다 — 광장은 그대로 동작한다.
-    async function checkAdmin(){
-        if(!sb || !sb.auth) return false;
-        try {
-            var s = await sb.auth.getSession();
-            if(!s.data || !s.data.session) return false;
-            currentUserId = s.data.session.user.id;
-            var r = await sb.rpc('is_admin');
-            return !r.error && r.data === true;
-        } catch(e){ return false; }
-    }
-
-    function showAdminBadge(){
-        var el = document.getElementById('loungeStatus');
-        el.textContent = '🛰️ 관리자 모드 — 모든 궤적과 답을 지울 수 있어요';
-        el.style.color = 'var(--mint)';
-        el.style.borderColor = 'rgba(79,209,197,0.35)';
-        el.style.background = 'rgba(79,209,197,0.08)';
-    }
-
-    renderOrbitTabs();
-    renderChannelHeader();
-    renderWriteCard();
-    updateFeedLocation();
-
-    window.addEventListener('beforeunload',function(ev){
-        var input=document.getElementById('postInput');
-        if((input && input.value.trim()) || Object.values(commentDrafts).some(function(t){return t.trim();})){
-            ev.preventDefault();ev.returnValue='';
-        }
-    });
-
-    // 관리자 확인이 끝난 뒤에 목록을 그린다 — 먼저 그리면 삭제 버튼이 한 박자 늦게 나타난다.
-    checkAdmin().then(function(ok){
-        isAdmin = ok;
-        if(ok) showAdminBadge();
-        syncLivePoll();   // 해시로 live에 바로 들어온 경우
-        loadPosts();
-    });
+    await showRoute();
+  })();
+})();

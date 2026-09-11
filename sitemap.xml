@@ -39,4 +39,5 @@
   <url><loc>https://orbithere.com/about.html</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>https://orbithere.com/notes.html</loc><lastmod>2026-09-12</lastmod></url>
   <url><loc>https://orbithere.com/reading-sky.html</loc><lastmod>2026-09-12</lastmod></url>
+  <url><loc>https://orbithere.com/news.html</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 </urlset>

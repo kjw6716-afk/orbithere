@@ -38,9 +38,9 @@
         ];
         // Text only: user input is never interpreted as markup or sent to a server.
         output.value = lines.join('\n');
-        length.textContent = `${output.value.length} / 500자 · 게시판 한 글에 담을 수 있는 길이`;
-        const tooLong = output.value.length > 500;
-        if (tooLong) length.textContent = `${output.value.length}자 · 파일로 보관할 수 있어요. 게시판에 올릴 때는 500자 이내로 줄여주세요.`;
+        length.textContent = `${output.value.length} / 5,000자 · 게시판 한 글에 담을 수 있는 길이`;
+        const tooLong = output.value.length > 5000;
+        if (tooLong) length.textContent = `${output.value.length}자 · 파일로 보관할 수 있어요. 게시판에 올릴 때는 5,000자 이내로 줄여주세요.`;
         status.textContent = '';
     }
     form.addEventListener('submit', event => event.preventDefault());

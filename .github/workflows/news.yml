@@ -1,0 +1,51 @@
+name: 공식 우주 뉴스 갱신
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/update_news.py'
+      - '.github/workflows/news.yml'
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: official-news
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: RSS 파서 · 장애 복구 검증
+        run: python -m unittest discover -s tests -p 'test_news.py'
+      - name: 공식 제목과 원문 주소 갱신
+        run: python scripts/update_news.py
+      - name: 갱신 내역 저장
+        id: save
+        run: |
+          if git diff --quiet -- data/news.json; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/news.json
+          git commit -m 'chore: refresh official space headlines'
+          git push origin HEAD:main
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+      # A GITHUB_TOKEN commit does not trigger GitHub Pages' branch build.
+      # Request its native build explicitly after the cached headlines change.
+      - name: GitHub Pages 갱신
+        if: steps.save.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"

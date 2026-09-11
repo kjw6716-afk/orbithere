@@ -1,0 +1,230 @@
+{
+  "version": 1,
+  "checkedAt": "2026-09-11T21:59:39Z",
+  "sources": [
+    {
+      "id": "kasi",
+      "name": "한국천문연구원",
+      "language": "ko",
+      "feed": "https://www.kasi.re.kr/rss/newsMaterial",
+      "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
+      "lastCheckedAt": "2026-09-11T21:59:39Z",
+      "status": "ok",
+      "lastSuccessfulAt": "2026-09-11T21:59:39Z"
+    },
+    {
+      "id": "nasa",
+      "name": "NASA / JPL",
+      "language": "en",
+      "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
+      "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
+      "lastCheckedAt": "2026-09-11T21:59:39Z",
+      "status": "ok",
+      "lastSuccessfulAt": "2026-09-11T21:59:39Z"
+    },
+    {
+      "id": "esa",
+      "name": "ESA 우주과학",
+      "language": "en",
+      "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
+      "home": "https://www.esa.int/Science_Exploration/Space_Science",
+      "lastCheckedAt": "2026-09-11T21:59:39Z",
+      "status": "ok",
+      "lastSuccessfulAt": "2026-09-11T21:59:39Z"
+    }
+  ],
+  "items": [
+    {
+      "id": "235cf959f1ab0d2c",
+      "source": "kasi",
+      "title": "2026년 ‘올해의 KASI인상’ 수상자로 박병곤 책임연구원 선정",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32453",
+      "publishedAt": "2026-09-10T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "430b8c54b35508e5",
+      "source": "nasa",
+      "title": "How 2 US, European Satellites Are Studying Hurricanes During El Niño",
+      "url": "https://www.nasa.gov/missions/jason-cs-sentinel-6/how-2-us-european-satellites-are-studying-hurricanes-during-el-nino/",
+      "publishedAt": "2026-09-09T16:00:00Z",
+      "language": "en"
+    },
+    {
+      "id": "7dea421284cd9a42",
+      "source": "kasi",
+      "title": "우주에서 역대 가장 먼 원시 초은하단 발견",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32449",
+      "publishedAt": "2026-09-09T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "347403d862206df2",
+      "source": "kasi",
+      "title": "큐브위성 도요샛, 슈퍼 태양폭풍 속 ‘대기 저항’ 정량적으로 밝혔다",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32448",
+      "publishedAt": "2026-09-08T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "be0297cb0c112b00",
+      "source": "esa",
+      "title": "BepiColombo begins Mercury arrival with MTM separation success",
+      "url": "https://www.esa.int/Enabling_Support/Operations/BepiColombo_begins_Mercury_arrival_with_MTM_separation_success",
+      "publishedAt": "2026-09-07T08:25:00Z",
+      "language": "en"
+    },
+    {
+      "id": "97dd2a41cad6fa63",
+      "source": "esa",
+      "title": "BepiColombo’s Mercury arrival begins - full replay",
+      "url": "https://www.esa.int/ESA_Multimedia/Videos/2026/09/BepiColombo_s_Mercury_arrival_begins_-_full_replay",
+      "publishedAt": "2026-09-03T15:00:00Z",
+      "language": "en"
+    },
+    {
+      "id": "6b99d3ba0cb19611",
+      "source": "esa",
+      "title": "Hubble's superbubble scene",
+      "url": "https://www.esa.int/ESA_Multimedia/Images/2026/09/Hubble_s_superbubble_scene",
+      "publishedAt": "2026-09-03T08:00:00Z",
+      "language": "en"
+    },
+    {
+      "id": "28563e1cf6650be9",
+      "source": "esa",
+      "title": "Hubble tracks new decagon encircling Saturn’s south pole",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Hubble_tracks_new_decagon_encircling_Saturn_s_south_pole",
+      "publishedAt": "2026-09-02T18:00:00Z",
+      "language": "en"
+    },
+    {
+      "id": "0cc2c2530550a089",
+      "source": "esa",
+      "title": "Media briefing: BepiColombo's next milestone towards Mercury",
+      "url": "https://www.esa.int/ESA_Multimedia/Videos/2026/08/Media_briefing_BepiColombo_s_next_milestone_towards_Mercury",
+      "publishedAt": "2026-08-31T14:00:00Z",
+      "language": "en"
+    },
+    {
+      "id": "6587a20db72c2bce",
+      "source": "esa",
+      "title": "Roman lifts off on a mission to survey the infrared sky",
+      "url": "https://www.esa.int/ESA_Multimedia/Images/2026/08/Roman_lifts_off_on_a_mission_to_survey_the_infrared_sky",
+      "publishedAt": "2026-08-31T07:00:00Z",
+      "language": "en"
+    },
+    {
+      "id": "be1799cedcc10449",
+      "source": "nasa",
+      "title": "NASA’s Dark Universe-Seeking Nancy Grace Roman Space Telescope Launches",
+      "url": "https://www.nasa.gov/news-release/nasas-dark-universe-seeking-nancy-grace-roman-space-telescope-launches/",
+      "publishedAt": "2026-08-30T13:18:06Z",
+      "language": "en"
+    },
+    {
+      "id": "ef24cd7d701cef7b",
+      "source": "esa",
+      "title": "Expedition Sound podcast series",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Expedition_Sound_podcast_series",
+      "publishedAt": "2026-08-27T07:30:00Z",
+      "language": "en"
+    },
+    {
+      "id": "e7a16a750d4f01ff",
+      "source": "esa",
+      "title": "Watch live: BepiColombo begins its arrival at Mercury",
+      "url": "https://www.esa.int/Enabling_Support/Operations/Watch_live_BepiColombo_begins_its_arrival_at_Mercury",
+      "publishedAt": "2026-08-27T05:17:00Z",
+      "language": "en"
+    },
+    {
+      "id": "32ed9e7d11d21de1",
+      "source": "kasi",
+      "title": "천문연 박종욱 책임연구원, COSPAR 집행위원 선출",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32438",
+      "publishedAt": "2026-08-27T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "f3ac3655bf675d20",
+      "source": "nasa",
+      "title": "New Next-Gen Dish Adds Muscle to NASA’s Deep Space Network",
+      "url": "https://www.nasa.gov/technology/space-comms/deep-space-network/new-next-gen-dish-adds-muscle-to-nasas-deep-space-network/",
+      "publishedAt": "2026-08-25T22:28:34Z",
+      "language": "en"
+    },
+    {
+      "id": "0370b5d96bd90098",
+      "source": "nasa",
+      "title": "NASA Sets Coverage for Roman Space Telescope Launch from Florida",
+      "url": "https://www.nasa.gov/news-release/nasa-sets-coverage-for-roman-space-telescope-launch-from-florida/",
+      "publishedAt": "2026-08-24T20:44:58Z",
+      "language": "en"
+    },
+    {
+      "id": "374e76bc2ab2ce56",
+      "source": "nasa",
+      "title": "NASA Mission Studies Air Pollution Over Ethiopia",
+      "url": "https://www.nasa.gov/missions/maia/nasa-mission-studies-air-pollution-over-ethiopia/",
+      "publishedAt": "2026-08-17T19:24:34Z",
+      "language": "en"
+    },
+    {
+      "id": "9dc0d3c774c9802b",
+      "source": "nasa",
+      "title": "NASA’s Perseverance Rover Watches Earth Vanish Behind Martian Moon",
+      "url": "https://www.nasa.gov/solar-system/planets/mars/nasas-perseverance-rover-watches-earth-vanish-behind-martian-moon/",
+      "publishedAt": "2026-08-05T15:25:27Z",
+      "language": "en"
+    },
+    {
+      "id": "4a7aa5598bb2acdc",
+      "source": "nasa",
+      "title": "NASA Provides Updates on Moon Base Cargo Landers, Tech Demonstrations",
+      "url": "https://www.nasa.gov/missions/moon-base/nasa-provides-updates-on-moon-base-cargo-landers-tech-demonstrations/",
+      "publishedAt": "2026-08-04T16:14:51Z",
+      "language": "en"
+    },
+    {
+      "id": "d459877455309203",
+      "source": "nasa",
+      "title": "NASA’s Roman Telescope to Carry 1.35 Million Names to Deep Space",
+      "url": "https://www.nasa.gov/image-article/nasas-roman-telescope-to-carry-1-35-million-names-to-deep-space/",
+      "publishedAt": "2026-07-31T14:11:34Z",
+      "language": "en"
+    },
+    {
+      "id": "322e33d604bb9b7a",
+      "source": "kasi",
+      "title": "“우주+AI 기술로 지구 도달 태양풍의 속도를 예측하라!”",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32417",
+      "publishedAt": "2026-07-29T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "063e20b8d7eabd0c",
+      "source": "kasi",
+      "title": "천문연-연세대 항공우주전략연구원, 우주감시 및 우주안보 분야 협력 위한 업무협약 체결",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32390",
+      "publishedAt": "2026-07-10T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "da9093a581278078",
+      "source": "kasi",
+      "title": "2026년 여름 천문연수 실시",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32383",
+      "publishedAt": "2026-07-07T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "9730060225f350e8",
+      "source": "kasi",
+      "title": "세계 최대 우주 타임랩스 프로젝트 LSST, 10년 탐사 시작",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32380",
+      "publishedAt": "2026-07-02T00:00:00Z",
+      "language": "ko"
+    }
+  ]
+}

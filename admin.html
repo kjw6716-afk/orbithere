@@ -252,6 +252,13 @@
             <div id="rqList"></div>
         </section>
 
+        <section class="log-panel" id="photoPanel" style="display:none;">
+            <h2>게시판 사진 정리</h2>
+            <p>게시글에 연결되지 않은 지 하루 이상 지난 사진을 정리합니다. 게시 중인 사진은 삭제되지 않아요. 업로드 중단·글 삭제 후 남은 파일이 대상입니다.</p>
+            <button class="btn-line" id="cleanPhotos" type="button">남은 사진 확인·정리</button>
+            <p id="photoCleanupStatus" role="status"></p>
+        </section>
+
         <!-- 업데이트 기록 — 로그인한 관리자에게만 보인다 -->
         <section class="log-panel" id="logPanel" style="display:none;">
             <h2>📡 Update Notes</h2>
@@ -439,7 +446,22 @@
             document.getElementById('logPanel').style.display = on ? '' : 'none';
             document.getElementById('reportPanel').style.display = on ? '' : 'none';
             document.getElementById('visitPanel').style.display = on ? '' : 'none';
+            document.getElementById('photoPanel').style.display = on ? '' : 'none';
         }
+
+        document.getElementById('cleanPhotos').addEventListener('click',async function(){
+            var button=this,message=document.getElementById('photoCleanupStatus');button.disabled=true;
+            try {
+                var result=await sb.rpc('board_orphan_images',{p_limit:100});
+                if(result.error)throw result.error;
+                if(!result.data.length){message.textContent='정리할 사진이 없어요.';return;}
+                if(!confirm('게시글에 연결되지 않은 파일 '+result.data.length+'개를 삭제할까요?'))return;
+                var removed=await sb.storage.from('board-images').remove(result.data.map(function(row){return row.name;}));
+                if(removed.error)throw removed.error;
+                message.textContent=(removed.data||[]).length+'개 파일을 정리했어요. 남은 파일이 있으면 한 번 더 실행해주세요.';
+            } catch(error){message.textContent='사진을 정리하지 못했어요. 연결과 관리자 로그인을 확인하고 다시 시도해주세요.';}
+            finally{button.disabled=false;}
+        });
 
         // ===== 방문 집계 =====
         // 날짜 기준은 서버와 같은 한국 시간이다. 브라우저가 다른 시간대에 있어도

@@ -1,0 +1,136 @@
+#!/usr/bin/env python3
+"""Fetch only official RSS headlines. No article scraping or full-text copying."""
+import argparse
+import concurrent.futures
+import datetime as dt
+import email.utils
+import hashlib
+import html
+import json
+from pathlib import Path
+import re
+import sys
+import urllib.parse
+import urllib.request
+import xml.etree.ElementTree as ET
+
+SOURCES = [
+    {'id': 'kasi', 'name': '한국천문연구원', 'language': 'ko', 'host': 'www.kasi.re.kr', 'feed': 'https://www.kasi.re.kr/rss/newsMaterial', 'home': 'https://www.kasi.re.kr/kor/publication/post/newsMaterial'},
+    {'id': 'nasa', 'name': 'NASA / JPL', 'language': 'en', 'host': 'www.nasa.gov', 'feed': 'https://www.nasa.gov/centers-and-facilities/jpl/feed/', 'home': 'https://www.nasa.gov/centers-and-facilities/jpl/'},
+    {'id': 'esa', 'name': 'ESA 우주과학', 'language': 'en', 'host': 'www.esa.int', 'feed': 'https://www.esa.int/rssfeed/Our_Activities/Space_Science', 'home': 'https://www.esa.int/Science_Exploration/Space_Science'},
+]
+UTC = dt.timezone.utc
+MAX_BYTES = 2 * 1024 * 1024
+
+def safe_url(raw, source):
+    try:
+        url = urllib.parse.urlsplit(html.unescape(raw.strip()))
+        # Feeds sometimes retain http links; always upgrade on these HTTPS sites.
+        if url.scheme not in ('https', 'http') or url.hostname != source['host'] or url.username or url.password or url.port not in (None, 80, 443):
+            return None
+        return urllib.parse.urlunsplit(('https', source['host'], url.path, url.query, ''))
+    except ValueError:
+        return None
+
+def published(raw):
+    try:
+        date = email.utils.parsedate_to_datetime(raw)
+    except (TypeError, ValueError):
+        try:
+            date = dt.datetime.fromisoformat(raw.replace('Z', '+00:00'))
+        except (TypeError, ValueError):
+            return None
+    if date.tzinfo is None:
+        date = date.replace(tzinfo=UTC)
+    return date.astimezone(UTC)
+
+def parse_feed(body, source, now):
+    if len(body) > MAX_BYTES or re.search(br'<!\s*(DOCTYPE|ENTITY)', body, re.I):
+        raise ValueError('Feed size or XML declaration rejected')
+    root = ET.fromstring(body)
+    entries = [el for el in root.iter() if el.tag.split('}')[-1] in ('item', 'entry')]
+    if not entries:
+        raise ValueError('Feed contains no entries')
+    items, seen = [], set()
+    for entry in entries[:100]:
+        def value(*names):
+            for child in entry:
+                if child.tag.split('}')[-1] in names:
+                    return ''.join(child.itertext()).strip()
+            return ''
+        link = value('link')
+        if not link:
+            for child in entry:
+                if child.tag.split('}')[-1] == 'link' and child.get('rel', 'alternate') == 'alternate':
+                    link = child.get('href', '')
+                    break
+        link = safe_url(link, source)
+        title = re.sub(r'\s+', ' ', re.sub(r'<[^>]*>', '', html.unescape(value('title')))).strip()[:240]
+        date = published(value('pubDate', 'published', 'date', 'updated'))
+        if not link or not title or not date or date > now + dt.timedelta(days=1) or link in seen:
+            continue
+        seen.add(link)
+        items.append({'id': hashlib.sha256(link.encode()).hexdigest()[:16], 'source': source['id'], 'title': title, 'url': link, 'publishedAt': date.isoformat().replace('+00:00', 'Z'), 'language': source['language']})
+    if not items:
+        raise ValueError('No valid official headlines')
+    return sorted(items, key=lambda item: item['publishedAt'], reverse=True)[:8]
+
+class OfficialRedirect(urllib.request.HTTPRedirectHandler):
+    def __init__(self, source):
+        self.source = source
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        if not safe_url(newurl, self.source):
+            raise ValueError('Non-official feed redirect rejected')
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+def fetch_source(source, now):
+    request = urllib.request.Request(source['feed'], headers={'User-Agent': 'OrbitNews/1.0 (+https://orbithere.com/news.html)', 'Accept': 'application/rss+xml, application/xml, text/xml'})
+    with urllib.request.build_opener(OfficialRedirect(source)).open(request, timeout=20) as response:
+        if not safe_url(response.url, source):
+            raise ValueError('Unexpected feed destination')
+        return parse_feed(response.read(MAX_BYTES + 1), source, now)
+
+def collect(previous, fetch=fetch_source, now=None):
+    now = now or dt.datetime.now(UTC)
+    stamp = now.isoformat(timespec='seconds').replace('+00:00', 'Z')
+    items, states, successes = [], [], 0
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        pending = {s['id']: executor.submit(fetch, s, now) for s in SOURCES}
+        for source in SOURCES:
+            prior = next((s for s in previous.get('sources', []) if s.get('id') == source['id']), {})
+            state = {k: source[k] for k in ('id', 'name', 'language', 'feed', 'home')}
+            state['lastCheckedAt'] = stamp
+            try:
+                fresh = pending[source['id']].result()
+                if not fresh:
+                    raise ValueError('Empty feed')
+                items.extend(fresh)
+                state.update(status='ok', lastSuccessfulAt=stamp)
+                successes += 1
+            except Exception as error:
+                # Error details belong to Actions logs, never feed content or UI.
+                print(f"{source['id']}: {type(error).__name__}: {error}", file=sys.stderr)
+                items.extend(item for item in previous.get('items', []) if item.get('source') == source['id'] and safe_url(item.get('url', ''), source))
+                state.update(status='unavailable', lastSuccessfulAt=prior.get('lastSuccessfulAt'))
+            states.append(state)
+    return {'version': 1, 'checkedAt': stamp, 'sources': states, 'items': sorted(items, key=lambda item: item['publishedAt'], reverse=True)[:24]}, successes
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output', type=Path, default=Path(__file__).resolve().parents[1] / 'data/news.json')
+    args = parser.parse_args()
+    previous = json.loads(args.output.read_text()) if args.output.exists() else {}
+    result, successes = collect(previous)
+    if not result['items']:
+        print('No cached or fresh news available; previous file preserved.', file=sys.stderr)
+        return 1
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    temp = args.output.with_suffix('.tmp')
+    temp.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+    temp.replace(args.output)
+    print(f"Saved {len(result['items'])} headlines; {successes}/3 sources refreshed.")
+    # Still save outage states so the UI does not claim a fresh successful sync.
+    return 0
+
+if __name__ == '__main__':
+    raise SystemExit(main())
