@@ -43,7 +43,7 @@
 <main class="guide-main" id="main-content">
 <div class="guide-hero"><p class="eyebrow">나의 관측 노트</p><h1>본 것과 못 본 것,<br>다음 밤의 단서로</h1>
 <p>짧은 기록이면 충분해요. 관측 조건과 결과를 함께 남기면 다음에 무엇을 바꿔볼지 알 수 있어요.</p>
-<p class="small">작성 내용은 이 화면에서만 다룹니다. 자동 저장·게시되지 않으니, 떠나기 전에 복사하거나 파일로 내려받으세요.</p></div>
+<p class="small">자동 저장·게시하지 않습니다. ‘이 기기에 저장’을 누르면 이 브라우저에 기록 하나를 보관하고 나중에 이어 쓸 수 있어요. 다시 저장하면 이전 저장본이 바뀝니다. 공용 기기에서는 파일로 내려받으세요.</p></div>
 <section aria-labelledby="note-heading"><h2 id="note-heading">오늘의 기록 만들기</h2>
 <form id="noteForm" class="note-form">
 <div class="note-grid">
@@ -58,6 +58,8 @@
 <p class="small">집 주소나 연락처는 적지 않아도 돼요. 게시판은 공개 공간입니다.</p>
 <div class="note-preview"><label for="noteOutput">복사할 기록</label><textarea id="noteOutput" rows="10" readonly aria-describedby="noteLength"></textarea><p id="noteLength" class="small"></p></div>
 <div class="note-actions"><button type="button" class="guide-button" id="copyNote">기록 복사</button><button type="button" class="text-button" id="downloadNote">텍스트로 내려받기</button><button type="reset" class="text-button">입력 지우기</button></div>
+<div class="note-actions"><button type="button" class="text-button" id="saveNote">이 기기에 저장</button><button type="button" class="text-button" id="restoreNote" hidden>저장한 기록 불러오기</button><button type="button" class="text-button" id="deleteSavedNote" hidden>기기 저장본 삭제</button></div>
+<p id="savedNoteStatus" class="small" role="status" aria-live="polite"></p>
 <p id="noteStatus" role="status" aria-live="polite"></p>
 <a href="lounge.html#report">관측 후기 게시판 열기 →</a><p class="small">공유하고 싶을 때만 게시판에 복사한 기록을 붙여 넣어주세요.</p>
 </form><noscript><p>기록 생성에는 자바스크립트가 필요해요. 아래 다섯 가지를 메모 앱에 적어도 같은 방식으로 기록할 수 있습니다.</p></noscript></section>

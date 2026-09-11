@@ -24,7 +24,7 @@ async function fixture(width=390,height=844){
   requests.push(route.request().url());
   return new URL(route.request().url()).origin===base?route.continue():route.abort();
  });
- const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
+ const page=await context.newPage();page.on('dialog',dialog=>dialog.accept());page.on('pageerror',e=>errors.push(e.message));
  return {context,page,requests,errors};
 }
 try {
@@ -70,6 +70,23 @@ try {
   await page.getByLabel('관측 대상',{exact:true}).fill('temporary-note');
   await page.reload();
   ok('private note is not persisted on reload',await page.getByLabel('관측 대상',{exact:true}).inputValue()==='');
+  await page.getByLabel('관측 대상',{exact:true}).fill('저장할 토성 기록');
+  await page.getByRole('button',{name:'이 기기에 저장',exact:true}).click();
+  await page.reload();
+  ok('saved note is offered without silently filling a shared device',await page.getByLabel('관측 대상',{exact:true}).inputValue()===''&&await page.getByRole('button',{name:'저장한 기록 불러오기'}).isVisible());
+  await page.getByRole('button',{name:'저장한 기록 불러오기'}).click();
+  ok('explicit restoration recovers the saved fields',await page.getByLabel('관측 대상',{exact:true}).inputValue()==='저장할 토성 기록');
+  await page.getByRole('button',{name:'기기 저장본 삭제'}).click();
+  ok('removing saved note preserves the open draft',await page.getByLabel('관측 대상',{exact:true}).inputValue()==='저장할 토성 기록'&&!await page.locator('#restoreNote').isVisible()&&await page.evaluate(()=>localStorage.getItem('orbit_observation_draft'))===null);
+  await page.getByLabel('관측 대상',{exact:true}).fill('대'.repeat(50));
+  await page.getByLabel('대략적인 지역',{exact:true}).fill('지'.repeat(50));
+  await page.getByLabel('하늘과 주변 조건',{exact:true}).fill('조'.repeat(90));
+  await page.getByLabel('관찰한 모습 · 다음에 바꿔볼 점',{exact:true}).fill('기'.repeat(200));
+  const longNote=await page.locator('#noteOutput').inputValue();
+  ok('long observation can still be copied or downloaded',await page.getByRole('button',{name:'기록 복사',exact:true}).isEnabled()&&await page.getByRole('button',{name:'텍스트로 내려받기'}).isEnabled());
+  await page.evaluate(()=>{Storage.prototype.setItem=function(){throw new DOMException('Full','QuotaExceededError');};});
+  await page.getByRole('button',{name:'이 기기에 저장',exact:true}).click();
+  ok('storage failure offers export without losing input',(await page.locator('#noteStatus').textContent()).includes('저장 공간')&&await page.locator('#noteOutput').inputValue()===longNote);
   await page.goto(base+'/reading-sky.html');
   await page.locator('#altitudeRange').fill('90');
   ok('altitude control reaches the zenith',await page.locator('#angleValue').textContent()==='90°'&&Math.abs(Number(await page.locator('#sightPoint').getAttribute('cy'))-30)<.01);
@@ -80,11 +97,11 @@ try {
   ok('privacy copy describes purposes without internal keys',!visible.includes('orbit_')&&!visible.includes('auth-token')&&visible.includes('작성 권한을 유지하는 인증 정보'));
   await context.close();
  }
- for(const mode of ['invalid','enabled','blocked']){
+ for(const mode of ['invalid','enabled','blocked','unfilled']){
   const {context,page,requests,errors}=await fixture();
   await page.route('**/ads-config.js',route=>route.fulfill({contentType:'text/javascript',body:`window.ORBIT_ADS={enabled:true,client:'${mode==='invalid'?'invalid':'ca-pub-1234567890123456'}',slot:'1234567890'};`}));
   let adRequests=0;
-  await page.route('https://pagead2.googlesyndication.com/**',route=>{adRequests++;return mode==='blocked'?route.abort():route.fulfill({contentType:'text/javascript',body:'window.adsbygoogle={push:function(){window.testAdCalls=(window.testAdCalls||0)+1}};'});});
+  await page.route('https://pagead2.googlesyndication.com/**',route=>{adRequests++;return mode==='blocked'?route.abort():route.fulfill({contentType:'text/javascript',body:'window.adsbygoogle={push:function(){window.testAdCalls=(window.testAdCalls||0)+1;'+(mode==='unfilled'?'document.querySelector(\".editorial-ad ins\").setAttribute(\"data-ad-status\",\"unfilled\");':'')+'}};' });});
   await page.goto(base+'/guide.html');
   if(mode==='enabled'){
    await page.waitForFunction(()=>window.testAdCalls===1);
