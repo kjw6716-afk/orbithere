@@ -42,3 +42,6 @@ jobs:
 
       - name: 모바일 첫 화면 · 메뉴 검증
         run: node tests/landing.mjs
+
+      - name: 관측 도구 · 광고 비활성 및 오류 검증
+        run: node tests/content.mjs

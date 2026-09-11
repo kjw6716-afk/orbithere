@@ -1,0 +1,5 @@
+/* An inactive <template> occupies no space and makes no ad requests. */
+.editorial-ad { width:100%; min-width:0; margin:56px 0; padding:20px 0; border-top:1px solid #304055; border-bottom:1px solid #304055; }
+.editorial-ad .ad-label { color:#94A3B8; font-size:12px; text-align:center; margin:0 0 12px; }
+.editorial-ad ins { width:100%; min-height:90px; }
+@media(max-width:700px) { .editorial-ad ins { min-height:100px; } }

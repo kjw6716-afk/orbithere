@@ -1,0 +1,38 @@
+{
+  "orbit_nickname": {
+    "section": "storage-profile",
+    "purpose": "닉네임 기억"
+  },
+  "orbit_joindate": {
+    "section": "storage-profile",
+    "purpose": "최초 진입 날짜 표시"
+  },
+  "orbit_jointime": {
+    "section": "storage-profile",
+    "purpose": "최초 진입 시각 표시"
+  },
+  "orbit_device_id": {
+    "section": "storage-visits",
+    "purpose": "방문 중복 집계 방지"
+  },
+  "orbit_visit_day": {
+    "section": "storage-visits",
+    "purpose": "마지막 방문 집계 날짜"
+  },
+  "orbit_place": {
+    "section": "storage-place",
+    "purpose": "선택 도시 기억"
+  },
+  "sb-unwxpuvfqyjhgrcrmuhu-auth-token": {
+    "section": "storage-auth",
+    "purpose": "Supabase SDK 인증 유지"
+  },
+  "orbit_zodiac": {
+    "section": "storage-legacy",
+    "purpose": "이전 기능의 잔여 저장값; 현재 사용 안 함"
+  },
+  "orbit_animal": {
+    "section": "storage-legacy",
+    "purpose": "이전 기능의 잔여 저장값; 현재 사용 안 함"
+  }
+}

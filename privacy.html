@@ -26,7 +26,7 @@
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
     <link rel="stylesheet" href="/orbit.css?v=20260911-layout">
     <style>
-        .container { max-width: 720px; margin: 130px auto 0; padding: 0 20px; }
+        .container { max-width: 760px; margin: 110px auto 0; padding: 0 24px; overflow-wrap: anywhere; }
 
         .hero { margin-bottom: 30px; }
         .hero h1 { font-size: 1.8rem; font-weight: 200; margin: 0; line-height: 1.3; }
@@ -38,8 +38,8 @@
             font-size: 1.05rem; font-weight: 600; margin: 34px 0 12px;
             padding-bottom: 8px; border-bottom: 1px solid rgba(255,159,67,0.12);
         }
-        .doc p { color: #94A3B8; font-size: 14px; line-height: 1.8; margin: 0 0 12px; }
-        .doc ul, .doc ol { color: #94A3B8; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0 0 12px; }
+        .doc p { color: #B7C4D7; font-size: 15px; line-height: 1.9; margin: 0 0 12px; }
+        .doc ul, .doc ol { color: #B7C4D7; font-size: 15px; line-height: 1.9; padding-left: 20px; margin: 0 0 12px; }
         .doc li { margin-bottom: 6px; }
         .doc strong { color: var(--accent); font-weight: 600; }
         .doc a { color: var(--accent); }
@@ -49,7 +49,7 @@
             border-radius: 6px; padding: 1px 6px; color: #CBD5E1;
         }
         .doc table {
-            width: 100%; border-collapse: collapse; font-size: 13px; color: #94A3B8;
+            width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 13px; color: #94A3B8;
             margin: 0 0 12px;
         }
         .doc th, .doc td {
@@ -71,41 +71,55 @@
 
         ::selection { background-color: #4FD1C5; color: #0F172A; }
 
+        .legal-skip { position:absolute; top:-100px; left:20px; z-index:200; padding:12px; background:#0F172A; color:#4FD1C5; }
+        .legal-skip:focus { top:8px; }
+        .doc a:focus-visible { outline:2px solid #4FD1C5; outline-offset:3px; }
+        .doc h2 { scroll-margin-top:90px; }
+        .effective, .notice { color:#94A3B8; }
+        .legal-summary { background:#162438; padding:18px 20px; border-radius:14px; margin:24px 0; color:#CBD5E1; font-size:14px; line-height:1.8; }
+        .legal-summary a { color:#78E2D5; margin-right:14px; display:inline-flex; align-items:center; min-height:40px; white-space:nowrap; }
+        .privacy-items { display:grid; gap:16px; margin:24px 0; }
+        .privacy-items article { padding:20px; border:1px solid #304055; border-radius:12px; background:#142032; }
+        .privacy-items h3 { margin:0 0 12px; color:#E2E8F0; font-size:16px; }
+        .privacy-items p:last-child { margin:0; }
+        .privacy-items p strong { color:#CBD5E1; }
+        .nav-back { color:#CBD5E1; border-color:#40516A; }
         /* ===== 공통 푸터 ===== */
     </style>
 </head>
 <body>
     <div class="bg-glow"></div>
 
+    <a class="legal-skip" href="#legal-content">본문으로 바로가기</a>
     <nav class="site-topbar">
         <a class="logo" href="index.html">ORBIT.</a>
         <button class="nav-back" onclick="location.href='main.html'">← 커뮤니티 홈</button>
     </nav>
 
-    <main class="container">
+    <main class="container" id="legal-content">
         <div class="hero">
             <h1>Orbit <strong>개인정보처리방침</strong></h1>
-            <p>Orbit은 회원가입 없이 쓰는 서비스라 모으는 정보 자체가 아주 적어요. 그래도 무엇을, 왜, 어떻게 다루는지 투명하게 적어둡니다.</p>
-            <div class="effective">시행일: 2026년 9월 11일 <span style="color:#64748B;">(직전 시행일: 2026년 8월 3일)</span></div>
+            <p>닉네임과 게시물, 작성 권한을 어떻게 다루는지 안내합니다. 저장하는 정보와 지우는 방법을 함께 확인해 주세요.</p>
+            <div class="effective">시행일: 2026년 9월 12일 <span style="color:#94A3B8;">(직전 시행일: 2026년 9월 11일)</span></div>
         </div>
 
+        <div class="legal-summary"><strong>먼저 알아두세요</strong><p>공개한 글은 다른 사람이 읽을 수 있어요. 브라우저 데이터를 지우기 전에 삭제할 글이 있는지 확인해 주세요.</p><a href="#collection">처리하는 정보</a><a href="#retention">보관과 삭제</a><a href="#browser-storage">브라우저 저장</a><a href="#rights">내 권리</a></div>
         <div class="doc">
-            <h2>1. 수집하는 정보</h2>
+            <h2 id="collection">1. 수집하는 정보</h2>
             <p>Orbit(orbithere.com, 이하 "서비스")은 이메일·비밀번호를 입력하는 가입 절차 없이 이용합니다. 글·댓글·리액션·신고를 처음 저장할 때 Supabase가 익명 인증 계정을 만들며, 다음 정보를 다룹니다.</p>
-            <table>
-                <tr><th>항목</th><th>내용</th><th>저장 위치</th></tr>
-                <tr><td>닉네임</td><td>이용자가 직접 입력한 별칭</td><td>이용자 브라우저(localStorage), 글 작성 시 데이터베이스</td></tr>
-                <tr><td>게시물</td><td>작성한 글·답(댓글)·리액션과 작성 시각</td><td>데이터베이스(Supabase)</td></tr>
-                <tr><td>방문 집계</td><td>날짜별 방문 횟수(숫자 하나)와, 하루 한 번만 세기 위한 임시 표시값. 누가 방문했는지는 남기지 않습니다.</td><td>데이터베이스(Supabase)</td></tr>
-                <tr><td><strong>익명 작성자와 인증 세션</strong></td><td>서버가 발급한 무작위 사용자 ID와 이 브라우저의 작성 권한을 증명하는 인증 세션. 직접 입력하는 실명·이메일·비밀번호는 없습니다.</td><td>사용자 ID는 Supabase 인증 계정과 글·댓글·리액션·신고에 저장됩니다. 인증 세션은 이용자 브라우저에 저장됩니다.</td></tr>
-                <tr><td><strong>방문 집계용 기기 식별자</strong></td><td>브라우저가 만든 무작위 UUID. 작성 권한을 증명하는 데 사용하지 않습니다.</td><td>브라우저 저장소. 방문 집계 서버에는 날짜와 섞은 축약값만 저장합니다.</td></tr>
-            </table>
+            <div class="privacy-items">
+<article><h3>닉네임</h3><p>이용자가 직접 입력한 별칭</p><p><strong>보관 위치</strong> · 이용자 브라우저 저장소, 글 작성 시 데이터베이스</p></article>
+<article><h3>게시물</h3><p>작성한 글·답(댓글)·리액션과 작성 시각</p><p><strong>보관 위치</strong> · 데이터베이스(Supabase)</p></article>
+<article><h3>방문 집계</h3><p>날짜별 방문 횟수(숫자 하나)와, 하루 한 번만 세기 위한 임시 표시값. 실명·연락처와 연결한 방문 이력을 만들지 않습니다.</p><p><strong>보관 위치</strong> · 데이터베이스(Supabase)</p></article>
+<article><h3><strong>익명 작성자와 인증 세션</strong></h3><p>서버가 발급한 무작위 사용자 ID와 이 브라우저의 작성 권한을 증명하는 인증 세션. 직접 입력하는 실명·이메일·비밀번호는 없습니다.</p><p><strong>보관 위치</strong> · 사용자 ID는 Supabase 인증 계정과 글·댓글·리액션·신고에 저장됩니다. 인증 세션은 이용자 브라우저에 저장됩니다.</p></article>
+<article><h3><strong>방문 집계용 기기 식별자</strong></h3><p>브라우저가 만든 무작위 식별값. 작성 권한을 증명하는 데 사용하지 않습니다.</p><p><strong>보관 위치</strong> · 브라우저 저장소. 방문 집계 서버에는 날짜와 섞은 축약값만 저장합니다.</p></article>
+            </div>
             <p>익명 인증은 본인의 글·댓글 삭제, 리액션 중복 방지, 도배와 반복 신고 제한에 사용합니다. 서버가 인증 세션을 검증하며, 닉네임이나 공개된 ID만으로는 삭제할 수 없습니다.</p>
             <p>글·댓글에 연결된 무작위 작성자 ID는 공개 조회 결과에 포함될 수 있어 같은 작성자의 게시물을 연결해 볼 수 있습니다. <strong>인증 세션은 공개하지 않습니다.</strong> 신고 내용은 운영자만 열람합니다.</p>
             <p>방문 집계는 작성자 인증과 별도로 하루 한 번만 셉니다. 날짜별 방문 횟수와 임시 중복 방지값을 저장합니다.</p>
             <ul>
                 <li>이름, 이메일, 전화번호, GPS 위치를 입력하도록 요구하지 않습니다. 이용자가 게시글에 직접 입력한 정보는 다른 이용자에게 공개되므로 주의해 주세요.</li>
-                <li>Google Analytics 등 <strong>제3자 방문자 추적(analytics) 도구를 사용하지 않습니다.</strong> 방문 집계는 위 표와 같이 날짜별 숫자만 자체 데이터베이스에 남기며, 이용자별 방문 이력이나 이동 경로는 만들지 않습니다.</li>
+                <li>Google Analytics 등 <strong>제3자 방문자 추적(analytics) 도구를 사용하지 않습니다.</strong> 방문 집계는 위 안내와 같이 날짜별 방문 횟수와 임시 중복 방지값을 자체 데이터베이스에 남기며, 이용자별 방문 이력이나 이동 경로는 만들지 않습니다.</li>
                 <li>호스팅(GitHub Pages)·데이터베이스(Supabase) 사업자가 서비스 운영을 위해 접속 기록(IP 주소 등)을 자동 수집할 수 있으며, 이는 각 사업자의 개인정보처리방침을 따릅니다.</li>
             </ul>
 
@@ -117,47 +131,48 @@
                 <li>방문 집계: 서비스 이용 추세 확인(운영자만 열람). 광고·맞춤형 추천에 쓰지 않습니다</li>
             </ul>
 
-            <h2>3. 보관 및 파기</h2>
+            <h2 id="retention">3. 보관 및 파기</h2>
             <ul>
                 <li>닉네임·인증 세션·방문 집계용 기기 식별자는 브라우저 데이터를 지우면 해당 브라우저에서 삭제됩니다. 인증 세션을 잃으면 이전 글의 직접 삭제 권한을 복구할 수 없습니다.</li>
                 <li>게시물의 작성자 연결값은 해당 게시물과 함께 삭제됩니다. Supabase의 익명 인증 계정은 브라우저 데이터를 지워도 자동 삭제되지 않으며, 운영자의 계정 정리 또는 삭제 요청 처리 시까지 보관됩니다.</li>
                 <li>방문을 하루 한 번만 세기 위한 임시 표시값은 만들어진 지 4일이 지나면 그 다음 방문이 기록될 때 함께 삭제됩니다. 날짜별 방문 횟수(숫자)는 개인과 연결되지 않은 통계라 계속 보관합니다.</li>
                 <li>게시물은 이용자가 직접 삭제하거나 운영자가 운영 정책에 따라 삭제할 때까지 보관됩니다.</li>
-                <li>베타 기간 중 서비스 개편으로 데이터가 일괄 초기화될 수 있습니다.</li>
+                <li>서비스 개편으로 데이터 이전이나 삭제가 필요한 경우 대상과 시점을 가능한 한 미리 안내합니다.</li>
             </ul>
 
-            <h2>4. 브라우저 저장소(localStorage) 사용</h2>
-            <p>브라우저에는 아래 설정과 인증 세션을 저장합니다. 글을 작성할 때 닉네임과 인증 정보가 서버로 전달되며, 브라우저 설정에서 로컬 저장값을 지울 수 있습니다.</p>
+            <h2 id="browser-storage">4. 브라우저에 기억하는 정보</h2>
+            <p>다음 정보를 이용 중인 브라우저에 저장해 다음 방문에도 이어서 이용할 수 있게 합니다. 브라우저의 ‘사이트 데이터 삭제’에서 지울 수 있어요.</p>
             <ul>
-                <li><code>orbit_nickname</code> — 닉네임</li>
-                <li><code>orbit_joindate</code>, <code>orbit_jointime</code> — 궤도 진입 시점</li>
-                <li><code>orbit_device_id</code> — 방문 집계용 무작위 UUID. 이전 버전에서는 게시물 소유권에도 사용했지만 보안 업데이트 이후에는 사용하지 않습니다</li>
-                <li><code>sb-unwxpuvfqyjhgrcrmuhu-auth-token</code> — Supabase 인증 세션(접근·갱신 토큰과 사용자 ID). 익명 작성자와 운영자 로그인에 사용합니다. 서버 주소를 변경하면 키의 프로젝트 부분도 바뀝니다</li>
-                <li><code>orbit_visit_day</code> — 방문 수를 마지막으로 센 날짜. 같은 날 페이지를 여러 번 열 때 불필요한 요청을 보내지 않기 위한 값입니다</li>
-                <li><code>orbit_place</code> — «오늘 밤 행성» 페이지에서 고른 관측 도시(예: <code>seoul</code>). 다음 방문에도 같은 도시로 계산해 보여주기 위한 값이며, 목록에 있는 도시 이름 외의 정보(실제 위치·GPS)는 담기지 않습니다. 서버로 보내지 않습니다</li>
+                <li id="storage-profile"><strong>닉네임과 처음 이용한 시점</strong> — 내 별칭과 이용 시작 시점을 화면에 표시합니다. 닉네임은 글·댓글을 작성할 때 게시물과 함께 서버에 저장됩니다.</li>
+                <li id="storage-auth"><strong>작성 권한을 유지하는 인증 정보</strong> — 이 브라우저에서 내가 쓴 글과 댓글을 구분하고 삭제할 수 있도록 합니다. 운영자 로그인 유지에도 사용합니다.</li>
+                <li id="storage-visits"><strong>방문 중복 집계 방지 정보</strong> — 무작위 식별값과 마지막 집계 날짜로 하루에 여러 번 방문해도 중복해서 세지 않도록 합니다.</li>
+                <li id="storage-place"><strong>선택한 관측 도시</strong> — 다음에도 같은 도시의 하늘을 보여줍니다. 목록에서 선택한 도시만 기억하며 GPS 위치를 수집하거나 선택한 도시를 서버에 전송하지 않습니다.</li>
             </ul>
-            <p>지난 버전에서 쓰던 <code>orbit_zodiac</code>, <code>orbit_animal</code>(운세 페이지에서 고른 별자리·띠)이 브라우저에 남아 있을 수 있습니다. 해당 기능을 내리면서 더 이상 저장하거나 읽지 않으며, 브라우저 데이터를 지우면 함께 삭제됩니다.</p>
+            <p id="storage-legacy">종료된 운세 기능에서 선택했던 별자리·띠 정보가 예전 브라우저에 남아 있을 수 있습니다. 현재는 읽거나 새로 저장하지 않으며, 사이트 데이터를 지우면 함께 삭제됩니다.</p>
+            <p><strong>사이트 데이터를 지워도 서버에 올린 게시물과 익명 인증 계정은 자동 삭제되지 않습니다.</strong> 작성 권한도 사라질 수 있으므로, 지우고 싶은 게시물은 먼저 삭제해 주세요.</p>
+            <p>관측 가이드의 체크리스트와 관측 노트 작성 내용은 이 화면에서만 다룹니다. 자동 저장하거나 서버로 보내지 않습니다. 직접 내려받은 노트 파일과 복사한 내용은 이용자가 보관·삭제합니다.</p>
 
             <h2>5. 제3자 제공 및 처리 위탁</h2>
-            <p>수집한 정보를 제3자에게 판매하거나 제공하지 않습니다. 다만 서비스 운영을 위해 아래 인프라를 이용합니다.</p>
+            <p>개인정보를 판매하지 않습니다. 이용자가 작성한 글·댓글·닉네임은 공개 게시판에 표시되며, 그 외 정보는 서비스 운영에 필요한 아래 사업자를 통해 처리됩니다.</p>
             <table>
-                <tr><th>사업자</th><th>용도</th></tr>
+                <tr><th scope="col">사업자</th><th scope="col">용도</th></tr>
                 <tr><td>GitHub Pages</td><td>웹사이트 호스팅</td></tr>
                 <tr><td>Supabase</td><td>게시물 데이터베이스와 익명 작성자·운영자 인증</td></tr>
                 <tr><td>jsDelivr CDN</td><td>웹폰트·라이브러리 전송</td></tr>
             </table>
 
             <h2>6. 광고에 관한 안내</h2>
-            <p>향후 서비스에 광고(Google AdSense 등 제3자 광고 서비스)가 게재될 수 있습니다. 이 경우 광고 사업자는 맞춤 광고 제공을 위해 쿠키를 사용할 수 있으며, 이용자는 <a href="https://adssettings.google.com" rel="noopener" target="_blank">Google 광고 설정</a>에서 맞춤 광고를 관리하거나 거부할 수 있습니다. 광고 도입 시 이 방침을 갱신해 고지합니다.</p>
+            <p>현재 제3자 광고를 송출하지 않으며 광고용 쿠키를 설정하는 스크립트도 실행하지 않습니다. 광고를 도입할 때는 광고 사업자, 처리 정보와 목적, 쿠키·동의 및 거부 방법을 이 페이지에 먼저 안내합니다.</p>
 
-            <h2>7. 이용자의 권리</h2>
+            <h2 id="rights">7. 이용자의 권리</h2>
             <ul>
                 <li>보안 업데이트 이후 작성한 글·댓글은 작성 당시 인증 세션이 남아 있는 브라우저에서 직접 삭제할 수 있습니다. 이전 기기 ID 방식으로 작성한 글은 소유권을 안전하게 확인할 수 없어 운영자에게 삭제를 요청해야 합니다.</li>
                 <li>브라우저 데이터를 삭제하면 닉네임과 인증 세션, 방문 집계용 기기 식별자가 함께 사라집니다. 다만 이미 올린 게시물은 그대로 남으며, 삭제 권한이 사라지므로 지우고 싶은 글은 미리 삭제하시거나 아래 경로로 요청해 주세요.</li>
-                <li>기타 삭제 요청이나 문의는 <a href="lounge.html">글 남기기</a>를 통해 남겨주세요.</li>
+                <li>열람·정정·삭제·처리 정지 요청은 <a href="lounge.html#ask">질문 게시판</a>에서 운영자에게 문의해 주세요. 공개 게시판에는 요청 종류와 해당 게시물만 알려주시고, 인증 정보나 신분증·연락처는 올리지 마세요. 요청자의 권한을 확인할 수 있는 범위에서 처리하며, 확인이 어려운 경우 그 이유를 안내합니다.</li>
             </ul>
 
-            <h2>8. 방침의 변경</h2>
+            <h2>8. 담당 및 방침의 변경</h2>
+            <p>개인정보 관련 요청은 Orbit 운영자가 확인합니다. 현재 문의 경로는 <a href="about.html#contact">소개·문의에 안내된 게시판</a>입니다.</p>
             <p>이 방침은 법령이나 서비스 변경에 따라 개정될 수 있으며, 개정 시 이 페이지에 시행일과 함께 게시합니다.</p>
 
             <div class="notice">
@@ -168,6 +183,7 @@
 
     <footer class="site-footer">
         <div class="foot-links">
+            <a href="notes.html">관측 노트</a>
                     <a href="guide.html">관측 가이드</a>
                     <a href="about.html">소개·문의</a>
             <a href="main.html">커뮤니티 홈</a>

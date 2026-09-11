@@ -48,6 +48,33 @@ p { color: #B7C4D7; margin: 0 0 16px; }
 .about-links a { display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid #304055; border-radius: 16px; text-decoration: none; }
 .about-links span { color: #B7C4D7; font-size: .9rem; }
 .foot-links a { color: #AAB9CD; min-height: 36px; display: inline-flex; align-items: center; }
+.content-card { padding:24px; border:1px solid #304055; border-radius:16px; }
+.reading-list { padding-left:24px; color:#B7C4D7; }
+.reading-list li { padding-left:6px; margin-bottom:14px; }
+.direction-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); text-align:center; border:1px solid #304055; border-radius:16px; padding:18px; margin:24px 0; color:#B7C4D7; }
+.direction-strip strong { color:#4FD1C5; font-size:1.15rem; }
+.altitude-demo { border:1px solid #37564F; border-radius:20px; padding:24px; margin:24px 0; background:#122333; }
+.altitude-demo svg { display:block; width:100%; max-width:540px; margin:auto; }
+.altitude-demo text { fill:#B7C4D7; font:14px sans-serif; }
+.altitude-demo label { display:flex; justify-content:space-between; gap:16px; }
+.altitude-demo output { color:#4FD1C5; font-variant-numeric:tabular-nums; }
+.altitude-demo input { width:100%; min-height:44px; margin:12px 0; accent-color:#4FD1C5; }
+.altitude-demo p { font-size:.9rem; }
+.note-form { padding:28px; border:1px solid #37564F; border-radius:20px; background:#122030; }
+.note-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+.note-form label { display:block; margin-bottom:18px; color:#E2E8F0; font-size:.9rem; }
+.note-select { margin-bottom:18px; }
+.note-form .note-select label { margin-bottom:0; }
+.note-form input, .note-form select, .note-form textarea { display:block; box-sizing:border-box; width:100%; min-width:0; max-width:100%; margin-top:8px; border:1px solid #40516A; border-radius:9px; background:#0F172A; color:#E2E8F0; font:inherit; font-size:16px; padding:12px; }
+.note-form textarea { resize:vertical; line-height:1.7; }
+.note-form textarea:focus-visible, .note-form select:focus-visible { outline:2px solid #4FD1C5; outline-offset:3px; }
+.note-form ::placeholder { color:#899BB2; }
+.note-preview { border-top:1px solid #304055; padding-top:24px; margin-top:24px; }
+.note-preview label { margin-bottom:0; }
+.note-actions { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:20px 0; }
+.note-actions button { margin:0; border:1px solid #4C807A; cursor:pointer; font:inherit; font-size:.9rem; }
+.note-actions button:disabled { opacity:.5; cursor:not-allowed; }
+#noteStatus { min-height:1.7em; color:#91DCCE; font-size:.9rem; }
 @media (max-width: 700px) {
  .guide-header { align-items: flex-start; flex-direction: column; padding: 18px 24px 10px; gap: 8px; }
  .guide-header nav { gap: 0 16px; }
@@ -56,4 +83,7 @@ p { color: #B7C4D7; margin: 0 0 16px; }
  .equipment-grid, .about-links { grid-template-columns: minmax(0,1fr); }
  .checklist-card { padding: 20px; }
  .guide-steps li { gap: 14px; }
+ .note-grid { grid-template-columns:minmax(0,1fr); gap:0; }
+ .note-form, .altitude-demo { padding:18px; }
+ .direction-strip { padding:14px 8px; }
 }

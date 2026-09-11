@@ -26,11 +26,14 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
     <link rel="stylesheet" href="/orbit.css?v=20260911-layout">
-    <link rel="stylesheet" href="guide.css">
+    <link rel="stylesheet" href="guide.css?v=20260912-content">
     <script src="effects.js?v=20260911-layout" defer></script>
     <script src="orbit-config.js"></script>
     <script src="visits.js" defer></script>
     <script src="guide.js" defer></script>
+<link rel="stylesheet" href="ad-slots.css">
+<script src="ads-config.js" defer></script>
+<script src="ad-slots.js" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main-content">본문으로 바로가기</a>
@@ -39,7 +42,7 @@
         <nav aria-label="주요 메뉴">
             <a href="main.html#planets">오늘 밤 행성</a><a href="main.html#sky">밤하늘 달력</a>
             <a href="guide.html" aria-current="page">관측 가이드</a>
-            <a href="main.html#lounge">글 남기기</a><a href="about.html">소개·문의</a>
+            <a href="notes.html">관측 노트</a><a href="main.html#lounge">글 남기기</a><a href="about.html">소개·문의</a>
         </nav>
     </header>
     <main class="guide-main" id="main-content">
@@ -75,6 +78,7 @@
                 <button class="text-button" type="reset">다시 준비하기</button>
             </form>
         </section>
+        <section aria-labelledby="more-guides"><h2 id="more-guides">다음 관측에 바로 써보세요</h2><div class="about-links"><a href="reading-sky.html"><strong>별지도 읽는 법</strong><span>방향과 고도를 직접 움직여 이해하고 하늘에서 찾아보세요.</span></a><a href="notes.html"><strong>나의 관측 노트</strong><span>본 것과 못 본 것을 기록해 복사하거나 파일로 보관하세요.</span></a></div></section>
         <section id="equipment">
             <h2>장비는 보고 싶은 것에 맞춰요</h2>
             <p class="section-intro">첫날부터 망원경을 살 필요는 없어요. 이미 가진 장비나 공개 관측 행사로 먼저 경험해보세요.</p>
@@ -86,6 +90,7 @@
             <p class="safety-note">쌍안경이나 망원경으로 태양을 직접 보지 마세요. 이 가이드는 밤하늘 관측을 위한 안내입니다.</p>
             <p class="source-note">장비 참고: <a href="https://science.nasa.gov/solar-system/skywatching/night-sky-network/binoculars-a-great-first-telescope/" target="_blank" rel="noopener noreferrer">NASA 쌍안경 입문 안내</a> · <a href="https://www.nasa.gov/blogs/watch-the-skies/2010/08/13/when-to-look-in-what-direction/" target="_blank" rel="noopener noreferrer">NASA 유성우 관측 안내</a></p>
         </section>
+<template data-ad-placement><aside class="editorial-ad" aria-label="광고"><p class="ad-label">광고</p><ins class="adsbygoogle" style="display:block" data-ad-format="horizontal" data-full-width-responsive="false"></ins></aside></template>
         <section id="questions" class="guide-faq">
             <h2>출발 전에 궁금한 것들</h2>
             <details><summary>지도에는 있는데 실제로는 왜 안 보이나요?</summary><p>구름, 주변 조명, 건물·산, 낮은 고도 때문에 가려질 수 있어요. 천왕성·해왕성처럼 매우 어두운 행성은 위치가 표시돼도 맨눈으로 찾기 어려워요. 도시와 시각을 제대로 골랐는지도 확인해보세요.</p></details>
@@ -98,6 +103,7 @@
     </main>
     <footer class="site-footer">
         <nav class="foot-links" aria-label="사이트 정보">
+            <a href="notes.html">관측 노트</a>
             <a href="main.html">커뮤니티 홈</a><a href="guide.html">관측 가이드</a><a href="about.html">소개·문의</a>
             <a href="terms.html">이용약관</a><a href="privacy.html">개인정보처리방침</a>
         </nav>

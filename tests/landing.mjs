@@ -76,7 +76,7 @@ try{
   await page.setViewportSize({width:740,height:320});
   await page.goto(base+'/main.html');
   await page.getByRole('button',{name:'메뉴 열기',exact:true}).click();
-  await page.getByRole('link',{name:'✦ 소개·문의'}).click();
+  await page.locator('#sideNav').getByRole('link',{name:'소개·문의',exact:true}).click();
   await page.getByRole('heading',{name:'같은 하늘을 보는 사람들',exact:true}).waitFor();
   ok('the last menu item remains reachable in short landscape');
   await ctx.close();

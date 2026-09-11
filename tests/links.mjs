@@ -65,19 +65,19 @@ console.log('\n[3] 페이지마다 canonical · OG 이미지가 있는지');
   }
 }
 
-console.log('\n[4] 새 localStorage 키는 개인정보처리방침에 적혀 있어야 한다');
+console.log('\n[4] 브라우저 저장값마다 공개된 목적 안내가 있어야 한다');
 {
-  // PROJECT_STATUS 가 «키를 늘리면 privacy.html 4항을 같이 고칠 것» 이라고 못 박고 있고,
-  // 실제로 두 번 빠뜨린 적이 있다. 사람 기억 대신 검사로 지킨다.
+  // Internal keys live in the maintainer inventory; the policy explains their purposes.
   const privacy = readFileSync(join(root, 'privacy.html'), 'utf8');
+  const inventory = JSON.parse(readFileSync(join(root, 'docs/storage-inventory.json'), 'utf8'));
   const used = new Set();
   for (const f of [...pages, ...readdirSync(root).filter(f => f.endsWith('.js'))]) {
     const src = readFileSync(join(root, f), 'utf8');
     for (const m of src.matchAll(/localStorage\.(?:getItem|setItem|removeItem)\(\s*['"]([^'"]+)['"]/g)) used.add(m[1]);
     for (const m of src.matchAll(/['"](orbit_[a-z_]+)['"]/g)) used.add(m[1]);
   }
-  const undocumented = [...used].filter((k) => !privacy.includes(`<code>${k}</code>`));
-  ok('모든 orbit_* 키가 privacy.html 에 적혀 있음', undocumented.length === 0,
+  const undocumented = [...used].filter(k => !inventory[k] || !privacy.includes(`id="${inventory[k].section}"`) || !inventory[k].purpose);
+  ok('저장값의 용도가 개인정보처리방침에 안내됨', undocumented.length === 0,
      undocumented.length ? '누락: ' + undocumented.join(', ') : [...used].sort().join(' '));
 }
 
