@@ -129,8 +129,19 @@ try{
   await page.clock.runFor(100);
   ok('reduced motion provides one static scrollable copy of every story',!await belt.evaluate(el=>el.classList.contains('flowing'))&&await page.locator('[data-story-clone]').count()===0&&await page.locator('.story-belt-viewport').evaluate(el=>getComputedStyle(el).overflowX==='auto'));
   await page.emulateMedia({reducedMotion:'no-preference'});await page.locator('.story-belt.flowing').waitFor();await page.clock.runFor(100);
-  await page.setViewportSize({width:390,height:844});await page.clock.runFor(100);
+  // ResizeObserver uses the browser's render loop, not Playwright's paused timer clock.
+  // Resume real frames and wait for the resized layout before checking its geometry.
+  await page.clock.resume();
+  await page.setViewportSize({width:390,height:844});
+  await page.waitForFunction(() => {
+   const viewport=document.querySelector('.story-belt-viewport').getBoundingClientRect();
+   const visible=[...document.querySelectorAll('.story-belt-card')].filter(card=>{
+    const r=card.getBoundingClientRect();return r.right>viewport.left&&r.left<viewport.right;
+   });
+   return document.documentElement.scrollWidth<=innerWidth+1&&visible.length>=3;
+  },null,{timeout:5000});
   ok('mobile belt stays within the page and shows neighboring cards',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)&&(await geometry()).length>=3);
+  await belt.hover();
   const mobileCard=page.locator('[data-story-original] .story-belt-card').first();
   await mobileCard.hover();
   const clickBox=await mobileCard.boundingBox(), href=await mobileCard.getAttribute('href');
