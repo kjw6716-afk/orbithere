@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/update_news.py'
+      - 'scripts/translate_news.py'
+      - 'scripts/translation-requirements.txt'
       - '.github/workflows/news.yml'
   schedule:
     - cron: '17 */6 * * *'
@@ -17,7 +19,7 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,6 +31,32 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_news.py'
       - name: 공식 제목과 원문 주소 갱신
         run: python scripts/update_news.py
+      - name: 번역 초안을 만들 새 제목 확인
+        id: translations
+        run: echo "pending=$(python scripts/translate_news.py --pending)" >> "$GITHUB_OUTPUT"
+      - name: 번역 모델 캐시
+        if: steps.translations.outputs.pending != '0'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface/hub
+          key: m2m100-55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636
+      - name: CPU 번역 도구 설치
+        id: translator
+        if: steps.translations.outputs.pending != '0'
+        continue-on-error: true
+        timeout-minutes: 4
+        run: |
+          python -m pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r scripts/translation-requirements.txt
+      - name: 한글 번역 초안 생성 · 검토 대기
+        if: steps.translations.outputs.pending != '0' && steps.translator.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 6
+        env:
+          HF_HUB_DISABLE_XET: '1'
+          HF_HUB_DOWNLOAD_TIMEOUT: '60'
+        run: python scripts/translate_news.py
+      # Drafts are never displayed before review. Translation is optional: a model outage must not block fresh official RSS.
       - name: 갱신 내역 저장
         id: save
         run: |

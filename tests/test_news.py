@@ -48,4 +48,50 @@ class NewsTests(unittest.TestCase):
         with contextlib.redirect_stderr(io.StringIO()):result,n=news.collect({'items':old},fail,NOW)
         self.assertEqual(n,0);self.assertEqual(result['items'],old)
 
+
+class TranslationTests(unittest.TestCase):
+    def row(self, title='New observation'):
+        return {'id':'abc', 'source':'nasa', 'url':'https://www.nasa.gov/story',
+                'title':title, 'language':'en', 'publishedAt':NOW.isoformat()}
+    def translated(self):
+        return dict(self.row(), titleKo='새로운 관측', titleKoOriginal='New observation',
+                    titleKoMethod='reviewed', titleKoModel='test-model')
+    def test_same_source_and_original_reuse_saved_translation(self):
+        saved=self.translated()
+        fresh=news.preserve_translations([self.row()], {'items':[saved]})[0]
+        self.assertEqual(fresh['titleKo'], saved['titleKo'])
+        for field, value in [('title','Corrected original'),('source','esa')]:
+            changed=dict(self.row(), **{field:value})
+            self.assertNotIn('titleKo', news.preserve_translations([changed], {'items':[saved]})[0])
+    def test_invalid_or_unrelated_korean_title_is_not_reused(self):
+        for key,value in [('titleKo','English only'),('titleKo','<img> 한글'),('titleKo','한글'*121),('titleKoOriginal','Different'),('titleKoMethod','unknown')]:
+            saved=dict(self.translated(), **{key:value})
+            self.assertFalse(news.valid_translation(saved))
+    def test_translation_failure_is_isolated_and_cache_not_retranslated(self):
+        import sys
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
+        import translate_news
+        cached=self.translated()
+        second=dict(self.row('Another title'),id='second',url='https://www.nasa.gov/two')
+        third=dict(self.row('Failed title'),url='https://www.nasa.gov/three')
+        data={'items':[cached,second,third,dict(self.row(),language='ko')]}
+        calls=[]
+        def translate(title):
+            calls.append(title)
+            if title=='Failed title':raise TimeoutError()
+            return '또 다른 제목'
+        with contextlib.redirect_stderr(io.StringIO()):count=translate_news.translate_items(data,translate)
+        self.assertEqual(count,1)
+        self.assertEqual(calls,['Another title','Failed title'])
+        self.assertEqual(cached,self.translated())
+        self.assertEqual(second['titleKoDraft'],'또 다른 제목')
+        self.assertNotIn('titleKo',second)
+        self.assertFalse(news.valid_translation(second))
+        fresh=dict(self.row('Another title'),url=second['url'])
+        self.assertEqual(news.preserve_translations([fresh], {'items':[second]})[0]['titleKoDraft'], '또 다른 제목')
+        translate_news.approve_title(data, second['id'], '확인한 새 제목')
+        self.assertEqual(second['titleKo'],'확인한 새 제목')
+        self.assertNotIn('titleKoDraft',second)
+        self.assertNotIn('titleKo',third)
+
 if __name__=='__main__':unittest.main()

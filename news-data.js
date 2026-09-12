@@ -51,6 +51,16 @@
         : encodeURIComponent(item.url))
     );
   }
+  function hasKoreanTitle(item) {
+    return item.language === "en" && typeof item.titleKo === "string" &&
+      item.titleKo.length > 0 && item.titleKo.length <= 240 &&
+      /[가-힣]/.test(item.titleKo) && !/[<>\x00-\x1f]/.test(item.titleKo) &&
+      item.titleKoOriginal === item.title &&
+      item.titleKoMethod === "reviewed";
+  }
+  function displayTitle(item) {
+    return hasKoreanTitle(item) ? item.titleKo : item.title;
+  }
   function stale(source) {
     return (
       !source ||
@@ -91,6 +101,8 @@
     valid: valid,
     items: items,
     articleId: articleId,
+    hasKoreanTitle: hasKoreanTitle,
+    displayTitle: displayTitle,
     stale: stale,
     load: load,
   });

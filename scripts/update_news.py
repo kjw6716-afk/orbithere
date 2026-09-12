@@ -21,6 +21,32 @@ SOURCES = [
 ]
 UTC = dt.timezone.utc
 MAX_BYTES = 2 * 1024 * 1024
+TRANSLATION_FIELDS = ('titleKo', 'titleKoOriginal', 'titleKoMethod', 'titleKoModel')
+DRAFT_FIELDS = ('titleKoDraft', 'titleKoDraftOriginal', 'titleKoDraftModel')
+
+def valid_translation(item):
+    title = item.get('titleKo')
+    return (item.get('language') == 'en' and isinstance(title, str)
+            and 1 <= len(title) <= 240 and bool(re.search('[가-힣]', title))
+            and not re.search(r'[<>\x00-\x1f]', title)
+            and item.get('titleKoOriginal') == item.get('title')
+            and item.get('titleKoMethod') == 'reviewed')
+
+def valid_draft(item):
+    return valid_translation(dict(item, titleKo=item.get('titleKoDraft'),
+                                  titleKoOriginal=item.get('titleKoDraftOriginal'),
+                                  titleKoMethod='reviewed'))
+
+def preserve_translations(fresh, previous):
+    cached = {item.get('url'): item for item in previous.get('items', [])}
+    for item in fresh:
+        old = cached.get(item.get('url'), {})
+        if old.get('source') == item.get('source') and old.get('title') == item.get('title'):
+            if valid_translation(old):
+                item.update({key: old[key] for key in TRANSLATION_FIELDS if key in old})
+            if valid_draft(old):
+                item.update({key: old[key] for key in DRAFT_FIELDS if key in old})
+    return fresh
 
 def safe_url(raw, source):
     try:
@@ -104,7 +130,7 @@ def collect(previous, fetch=fetch_source, now=None):
                 fresh = pending[source['id']].result()
                 if not fresh:
                     raise ValueError('Empty feed')
-                items.extend(fresh)
+                items.extend(preserve_translations(fresh, previous))
                 state.update(status='ok', lastSuccessfulAt=stamp)
                 successes += 1
             except Exception as error:

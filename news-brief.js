@@ -25,6 +25,10 @@
     }
   }
   var list = root.querySelector(".news-brief-list");
+  var viewport = document.createElement("div");
+  viewport.className = "news-brief-viewport";
+  list.before(viewport);
+  viewport.append(list);
   var notice = root.querySelector(".news-brief-notice");
   var controls = root.querySelector(".news-brief-controls");
   var toggle = root.querySelector("[data-news-toggle]");
@@ -37,7 +41,9 @@
     index = 0,
     size = 1,
     timer,
-    animation;
+    animation,
+    motionIndex,
+    motionManual = false;
   var userPaused = false,
     focusPaused = false,
     hovered = false,
@@ -62,74 +68,122 @@
       userPaused || focusPaused ? "뉴스 자동 전환 재생" : "뉴스 자동 전환 정지",
     );
     toggle.hidden = reduced.matches;
-    if (
-      items.length <= size ||
-      userPaused ||
-      focusPaused ||
-      hovered ||
-      reduced.matches ||
-      document.hidden ||
-      !visible ||
-      !shown()
-    )
+    var blocked = items.length <= size || userPaused || focusPaused || hovered ||
+      reduced.matches || document.hidden || !visible || !shown();
+    if (animation) {
+      // Explicit next/previous remains usable while the panel has focus. Only
+      // automatic motion pauses on hover/focus, including halfway through a row.
+      if (document.hidden || !visible || !shown() || (!motionManual && blocked)) {
+        animation.pause();
+      } else if (animation.playState === "paused") animation.play();
       return;
-    timer = setTimeout(function () {
-      move(1, false);
-    }, 8000);
+    }
+    if (blocked) return;
+    timer = setTimeout(function () { move(1, false); }, 8000);
+  }
+  function clearMotion() {
+    if (animation) {
+      animation.onfinish = null;
+      animation.cancel();
+      animation = null;
+      index = motionIndex;
+    }
+    viewport.style.height = "";
+    viewport.classList.remove("is-moving");
+  }
+  function createRow(item) {
+    var row = document.createElement("li");
+    row.className = "news-brief-item";
+    var meta = document.createElement("div");
+    meta.className = "news-brief-meta";
+    var badge = document.createElement("span");
+    badge.className = "news-brief-badge";
+    badge.textContent = news.sources[item.source].badge;
+    badge.title = news.sources[item.source].name;
+    var date = document.createElement("time");
+    date.dateTime = item.publishedAt;
+    date.textContent = new Date(item.publishedAt).toLocaleDateString(
+      "ko-KR", { month: "numeric", day: "numeric" },
+    );
+    meta.append(badge, date);
+    var link = document.createElement("a");
+    link.className = "news-brief-title";
+    link.href = "news.html#" + news.articleId(item);
+    if (window.parent !== window) link.target = "_top";
+    link.textContent = news.displayTitle(item);
+    link.title = item.title;
+    if (item.language !== "ko" && !news.hasKoreanTitle(item)) link.lang = "en";
+    if (news.hasKoreanTitle(item)) {
+      var translation = document.createElement("span");
+      translation.className = "news-brief-translation";
+      translation.textContent = "한글 제목";
+      meta.append(translation);
+    }
+    row.append(meta, link);
+    return row;
   }
   function render(manual) {
-    if (animation) animation.cancel();
+    clearMotion();
     list.replaceChildren();
     size = capacity();
     var total = Math.min(size, items.length);
     for (var offset = 0; offset < total; offset++) {
-      var item = items[(index + offset) % items.length];
-      var row = document.createElement("li");
-      row.className = "news-brief-item";
-      var meta = document.createElement("div");
-      meta.className = "news-brief-meta";
-      var badge = document.createElement("span");
-      badge.className = "news-brief-badge";
-      badge.textContent = news.sources[item.source].badge;
-      badge.title = news.sources[item.source].name;
-      var date = document.createElement("time");
-      date.dateTime = item.publishedAt;
-      date.textContent = new Date(item.publishedAt).toLocaleDateString(
-        "ko-KR",
-        { month: "numeric", day: "numeric" },
-      );
-      meta.append(badge, date);
-      var link = document.createElement("a");
-      link.className = "news-brief-title";
-      link.href = "news.html#" + news.articleId(item);
-      if (window.parent !== window) link.target = "_top";
-      link.textContent = item.title;
-      link.title = item.title;
-      if (item.language !== "ko") link.lang = "en";
-      row.append(meta, link);
-      list.append(row);
+      list.append(createRow(items[(index + offset) % items.length]));
     }
     controls.hidden = items.length <= size;
     count.textContent = (items.length ? index + 1 : 0) + " / " + items.length;
     if (manual && items.length)
-      announcement.textContent = index + 1 + "번째 소식. " + items[index].title;
+      announcement.textContent = index + 1 + "번째 소식. " + news.displayTitle(items[index]);
     schedule();
   }
   function move(direction, manual) {
     if (!items.length) return;
     if (manual) userPaused = true;
-    index = (index + direction + items.length) % items.length;
-    render(manual);
-    if (!reduced.matches)
-      animation = list.animate(
-        size === 3
-          ? [
-              { opacity: 0.4, transform: "translateY(8px)" },
-              { opacity: 1, transform: "translateY(0)" },
-            ]
-          : [{ opacity: 0.35 }, { opacity: 1 }],
-        { duration: 180, easing: "ease-out" },
-      );
+    // Repeated button presses or a resize settle the pending destination before
+    // the next move, so old animation callbacks cannot restore stale headlines.
+    if (animation) render(false);
+    var target = (index + direction + items.length) % items.length;
+    if (reduced.matches || typeof list.animate !== "function") {
+      index = target;
+      render(manual);
+      return;
+    }
+    var frames;
+    if (size === 3) {
+      viewport.style.height = list.getBoundingClientRect().height + "px";
+      viewport.classList.add("is-moving");
+      var incoming = createRow(items[direction > 0 ? (target + size - 1) % items.length : target]);
+      // The incoming item becomes a normal keyboard stop after it enters fully.
+      // It remains clickable if the reader pauses the movement partway through.
+      incoming.querySelector("a").tabIndex = -1;
+      if (direction > 0) list.append(incoming);
+      else list.prepend(incoming);
+      var metas = list.querySelectorAll(".news-brief-meta");
+      // Measure content positions, including the separator/padding that disappear
+      // when the second row becomes the first. This avoids a jump at completion.
+      var distance = metas[1].getBoundingClientRect().top - metas[0].getBoundingClientRect().top;
+      frames = [
+        { transform: "translateY(" + (direction > 0 ? 0 : -distance) + "px)" },
+        { transform: "translateY(" + (direction > 0 ? -distance : 0) + "px)" },
+      ];
+    } else {
+      index = target;
+      render(false);
+      frames = [
+        { opacity: 0.75, transform: "translateY(" + (direction * 6) + "px)" },
+        { opacity: 1, transform: "translateY(0)" },
+      ];
+    }
+    clearTimeout(timer);
+    motionIndex = target;
+    motionManual = manual;
+    animation = list.animate(frames, {
+      duration: size === 3 ? 650 : 220,
+      easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+      fill: "both",
+    });
+    animation.onfinish = function () { render(manual); };
+    schedule();
   }
   async function load() {
     if (loading) return;
@@ -139,6 +193,7 @@
     root.setAttribute("aria-busy", "true");
     try {
       var data = await news.load();
+      clearMotion();
       items = news.items(data).slice(0, 5);
       index = 0;
       var stale = Object.keys(news.sources).some(function (id) {
@@ -208,12 +263,13 @@
   });
   retry.addEventListener("click", load);
   reduced.addEventListener("change", function () {
-    if (animation) animation.cancel();
+    if (animation) render(false);
     schedule();
   });
   document.addEventListener("visibilitychange", schedule);
   window.addEventListener("pagehide", function () {
     clearTimeout(timer);
+    if (animation) animation.pause();
   });
   window.addEventListener("pageshow", schedule);
   new ResizeObserver(function () {

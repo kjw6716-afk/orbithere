@@ -66,15 +66,31 @@
         .legal-summary a { color:#78E2D5; margin-right:16px; }
         /* ===== 공통 푸터 ===== */
     </style>
+<link rel="stylesheet" href="site-nav.css?v=20260912-navigation">
 </head>
 <body>
     <div class="bg-glow"></div>
 
     <a class="legal-skip" href="#legal-content">본문으로 바로가기</a>
-    <nav class="site-topbar">
-        <a class="logo orbit-brand" href="index.html" aria-label="ORBIT 홈">ORBIT.</a>
-        <button class="nav-back" onclick="location.href='main.html'">← 커뮤니티 홈</button>
-    </nav>
+    <div class="orbit-page-layout">
+<!-- orbit-navigation:start -->
+<aside class="sidebar orbit-navigation">
+<a class="side-logo orbit-brand" href="index.html" aria-label="ORBIT 홈">ORBIT.</a>
+<button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="sideNav" aria-label="메뉴 열기">
+<span class="nt-ic" id="navToggleIc" aria-hidden="true">☰</span>
+<span class="nt-lbl" id="navToggleLbl">메뉴</span><span class="nt-arrow" aria-hidden="true"></span></button>
+<nav class="side-nav" id="sideNav" aria-label="주요 메뉴">
+<a class="nav-item nav-link" href="main.html#sky"><span class="ic" aria-hidden="true">🔭</span><span class="lbl">밤하늘 달력</span></a>
+<a class="nav-item nav-link" href="main.html#planets"><span class="ic" aria-hidden="true">🪐</span><span class="lbl">오늘 밤 행성</span></a>
+<a class="nav-item nav-link" href="main.html#lounge"><span class="ic" aria-hidden="true">💬</span><span class="lbl">별빛 게시판</span></a>
+<a class="nav-item nav-link" href="news.html"><span class="ic" aria-hidden="true">📰</span><span class="lbl">우주 뉴스</span></a>
+<a class="nav-item nav-link" href="guide.html"><span class="ic" aria-hidden="true">📖</span><span class="lbl">관측 가이드</span></a>
+<a class="nav-item nav-link" href="notes.html"><span class="ic" aria-hidden="true">📝</span><span class="lbl">관측 노트</span></a>
+<a class="nav-item nav-link" href="about.html"><span class="ic" aria-hidden="true">ⓘ</span><span class="lbl">소개·문의</span></a>
+</nav></aside>
+<div class="nav-scrim" id="navScrim" aria-hidden="true"></div>
+<!-- orbit-navigation:end -->
+<div class="orbit-page-content">
 
     <main class="container" id="legal-content">
         <div class="hero">
@@ -170,5 +186,7 @@
             in orbit
         </div>
     </footer>
+</div></div>
+<script src="site-nav.js?v=20260912-navigation"></script>
 </body>
 </html>
