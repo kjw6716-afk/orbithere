@@ -106,6 +106,40 @@ class EditorialTests(unittest.TestCase):
         self.assertIn('href="news.html"', html)
         self.assertIn('0편', html)
 
+    def test_launch_batch_does_not_relax_normal_daily_publishing(self):
+        articles, ledger = stories.load()
+        articles = {ident: a for ident, a in articles.items() if ident in stories.INITIAL_RELEASE_IDS}
+        ledger = {'version': 1, 'items': [i for i in ledger['items'] if i['id'] in stories.INITIAL_RELEASE_IDS]}
+        self.assertEqual({i['id'] for i in ledger['items'] if i['date'] == stories.INITIAL_RELEASE_DAY}, stories.INITIAL_RELEASE_IDS)
+        extra = copy.deepcopy(self.article)
+        extra.update(id='fourth-story', title='시작 이후에 검토된 새로운 이야기')
+        articles[extra['id']] = extra
+        self.assertIsNone(stories.publish_next(articles, ledger, '2026-09-12'))
+        self.assertEqual(stories.publish_next(articles, ledger, '2026-09-13'), 'fourth-story')
+        self.assertIsNone(stories.publish_next(articles, ledger, '2026-09-13'))
+        self.assertIsNone(stories.publish_next(articles, ledger, '2026-09-14'))
+
+    def test_only_the_exact_launch_batch_may_share_a_day(self):
+        articles, original = stories.load()
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder); dest = root / stories.ARTICLE_DIR; dest.mkdir(parents=True)
+            for a in articles.values():
+                (dest / (a['id'] + '.json')).write_text(json.dumps(a))
+            launch = [i for i in original['items'] if i['id'] in stories.INITIAL_RELEASE_IDS]
+            for items in (launch[:2], [dict(i, date='2026-09-13') for i in launch]):
+                with self.subTest(items=items):
+                    (root / stories.LEDGER).write_text(json.dumps({'version': 1, 'items': items}))
+                    with self.assertRaisesRegex(ValueError, 'Duplicate publication day'):
+                        stories.load(root)
+
+    def test_publication_dates_are_not_displayed(self):
+        day = '2026-09-12'
+        for page in (stories.render_list([(self.article, day)]), stories.render_article(self.article, day),
+                     stories.render_teaser([(self.article, day)], carousel=True), stories.render_teaser([(self.article, day)])):
+            self.assertNotIn('<time', page)
+        self.assertIn('datePublished', stories.render_article(self.article, day))
+        self.assertIn('자료 확인', stories.render_article(self.article, day))
+
 
 if __name__ == '__main__':
     unittest.main()

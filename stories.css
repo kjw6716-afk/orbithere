@@ -29,6 +29,9 @@
 .story-art::after { content: ''; position: absolute; width: 320px; height: 180px; top: calc(50% - 90px); left: calc(50% - 160px); border: 1px solid #546176; border-radius: 50%; transform: rotate(-32deg); opacity: .6; }
 .story-art .spark { position: absolute; width: 3px; height: 3px; background: #d9eceb; top: 23%; left: 20%; border-radius: 50%; box-shadow: 112px 30px 0 #afc9cc, 160px -14px 0 #718d98, -6px 125px 0 #7f9cab, 160px 150px 0 #b8c8c6; }
 .story-art-label { position: absolute; bottom: 22px; right: 24px; color: #a7b8c9; font-size: 10px; letter-spacing: .18em; }
+.story-art--deep-space { background: radial-gradient(ellipse at center, #080f1d 20%, #18263e 55%, #3c445f 80%, #1b263a); }
+.story-art--deep-space::before { background: none; box-shadow: none; border: 1px solid #6b5c83; }
+.story-art--deep-space::after { border-color: #7c748d; }
 .stories-archive { margin-top: 44px; }
 .stories-section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .stories-section-head h2 { font-size: 1.25rem; }

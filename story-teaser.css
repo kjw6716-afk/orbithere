@@ -6,6 +6,26 @@
 .story-teaser-title:hover { color: #ffd0a2; text-decoration: underline; text-underline-offset: 4px; }
 .story-teaser-all { display: inline-flex; min-height: 44px; align-items: center; color: #b9d6d1; font-size: 12px; flex-shrink: 0; text-decoration: none; }
 .story-teaser a:focus-visible { outline: 2px solid #80e5d6; outline-offset: 4px; }
+.story-teaser [hidden] { display: none !important; }
+.story-teaser button { font: inherit; cursor: pointer; }
+.story-teaser button:focus-visible { outline: 2px solid #80e5d6; outline-offset: 2px; }
+.story-carousel { display: block; }
+.story-carousel-head { display: flex; align-items: center; gap: 10px; }
+.story-carousel-head .story-teaser-meta { flex: 1; margin: 0; }
+.story-carousel-head .story-teaser-all { display: inline-flex; }
+.story-carousel-body { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; margin-top: 6px; }
+.story-carousel.enhanced .story-carousel-body { grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 4px; }
+.story-carousel-arrow { width: 44px; min-height: 44px; padding: 0; border: 1px solid #525867; border-radius: 50%; background: #2d3443; color: #e1edea; }
+.story-carousel-arrow:hover { background: #3b4656; }
+.story-slides { display: grid; min-width: 0; overflow: hidden; padding: 6px; }
+.story-slide { grid-area: 1 / 1; min-width: 0; visibility: hidden; align-self: center; }
+.story-slide.is-current, .story-slide.is-outgoing { visibility: visible; }
+.story-slide.is-outgoing { pointer-events: none; }
+.story-teaser-category { display: block; color: #c2cdd9; font-size: 11px; line-height: 1.5; margin-bottom: 4px; }
+.story-carousel .story-teaser-title { display: block; font-size: 15px; word-break: keep-all; }
+.story-carousel-controls { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.story-carousel-count { font-size: 12px; color: #b8c6d6; font-variant-numeric: tabular-nums; }
+.story-carousel-play { min-height: 44px; padding: 4px 6px; border: 0; background: transparent; color: #b9d6d1; font-size: 12px !important; }
 .landing-main .story-teaser { max-width: 550px; margin: 28px auto 0; padding: 12px 16px; }
 .panel-wrap>.story-teaser { margin-bottom: 24px; grid-column: 1; }
 @media (min-width: 1280px) {
