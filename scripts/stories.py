@@ -15,7 +15,7 @@ import sys
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
-from site_navigation import render as navigation
+from site_navigation import editor_star, render as navigation
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTICLE_DIR = '_editorial/articles'
@@ -196,7 +196,7 @@ def shell(title, description, path, body, prefix='', schema=None, noindex=False,
 
 
 def byline():
-    return '<div class="editor-sign"><span class="editor-avatar" aria-hidden="true">✦</span><div><strong>ORBIT 에디터</strong><small>AI가 쓰는 우주 이야기</small></div></div>'
+    return f'<div class="editor-sign"><span class="editor-avatar" aria-hidden="true">{editor_star(24)}</span><div><strong>ORBIT 에디터</strong><small>AI가 쓰는 우주 이야기</small></div></div>'
 
 
 def meta(article, day):
@@ -250,7 +250,7 @@ def render_teaser(items):
     if not items:
         return '<aside class="story-teaser"><a class="story-teaser-title" href="stories.html">ORBIT 에디터의 우주 이야기 →</a></aside>'
     a, day = items[0]
-    return f'<aside class="story-teaser" aria-label="최신 우주 이야기"><span class="story-teaser-icon" aria-hidden="true">✦</span><div class="story-teaser-copy"><div class="story-teaser-meta"><span>ORBIT 에디터 · AI 작성</span><time datetime="{day}">{day.replace("-", ".")}</time></div><a class="story-teaser-title" href="stories/{a["id"]}.html">{esc(a["title"])}</a></div><a class="story-teaser-all" href="stories.html">전체보기 →</a></aside>'
+    return f'<aside class="story-teaser" aria-label="최신 우주 이야기"><span class="story-teaser-icon" aria-hidden="true">{editor_star(21)}</span><div class="story-teaser-copy"><div class="story-teaser-meta"><span>ORBIT 에디터 · AI 작성</span><time datetime="{day}">{day.replace("-", ".")}</time></div><a class="story-teaser-title" href="stories/{a["id"]}.html">{esc(a["title"])}</a></div><a class="story-teaser-all" href="stories.html">전체보기 →</a></aside>'
 
 
 def outputs(articles, ledger, root=ROOT):
