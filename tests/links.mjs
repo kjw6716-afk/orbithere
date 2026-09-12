@@ -16,7 +16,8 @@ const ok = (name, cond, extra = '') => {
 };
 
 // 공개되는 페이지 — _archive 는 Jekyll 이 빼므로 제외한다
-const pages = readdirSync(root).filter((f) => f.endsWith('.html'));
+const pages = [...readdirSync(root).filter((f) => f.endsWith('.html')),
+  ...readdirSync(join(root,'stories')).filter(f=>f.endsWith('.html')).map(f=>'stories/'+f)];
 
 console.log('\n[1] 내부 링크가 실제 파일을 가리키는지');
 {
@@ -28,7 +29,7 @@ console.log('\n[1] 내부 링크가 실제 파일을 가리키는지');
       if (/^(https?:|mailto:|data:|\/\/)/.test(h)) continue;
       const clean = h.split('#')[0].split('?')[0];
       if (!clean) continue;
-      const target = clean.startsWith('/') ? join(root, clean.slice(1)) : join(root, clean);
+      const target = clean.startsWith('/') ? join(root, clean.slice(1)) : join(root, dirname(page), clean);
       if (!existsSync(target)) broken.push(`${page} → ${h}`);
     }
   }

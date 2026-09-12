@@ -7,7 +7,7 @@
 - **글 남기기**: 관측 후기 · 장비 · 실시간 하늘 · 질문 · 자유게시판, 검색 · 이전 글/댓글 · 글 공유
 - **관측 가이드**: 첫 관측 순서 · 준비 체크리스트 · 장비 선택 · FAQ
 - **별지도 읽는 법**: 방향·고도를 움직여 이해하는 그림과 실제 적용 순서
-- **관측 노트**: 기록 작성 · 복사 · 텍스트 다운로드 · 선택한 기록 한 건의 기기 저장/복원 (자동 저장/게시 없음)
+- **우주 이야기**: ORBIT 에디터의 AI 해설 · 출처와 확인 날짜 · 개별 글 주소 · 검색·공유. 기존 관측 노트는 종료하고 저장본 내보내기 안내를 유지합니다.
 - **소개·문의**: 서비스와 계산 범위 안내 · 기존 질문 게시판 연결
 
 순수 HTML/CSS/JS 정적 사이트입니다. GitHub Pages가 저장소 루트를 배포하며,
@@ -44,7 +44,7 @@ PR #42의 검사·Pages 배포 성공, 기존 콘텐츠 보존, 공개 조회 �
 게시판은 글·댓글을 20개씩 가져오고 이전 항목을 계속 불러옵니다. 본문 검색은 선택한 채널 또는
 전체 채널의 과거 글까지 조회하며, 공유 주소로 특정 글을 바로 열 수 있습니다.
 댓글은 해당 글 상세를 열 때만 가져오고, 목록을 더 보거나 오류가 나도 작성 중인 댓글을 유지합니다.
-관측 노트는 사용자가 저장 버튼을 누를 때만 한 건을 기기에 보관합니다.
+관측 노트의 새 기록 작성은 종료했습니다. `notes.html`에서는 기존 저장본 확인·복사·다운로드·삭제만 가능합니다.
 
 `supabase/migrations/20260911204442_community_readiness_hardening.sql`은
 삭제 후 재작성에도 유지되는 속도 제한, 불필요한 함수 호출 권한 회수, 탐색용 인덱스를 준비합니다.
@@ -110,3 +110,14 @@ PR 검사가 통과한 뒤 병합하는 흐름을 사용하세요.
 This repository is public only for GitHub Pages deployment. **No license is granted.**
 Unauthorized copying, modification, redistribution, or commercial use of the code,
 design, content, or characters is prohibited.
+
+## ORBIT 에디터 — 우주 이야기
+
+`stories.html`은 글 목록이며 `stories/ID.html`은 출처·확인 날짜·AI 작성 표시가 있는 정적 본문입니다.
+첫 화면과 메인 도구 화면에서 가장 최근의 글로 연결합니다. JS 없이도 목록·본문·출처를 읽을 수 있습니다.
+
+AI 초안 작성은 ChatGPT Work 예약 작업, 발행은 `.github/workflows/stories.yml`이 담당합니다.
+초안 PR의 article JSON을 검토하고 main에 병합하면 해당 글을 승인합니다. 승인된 대기열에서 한국 날짜 기준 하루 최대 한 편을 발행합니다.
+새 글이 없거나 검사에 실패하면 기존 글을 유지합니다. 자동 사실 검증이나 무검토 자동 발행을 보장하지 않습니다.
+작성 규칙·검토·수정·예약 작업 복구는 [_editorial/README.md](_editorial/README.md)를 참고하세요.
+`npm run test:stories`는 발행 제한·정적 렌더링·공유·노트 저장본 보존을 검사합니다.
