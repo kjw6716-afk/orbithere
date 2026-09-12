@@ -8,7 +8,7 @@ import {chromium} from 'playwright';
 const root=fileURLToPath(new URL('..',import.meta.url));
 const seed=JSON.parse(await readFile(resolve(root,'_editorial/articles/moon-face-and-phases.json'),'utf8'));
 const ledger=JSON.parse(await readFile(resolve(root,'_editorial/published.json'),'utf8'));
-const latest=[...ledger.items].sort((a,b)=>b.date.localeCompare(a.date))[0];
+const latest=[...ledger.items].reverse().sort((a,b)=>b.date.localeCompare(a.date))[0];
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.woff2':'font/woff2'};
 const server=createServer(async(req,res)=>{
  const file=resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
@@ -38,7 +38,7 @@ async function fixture(options={}){
 try{
  for(const width of [320,390,860,1440]){
   const {context,page,errors}=await fixture({viewport:{width,height:900}});
-  for(const path of ['stories.html','stories/moon-face-and-phases.html','notes.html']){
+  for(const path of ['stories.html',...ledger.items.map(i=>`stories/${i.id}.html`),'notes.html']){
    await page.goto(base+'/'+path);await page.locator('.orbit-navigation.enhanced').waitFor();
    ok(`${path} fits ${width}px`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
    ok(`${path} offers stories instead of note creation`,await page.locator('#sideNav a[href$="stories.html"]').count()===1&&await page.locator('#sideNav a[href$="notes.html"]').count()===0);
@@ -57,9 +57,60 @@ try{
   }
   if(process.env.ORBIT_QA_DIR&&[390,1440].includes(width))await page.screenshot({path:`${process.env.ORBIT_QA_DIR}/main-${width}.png`});
   await page.goto(base+'/index.html');
-  ok(`landing links directly to latest story at ${width}px`,await page.locator('.story-teaser-title').isVisible()&&(await page.locator('.story-teaser-title').getAttribute('href')).includes(latest.id));
+  const current=page.locator('.story-slide.is-current .story-teaser-title');
+  ok(`landing links directly to latest story at ${width}px`,await current.isVisible()&&(await current.getAttribute('href')).includes(latest.id));
+  ok(`carousel fits ${width}px`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+  ok('story dates are absent from the teaser',await page.locator('.story-teaser time').count()===0);
   if(process.env.ORBIT_QA_DIR&&[390,1440].includes(width))await page.screenshot({path:`${process.env.ORBIT_QA_DIR}/index-${width}.png`});
   ok('no browser errors',errors.length===0);await context.close();
+ }
+ {
+  const {context,page,errors}=await fixture({viewport:{width:1440,height:1000},reducedMotion:'no-preference'});
+  await page.clock.install();
+  await page.goto(base+'/index.html');
+  await page.locator('.story-carousel.enhanced').waitFor();
+  await page.locator('.story-carousel').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(100);
+  await page.clock.pauseAt(new Date(Date.now()+1000));
+  await page.locator('.story-carousel').hover();
+  await page.mouse.move(0,0);
+  const current=()=>page.locator('.story-slide.is-current a').getAttribute('href');
+  const settle=()=>page.locator('.story-slides').evaluate(el=>el.getAnimations({subtree:true}).forEach(a=>a.finish()));
+  const first=await current();
+  const height=(await page.locator('.story-carousel').boundingBox()).height;
+  await page.clock.runFor(3800);
+  ok('story stays readable until the four-second interval',await current()===first);
+  await page.clock.runFor(300);
+  ok('automatic rotation shows another story after four seconds',await current()!==first);
+  const frames=await page.locator('.story-slide.is-current').evaluate(el=>el.getAnimations()[0]?.effect.getKeyframes());
+  ok('next story slides from left to right',frames?.[0].transform==='translateX(-110%)'&&/^translateX\(0(?:px|%)?\)$/.test(frames.at(-1).transform));
+  await settle();
+  ok('card height remains stable across titles',Math.abs((await page.locator('.story-carousel').boundingBox()).height-height)<1);
+  await page.locator('.story-carousel').hover();const hovered=await current();
+  await page.clock.runFor(9000);
+  ok('hover pauses automatic rotation',await current()===hovered);
+  await page.mouse.move(0,0);await page.clock.runFor(4100);await settle();
+  ok('leaving hover resumes after a full interval',await current()!==hovered);
+  await page.locator('.story-slide.is-current a').focus();const focused=await current();
+  await page.clock.runFor(9000);
+  ok('keyboard reading pauses rotation',await current()===focused);
+  await page.keyboard.press('ArrowRight');await settle();
+  ok('keyboard advances and keeps focus on the visible story',await page.locator('.story-slide.is-current a').evaluate(el=>el===document.activeElement));
+  ok('inactive stories cannot receive keyboard focus',await page.locator('.story-slide:not(.is-current)').evaluateAll(els=>els.every(el=>el.inert&&el.getAttribute('aria-hidden')==='true'&&el.querySelector('a').tabIndex===-1)));
+  await page.getByRole('button',{name:'이전 이야기',exact:true}).click();await settle();
+  ok('previous arrow returns to the same story',await current()===focused);
+  await page.getByRole('button',{name:'이야기 자동 넘김 시작',exact:true}).click();await page.mouse.move(0,0);
+  await page.clock.runFor(4100);await settle();
+  ok('explicit start resumes autoplay',await current()!==focused);
+  await page.getByRole('button',{name:'이야기 자동 넘김 정지',exact:true}).click();await page.mouse.move(0,0);
+  const stopped=await current();await page.clock.runFor(9000);
+  ok('stop remains stopped after pointer leaves',await current()===stopped);
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.getByRole('button',{name:'다음 이야기',exact:true}).click();
+  const reducedState=await page.locator('.story-slides').evaluate(el=>({href:el.querySelector('.is-current a').getAttribute('href'),moves:el.getAnimations({subtree:true}).filter(a=>a.effect.getKeyframes().some(f=>f.transform)).length}));
+  ok('reduced motion keeps manual controls without sliding',reducedState.href!==stopped&&reducedState.moves===0);
+  ok('carousel has no script errors',errors.length===0);
+  await context.close();
  }
  {
   const {context,page,sent}=await fixture();
@@ -91,6 +142,8 @@ try{
  }
  {
   const {context,page}=await fixture({javaScriptEnabled:false});
+  await page.goto(base+'/index.html');
+  ok('no-JS landing keeps a readable story and archive link',await page.locator('.story-slide.is-current a').isVisible()&&await page.locator('.story-carousel .story-teaser-all').isVisible()&&await page.locator('.story-carousel button:visible').count()===0);
   await page.goto(base+'/stories.html');
   ok('stories work without JavaScript',await page.getByRole('link',{name:'이야기 읽기'}).isVisible()&&!await page.locator('.story-search').isVisible());
   await page.getByRole('link',{name:'이야기 읽기'}).click();

@@ -24,6 +24,9 @@ CATEGORIES = ('달과 행성', '별과 우주', '우주 탐사', '관측 이야�
 SOURCE_DOMAINS = ('nasa.gov', 'esa.int', 'kasi.re.kr', 'imo.net', 'noaa.gov',
                   'spacex.com', 'rocketlabusa.com', 'blueorigin.com', 'fireflyspace.com')
 RELATED = {'sky.html', 'planets.html', 'guide.html', 'reading-sky.html', 'news.html', 'lounge.html'}
+# Operator-approved launch batch only; scheduled publishing remains one per KST day.
+INITIAL_RELEASE_DAY = '2026-09-12'
+INITIAL_RELEASE_IDS = {'moon-face-and-phases', 'seasonal-constellations-camping', 'cosmic-voids'}
 
 
 def text(value, low=1, high=500):
@@ -118,16 +121,20 @@ def load(root=ROOT):
     ledger = json.loads((root / LEDGER).read_text())
     if not isinstance(ledger, dict) or ledger.get('version') != 1 or not isinstance(ledger.get('items'), list):
         raise ValueError('Invalid publication ledger')
-    seen, days = set(), set()
+    seen, days = set(), {}
     for item in ledger['items']:
         ident, day = item['id'], valid_date(item['date'])
-        if ident not in articles or ident in seen or day in days:
-            raise ValueError('Missing article or duplicate article/publication day')
+        if ident not in articles or ident in seen:
+            raise ValueError('Missing article or duplicate article')
         if articles[ident]['publishAfter'] > day:
             raise ValueError('Article published before its allowed date')
         if item['contentHash'] != content_hash(articles[ident]):
             raise ValueError('Published article changed: use --accept-correction ID after source review')
-        seen.add(ident); days.add(day)
+        seen.add(ident)
+        days.setdefault(day, set()).add(ident)
+    for day, ids in days.items():
+        if len(ids) > 1 and not (day == INITIAL_RELEASE_DAY and ids == INITIAL_RELEASE_IDS):
+            raise ValueError('Duplicate publication day outside the approved initial release')
     return articles, ledger
 
 
@@ -179,7 +186,7 @@ def shell(title, description, path, body, prefix='', schema=None, noindex=False,
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
 <link rel="stylesheet" href="{prefix}orbit.css?v=20260912-brand">
 <link rel="stylesheet" href="{prefix}site-nav.css?v=20260912-navigation">
-<link rel="stylesheet" href="{prefix}stories.css?v=20260912-disclosure">
+<link rel="stylesheet" href="{prefix}stories.css?v=20260912-launch">
 {f'<script type="application/ld+json">{json_script(schema)}</script>' if schema else ''}
 <script src="{prefix}site-nav.js?v=20260912-navigation" defer></script>
 <script src="{prefix}{script}?v=20260912-editor" defer></script>
@@ -201,11 +208,12 @@ def byline(disclose=False):
 
 
 def meta(article, day):
-    return f'<div class="story-meta"><span class="story-tag">{esc(article["category"])}</span><time datetime="{day}">{day.replace("-", ".")}</time></div>'
+    return f'<div class="story-meta"><span class="story-tag">{esc(article["category"])}</span></div>'
 
 
-def art():
-    return '<div class="story-art" aria-hidden="true"><i class="spark"></i><span class="story-art-label">A LITTLE CLOSER TO SPACE</span></div>'
+def art(article):
+    style = '' if article['category'] == '달과 행성' else ' story-art--deep-space'
+    return f'<div class="story-art{style}" aria-hidden="true"><i class="spark"></i><span class="story-art-label">A LITTLE CLOSER TO SPACE</span></div>'
 
 
 def render_list(items):
@@ -213,7 +221,7 @@ def render_list(items):
     feature = '<p class="editor-note">첫 번째 이야기를 준비하고 있어요. <a href="news.html">우주 뉴스 둘러보기 →</a></p>'
     if items:
         a, day = items[0]
-        feature = f'<section class="story-feature" aria-labelledby="latestStoryTitle"><div class="story-feature-copy"><p class="story-eyebrow">가장 최근의 이야기</p>{meta(a, day)}<h2 id="latestStoryTitle"><a href="stories/{a["id"]}.html">{esc(a["title"])}</a></h2><p>{esc(a["summary"])}</p><a class="story-link" href="stories/{a["id"]}.html">이야기 읽기 <span aria-hidden="true">↗</span></a></div>{art()}</section>'
+        feature = f'<section class="story-feature" aria-labelledby="latestStoryTitle"><div class="story-feature-copy"><p class="story-eyebrow">가장 최근의 이야기</p>{meta(a, day)}<h2 id="latestStoryTitle"><a href="stories/{a["id"]}.html">{esc(a["title"])}</a></h2><p>{esc(a["summary"])}</p><a class="story-link" href="stories/{a["id"]}.html">이야기 읽기 <span aria-hidden="true">↗</span></a></div>{art(a)}</section>'
     rows = []
     for n, (a, day) in enumerate(items):
         search_text = ' '.join(p for section in a['sections'] for p in section['paragraphs'])
@@ -247,15 +255,27 @@ def render_article(a, day):
     return shell(a['title'], a['summary'], f'stories/{ident}.html', body, '../', schema)
 
 
-def render_teaser(items):
+def render_teaser(items, carousel=False):
     if not items:
         return '<aside class="story-teaser"><a class="story-teaser-title" href="stories.html">ORBIT 에디터의 우주 이야기 →</a></aside>'
     a, day = items[0]
-    return f'<aside class="story-teaser" aria-label="최신 우주 이야기"><span class="story-teaser-icon" aria-hidden="true">{editor_star(21)}</span><div class="story-teaser-copy"><div class="story-teaser-meta"><span>ORBIT 에디터</span><time datetime="{day}">{day.replace("-", ".")}</time></div><a class="story-teaser-title" href="stories/{a["id"]}.html">{esc(a["title"])}</a></div><a class="story-teaser-all" href="stories.html">전체보기 →</a></aside>'
+    if not carousel:
+        return f'<aside class="story-teaser" aria-label="최신 우주 이야기"><span class="story-teaser-icon" aria-hidden="true">{editor_star(21)}</span><div class="story-teaser-copy"><div class="story-teaser-meta"><span>ORBIT 에디터</span></div><a class="story-teaser-title" href="stories/{a["id"]}.html">{esc(a["title"])}</a></div><a class="story-teaser-all" href="stories.html">전체보기 →</a></aside>'
+    featured = items[:5]
+    slides = []
+    for n, (article, _) in enumerate(featured):
+        state = ' class="story-slide is-current"' if n == 0 else ' class="story-slide" aria-hidden="true" inert'
+        tab = '' if n == 0 else ' tabindex="-1"'
+        slides.append(f'<div{state} role="group" aria-roledescription="슬라이드" aria-label="{n+1} / {len(featured)}"><span class="story-teaser-category">{esc(article["category"])}</span><a class="story-teaser-title" href="stories/{article["id"]}.html"{tab}>{esc(article["title"])}</a></div>')
+    return f'''<aside class="story-teaser story-carousel" aria-label="우주 이야기" aria-roledescription="캐러셀">
+<div class="story-carousel-head"><span class="story-teaser-icon" aria-hidden="true">{editor_star(21)}</span><span class="story-teaser-meta">ORBIT 에디터 · 우주 이야기</span><a class="story-teaser-all" href="stories.html">전체보기 →</a></div>
+<div class="story-carousel-body"><button class="story-carousel-arrow" type="button" data-story-prev aria-label="이전 이야기" hidden>←</button><div class="story-slides">{''.join(slides)}</div><button class="story-carousel-arrow" type="button" data-story-next aria-label="다음 이야기" hidden>→</button></div>
+<div class="story-carousel-controls" hidden><span class="story-carousel-count" aria-live="off" aria-atomic="true">1 / {len(featured)}</span><button type="button" class="story-carousel-play" aria-label="이야기 자동 넘김 정지">자동 넘김 정지</button></div>
+</aside>'''
 
 
 def outputs(articles, ledger, root=ROOT):
-    items = [(articles[item['id']], item['date']) for item in sorted(ledger['items'], key=lambda i: i['date'], reverse=True)]
+    items = [(articles[item['id']], item['date']) for item in sorted(reversed(ledger['items']), key=lambda i: i['date'], reverse=True)]
     result = {'stories.html': render_list(items)}
     result.update({f'stories/{a["id"]}.html': render_article(a, day) for a, day in items})
     for filename in ('index.html', 'main.html'):
@@ -263,7 +283,7 @@ def outputs(articles, ledger, root=ROOT):
         pattern = r'<!-- orbit-story-teaser:start -->.*?<!-- orbit-story-teaser:end -->'
         if len(re.findall(pattern, src, re.S)) != 1:
             raise ValueError(f'{filename}: expected one story teaser marker')
-        result[filename] = re.sub(pattern, lambda _: '<!-- orbit-story-teaser:start -->\n' + render_teaser(items) + '\n<!-- orbit-story-teaser:end -->', src, flags=re.S)
+        result[filename] = re.sub(pattern, lambda _: '<!-- orbit-story-teaser:start -->\n' + render_teaser(items, carousel=filename == 'index.html') + '\n<!-- orbit-story-teaser:end -->', src, flags=re.S)
     sitemap = (root / 'sitemap.xml').read_text()
     sitemap = re.sub(r'\s*<url>\s*<loc>https://orbithere\.com/(?:notes\.html|stories\.html|stories/[^<]+)</loc>.*?</url>', '', sitemap, flags=re.S)
     entries = ['  <url><loc>https://orbithere.com/stories.html</loc></url>']
