@@ -32,9 +32,10 @@
     <script src="visits.js" defer></script>
 
 
-    <script src="reading-sky.js" defer></script>
+    <script src="reading-sky.js?v=20260912-otter" defer></script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "별지도 읽는 법 — 방향과 고도 이해하기 | 오빗 Orbit", "description": "남동쪽 30도는 어디일까요? 방향·고도를 직접 조절하는 그림과 예시로 행성 지도를 읽고, 실제 하늘에서 천체를 찾는 순서를 익혀보세요.", "url": "https://orbithere.com/reading-sky.html", "inLanguage": "ko", "author": {"@type": "Organization", "name": "오빗 (Orbit)", "url": "https://orbithere.com/about.html"}, "datePublished": "2026-09-12", "dateModified": "2026-09-12"}</script>
 <link rel="stylesheet" href="ad-slots.css">
+<link rel="stylesheet" href="reading-sky.css?v=20260912-otter">
 <script src="ads-config.js" defer></script>
 <script src="ad-slots.js" defer></script>
 <link rel="stylesheet" href="site-nav.css?v=20260912-navigation">
@@ -61,22 +62,61 @@
 <!-- orbit-navigation:end -->
 <div class="orbit-page-content">
 <main class="guide-main" id="main-content">
-<div class="guide-hero"><p class="eyebrow">관측 가이드 · 방향과 고도</p><h1>지도 속 점을<br>실제 하늘에서 찾는 법</h1><p>“남동쪽, 고도 30°”를 보고 어디를 봐야 할지 막막했다면, 방향과 높이를 나눠서 읽어보세요.</p><p class="small">오빗 가이드 · 2026년 9월 12일 작성</p></div>
-<nav class="section-nav" aria-label="글 목차"><a href="#direction">방향</a><a href="#altitude">고도</a><a href="#practice">직접 적용</a><a href="#limits">안 보이는 이유</a></nav>
-<section id="direction"><h2>1. 먼저, 어느 쪽으로 몸을 돌릴까요?</h2><p>오빗의 행성 지도는 북쪽을 0°로 두고 시계 방향으로 방향을 표시합니다. 동쪽은 90°, 남쪽은 180°, 서쪽은 270°예요. 남동쪽이라면 동쪽과 남쪽 사이를 바라보면 됩니다.</p>
-<div class="direction-strip" aria-label="방향 기준"><span>북<br><strong>0°</strong></span><span>동<br><strong>90°</strong></span><span>남<br><strong>180°</strong></span><span>서<br><strong>270°</strong></span></div>
-<p>휴대폰 나침반을 사용한다면 금속 구조물과 자석 근처를 피하고 주변 도로·건물 방향과 함께 확인하세요. 지도 위의 좌우를 그대로 실제 하늘의 좌우로 생각하면 헷갈릴 수 있어요. 먼저 지도에 적힌 동서남북을 읽어보세요.</p></section>
-<section id="altitude"><h2>2. 그다음, 얼마나 올려다볼까요?</h2><p>여기서 고도는 해발 높이가 아니라, 지평선에서 얼마나 위에 있는지를 나타내는 각도입니다. 지평선은 0°, 머리 바로 위는 90°예요. 45°는 그 중간입니다.</p>
-<div class="altitude-demo"><svg viewBox="0 0 420 260" role="img" aria-labelledby="angleTitle angleDesc"><title id="angleTitle">지평선에서 고도 30도 올려다보기</title><desc id="angleDesc">옆에서 본 하늘의 높이. 지평선에서 천정까지 0도에서 90도이며, 조절한 각도에 따라 시선이 움직입니다.</desc><path d="M 60 210 L 370 210 M 60 210 L 60 30" stroke="#52657A" fill="none"/><path d="M 240 210 A 180 180 0 0 0 60 30" stroke="#30465C" stroke-dasharray="4 7" fill="none"/><line id="sightLine" x1="60" y1="210" x2="215.9" y2="120" stroke="#4FD1C5" stroke-width="3"/><circle id="sightPoint" cx="215.9" cy="120" r="7" fill="#4FD1C5"/><circle cx="60" cy="210" r="5" fill="#E2E8F0"/><text x="280" y="236">지평선 0°</text><text x="74" y="32">머리 위 90°</text><text x="16" y="236">나</text></svg>
-<label for="altitudeRange">올려다보는 각도 <output id="angleValue" for="altitudeRange">30°</output></label><input id="altitudeRange" type="range" min="0" max="90" step="5" value="30"><p id="angleHint">지평선에서 머리 위까지의 약 3분의 1 높이예요.</p><p class="small">각도를 이해하기 위한 그림입니다. 실제 천체 위치나 현재 관측 가능 여부를 계산하지 않습니다.</p></div>
-<p>팔을 쭉 뻗고 쥔 주먹 하나의 폭은 대략 10°를 가늠하는 데 쓸 수 있어요. 손 크기와 팔 길이에 따라 차이가 있으니 정밀 측정 대신 처음 찾을 범위를 좁히는 용도로 써보세요.</p></section>
-<section id="practice"><h2>3. “남동쪽 30°”를 찾아보는 순서</h2><ol class="reading-list"><li>‘오늘 밤 행성’에서 실제 관측할 도시와 시각을 고릅니다. 지금 보는 하늘과 내일 새벽의 지도는 다릅니다.</li><li>보고 싶은 행성의 방향부터 확인하고 그쪽으로 몸을 돌려요.</li><li>평평한 지평선을 기준으로 시선을 올립니다. 30°라면 지평선과 머리 위 사이를 셋으로 나눈 첫 번째 높이입니다.</li><li>그 방향에 건물이나 산이 있다면 천체가 가려질 수 있어요. 지붕 꼭대기를 새로운 0°로 삼으면 지도의 높이와 맞지 않습니다.</li><li>찾았는지 확신이 없다면 시간과 조건을 기록해 질문해보세요. 작은 점 하나만으로 대상을 단정할 필요는 없어요.</li></ol>
-<p class="small">‘남동쪽 30°’는 읽는 법을 설명하는 예시이며 특정 날짜·행성의 관측 예보가 아닙니다.</p><a href="main.html#planets">내 도시의 행성 지도에 적용하기 →</a></section>
+<div class="guide-hero otter-hero"><div><p class="eyebrow">수달과 함께 · 별지도 첫걸음</p><h1>지도 속 점을<br>실제 하늘에서 찾는 법</h1><p>숫자부터 외우지 않아도 괜찮아요.<br>몸을 돌리고, 시선을 올리고, 지도와 맞춰봐요.</p><p class="small">오빗 가이드 · 2026년 9월 12일 작성·그림 보완</p></div><span class="otter-pose otter-scope" aria-hidden="true"><img src="images/otter-sky-guide.webp" alt="" width="1536" height="512" decoding="async"></span></div>
+<nav class="section-nav" aria-label="글 목차"><a href="#direction">1. 몸 돌리기</a><a href="#altitude">2. 시선 올리기</a><a href="#practice">3. 지도와 맞추기</a><a href="#limits">안 보이는 이유</a></nav>
+<noscript><p class="lesson-note">지금은 정지 그림으로 남동쪽 30° 예시를 보고 있어요. JavaScript를 켜면 방향·각도를 바꿔 연습할 수 있습니다.</p></noscript>
+<section id="direction" class="sky-lesson">
+<p class="lesson-kicker">STEP 01 · 위에서 본 방향</p><h2>먼저, 어느 쪽으로 몸을 돌릴까요?</h2>
+<p>지도에 <strong>남동쪽</strong>이라고 적혀 있다면, 동쪽과 남쪽 사이로 몸을 돌려요. 아직 고개를 들 필요는 없어요.</p>
+<div class="lesson-visual direction-visual">
+<span class="otter-pose otter-direction" aria-hidden="true"><img src="images/otter-sky-guide.webp" alt="" width="1536" height="512" loading="lazy" decoding="async"></span>
+<svg class="compass-demo" viewBox="0 0 360 290" role="img" aria-labelledby="bearingTitle bearingDesc"><title id="bearingTitle">위에서 본 나침반: 남동쪽 바라보기</title><desc id="bearingDesc">북쪽이 위, 동쪽이 오른쪽입니다. 가운데에서 남동쪽으로 향하는 민트색 화살표가 바라볼 방향입니다.</desc>
+<defs><marker id="compassArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#4FD1C5"/></marker></defs>
+<circle cx="180" cy="140" r="96" fill="#0F1C2F" stroke="#34465F"/><path d="M 84 140 H 276 M 180 44 V 236" stroke="#34465F" stroke-dasharray="4 6"/>
+<text x="180" y="26" text-anchor="middle">북 0°</text><text x="306" y="146" text-anchor="middle">동 90°</text><text x="180" y="269" text-anchor="middle">남 180°</text><text x="52" y="146" text-anchor="middle">서 270°</text>
+<g id="bearingPointer" transform="rotate(135 180 140)"><line x1="180" y1="140" x2="180" y2="62" stroke="#4FD1C5" stroke-width="3" marker-end="url(#compassArrow)"/></g>
+<circle cx="180" cy="140" r="7" fill="#FF9F43"/><text x="180" y="165" text-anchor="middle" class="compass-me">나</text></svg>
+</div>
+<div class="lesson-controls"><label for="directionSelect">바라볼 방향을 골라봐요</label><select id="directionSelect" disabled><option value="0">북쪽 · 0°</option><option value="45">북동쪽 · 45°</option><option value="90">동쪽 · 90°</option><option value="135" selected>남동쪽 · 135°</option><option value="180">남쪽 · 180°</option><option value="225">남서쪽 · 225°</option><option value="270">서쪽 · 270°</option><option value="315">북서쪽 · 315°</option></select></div>
+<p class="lesson-answer" id="directionHint" aria-live="polite">동쪽과 남쪽 사이, 남동쪽을 바라봐요.</p>
+<p class="small">나침반은 북쪽 0°에서 시계 방향으로 읽어요. 휴대폰 나침반은 금속 구조물·자석에서 떨어져 확인하고, 주변 도로와 건물 방향도 함께 살펴보세요.</p>
+</section>
+<section id="altitude" class="sky-lesson">
+<p class="lesson-kicker">STEP 02 · 옆에서 본 높이</p><h2>그다음, 얼마나 올려다볼까요?</h2>
+<p><strong>고도는 해발 높이가 아니라 올려다보는 각도</strong>예요. 평평한 지평선이 0°, 머리 바로 위가 90°입니다. 민트색 선을 움직이며 시선을 따라가 보세요.</p>
+<div class="altitude-demo">
+<div class="lesson-visual altitude-visual"><span class="otter-pose otter-up" aria-hidden="true"><img src="images/otter-sky-guide.webp" alt="" width="1536" height="512" loading="lazy" decoding="async"></span>
+<svg viewBox="0 0 420 260" role="img" aria-labelledby="angleTitle angleDesc"><title id="angleTitle">지평선에서 고도 30도 올려다보기</title><desc id="angleDesc">옆에서 본 시선입니다. 민트색 선이 지평선에서 위로 30도 기울어 있습니다.</desc><path d="M 60 210 L 370 210 M 60 210 L 60 30" stroke="#52657A" fill="none"/><path d="M 240 210 A 180 180 0 0 0 60 30" stroke="#30465C" stroke-dasharray="4 7" fill="none"/><path id="angleArc" d="M 108 210 A 48 48 0 0 0 101.57 186" fill="none" stroke="#FF9F43" stroke-width="2"/><line id="sightLine" x1="60" y1="210" x2="215.9" y2="120" stroke="#4FD1C5" stroke-width="3"/><circle id="sightPoint" cx="215.9" cy="120" r="7" fill="#4FD1C5"/><circle cx="60" cy="210" r="5" fill="#FF9F43"/><text x="280" y="236">지평선 0°</text><text x="74" y="32">머리 위 90°</text><text x="16" y="236">내 눈높이</text></svg></div>
+<label for="altitudeRange">올려다보는 각도 <output id="angleValue" for="altitudeRange">30°</output></label><input id="altitudeRange" type="range" min="0" max="90" step="5" value="30" aria-describedby="angleHint" disabled>
+<p id="angleHint" aria-live="polite">지평선에서 머리 위까지의 약 3분의 1 높이예요.</p>
+<div class="angle-shortcuts" aria-label="각도 예시"><button type="button" data-angle="0" disabled>0° · 똑바로</button><button type="button" data-angle="30" disabled>30° · 조금 위</button><button type="button" data-angle="60" disabled>60° · 높이</button><button type="button" data-angle="90" disabled>90° · 머리 위</button></div>
+</div>
+<p class="small">팔을 쭉 뻗고 쥔 주먹 하나의 폭은 대략 10°를 가늠하는 데 쓸 수 있어요. 손 크기와 팔 길이에 따라 다르므로 정확한 측정값은 아닙니다. 건물 지붕이나 산등성이를 새로운 0°로 삼지 마세요.</p>
+</section>
+<section id="practice" class="sky-lesson">
+<p class="lesson-kicker">STEP 03 · 그래프에서 하늘로</p><h2>이제, 지도 속 점을 찾아볼까요?</h2>
+<p>‘오늘 밤 행성’과 같은 방식의 연습 지도예요. <strong>가로로 방향을 읽고, 세로로 높이를 읽으면</strong> 됩니다. 위에서 고른 방향·각도가 아래 점과 함께 바뀝니다.</p>
+<div class="practice-card">
+<div class="practice-heading"><h3>행성 지도 읽기 연습</h3><span class="example-badge">학습용 예시 · 현재 하늘 아님</span></div>
+<div class="practice-presets" aria-label="연습할 행성 예시"><button type="button" data-example="jupiter" aria-pressed="true" disabled>목성 예시</button><button type="button" data-example="saturn" aria-pressed="false" disabled>토성 예시</button><button type="button" data-example="venus" aria-pressed="false" disabled>금성 예시</button></div>
+<svg id="sampleSkyMap" viewBox="0 0 720 340" role="img" aria-labelledby="sampleMapTitle sampleMapDesc"><title id="sampleMapTitle">학습용 목성: 남동쪽, 고도 30도</title><desc id="sampleMapDesc">실제 관측 예보가 아닌 연습 지도입니다. 가로축은 북·동·남·서·북, 세로축은 고도 0도부터 90도입니다.</desc>
+<rect x="44" y="30" width="662" height="232" rx="10" fill="#101F32"/><rect x="44" y="262" width="662" height="22" fill="#202B39"/>
+<g stroke="#2D4057"><path d="M 44 30 H 706 M 44 107.33 H 706 M 44 184.67 H 706 M 44 262 H 706"/><path d="M 44 30 V 262 M 209.5 30 V 262 M 375 30 V 262 M 540.5 30 V 262 M 706 30 V 262" stroke-dasharray="3 6"/></g>
+<g class="map-axis" fill="#B7C4D7" font-size="15"><text x="34" y="35" text-anchor="end">90°</text><text x="34" y="112" text-anchor="end">60°</text><text x="34" y="190" text-anchor="end">30°</text><text x="34" y="268" text-anchor="end">0°</text><text x="44" y="309" text-anchor="middle">북</text><text x="209.5" y="309" text-anchor="middle">동</text><text x="375" y="309" text-anchor="middle">남</text><text x="540.5" y="309" text-anchor="middle">서</text><text x="706" y="309" text-anchor="middle">북</text></g>
+<path id="sampleProjection" d="M 44 184.67 H 292.25 V 262" stroke="#4FD1C5" stroke-dasharray="5 5" fill="none"/>
+<circle id="samplePlanetHalo" cx="292.25" cy="184.67" r="15" fill="#FF9F43" opacity=".14"/><circle id="samplePlanet" cx="292.25" cy="184.67" r="6" fill="#FFB765"/>
+<text id="samplePlanetLabel" x="308.25" y="163.67" fill="#FFE2B8" font-size="16">목성 예시</text></svg>
+<div class="practice-reading"><span class="otter-pose otter-scope" aria-hidden="true"><img src="images/otter-sky-guide.webp" alt="" width="1536" height="512" loading="lazy" decoding="async"></span><div><p class="lesson-answer" id="sampleInstruction" aria-live="polite">남동쪽으로 몸을 돌리고, 지평선에서 30° 올려다봐요.</p><p class="small" id="sampleValues">목성 예시 · 방위 135° · 고도 30°</p><a href="#direction">방향 바꾸기 ↑</a><a href="#altitude">높이 바꾸기 ↑</a></div></div>
+<p class="lesson-note">점의 위치는 설명을 위해 정한 값입니다. 실제 행성의 위치·밝기·관측 가능 여부를 계산하지 않습니다. 북쪽은 지도를 펼치면서 양 끝에 나눠 표시한 같은 방향이에요.</p>
+</div>
+<a class="guide-button" href="main.html#planets">이제 내 도시의 실제 행성 지도 보기 →</a>
+<p class="small">실제 관측 전에는 도시와 시각을 고르고 구름·건물·산의 가림도 확인하세요. 망원경을 쓰기 전에 맨눈으로 방향부터 찾아보면 좋아요.</p>
+</section>
 <section id="limits"><h2>지도에는 있는데 왜 안 보일까요?</h2><div class="about-links"><article class="content-card"><h3>위치와 밝기는 다른 정보예요</h3><p>지도에 표시된다는 것은 그 방향을 계산할 수 있다는 뜻입니다. 천왕성·해왕성처럼 어두운 대상은 맨눈으로 쉽게 찾을 수 없어요. 관측 안내와 장비 조건을 함께 읽어보세요.</p></article><article class="content-card"><h3>실제 하늘이 가려져 있을 수 있어요</h3><p>오빗의 지도에는 실시간 구름이나 주변 건물·산의 모양이 들어있지 않습니다. 관측 시각·도시를 먼저 확인하고, 시야가 트였는지 살펴보세요.</p></article></div>
 <p>하늘 전체가 밝으면 희미한 대상을 구별하기 어렵고, 지평선 가까이는 장애물에 가려지기 쉬워요. 같은 장비를 쓰더라도 날짜·장소·관측 시간이 바뀌면 결과가 달라질 수 있습니다.</p></section>
 <template data-ad-placement><aside class="editorial-ad" aria-label="광고"><p class="ad-label">광고</p><ins class="adsbygoogle" style="display:block" data-ad-format="horizontal" data-full-width-responsive="false"></ins></aside></template>
 <section><h2>이 글의 기준과 참고 자료</h2><p>각도 설명과 연습 그림은 오빗의 행성 지도를 처음 사용하는 사람을 위해 구성했습니다. 시계 방향 방위각과 지평선 기준 고도를 설명하며, 지도의 계산 한계는 <a href="about.html">소개·문의</a>에서도 확인할 수 있어요.</p>
-<p class="source-note">기초 참고: <a href="https://science.nasa.gov/skywatching/faq/" target="_blank" rel="noopener noreferrer">NASA Skywatching FAQ — 하늘에서 각도 가늠하기</a></p></section>
+<p class="mascot-credit">수달은 AI로 제작한 오빗의 설명용 마스코트입니다. 방향과 각도는 별도의 그림·수치로 표시합니다.</p><p class="source-note">기초 참고: <a href="https://science.nasa.gov/skywatching/faq/" target="_blank" rel="noopener noreferrer">NASA Skywatching FAQ — 하늘에서 각도 가늠하기</a></p></section>
 <a class="guide-callout" href="stories.html"><strong>하늘을 보는 질문을 더 만나볼까요?</strong><span>우주 이야기 읽기 →</span></a>
 </main>
     <footer class="site-footer">

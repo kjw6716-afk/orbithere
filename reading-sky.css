@@ -1,0 +1,60 @@
+.otter-hero { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.otter-hero>div { min-width: 0; }
+.otter-hero h1 { font-size: clamp(1.85rem, 3.7vw, 2.8rem); }
+.otter-pose { display: block; flex: 0 0 auto; width: 160px; aspect-ratio: 1; overflow: hidden; }
+.otter-pose img { display: block; width: 300%; height: 100%; max-width: none; }
+.otter-up img { transform: translateX(-33.333333%); }
+.otter-scope img { transform: translateX(-66.666667%); }
+.otter-hero>.otter-pose { width: clamp(150px, 23vw, 230px); }
+.sky-lesson { border-top: 1px solid #2A3A50; padding-top: 30px; }
+.sky-lesson strong { color: #E2E8F0; }
+.lesson-kicker { font-size: .76rem; color: #78E2D5; letter-spacing: .1em; margin-bottom: 10px; }
+.lesson-visual { display: flex; align-items: center; justify-content: center; gap: 18px; min-width: 0; }
+.direction-visual { padding: 18px; border: 1px solid #30445C; border-radius: 20px; background: #111E31; margin: 24px 0; }
+.compass-demo { width: min(100%, 360px); min-width: 0; }
+.compass-demo text { fill: #CBDAEA; font: 16px system-ui, sans-serif; }
+.compass-demo .compass-me { font-size: 13px; fill: #FFBB79; }
+.lesson-controls { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+.lesson-controls label { color: #D8E4F2; font-size: .95rem; }
+.lesson-controls select { max-width: 100%; min-height: 46px; padding: 10px 36px 10px 14px; border: 1px solid #4C706D; border-radius: 10px; background: #102738; color: #D8FCF6; font: inherit; font-size: 16px; }
+.lesson-controls select:focus-visible { outline: 2px solid #4FD1C5; outline-offset: 4px; }
+.lesson-answer { color: #B9F2E8; font-size: 1.06rem; line-height: 1.75; margin: 18px 0 0; }
+.altitude-visual { margin-bottom: 24px; }
+.altitude-visual>.otter-pose { width: 135px; }
+.altitude-visual>svg { flex: 1; min-width: 0; }
+.angle-shortcuts, .practice-presets { display: flex; flex-wrap: wrap; gap: 8px; }
+.angle-shortcuts button, .practice-presets button { min-height: 44px; border: 1px solid #405973; border-radius: 10px; color: #D5E1EF; background: #15263A; padding: 8px 13px; font: inherit; font-size: .87rem; cursor: pointer; }
+.angle-shortcuts button:hover, .practice-presets button:hover { border-color: #78D9CD; }
+.practice-presets button[aria-pressed=true] { color: #0F172A; border-color: #4FD1C5; background: #4FD1C5; font-weight: 700; }
+button:disabled, select:disabled, input:disabled { cursor: default; opacity: .55; }
+.practice-card { border: 1px solid #37554F; border-radius: 20px; background: #102032; padding: 24px; margin: 24px 0; }
+.practice-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+.practice-heading h3 { margin: 0; }
+.example-badge { color: #EDC795; font-size: .75rem; padding: 4px 10px; border: 1px solid #68553E; border-radius: 99px; }
+#sampleSkyMap { display: block; width: 100%; margin-top: 16px; overflow: visible; }
+.practice-reading { display: flex; align-items: center; gap: 20px; border-top: 1px solid #2B4056; padding-top: 18px; }
+.practice-reading>.otter-pose { width: 120px; }
+.practice-reading>div { min-width: 0; }
+.practice-reading .lesson-answer { margin: 0; }
+.practice-reading .small { margin: 8px 0; }
+.practice-reading a { display: inline-flex; align-items: center; min-height: 44px; margin-right: 20px; font-size: .85rem; }
+.lesson-note { font-size: .83rem; color: #AFBED2; border-left: 2px solid #5C7893; padding-left: 14px; margin: 22px 0 0; }
+.mascot-credit { font-size: .8rem; color: #AAB9CD; }
+@media (max-width: 600px) {
+ .otter-hero { position: relative; display: block; padding-bottom: 28px; }
+ .otter-hero>div { position: relative; z-index: 1; }
+ .otter-hero>.otter-pose { width: 126px; margin: 14px 0 0 auto; }
+ .lesson-visual { gap: 4px; }
+ .direction-visual { padding: 12px 4px; flex-direction: column; }
+ .direction-visual>.otter-pose { width: 115px; align-self: flex-start; margin-left: 10px; margin-bottom: -30px; }
+ .compass-demo { width: 100%; max-width: 360px; }
+ .altitude-visual { flex-direction: column; align-items: stretch; }
+ .altitude-visual>.otter-pose { width: 110px; margin-bottom: -12px; }
+ .altitude-visual>svg { flex: auto; width: 100%; }
+ .practice-card { padding: 18px 14px; }
+ .practice-reading { gap: 10px; align-items: flex-start; }
+ .practice-reading>.otter-pose { width: 80px; }
+ .practice-reading .lesson-answer { font-size: .95rem; }
+ .sky-lesson h2 { font-size: 1.25rem; }
+ .angle-shortcuts button { flex: 1 1 calc(50% - 8px); padding-inline: 8px; }
+}
