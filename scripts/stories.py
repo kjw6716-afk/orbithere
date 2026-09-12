@@ -261,17 +261,15 @@ def render_teaser(items, carousel=False):
     a, day = items[0]
     if not carousel:
         return f'<aside class="story-teaser" aria-label="최신 우주 이야기"><span class="story-teaser-icon" aria-hidden="true">{editor_star(21)}</span><div class="story-teaser-copy"><div class="story-teaser-meta"><span>ORBIT 에디터</span></div><a class="story-teaser-title" href="stories/{a["id"]}.html">{esc(a["title"])}</a></div><a class="story-teaser-all" href="stories.html">전체보기 →</a></aside>'
-    featured = items[:5]
-    slides = []
-    for n, (article, _) in enumerate(featured):
-        state = ' class="story-slide is-current"' if n == 0 else ' class="story-slide" aria-hidden="true" inert'
-        tab = '' if n == 0 else ' tabindex="-1"'
-        slides.append(f'<div{state} role="group" aria-roledescription="슬라이드" aria-label="{n+1} / {len(featured)}"><span class="story-teaser-category">{esc(article["category"])}</span><a class="story-teaser-title" href="stories/{article["id"]}.html"{tab}>{esc(article["title"])}</a></div>')
-    return f'''<aside class="story-teaser story-carousel" aria-label="우주 이야기" aria-roledescription="캐러셀">
-<div class="story-carousel-head"><span class="story-teaser-icon" aria-hidden="true">{editor_star(21)}</span><span class="story-teaser-meta">ORBIT 에디터 · 우주 이야기</span><a class="story-teaser-all" href="stories.html">전체보기 →</a></div>
-<div class="story-carousel-body"><button class="story-carousel-arrow" type="button" data-story-prev aria-label="이전 이야기" hidden>←</button><div class="story-slides">{''.join(slides)}</div><button class="story-carousel-arrow" type="button" data-story-next aria-label="다음 이야기" hidden>→</button></div>
-<div class="story-carousel-controls" hidden><span class="story-carousel-count" aria-live="off" aria-atomic="true">1 / {len(featured)}</span><button type="button" class="story-carousel-play" aria-label="이야기 자동 넘김 정지">자동 넘김 정지</button></div>
+    cards = []
+    # Start with the first published story in the center; append every new release.
+    for article, _ in reversed(items):
+        cards.append(f'<a class="story-belt-card" href="stories/{article["id"]}.html"><span class="story-belt-card-head"><span class="story-teaser-icon" aria-hidden="true">{editor_star(21)}</span><span><span class="story-teaser-meta">ORBIT 에디터</span><span class="story-teaser-category">{esc(article["category"])}</span></span></span><span class="story-teaser-title">{esc(article["title"])}</span></a>')
+    return f'''<aside class="story-belt" aria-label="우주 이야기">
+<div class="story-belt-heading"><span>우주 이야기</span><a class="story-teaser-all" href="stories.html">전체보기 →</a></div>
+<div class="story-belt-viewport"><div class="story-belt-track"><div class="story-belt-group" data-story-original>{''.join(cards)}</div></div></div>
 </aside>'''
+
 
 
 def outputs(articles, ledger, root=ROOT):
