@@ -58,8 +58,8 @@ PR #42의 검사·Pages 배포 성공, 기존 콘텐츠 보존, 공개 조회 �
 사진은 글당 5장, 내용은 5,000자입니다. 배포 전 `20260911213759_titled_community_board.sql`이 필요합니다.
 사진 접근·정리·재시도 및 복원 절차는 [운영 안내](docs/community-operations.md)를 확인하세요.
 
-`news.html`은 한국천문연구원·NASA/JPL·ESA의 공식 RSS 제목·원문·번역 링크를 모읍니다.
-`.github/workflows/news.yml`이 6시간마다 `data/news.json`을 갱신하고 Pages 빌드를 요청합니다.
+`news.html`은 한국천문연구원·NASA/JPL·ESA와 우주기업의 공식 소식·한국어 핵심 요약·원문 링크를 모읍니다.
+`.github/workflows/news.yml`이 2시간마다 `data/news.json`을 갱신하고 Pages 빌드를 요청합니다.
 수집기는 Python 3 표준 라이브러리만 사용하며 별도 번역 API 키가 필요하지 않습니다.
 
 ## 검사
@@ -124,7 +124,7 @@ AI 초안 작성은 ChatGPT Work 예약 작업, 발행은 `.github/workflows/sto
 
 ## 한국어 뉴스 핵심 요약
 
-뉴스 목록은 한국어 제목·원문에 근거한 핵심 요약·원문 읽기를 제공합니다. Google 웹사이트 번역 링크는 제거했습니다. 요약은 `data/news-summaries.json`에서 관리하며, 기존 6시간 뉴스 수집과 독립적으로 유지합니다. 새 요약은 공식 원문 확인과 PR 검토·병합을 거쳐 공개합니다. 작성 절차는 [`_editorial/NEWS.md`](_editorial/NEWS.md)를 참고하세요.
+뉴스 목록은 한국어 제목·원문에 근거한 핵심 요약·원문 읽기를 제공합니다. Google 웹사이트 번역 링크는 제거했습니다. 요약은 `data/news-summaries.json`에서 관리하며, 2시간 간격의 뉴스 수집과 독립적으로 유지합니다. 새 요약은 공식 원문 확인과 PR 검토·병합을 거쳐 공개합니다. 작성 절차는 [`_editorial/NEWS.md`](_editorial/NEWS.md)를 참고하세요.
 
 `python3 scripts/news_summaries.py`로 요약 형식을 검사하고, `--pending`으로 아직 요약이 없는 기사를 확인합니다. 요약이 없거나 요약 파일을 불러오지 못해도 원문 읽기를 제공합니다.
 

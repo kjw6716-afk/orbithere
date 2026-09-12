@@ -83,8 +83,8 @@ Supabase의 가입 제한과 CAPTCHA 설정은 실제 서비스 키 및 가입 �
 
 ## 공식 뉴스
 
-`news.html`은 `data/news.json`의 공식 제목과 링크를 표시합니다. `scripts/update_news.py`가 출처별 최근 8건,
-총 최대 24건을 가져옵니다. 기사 본문·보도 사진·자동 번역 전문을 재게시하지 않습니다.
+`news.html`은 `data/news.json`의 공식 제목과 링크를 표시합니다. `scripts/update_news.py`가 기관·기업 출처별 최근 8건,
+총 최대 64건을 가져옵니다. 기사 본문·보도 사진·자동 번역 전문을 재게시하지 않습니다.
 
 - 한국천문연구원: https://www.kasi.re.kr/rss/newsMaterial
 - NASA / JPL: https://www.nasa.gov/centers-and-facilities/jpl/feed/
@@ -92,9 +92,9 @@ Supabase의 가입 제한과 CAPTCHA 설정은 실제 서비스 키 및 가입 �
 
 기관의 공식 RSS 안내에서 확인한 주소입니다. JPL의 별도 jpl.nasa.gov 피드는 실행 환경에서 403을 반환해,
 NASA 본사이트가 제공하는 JPL 피드를 사용합니다. 외부 URL·미래 날짜·XML 엔티티·과대 응답을 검증합니다.
-영문 기사는 원문 제목과 사용자가 누르는 Google 번역 링크를 제공합니다. 번역 API 키는 없습니다.
+영문 기사는 원제 펼쳐보기·원문 읽기를 제공하며, 별도 `data/news-summaries.json`에 원문 대조를 마친 한국어 핵심 요약이 있으면 함께 표시합니다. Google 웹사이트 번역 링크는 제거했습니다. 번역 API 키는 없습니다.
 
-GitHub Actions ‘공식 우주 뉴스 갱신’이 6시간마다 실행됩니다. 스케줄은 GitHub 사정으로 지연될 수 있습니다.
+GitHub Actions ‘공식 우주 뉴스 갱신’이 2시간마다 실행됩니다. 스케줄은 GitHub 사정으로 지연될 수 있습니다.
 수집 실패 출처는 이전 목록과 정상 확인 시각을 유지하며 화면에 상태를 표시합니다. 모든 수집이 실패해도
 기존 뉴스는 지우지 않습니다. 마지막 정상 확인이 48시간을 넘으면 지연 안내를 표시합니다.
 
