@@ -289,7 +289,7 @@ try {
           .evaluate((e) => e === document.activeElement)),
     );
     ok(
-      "original and translation links remain available",
+      "direct original links remain available",
       (await p.locator(".news-article-selected .news-links a").count()) >= 1,
     );
     await p.goto(base + "/news.html#article-0000000000000000");

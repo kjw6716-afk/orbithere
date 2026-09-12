@@ -750,14 +750,14 @@ try {
       (await page.locator('#newsList img').count()) === 0 &&
         (await page.getByText('Unsafe link', { exact: true }).count()) === 0,
     );
-    const translate = await page
-      .getByRole('link', { name: '한국어 번역 ↗', exact: true })
+    const original = await page
+      .getByRole('link', { name: '원문 읽기 ↗', exact: true })
       .first()
       .getAttribute('href');
     ok(
-      'translation is an explicit link to the original URL',
-      new URL(translate).hostname === 'translate.google.com' &&
-        new URL(translate).searchParams.get('u') === 'https://www.nasa.gov/space/saturn/',
+      'news keeps direct official links without the broken translation proxy',
+      new URL(original).hostname === 'www.kasi.re.kr' &&
+        (await page.getByRole('link', { name: '한국어 번역 ↗', exact: true }).count()) === 0,
     );
     await page.locator('[data-source=nasa]').click();
     await page.locator('#newsChecked').filter({ hasText: '1건' }).waitFor();

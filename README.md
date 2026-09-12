@@ -121,3 +121,11 @@ AI 초안 작성은 ChatGPT Work 예약 작업, 발행은 `.github/workflows/sto
 새 글이 없거나 검사에 실패하면 기존 글을 유지합니다. 자동 사실 검증이나 무검토 자동 발행을 보장하지 않습니다.
 작성 규칙·검토·수정·예약 작업 복구는 [_editorial/README.md](_editorial/README.md)를 참고하세요.
 `npm run test:stories`는 발행 제한·정적 렌더링·공유·노트 저장본 보존을 검사합니다.
+
+## 한국어 뉴스 핵심 요약
+
+뉴스 목록은 한국어 제목·원문에 근거한 핵심 요약·원문 읽기를 제공합니다. Google 웹사이트 번역 링크는 제거했습니다. 요약은 `data/news-summaries.json`에서 관리하며, 기존 6시간 뉴스 수집과 독립적으로 유지합니다. 새 요약은 공식 원문 확인과 PR 검토·병합을 거쳐 공개합니다. 작성 절차는 [`_editorial/NEWS.md`](_editorial/NEWS.md)를 참고하세요.
+
+`python3 scripts/news_summaries.py`로 요약 형식을 검사하고, `--pending`으로 아직 요약이 없는 기사를 확인합니다. 요약이 없거나 요약 파일을 불러오지 못해도 원문 읽기를 제공합니다.
+
+우주 이야기의 AI 작성 안내는 글 상세의 작성자 아래에 한 번 표시합니다. 첫 화면과 목록의 작성자명은 `ORBIT 에디터`입니다.

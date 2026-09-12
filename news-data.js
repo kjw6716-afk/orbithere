@@ -116,6 +116,35 @@
   function displayTitle(item) {
     return hasKoreanTitle(item) ? item.titleKo : item.title;
   }
+  function summaryFor(item, data) {
+    if (!data || data.version !== 1 || !Array.isArray(data.items) || data.items.length > 256) return null;
+    var row = data.items.find(function (r) {
+      return r && r.id === item.id && r.source === item.source && r.url === item.url &&
+        r.titleOriginal === item.title && r.publishedAt === item.publishedAt;
+    });
+    function korean(s, min, max) {
+      return typeof s === 'string' && s.trim().length >= min && s.length <= max &&
+        /[가-힣]/.test(s) && !/[<>\x00-\x1f]/.test(s);
+    }
+    return row && /^[a-f0-9]{16}$/.test(row.id) && row.method === 'source-checked' && korean(row.titleKo, 1, 240) &&
+      Array.isArray(row.summaryKo) && row.summaryKo.length >= 2 && row.summaryKo.length <= 3 &&
+      row.summaryKo.every(function (s) { return korean(s, 10, 240); }) &&
+      /^\d{4}-\d{2}-\d{2}$/.test(row.checkedAt) &&
+      Number.isFinite(Date.parse(row.checkedAt)) &&
+      new Date(row.checkedAt).toISOString().slice(0, 10) === row.checkedAt ? row : null;
+  }
+  async function loadSummaries() {
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, 3000);
+    try {
+      var response = await fetch('data/news-summaries.json', { cache: 'no-cache', signal: controller.signal });
+      if (!response.ok) throw new Error('summaries unavailable');
+      var data = await response.json();
+      if (!data || data.version !== 1 || !Array.isArray(data.items) || data.items.length > 256)
+        throw new Error('invalid summaries');
+      return data;
+    } finally { clearTimeout(timer); }
+  }
   function stale(source) {
     return (
       !source ||
@@ -162,6 +191,8 @@
     articleId: articleId,
     hasKoreanTitle: hasKoreanTitle,
     displayTitle: displayTitle,
+    summaryFor: summaryFor,
+    loadSummaries: loadSummaries,
     stale: stale,
     load: load,
   });

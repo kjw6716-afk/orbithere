@@ -98,12 +98,42 @@ try{
     fixture.items=english;
     await ctx.route('**/data/news.json',r=>r.fulfill({contentType:'application/json',body:JSON.stringify(fixture)}));
     await page.goto(base+'/news.html');await page.locator('.news-article').first().waitFor();
+    await page.locator('.news-original summary').click();
     ok('translated title is primary and original stays visible',await page.getByRole('link',{name:'우주 관측의 새 소식',exact:true}).count()===1 && await page.locator('.news-original [lang=en]').innerText()==='Original headline 0');
     ok('changed original and unsafe translation fall back',await page.getByRole('link',{name:'Original headline 1',exact:true}).count()===1 && await page.getByRole('link',{name:'Original headline 2',exact:true}).count()===1 && await page.locator('#newsList img').count()===0);
     ok('unreviewed draft is never published',await page.getByRole('link',{name:'Original headline 3',exact:true}).count()===1 && await page.getByText('검토하지 않은 번역 초안',{exact:true}).count()===0);
     await page.setViewportSize({width:1440,height:900});
     await page.goto(base+'/main.html');await page.locator('.news-brief-title').first().waitFor();
     ok('mini card uses the same Korean title and internal destination',await page.locator('.news-brief-title').first().innerText()==='우주 관측의 새 소식' && (await page.locator('.news-brief-title').first().getAttribute('href')).startsWith('news.html#article-'));
+    await ctx.close();
+  }
+  {
+    const ctx=await context();const page=await ctx.newPage();
+    const feed=JSON.parse(await readFile(resolve(root,'data/news.json')));
+    const briefs=JSON.parse(await readFile(resolve(root,'data/news-summaries.json')));
+    const row=briefs.items[0];const article=feed.items.find(i=>i.id===row.id);
+    feed.items=[article];
+    let summaryResponse={version:1,items:[row]}, summaryFailure=false;
+    await ctx.route('**/data/news.json',r=>r.fulfill({contentType:'application/json',body:JSON.stringify(feed)}));
+    await ctx.route('**/data/news-summaries.json',r=>r.fulfill(summaryFailure?{status:503,body:'unavailable'}:{contentType:'application/json',body:JSON.stringify(summaryResponse)}));
+    await page.goto(base+'/news.html');await page.locator('.news-summary p').first().waitFor();
+    ok('checked Korean summary appears before a direct original link',await page.locator('.news-summary p').allTextContents().then(text=>JSON.stringify(text)===JSON.stringify(row.summaryKo)) && await page.getByRole('link',{name:'원문 읽기 ↗',exact:true}).getAttribute('href')===row.url);
+    ok('source date is visible and translation proxy links are absent',await page.locator('.news-summary-date').innerText()==='자료 확인 '+row.checkedAt.replaceAll('-','.') && await page.locator('a[href*="translate.google"], a[href*="translate.goog"]').count()===0);
+    const rejected=await page.evaluate(({article,row})=>[
+      {titleOriginal:'A revised headline'}, {url:row.url+'?another-article'}, {publishedAt:'2000-01-01T00:00:00Z'},
+      {summaryKo:['<img src=x onerror=alert(1)> 한글 내용', '다른 문장도 함께 들어 있습니다.']},
+      {checkedAt:'2026-99-99'}, {checkedAt:'2026-02-30'}, {method:'draft'}, {summaryKo:['제목만 옮긴 한 문장입니다.']},
+      {titleKo:'English only'}, {id:null}, {source:'unknown'}, {summaryKo:null}
+    ].every(change=>window.OrbitNews.summaryFor(article,{version:1,items:[{...row,...change}]})===null),{article,row});
+    ok('revised articles and malformed or unreviewed summaries are rejected',rejected);
+    summaryFailure=true;await page.locator('#reloadNews').click();
+    await page.waitForFunction(()=>!document.querySelector('#reloadNews').disabled);
+    ok('summary refresh failure preserves an already readable brief',await page.locator('.news-summary p').count()===row.summaryKo.length);
+    await page.reload();await page.locator('.news-article').first().waitFor();
+    ok('first-load summary outage still offers the headline and original',await page.locator('.news-summary').count()===0 && await page.locator('.news-summary-pending').isVisible() && await page.getByRole('link',{name:'원문 읽기 ↗',exact:true}).isVisible());
+    summaryFailure=false;summaryResponse={version:1,items:[null,{...row,method:'draft'}]};
+    await page.locator('#reloadNews').click();await page.waitForFunction(()=>!document.querySelector('#reloadNews').disabled);
+    ok('a malformed summary entry cannot break news rendering',await page.locator('.news-summary').count()===0 && await page.locator('.news-article').count()===1);
     await ctx.close();
   }
   console.log(`Navigation and Korean news: ${checks} checks passed`);
