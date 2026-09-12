@@ -173,7 +173,7 @@
     min-width: 0;
   }
   .news-brief--rail {
-    --brief-count: 3;
+    --brief-count: 4;
     display: block;
     grid-column: 2;
     grid-row: 1;
@@ -194,7 +194,7 @@
     min-width: 0;
   }
   html:not(.embed) #listView > .news-brief--board {
-    --brief-count: 3;
+    --brief-count: 4;
     grid-column: 2;
     grid-row: 1 / span 9;
     position: sticky;
@@ -212,3 +212,8 @@
 }
 
 .news-brief-translation { font-size: 10px; color: #94a3b8; white-space: nowrap; }
+
+@media (min-width: 1280px) and (max-height: 680px) {
+  .news-brief--rail,
+  html:not(.embed) #listView > .news-brief--board { --brief-count: 3; }
+}

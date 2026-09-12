@@ -832,3 +832,8 @@ select:focus-visible,
 }
 
 .news-original { margin: 8px 0 0; color: #a8b7ca; font-size: 13px; line-height: 1.65; overflow-wrap: anywhere; }
+
+.news-topic-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.news-topic-filters a { color: #94a3b8; border: 1px solid #283144; border-radius: 16px; padding: 7px 12px; font-size: 13px; text-decoration: none; }
+.news-topic-filters a[aria-current] { color: #ff9f43; border-color: #ff9f43; }
+.news-topic-filters a:focus-visible { outline: 2px solid #ff9f43; outline-offset: 3px; }

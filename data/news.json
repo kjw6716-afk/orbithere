@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-09-12T00:29:23Z",
+  "checkedAt": "2026-09-12T00:55:49Z",
   "sources": [
     {
       "id": "kasi",
@@ -31,9 +31,70 @@
       "lastCheckedAt": "2026-09-12T00:29:23Z",
       "status": "ok",
       "lastSuccessfulAt": "2026-09-12T00:29:23Z"
+    },
+    {
+      "id": "spacex",
+      "name": "SpaceX",
+      "language": "en",
+      "feed": "https://www.spacex.com/updates",
+      "home": "https://www.spacex.com/updates",
+      "status": "ok",
+      "lastCheckedAt": "2026-09-12T00:55:49Z",
+      "lastSuccessfulAt": "2026-09-12T00:55:49Z"
+    },
+    {
+      "id": "starlink",
+      "name": "Starlink · SpaceX",
+      "language": "ko",
+      "feed": "https://starlink.com/kr/updates",
+      "home": "https://starlink.com/kr/updates",
+      "status": "ok",
+      "lastCheckedAt": "2026-09-12T00:55:49Z",
+      "lastSuccessfulAt": "2026-09-12T00:55:49Z"
+    },
+    {
+      "id": "rocketlab",
+      "name": "Rocket Lab",
+      "language": "en",
+      "feed": "https://rocketlabcorp.com/updates/",
+      "home": "https://rocketlabcorp.com/updates/",
+      "status": "ok",
+      "lastCheckedAt": "2026-09-12T00:55:49Z",
+      "lastSuccessfulAt": "2026-09-12T00:55:49Z"
+    },
+    {
+      "id": "blueorigin",
+      "name": "Blue Origin",
+      "language": "en",
+      "feed": "https://www.blueorigin.com/news",
+      "home": "https://www.blueorigin.com/news",
+      "status": "ok",
+      "lastCheckedAt": "2026-09-12T00:55:49Z",
+      "lastSuccessfulAt": "2026-09-12T00:55:49Z"
+    },
+    {
+      "id": "firefly",
+      "name": "Firefly Aerospace",
+      "language": "en",
+      "feed": "https://fireflyspace.com/news/",
+      "home": "https://fireflyspace.com/news/",
+      "status": "ok",
+      "lastCheckedAt": "2026-09-12T00:55:49Z",
+      "lastSuccessfulAt": "2026-09-12T00:55:49Z"
     }
   ],
   "items": [
+    {
+      "id": "91339ef5e9a488e7",
+      "source": "rocketlab",
+      "title": "MISSION SUCCESS: Rocket Lab Launches 95th Electron Mission",
+      "url": "https://rocketlabcorp.com/updates/mission-success/",
+      "publishedAt": "2026-09-11T00:00:00Z",
+      "language": "en",
+      "titleKo": "로켓랩, 일렉트론 95번째 임무 발사 성공",
+      "titleKoOriginal": "MISSION SUCCESS: Rocket Lab Launches 95th Electron Mission",
+      "titleKoMethod": "reviewed"
+    },
     {
       "id": "235cf959f1ab0d2c",
       "source": "kasi",
@@ -62,12 +123,34 @@
       "language": "ko"
     },
     {
+      "id": "3add3c796890f497",
+      "source": "firefly",
+      "title": "Firefly Aerospace Signs Contract with SSC Space for Two Alpha Launches from Esrange Space Center",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-signs-contract-with-ssc-space-for-two-alpha-launches-from-esrange-space-center/",
+      "publishedAt": "2026-09-09T00:00:00Z",
+      "language": "en",
+      "titleKo": "파이어플라이, 에스레인지에서 알파 2회 발사 계약 체결",
+      "titleKoOriginal": "Firefly Aerospace Signs Contract with SSC Space for Two Alpha Launches from Esrange Space Center",
+      "titleKoMethod": "reviewed"
+    },
+    {
       "id": "347403d862206df2",
       "source": "kasi",
       "title": "큐브위성 도요샛, 슈퍼 태양폭풍 속 ‘대기 저항’ 정량적으로 밝혔다",
       "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32448",
       "publishedAt": "2026-09-08T00:00:00Z",
       "language": "ko"
+    },
+    {
+      "id": "5d09f610c9fe1c09",
+      "source": "rocketlab",
+      "title": "Rocket Lab Introduces High-Efficiency Solar Cell to Reduce Reliance on Supply-Constrained Critical Minerals",
+      "url": "https://rocketlabcorp.com/updates/rocket-lab-introduces-high-efficiency-solar-cell-to-reduce-reliance-on-supply-constrained-critical-minerals/",
+      "publishedAt": "2026-09-08T00:00:00Z",
+      "language": "en",
+      "titleKo": "로켓랩, 핵심 광물 의존도를 줄이는 고효율 태양전지 공개",
+      "titleKoOriginal": "Rocket Lab Introduces High-Efficiency Solar Cell to Reduce Reliance on Supply-Constrained Critical Minerals",
+      "titleKoMethod": "reviewed"
     },
     {
       "id": "be0297cb0c112b00",
@@ -111,6 +194,28 @@
       "language": "en",
       "titleKo": "허블, 토성 남극을 둘러싼 새로운 십각형 구조를 추적하다",
       "titleKoOriginal": "Hubble tracks new decagon encircling Saturn’s south pole",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "b0d5075eb5247564",
+      "source": "rocketlab",
+      "title": "MISSION SUCCESS: Rocket Lab Launches 94th Electron Mission",
+      "url": "https://rocketlabcorp.com/updates/mission-success-rocket-lab-launches-94th-electron-mission/",
+      "publishedAt": "2026-09-02T00:00:00Z",
+      "language": "en",
+      "titleKo": "로켓랩, 일렉트론 94번째 임무 발사 성공",
+      "titleKoOriginal": "MISSION SUCCESS: Rocket Lab Launches 94th Electron Mission",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "658ea0d820dc6f99",
+      "source": "blueorigin",
+      "title": "Blue Origin Selected by NASA to Help Build America's Mars Telecommunications Network",
+      "url": "https://www.blueorigin.com/news/blue-origin-selected-by-nasa-to-help-build-mars-telecommunications-network",
+      "publishedAt": "2026-09-02T00:00:00Z",
+      "language": "en",
+      "titleKo": "NASA, 화성 통신망 구축 지원사로 블루오리진 선정",
+      "titleKoOriginal": "Blue Origin Selected by NASA to Help Build America's Mars Telecommunications Network",
       "titleKoMethod": "reviewed"
     },
     {
@@ -199,6 +304,50 @@
       "titleKoMethod": "reviewed"
     },
     {
+      "id": "4602d76f332cb387",
+      "source": "rocketlab",
+      "title": "MISSION SUCCESS: Rocket Lab Launches 93rd Electron Mission",
+      "url": "https://rocketlabcorp.com/updates/mission-success-rocket-lab-launches-93rd-electron-mission/",
+      "publishedAt": "2026-08-20T00:00:00Z",
+      "language": "en",
+      "titleKo": "로켓랩, 일렉트론 93번째 임무 발사 성공",
+      "titleKoOriginal": "MISSION SUCCESS: Rocket Lab Launches 93rd Electron Mission",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "d009d9abab60ebfb",
+      "source": "rocketlab",
+      "title": "Powering the EMILIA-3D Lunar Mission with Proven Space Robotics",
+      "url": "https://rocketlabcorp.com/updates/powering-the-emilia-3d-lunar-mission-with-proven-space-robotics/",
+      "publishedAt": "2026-08-19T00:00:00Z",
+      "language": "en",
+      "titleKo": "검증된 우주 로봇 기술로 EMILIA-3D 달 탐사 지원",
+      "titleKoOriginal": "Powering the EMILIA-3D Lunar Mission with Proven Space Robotics",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "8b30a6e4ebb9eeae",
+      "source": "firefly",
+      "title": "Firefly Aerospace Onboards Zeno Power on Blue Ghost Mission to Demonstrate Radioisotope Technologies to Survive the Lunar Night",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-onboards-zeno-power-on-blue-ghost-mission-to-demonstrate-radioisotope-technologies-to-survive-the-lunar-night/",
+      "publishedAt": "2026-08-19T00:00:00Z",
+      "language": "en",
+      "titleKo": "파이어플라이, 달의 밤 생존 기술 실증에 제노파워 참여",
+      "titleKoOriginal": "Firefly Aerospace Onboards Zeno Power on Blue Ghost Mission to Demonstrate Radioisotope Technologies to Survive the Lunar Night",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "5c1f5820a61819bf",
+      "source": "rocketlab",
+      "title": "Rocket Lab Onboarded to U.S. Space Force’s $981M NITE-STAR Program to Advance Space Test and Training Infrastructure",
+      "url": "https://rocketlabcorp.com/updates/new-blog-posrocket-lab-onboarded-to-u-s-space-forces-981m-nite-star-program-to-advance-space-test-and-training-infrastructure-program/",
+      "publishedAt": "2026-08-18T00:00:00Z",
+      "language": "en",
+      "titleKo": "로켓랩, 미 우주군의 9억 8,100만 달러 규모 NITE-STAR 사업 참여",
+      "titleKoOriginal": "Rocket Lab Onboarded to U.S. Space Force’s $981M NITE-STAR Program to Advance Space Test and Training Infrastructure",
+      "titleKoMethod": "reviewed"
+    },
+    {
       "id": "374e76bc2ab2ce56",
       "source": "nasa",
       "title": "NASA Mission Studies Air Pollution Over Ethiopia",
@@ -210,6 +359,105 @@
       "titleKoMethod": "reviewed"
     },
     {
+      "id": "d950057d9c6c0db4",
+      "source": "rocketlab",
+      "title": "Viasat Selects Rocket Lab to Build GEO Satellite for U.S. Space Force’s Protected Tactical SATCOM-Global Program",
+      "url": "https://rocketlabcorp.com/updates/viasat-selects-rocket-lab-to-build-geo-satellite-for-u-s-space-forces-protected-tactical-satcom-global-program-2/",
+      "publishedAt": "2026-08-17T00:00:00Z",
+      "language": "en",
+      "titleKo": "비아샛, 미 우주군 보호 전술 위성통신 사업의 정지궤도 위성 제작사로 로켓랩 선정",
+      "titleKoOriginal": "Viasat Selects Rocket Lab to Build GEO Satellite for U.S. Space Force’s Protected Tactical SATCOM-Global Program",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "cd965c2c5979943e",
+      "source": "firefly",
+      "title": "Firefly Aerospace Onboarded to NASA Spacecraft Processing Operations Contract",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-onboarded-to-nasa-spacecraft-processing-operations-contract/",
+      "publishedAt": "2026-08-17T00:00:00Z",
+      "language": "en",
+      "titleKo": "파이어플라이, NASA 우주선 처리 운영 계약 참여",
+      "titleKoOriginal": "Firefly Aerospace Onboarded to NASA Spacecraft Processing Operations Contract",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "4a143897cbe1f8cc",
+      "source": "rocketlab",
+      "title": "Rocket Lab Satellite Platforms Built for MDA Space Successfully Reach Orbit, Supporting Globalstar Direct-to-Device Communications Services",
+      "url": "https://rocketlabcorp.com/updates/rocket-lab-satellite-platforms-built-for-mda-space-successfully-reach-orbit-supporting-globalstar-direct-to-device-communications-services/",
+      "publishedAt": "2026-08-16T00:00:00Z",
+      "language": "en",
+      "titleKo": "로켓랩의 MDA 스페이스용 위성 플랫폼 궤도 도달, 글로벌스타 기기 직접 통신 지원",
+      "titleKoOriginal": "Rocket Lab Satellite Platforms Built for MDA Space Successfully Reach Orbit, Supporting Globalstar Direct-to-Device Communications Services",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "394011116bf440f3",
+      "source": "blueorigin",
+      "title": "Blue Origin Begins Global Rollout of Quartz Ground Station Network",
+      "url": "https://www.blueorigin.com/news/blue-origin-begins-global-rollout-quartz-ground-station-network",
+      "publishedAt": "2026-08-13T00:00:00Z",
+      "language": "en",
+      "titleKo": "블루오리진, 쿼츠 지상국 네트워크의 세계적 구축 시작",
+      "titleKoOriginal": "Blue Origin Begins Global Rollout of Quartz Ground Station Network",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "7f2673ce3f65bde3",
+      "source": "firefly",
+      "title": "Firefly Aerospace Awarded Contract to Design Elytra Deorbit System for Defense Innovation Unit",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-awarded-contract-to-design-elytra-deorbit-system-for-defense-innovation-unit/",
+      "publishedAt": "2026-08-13T00:00:00Z",
+      "language": "en",
+      "titleKo": "파이어플라이, 미 국방혁신단의 엘리트라 궤도 이탈 시스템 설계 계약 수주",
+      "titleKoOriginal": "Firefly Aerospace Awarded Contract to Design Elytra Deorbit System for Defense Innovation Unit",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "8d1ebe0560ebacc3",
+      "source": "blueorigin",
+      "title": "Returning Launch Complex 36 to Two Pads: Blue Origin Begins Construction of LC-36B",
+      "url": "https://www.blueorigin.com/news/returning-launch-complex-36-to-two-pads",
+      "publishedAt": "2026-08-12T00:00:00Z",
+      "language": "en",
+      "titleKo": "블루오리진, 제36발사단지의 두 번째 발사대 LC-36B 착공",
+      "titleKoOriginal": "Returning Launch Complex 36 to Two Pads: Blue Origin Begins Construction of LC-36B",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "50141f7fb1c495d5",
+      "source": "firefly",
+      "title": "Firefly Aerospace Announces Extension of Multi-Launch Agreement with Lockheed Martin Through 2031",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-announces-extension-of-multi-launch-agreement-with-lockheed-martin-through-2031/",
+      "publishedAt": "2026-08-11T00:00:00Z",
+      "language": "en",
+      "titleKo": "파이어플라이, 록히드마틴과 다회 발사 계약 2031년까지 연장",
+      "titleKoOriginal": "Firefly Aerospace Announces Extension of Multi-Launch Agreement with Lockheed Martin Through 2031",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "eb15a4aa556229aa",
+      "source": "firefly",
+      "title": "Firefly’s SciTec Awarded $94 Million U.S. Space Force Contract to Advance Ground-Based Radar Digitization Program",
+      "url": "https://fireflyspace.com/news/fireflys-scitec-awarded-94-million-u-s-space-force-contract-to-advance-ground-based-radar-digitization-program/",
+      "publishedAt": "2026-08-11T00:00:00Z",
+      "language": "en",
+      "titleKo": "파이어플라이 자회사 사이텍, 미 우주군의 9,400만 달러 레이더 디지털화 계약 수주",
+      "titleKoOriginal": "Firefly’s SciTec Awarded $94 Million U.S. Space Force Contract to Advance Ground-Based Radar Digitization Program",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "e6c998265f6c7ce4",
+      "source": "spacex",
+      "title": "Breaking Ground on Terafab in Texas",
+      "url": "https://www.spacex.com/updates#terafab",
+      "publishedAt": "2026-08-06T00:00:00Z",
+      "language": "en",
+      "titleKo": "텍사스에서 테라팹 건설 시작",
+      "titleKoOriginal": "Breaking Ground on Terafab in Texas",
+      "titleKoMethod": "reviewed"
+    },
+    {
       "id": "9dc0d3c774c9802b",
       "source": "nasa",
       "title": "NASA’s Perseverance Rover Watches Earth Vanish Behind Martian Moon",
@@ -218,6 +466,17 @@
       "language": "en",
       "titleKo": "NASA 퍼서비어런스 탐사차, 화성의 위성 뒤로 사라지는 지구 관측",
       "titleKoOriginal": "NASA’s Perseverance Rover Watches Earth Vanish Behind Martian Moon",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "7e30420df21f2fec",
+      "source": "blueorigin",
+      "title": "GS1-3 Hotfire Updates",
+      "url": "https://www.blueorigin.com/news/gs1-3-hotfire-updates",
+      "publishedAt": "2026-08-05T00:00:00Z",
+      "language": "en",
+      "titleKo": "GS1-3 연소시험 관련 업데이트",
+      "titleKoOriginal": "GS1-3 Hotfire Updates",
       "titleKoMethod": "reviewed"
     },
     {
@@ -251,6 +510,17 @@
       "language": "ko"
     },
     {
+      "id": "833fb17a78eb4603",
+      "source": "blueorigin",
+      "title": "Blue Origin and NASA Partner to Test New Glenn's Upper Stage at Historic Stennis Space Center",
+      "url": "https://www.blueorigin.com/news/blue-origin-nasa-partner-to-test-new-glenn-at-stennis-space-center",
+      "publishedAt": "2026-07-24T00:00:00Z",
+      "language": "en",
+      "titleKo": "블루오리진·NASA, 스테니스 우주센터에서 뉴 글렌 상단 시험 협력",
+      "titleKoOriginal": "Blue Origin and NASA Partner to Test New Glenn's Upper Stage at Historic Stennis Space Center",
+      "titleKoMethod": "reviewed"
+    },
+    {
       "id": "063e20b8d7eabd0c",
       "source": "kasi",
       "title": "천문연-연세대 항공우주전략연구원, 우주감시 및 우주안보 분야 협력 위한 업무협약 체결",
@@ -267,11 +537,207 @@
       "language": "ko"
     },
     {
+      "id": "c29b10f735889210",
+      "source": "firefly",
+      "title": "Firefly Aerospace Receives $13 Million NASA JPL Subcontract to Build Aeroshell for SkyFall Mars Mission",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-receives-13-million-nasa-jpl-subcontract-to-build-aeroshell-for-skyfall-mars-mission/",
+      "publishedAt": "2026-07-07T00:00:00Z",
+      "language": "en",
+      "titleKo": "파이어플라이, 화성 스카이폴 임무 에어로셸 제작에 NASA JPL의 1,300만 달러 하도급 수주",
+      "titleKoOriginal": "Firefly Aerospace Receives $13 Million NASA JPL Subcontract to Build Aeroshell for SkyFall Mars Mission",
+      "titleKoMethod": "reviewed"
+    },
+    {
       "id": "9730060225f350e8",
       "source": "kasi",
       "title": "세계 최대 우주 타임랩스 프로젝트 LSST, 10년 탐사 시작",
       "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32380",
       "publishedAt": "2026-07-02T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "5720e9f3b4d7c7f4",
+      "source": "blueorigin",
+      "title": "New Glenn Return to Flight",
+      "url": "https://www.blueorigin.com/news/new-glenn-return-to-flight",
+      "publishedAt": "2026-06-30T00:00:00Z",
+      "language": "en",
+      "titleKo": "뉴 글렌의 비행 재개 계획",
+      "titleKoOriginal": "New Glenn Return to Flight",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "281c66bdaca972d5",
+      "source": "firefly",
+      "title": "Firefly Aerospace Awarded $144 Million NASA CLPS Contract for Accelerated Blue Ghost Lunar Mission",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-awarded-144-million-nasa-clps-contract-for-accelerated-blue-ghost-lunar-mission/",
+      "publishedAt": "2026-06-30T00:00:00Z",
+      "language": "en",
+      "titleKo": "파이어플라이, 블루 고스트 달 탐사 앞당길 NASA CLPS 계약 1억 4,400만 달러 수주",
+      "titleKoOriginal": "Firefly Aerospace Awarded $144 Million NASA CLPS Contract for Accelerated Blue Ghost Lunar Mission",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "aec0a47720977d60",
+      "source": "spacex",
+      "title": "FIRST STARSHIP INTERPLANETARY HUMAN SPACEFLIGHT MISSION",
+      "url": "https://www.spacex.com/updates#first-starship-interplanetary-mission",
+      "publishedAt": "2026-05-21T00:00:00Z",
+      "language": "en",
+      "titleKo": "스타십의 첫 유인 행성 간 우주비행 임무 발표",
+      "titleKoOriginal": "FIRST STARSHIP INTERPLANETARY HUMAN SPACEFLIGHT MISSION",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "7f1eb04ef1cbf17d",
+      "source": "starlink",
+      "title": "우주 안전 웹 도구",
+      "url": "https://starlink.com/kr/updates/space-safety-web-interface",
+      "publishedAt": "2026-05-21T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "a28764a16b78c2ac",
+      "source": "spacex",
+      "title": "Introducing Starship V3",
+      "url": "https://www.spacex.com/updates#starship-v3",
+      "publishedAt": "2026-05-12T00:00:00Z",
+      "language": "en",
+      "titleKo": "스타십 V3 소개",
+      "titleKoOriginal": "Introducing Starship V3",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "66336a984a5d1b40",
+      "source": "blueorigin",
+      "title": "New Glenn’s Third Mission Slated for April 19",
+      "url": "https://www.blueorigin.com/news/new-glenn-ng-3-mission",
+      "publishedAt": "2026-04-16T00:00:00Z",
+      "language": "en",
+      "titleKo": "뉴 글렌 세 번째 임무, 4월 19일 발사 예정",
+      "titleKoOriginal": "New Glenn’s Third Mission Slated for April 19",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "d937fb9b8f2dfd16",
+      "source": "spacex",
+      "title": "xAI joins SpaceX to Accelerate Humanity’s Future",
+      "url": "https://www.spacex.com/updates#xai-joins-spacex",
+      "publishedAt": "2026-02-02T00:00:00Z",
+      "language": "en",
+      "titleKo": "xAI, SpaceX에 합류",
+      "titleKoOriginal": "xAI joins SpaceX to Accelerate Humanity’s Future",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "53eb6fc211f0bbcb",
+      "source": "blueorigin",
+      "title": "Blue Origin to Pause New Shepard Flights for No Less Than Two Years",
+      "url": "https://www.blueorigin.com/news/new-shepard-to-pause-flights",
+      "publishedAt": "2026-01-30T00:00:00Z",
+      "language": "en",
+      "titleKo": "블루오리진, 뉴 셰퍼드 비행 최소 2년 중단 예정",
+      "titleKoOriginal": "Blue Origin to Pause New Shepard Flights for No Less Than Two Years",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "7fc56caf5a65604d",
+      "source": "starlink",
+      "title": "Stargaze: SpaceX의 우주 상황 인식 시스템",
+      "url": "https://starlink.com/kr/updates/stargaze",
+      "publishedAt": "2026-01-29T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "522111233c7d9298",
+      "source": "spacex",
+      "title": "To the Moon and Beyond",
+      "url": "https://www.spacex.com/updates#moon-and-beyond",
+      "publishedAt": "2025-10-30T00:00:00Z",
+      "language": "en",
+      "titleKo": "달을 넘어 더 먼 우주로",
+      "titleKoOriginal": "To the Moon and Beyond",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "28b871d66d4c0ff5",
+      "source": "spacex",
+      "title": "Evolving the Multi-User Spaceport",
+      "url": "https://www.spacex.com/updates#multiuser-spaceport",
+      "publishedAt": "2025-09-18T00:00:00Z",
+      "language": "en",
+      "titleKo": "여러 사용자가 함께 쓰는 우주항의 발전",
+      "titleKoOriginal": "Evolving the Multi-User Spaceport",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "01a860a08d851d70",
+      "source": "spacex",
+      "title": "THE FUTURE OF STARLINK DIRECT TO CELL",
+      "url": "https://www.spacex.com/updates#dtc-gen2-spectrum",
+      "publishedAt": "2025-09-08T00:00:00Z",
+      "language": "en",
+      "titleKo": "스타링크 다이렉트 투 셀의 미래",
+      "titleKoOriginal": "THE FUTURE OF STARLINK DIRECT TO CELL",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "555c7fcbba4e3088",
+      "source": "spacex",
+      "title": "FLIGHT 9 AND SHIP 36 REPORT",
+      "url": "https://www.spacex.com/updates#flight-9-report",
+      "publishedAt": "2025-08-15T00:00:00Z",
+      "language": "en",
+      "titleKo": "스타십 9차 비행·36호 기체 보고서",
+      "titleKoOriginal": "FLIGHT 9 AND SHIP 36 REPORT",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "cfb5f58ca87d63c4",
+      "source": "starlink",
+      "title": "Starlink 빔 전환",
+      "url": "https://starlink.com/kr/updates/starlink-beam-switching",
+      "publishedAt": "2025-07-30T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "008c9ea74800563b",
+      "source": "starlink",
+      "title": "Starlink 네트워크 업데이트",
+      "url": "https://starlink.com/kr/updates/network-update",
+      "publishedAt": "2025-07-14T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "1c8694a860773db4",
+      "source": "starlink",
+      "title": "Starlink 위성 소멸성",
+      "url": "https://starlink.com/public-files/Starlink_Approach_to_Satellite_Demisability.pdf",
+      "publishedAt": "2025-02-27T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "eb61e6a3d6f3d33b",
+      "source": "starlink",
+      "title": "실시간 협력을 통한 전파천문학 보호",
+      "url": "https://starlink.com/public-files/Telescope_Boresight_Avoidance.pdf",
+      "publishedAt": "2024-08-09T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "b85c75592b89889b",
+      "source": "starlink",
+      "title": "Starlink 지연 시간 개선",
+      "url": "https://starlink.com/public-files/StarlinkLatency.pdf",
+      "publishedAt": "2024-03-07T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "690524d650b70063",
+      "source": "starlink",
+      "title": "우주 지속가능성을 위한 헌신",
+      "url": "https://starlink.com/public-files/Commitment%20to%20Space%20Sustainability.pdf",
+      "publishedAt": "2024-02-12T00:00:00Z",
       "language": "ko"
     }
   ]

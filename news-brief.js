@@ -149,7 +149,7 @@
       return;
     }
     var frames;
-    if (size === 3) {
+    if (size > 1) {
       viewport.style.height = list.getBoundingClientRect().height + "px";
       viewport.classList.add("is-moving");
       var incoming = createRow(items[direction > 0 ? (target + size - 1) % items.length : target]);
@@ -178,7 +178,7 @@
     motionIndex = target;
     motionManual = manual;
     animation = list.animate(frames, {
-      duration: size === 3 ? 650 : 220,
+      duration: size > 1 ? 650 : 220,
       easing: "cubic-bezier(0.4, 0, 0.2, 1)",
       fill: "both",
     });
@@ -194,7 +194,7 @@
     try {
       var data = await news.load();
       clearMotion();
-      items = news.items(data).slice(0, 5);
+      items = news.briefItems(data);
       index = 0;
       var stale = Object.keys(news.sources).some(function (id) {
         return news.stale(
@@ -272,6 +272,10 @@
     if (animation) animation.pause();
   });
   window.addEventListener("pageshow", schedule);
+  // Changing only the viewport height does not resize the rail until we render.
+  matchMedia("(min-width: 1280px) and (max-height: 680px)").addEventListener("change", function () {
+    if (shown() && capacity() !== size) render(false);
+  });
   new ResizeObserver(function () {
     if (shown() && capacity() !== size) render(false);
     if (shown() && !attempted) load();

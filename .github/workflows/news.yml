@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/update_news.py'
+      - 'scripts/company_news.mjs'
+      - 'package-lock.json'
       - 'scripts/translate_news.py'
       - 'scripts/translation-requirements.txt'
       - '.github/workflows/news.yml'
@@ -27,7 +29,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: RSS 파서 · 장애 복구 검증
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: 기업 뉴스 브라우저 준비
+        continue-on-error: true
+        timeout-minutes: 3
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: 뉴스 파서 · 장애 복구 검증
         run: python -m unittest discover -s tests -p 'test_news.py'
       - name: 공식 제목과 원문 주소 갱신
         run: python scripts/update_news.py
