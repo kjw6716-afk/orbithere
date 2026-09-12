@@ -17,13 +17,56 @@ await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const base=`http://127.0.0.1:${server.address().port}`;
 const browser=await chromium.launch();let checks=0;
 function ok(name,value=true){assert.ok(value,name);checks++;console.log('✓ '+name);}
-async function open(width,height,mobile=false,reducedMotion='no-preference'){
+async function open(width,height,mobile=false,reducedMotion='no-preference',prepare){
  const ctx=await browser.newContext({viewport:{width,height},isMobile:mobile,hasTouch:mobile,deviceScaleFactor:mobile?3:1,reducedMotion});
  await ctx.route('**/*',r=>new URL(r.request().url()).origin===base?r.continue():r.abort());
  const page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ if(prepare)await prepare(page);
  await page.goto(base);return {ctx,page,errors};
 }
 try{
+ {
+  const {ctx,page,errors}=await open(390,844,true,'no-preference',async page=>{
+   await page.clock.install();await page.clock.pauseAt(new Date(Date.now()+1000));
+   await page.addInitScript(()=>{Math.random=()=>0;});
+  });
+  await page.clock.fastForward(19900);
+  ok('meteors leave at least twenty quiet seconds on entry',await page.locator('.meteor').count()===0);
+  await page.clock.fastForward(200);
+  ok('only one meteor appears after the quiet interval',await page.locator('.meteor').count()===1);
+  const first=await page.locator('.meteor').evaluate(el=>({x:parseFloat(el.style.left),y:parseFloat(el.style.top),duration:el.getAnimations()[0].effect.getTiming().duration}));
+  ok('meteor starts inside the upper sky and is brief',first.x>0&&first.x<390&&first.y>0&&first.y<844*.31&&first.duration>=1600&&first.duration<=2400);
+  ok('meteor motion cannot widen the mobile page',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+  await page.evaluate(()=>{Math.random=()=>0.999;});
+  await page.locator('.meteor').evaluate(el=>el.getAnimations()[0].finish());
+  await page.locator('.meteor').waitFor({state:'detached'});
+  await page.clock.fastForward(44000);
+  ok('next meteor waits for its own randomized interval',await page.locator('.meteor').count()===0);
+  await page.clock.fastForward(1100);
+  const second=await page.locator('.meteor').evaluate(el=>({x:parseFloat(el.style.left),y:parseFloat(el.style.top)}));
+  ok('later meteors use a different starting position',second.x>first.x+200&&second.y>first.y+100&&await page.locator('.meteor').count()===1);
+  await page.evaluate(()=>{
+   Object.defineProperty(document,'hidden',{configurable:true,value:true});
+   document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await page.clock.fastForward(120000);
+  ok('hidden tabs remove the meteor and do not accumulate flights',await page.locator('.meteor').count()===0);
+  await page.evaluate(()=>{
+   Math.random=()=>0;
+   Object.defineProperty(document,'hidden',{configurable:true,value:false});
+   document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await page.clock.fastForward(19900);
+  ok('returning to the page starts a fresh quiet interval',await page.locator('.meteor').count()===0);
+  await page.clock.fastForward(200);
+  ok('resuming still allows just one meteor',await page.locator('.meteor').count()===1);
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.locator('.meteor').waitFor({state:'detached'});
+  await page.clock.fastForward(120000);
+  ok('reduced motion cancels both the current and future meteors',await page.locator('.meteor').count()===0);
+  ok('meteor lifecycle has no script errors',errors.length===0);
+  await ctx.close();
+ }
  for(const [w,h,mobile] of [[412,800,true],[360,740,true],[768,1024,true],[1024,768,true],[1366,768,false],[1920,1080,false],[740,360,true]]){
   const {ctx,page,errors}=await open(w,h,mobile);
   await page.locator('.landing-nebula img').evaluate(img=>img.decode());
