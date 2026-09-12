@@ -5,13 +5,24 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def editor_star(size=20):
+    """Use the same rounded orange star as the ORBIT favicon and footer."""
+    return (f'<svg width="{size}" height="{size}" viewBox="0 0 100 100" '
+            'aria-hidden="true" focusable="false" style="display:block">'
+            '<path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" '
+            'fill="#FF9F43" stroke="#FF9F43" stroke-width="14" '
+            'stroke-linejoin="round" stroke-linecap="round"/></svg>')
+
+
 MENU = [
     ('sky', '🔭', '밤하늘 달력', 'main.html#sky'),
     ('planets', '🪐', '오늘 밤 행성', 'main.html#planets'),
     ('lounge', '💬', '별빛 게시판', 'main.html#lounge'),
     ('news', '📰', '우주 뉴스', 'news.html'),
     ('guide', '📖', '관측 가이드', 'guide.html'),
-    ('stories', '✦', '우주 이야기', 'stories.html'),
+    ('stories', editor_star(), '우주 이야기', 'stories.html'),
     ('about', 'ⓘ', '소개·문의', 'about.html'),
 ]
 PAGES = {'main': 'planets', **{key: key for key, *_ in MENU},
