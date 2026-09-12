@@ -6,6 +6,9 @@ import {resolve,extname,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {chromium} from 'playwright';
 const root=fileURLToPath(new URL('..',import.meta.url));
+const seed=JSON.parse(await readFile(resolve(root,'_editorial/articles/moon-face-and-phases.json'),'utf8'));
+const ledger=JSON.parse(await readFile(resolve(root,'_editorial/published.json'),'utf8'));
+const latest=[...ledger.items].sort((a,b)=>b.date.localeCompare(a.date))[0];
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.woff2':'font/woff2'};
 const server=createServer(async(req,res)=>{
  const file=resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
@@ -54,7 +57,7 @@ try{
   }
   if(process.env.ORBIT_QA_DIR&&[390,1440].includes(width))await page.screenshot({path:`${process.env.ORBIT_QA_DIR}/main-${width}.png`});
   await page.goto(base+'/index.html');
-  ok(`landing links directly to latest story at ${width}px`,await page.locator('.story-teaser-title').isVisible()&&(await page.locator('.story-teaser-title').getAttribute('href')).includes('moon-face-and-phases'));
+  ok(`landing links directly to latest story at ${width}px`,await page.locator('.story-teaser-title').isVisible()&&(await page.locator('.story-teaser-title').getAttribute('href')).includes(latest.id));
   if(process.env.ORBIT_QA_DIR&&[390,1440].includes(width))await page.screenshot({path:`${process.env.ORBIT_QA_DIR}/index-${width}.png`});
   ok('no browser errors',errors.length===0);await context.close();
  }
@@ -64,13 +67,13 @@ try{
   await page.getByRole('searchbox').fill('없는검색어-SEARCH-PRIVATE');
   ok('no-match search explains the empty result',await page.locator('#storyEmpty').isVisible()&&(await page.locator('#storyCount').textContent())==='0편');
   await page.getByRole('searchbox').fill('달과 행성');
-  ok('category words find stories',await page.locator('[data-story-search]:visible').count()===1);
+  ok('category words find stories',await page.locator('[data-story-search]:visible').count()>=1);
   await page.getByRole('searchbox').fill('동주기');
-  ok('full article text is searchable',await page.locator('[data-story-search]:visible').count()===1);
+  ok('full article text is searchable',await page.locator('[data-story-search]:visible').count()>=1);
   await page.getByRole('searchbox').fill('');
-  await page.getByRole('link',{name:'이야기 읽기'}).click();
+  await page.locator('.story-row').getByRole('link',{name:seed.title,exact:true}).click();
   await page.locator('.story-article').waitFor();
-  ok('list opens a readable standalone article',await page.locator('.story-body section').count()===4&&await page.locator('.story-sources li').count()===2);
+  ok('list opens a readable standalone article',await page.locator('.story-body section').count()===seed.sections.length&&await page.locator('.story-sources li').count()===seed.sources.length);
   const src=await page.locator('.story-sources li a').first().getAttribute('href');
   ok('real NASA sources remain linked',src==='https://science.nasa.gov/moon/facts/');
   await context.grantPermissions(['clipboard-read','clipboard-write']);
@@ -91,7 +94,7 @@ try{
   await page.goto(base+'/stories.html');
   ok('stories work without JavaScript',await page.getByRole('link',{name:'이야기 읽기'}).isVisible()&&!await page.locator('.story-search').isVisible());
   await page.getByRole('link',{name:'이야기 읽기'}).click();
-  ok('article body and sources are static HTML',await page.locator('.story-body').isVisible()&&await page.locator('.story-sources li').count()===2);
+  ok('article body and sources are static HTML',await page.locator('.story-body').isVisible()&&await page.locator('.story-sources li').count()>=1);
   await context.close();
  }
  {
