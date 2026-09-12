@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>소개·문의 | Orbit</title>
-    <meta name="description" content="Orbit이 제공하는 밤하늘 정보, 계산 범위, 이용 방법과 게시판 문의 안내.">
+    <meta name="description" content="Orbit이 제공하는 밤하늘 정보, 계산 범위, 이용 방법과 제작자 이메일·게시판 문의 안내.">
     <meta name="color-scheme" content="dark">
     <meta name="theme-color" content="#0F172A">
     <link rel="canonical" href="https://orbithere.com/about.html">
@@ -17,7 +17,7 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Orbit">
     <meta property="og:title" content="소개·문의 | Orbit">
-    <meta property="og:description" content="Orbit이 제공하는 밤하늘 정보, 계산 범위, 이용 방법과 게시판 문의 안내.">
+    <meta property="og:description" content="Orbit이 제공하는 밤하늘 정보, 계산 범위, 이용 방법과 제작자 이메일·게시판 문의 안내.">
     <meta property="og:image" content="https://orbithere.com/images/og.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -27,6 +27,7 @@
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
     <link rel="stylesheet" href="/orbit.css?v=20260912-brand">
     <link rel="stylesheet" href="guide.css?v=20260912-content">
+    <link rel="stylesheet" href="about.css?v=20260912-contact">
     <script src="effects.js?v=20260911-layout" defer></script>
     <script src="orbit-config.js"></script>
     <script src="visits.js" defer></script>
@@ -76,12 +77,24 @@
             <p>브라우저 저장 정보를 지우거나 다른 기기로 이동하면 직접 삭제 권한을 잃을 수 있습니다. 보안 전환 이전 글은 관리자 삭제가 필요합니다. 자세한 내용은 <a href="privacy.html">개인정보처리방침</a>에서 확인하세요.</p>
         </section>
         <section id="contact" class="checklist-card"><p class="eyebrow">문의 · 오류 제보 · 제안</p><h2>어떤 점을 바꾸면 좋을까요?</h2>
-            <p>화면 오류나 잘못된 정보, 기능 제안과 협업 문의는 기존 게시판으로 받고 있습니다. 오류가 난 페이지, 휴대폰·PC 여부, 브라우저와 발생 상황을 적어주시면 확인하는 데 도움이 됩니다.</p>
+            <p>화면 오류나 잘못된 정보, 기능 제안을 알려주세요. 오류가 난 페이지, 휴대폰·PC 여부, 브라우저와 발생 상황을 적어주시면 확인하는 데 도움이 됩니다.</p>
+            <div class="creator-contact" aria-labelledby="creator-contact-title">
+                <div class="creator-contact-copy">
+                    <h3 id="creator-contact-title"><svg width="24" height="24" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg>제작자에게 메일 보내기</h3>
+                    <p>협업 제안이나 공개하기 어려운 문의는<br class="creator-contact-break"> 제작자에게 직접 보내주세요.</p>
+                    <a class="creator-email" href="mailto:kjw6716@gmail.com?subject=%5BORBIT%20%EB%AC%B8%EC%9D%98%5D" aria-label="다른 메일 앱에서 제작자 kjw6716@gmail.com에게 문의하기">kjw6716@gmail.com</a>
+                </div>
+                <div class="creator-contact-actions">
+                    <a class="guide-button creator-gmail" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=kjw6716%40gmail.com&amp;su=%5BORBIT%20%EB%AC%B8%EC%9D%98%5D" target="_blank" rel="noopener noreferrer" aria-describedby="gmail-contact-note">Gmail로 문의하기 <span aria-hidden="true">↗</span></a>
+                    <p id="gmail-contact-note">새 탭에서 메일을 작성해요.<br>다른 메일 앱은 주소를 눌러주세요.</p>
+                </div>
+            </div>
+            <p>다른 이용자와 함께 나눌 질문은 게시판에도 남길 수 있어요.</p>
             <a class="guide-button" href="lounge.html#ask">게시판에 문의 남기기 →</a>
             <p class="small">문의는 공개 게시글입니다. 비밀번호, 연락처, 계약서 같은 비공개 정보는 올리지 마세요. 게시물 신고는 해당 글의 ‘신고하기’를 이용해주세요.</p>
             <h3>직접 삭제할 수 없는 내 글이 있나요?</h3>
             <p>해당 글이나 댓글의 깃발 모양 ‘신고하기’를 누르고 ‘기타 · 내 글 삭제 요청’을 선택하세요. 요청 내용은 운영자만 확인합니다. 이전에 작성한 글이거나 브라우저 데이터를 지워 삭제 버튼이 없어졌을 때도 사용할 수 있어요.</p>
-            <p class="small">요청 이유와 확인에 도움이 되는 내용을 200자 이내로 적어주세요. 닉네임이 같다는 이유만으로 삭제하지 않으며, 비밀번호·인증 정보·신분증은 보내지 마세요. 일반적인 비공개 문의와 개별 답변을 주고받는 연락 경로는 아직 준비 중입니다.</p>
+            <p class="small">요청 이유와 확인에 도움이 되는 내용을 200자 이내로 적어주세요. 닉네임이 같다는 이유만으로 삭제하지 않으며, 비밀번호·인증 정보·신분증은 보내지 마세요. 개별 답변이 필요한 문의는 위 제작자 이메일을 이용해주세요.</p>
         </section>
 
     </main>
