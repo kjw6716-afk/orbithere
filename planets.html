@@ -118,6 +118,8 @@
         .sky-sum b { color: var(--accent); font-weight: 700; }
         .sky-map { width: 100%; height: auto; display: block; margin: 4px 0 2px; }
         .sky-hint { font-size: 12px; color: #A8B7CA; line-height: 1.6; }
+        .map-guide-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px; color: #78E2D5; font-size: 14px; text-underline-offset: 4px; }
+        .map-guide-link:focus-visible { outline: 2px solid #4FD1C5; outline-offset: 4px; }
 
         /* 시각 스크러버 */
         .scrub { margin-top: 14px; }
@@ -297,6 +299,7 @@
             <svg class="sky-map" id="skyMap" viewBox="0 0 720 320" role="img" aria-labelledby="skyMapTitle">
                 <title id="skyMapTitle">오늘 밤 행성 위치 지도</title>
             </svg>
+            <a class="map-guide-link" href="reading-sky.html" target="_top">이 지도 보는 법 · 수달과 함께 3단계 연습 →</a>
             <div class="sky-hint">가로는 방위, 세로는 지평선에서의 높이(고도)입니다. <b style="color:#94A3B8;">가운데가 남쪽</b>이니, 남쪽을 보고 서면 그림 그대로 보입니다. 하늘 한 바퀴를 좌우로 눌러 담은 그림이라 <b style="color:#94A3B8;">좌우 간격은 실제보다 가깝게</b> 보입니다 — 정확한 각도는 아래 근접 안내를 보세요.</div>
 
             <div class="scrub">

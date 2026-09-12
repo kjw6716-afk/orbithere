@@ -6,7 +6,7 @@ import {resolve,extname,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {chromium} from 'playwright';
 const root=fileURLToPath(new URL('..',import.meta.url));
-const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png'};
+const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp'};
 const server=createServer(async(req,res)=>{
  const full=resolve(root,'.'+(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));
  if(!full.startsWith(resolve(root)+sep)){res.writeHead(403);res.end();return;}
@@ -26,6 +26,10 @@ async function open(width,height,mobile=false,reducedMotion='no-preference'){
 try{
  for(const [w,h,mobile] of [[412,800,true],[360,740,true],[768,1024,true],[1024,768,true],[1366,768,false],[1920,1080,false],[740,360,true]]){
   const {ctx,page,errors}=await open(w,h,mobile);
+  await page.locator('.landing-nebula img').evaluate(img=>img.decode());
+  ok('background image decodes and uses the matching viewport asset',await page.locator('.landing-nebula img').evaluate((img,small)=>
+   img.naturalWidth>0&&img.currentSrc.endsWith(small?'nebula-landing-mobile.webp':'nebula-landing.webp'),w<=600));
+  ok('the shared ORBIT wordmark is white',await page.locator('.orbit-brand').evaluate(el=>getComputedStyle(el).color==='rgb(255, 255, 255)'));
   for(const ms of [0,1900,3900,6100,7900]){
    const box=await page.evaluate(t=>{
     document.getAnimations().forEach(a=>{a.pause();a.currentTime=t;});
@@ -55,6 +59,7 @@ try{
   const {ctx,page}=await open(360,740,true,'reduce');
   ok('reduced motion keeps the main action fully visible',await page.locator('.click-hint').evaluate(e=>getComputedStyle(e).opacity==='1'));
   ok('reduced motion disables decorative movement',await page.locator('.starfield').evaluate(e=>getComputedStyle(e).display==='none'));
+  ok('reduced motion keeps the stationary nebula visible',await page.locator('.landing-nebula').evaluate(e=>getComputedStyle(e).display!=='none'));
   await page.evaluate(()=>document.documentElement.style.fontSize='32px');
   await page.locator('a[href="guide.html"]').first().click();
   await page.getByRole('heading',{name:'처음 별을 보는 밤',exact:true}).waitFor();

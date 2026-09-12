@@ -46,9 +46,47 @@ try {
   ok('altitude control reaches the zenith',await page.locator('#angleValue').textContent()==='90°'&&Math.abs(Number(await page.locator('#sightPoint').getAttribute('cy'))-30)<.01);
   await page.locator('#altitudeRange').fill('0');
   ok('altitude control reaches the horizon',Number(await page.locator('#sightPoint').getAttribute('cy'))===210);
+  await page.getByRole('button',{name:'토성 예시',exact:true}).click();
+  ok('a sample updates the direction, sight line and map together',
+   await page.locator('#directionSelect').inputValue()==='180' && await page.locator('#altitudeRange').inputValue()==='45' &&
+   Number(await page.locator('#samplePlanet').getAttribute('cx'))===375 && Number(await page.locator('#samplePlanet').getAttribute('cy'))===146 &&
+   await page.getByRole('button',{name:'토성 예시',exact:true}).getAttribute('aria-pressed')==='true');
+  await page.locator('#directionSelect').selectOption('90');
+  await page.getByRole('button',{name:'0° · 똑바로',exact:true}).click();
+  ok('east is right on the compass and left of south on the unrolled map',
+   await page.locator('#bearingPointer').getAttribute('transform')==='rotate(90 180 140)' &&
+   Number(await page.locator('#samplePlanet').getAttribute('cx'))===209.5 && Number(await page.locator('#samplePlanet').getAttribute('cy'))===262);
+  ok('manual input clears the preset and is labelled as a teaching fixture',
+   await page.locator('[data-example][aria-pressed="true"]').count()===0 &&
+   (await page.locator('#samplePlanetLabel').textContent())==='연습 천체' &&
+   (await page.locator('.example-badge').textContent()).includes('현재 하늘 아님'));
+  await page.locator('#altitudeRange').focus();
+  await page.keyboard.press('Home');await page.keyboard.press('ArrowRight');
+  ok('keyboard movement changes the sight line and sample altitude',
+   await page.locator('#angleValue').textContent()==='5°' && Number(await page.locator('#samplePlanet').getAttribute('cy'))<262);
+  for(const width of [360,768]){
+   await page.setViewportSize({width,height:844});
+   for(const az of ['0','315']){
+    await page.locator('#directionSelect').selectOption(az);
+    await page.locator('#altitudeRange').fill('90');
+    ok(`map edge at ${az} degrees fits ${width}px`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+   }
+  }
+  ok('zenith guidance does not require a compass direction',(await page.locator('#sampleInstruction').textContent()).includes('머리 바로 위'));
+  await page.goto(base+'/planets.html?embed=1');
+  const help=page.getByRole('link',{name:'이 지도 보는 법 · 수달과 함께 3단계 연습 →'});
+  ok('embedded planet map exposes a guide that exits the iframe',await help.isVisible()&&await help.getAttribute('target')==='_top');
   await page.goto(base+'/privacy.html');
   const visible=await page.locator('body').innerText();
   ok('privacy copy describes purposes without internal keys',!visible.includes('orbit_')&&!visible.includes('auth-token')&&visible.includes('작성 권한을 유지하는 인증 정보'));
+  await context.close();
+ }
+ {
+  const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:360,height:800}});
+  await context.route('**/*',r=>new URL(r.request().url()).origin===base?r.continue():r.abort());
+  const page=await context.newPage();await page.goto(base+'/reading-sky.html');
+  ok('without JavaScript the labelled static example remains readable',await page.locator('#sampleSkyMap').isVisible()&&
+   await page.locator('#altitudeRange').isDisabled()&&(await page.locator('noscript').textContent()).includes('정지 그림'));
   await context.close();
  }
  for(const mode of ['invalid','enabled','blocked','unfilled']){
