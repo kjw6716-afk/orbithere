@@ -1,107 +1,51 @@
+/* Retirement page: read/export/remove an existing note. Never writes a new note. */
 (() => {
     'use strict';
-    const form = document.getElementById('noteForm');
-    const output = document.getElementById('noteOutput');
-    const status = document.getElementById('noteStatus');
-    const length = document.getElementById('noteLength');
-    if (!form || !output) return;
-    const field = name => form.elements.namedItem(name);
-    const value = name => field(name).value.trim();
     const key = 'orbit_observation_draft';
-    const names = ['target','when','place','equipment','result','conditions','detail'];
-    const savedStatus = document.getElementById('savedNoteStatus');
-    let cleanSnapshot = '';
-    const snapshot = () => JSON.stringify(Object.fromEntries(names.map(name => [name,field(name).value])));
-    function readSaved() {
+    const status = document.getElementById('noteStatus');
+    const output = document.getElementById('noteOutput');
+    const actions = document.getElementById('savedNoteActions');
+    const show = document.getElementById('showSavedNote');
+    const labels = {target:'관측 대상', when:'관측 일시 (한국 시간)', place:'대략적인 지역', equipment:'장비', result:'결과', conditions:'조건', detail:'관찰·다음 시도'};
+    let savedText = '';
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) { status.textContent = '이 브라우저에 저장된 관측 노트가 없습니다.'; return; }
+        savedText = raw;
         try {
-            const saved = JSON.parse(localStorage.getItem(key) || 'null');
-            if (!saved || saved.version !== 1 || !saved.fields || typeof saved.savedAt !== 'string') return null;
-            return saved;
-        } catch { return null; }
+            const record = JSON.parse(raw);
+            if (record?.version === 1 && record.fields && typeof record.fields === 'object') {
+                savedText = '[ORBIT 관측 기록]\n' + Object.entries(labels).map(([name, label]) => `${label}: ${typeof record.fields[name] === 'string' ? record.fields[name] : '미입력'}`).join('\n');
+            }
+        } catch { /* Offer damaged/old records as raw text for recovery. Never interpret HTML. */ }
+        show.hidden = false;
+        status.textContent = '이전에 저장한 기록이 있어요. 직접 열어 확인하거나 내려받을 수 있습니다.';
+    } catch {
+        status.textContent = '브라우저 저장소에 접근할 수 없어요. 저장했던 브라우저의 사이트 데이터 설정을 확인해주세요.';
+        return;
     }
-    function savedSummary() {
-        const saved = readSaved();
-        document.getElementById('restoreNote').hidden = !saved;
-        document.getElementById('deleteSavedNote').hidden = !saved;
-        savedStatus.textContent = saved ? '이 브라우저에 저장한 기록이 있어요. ' + (Number.isNaN(Date.parse(saved.savedAt)) ? '' : new Date(saved.savedAt).toLocaleString('ko-KR')) : '이 브라우저에 저장된 기록이 없습니다.';
-    }
-    function update() {
-        const when = value('when').replace('T', ' ');
-        const lines = [
-            `[관측 기록] ${value('target') || '대상 미입력'}`,
-            `일시: ${when ? when + ' KST' : '미입력'}`,
-            `지역: ${value('place') || '미입력'}`,
-            `장비: ${value('equipment')}`,
-            `결과: ${value('result')}`,
-            `조건: ${value('conditions') || '미입력'}`,
-            `관찰·다음 시도: ${value('detail') || '미입력'}`
-        ];
-        // Text only: user input is never interpreted as markup or sent to a server.
-        output.value = lines.join('\n');
-        length.textContent = `${output.value.length} / 5,000자 · 게시판 한 글에 담을 수 있는 길이`;
-        const tooLong = output.value.length > 5000;
-        if (tooLong) length.textContent = `${output.value.length}자 · 파일로 보관할 수 있어요. 게시판에 올릴 때는 5,000자 이내로 줄여주세요.`;
-        status.textContent = '';
-    }
-    form.addEventListener('submit', event => event.preventDefault());
-    form.addEventListener('input', update);
-    form.addEventListener('change', update);
-    form.addEventListener('reset', () => setTimeout(() => {
-        update();
-        cleanSnapshot = snapshot();
-        status.textContent = '입력을 지웠어요.';
-    }, 0));
-    document.getElementById('copyNote').addEventListener('click', async () => {
-        try {
-            await navigator.clipboard.writeText(output.value);
-            cleanSnapshot = snapshot();
-            status.textContent = '기록을 복사했어요. 메모 앱이나 관측 후기 게시판에 붙여 넣어주세요.';
-        } catch {
-            output.focus();
-            output.select();
-            status.textContent = '자동 복사가 지원되지 않아 기록을 선택했어요. 복사 메뉴를 이용해주세요.';
-        }
+    show.addEventListener('click', () => {
+        output.value = savedText;
+        actions.hidden = false; show.hidden = true; output.focus();
+        status.textContent = '저장본을 열었어요. 원본은 이 브라우저에 그대로 남아 있습니다.';
     });
     document.getElementById('downloadNote').addEventListener('click', () => {
-        const url = URL.createObjectURL(new Blob(['\uFEFF' + output.value], {type: 'text/plain;charset=utf-8'}));
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'orbit-observation.txt';
-        document.body.append(link);
-        link.click();
-        link.remove();
+        const url = URL.createObjectURL(new Blob(['\uFEFF' + savedText], {type:'text/plain;charset=utf-8'}));
+        const link = document.createElement('a'); link.href = url; link.download = 'orbit-observation.txt';
+        document.body.append(link); link.click(); link.remove();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
-        status.textContent = '다운로드를 요청했어요. 브라우저의 다운로드 목록을 확인해주세요.';
+        status.textContent = '다운로드를 요청했어요. 다운로드 목록에서 파일을 확인해주세요.';
     });
-    document.getElementById('saveNote').addEventListener('click', () => {
-        try {
-            localStorage.setItem(key, JSON.stringify({version:1, savedAt:new Date().toISOString(), fields:JSON.parse(snapshot())}));
-            cleanSnapshot = snapshot();
-            savedSummary();
-            status.textContent = '이 기기에 저장했어요. 이전 저장본은 이 기록으로 바뀌었습니다.';
-        } catch { status.textContent = '기기 저장 공간을 사용할 수 없어요. 복사하거나 파일로 내려받아 주세요.'; }
-    });
-    document.getElementById('restoreNote').addEventListener('click', () => {
-        const saved = readSaved();
-        if (!saved) { savedSummary(); return; }
-        if (snapshot() !== cleanSnapshot && !confirm('작성 중인 내용을 저장한 기록으로 바꿀까요?')) return;
-        names.forEach(name => {
-            const input=field(name), raw=saved.fields[name];
-            if (typeof raw !== 'string') return;
-            if (input.tagName === 'SELECT' && !Array.from(input.options).some(option => option.value === raw)) return;
-            input.value=raw.slice(0, input.maxLength > 0 ? input.maxLength : 100);
-        });
-        update(); cleanSnapshot=snapshot();
-        status.textContent='저장한 기록을 불러왔어요. 수정한 뒤 다시 저장해주세요.';
+    document.getElementById('copyNote').addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(savedText); status.textContent = '저장한 기록을 복사했어요.'; }
+        catch { output.focus(); output.select(); status.textContent = '기록을 선택했어요. 직접 복사해주세요.'; }
     });
     document.getElementById('deleteSavedNote').addEventListener('click', () => {
-        try { localStorage.removeItem(key); savedSummary(); status.textContent='기기 저장본을 삭제했어요. 화면에 작성 중인 내용은 유지됩니다.'; }
-        catch { status.textContent='기기 저장본을 삭제하지 못했어요. 브라우저의 사이트 데이터 설정을 확인해주세요.'; }
+        if (!confirm('이 브라우저의 저장본을 삭제할까요? 필요한 기록은 먼저 내려받아 주세요.')) return;
+        try {
+            localStorage.removeItem(key);
+            output.value = ''; savedText = ''; actions.hidden = true;
+            status.textContent = '이 브라우저의 관측 노트 저장본을 삭제했어요.';
+        } catch { status.textContent = '저장본을 삭제하지 못했어요. 브라우저 설정에서 사이트 데이터를 확인해주세요.'; }
     });
-    window.addEventListener('beforeunload', event => {
-        if (snapshot() !== cleanSnapshot) { event.preventDefault(); event.returnValue=''; }
-    });
-    update();
-    cleanSnapshot=snapshot();
-    savedSummary();
 })();

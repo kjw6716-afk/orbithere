@@ -1,0 +1,17 @@
+.story-teaser { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border: 1px solid #4c4640; border-radius: 14px; background: #222734; text-align: left; overflow-wrap: anywhere; }
+.story-teaser-icon { flex: 0 0 34px; height: 34px; display: grid; place-items: center; color: #ffc58f; background: #3b3433; border-radius: 50%; font-size: 21px; }
+.story-teaser-copy { min-width: 0; flex: 1; }
+.story-teaser-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; color: #e0b590; font-size: 11px; line-height: 1.5; margin-bottom: 4px; }
+.story-teaser-title { font-size: 14px; line-height: 1.6; color: #e8edf4; font-weight: 600; text-decoration: none; }
+.story-teaser-title:hover { color: #ffd0a2; text-decoration: underline; text-underline-offset: 4px; }
+.story-teaser-all { display: inline-flex; min-height: 44px; align-items: center; color: #b9d6d1; font-size: 12px; flex-shrink: 0; text-decoration: none; }
+.story-teaser a:focus-visible { outline: 2px solid #80e5d6; outline-offset: 4px; }
+.landing-main .story-teaser { max-width: 550px; margin: 28px auto 0; padding: 12px 16px; }
+.panel-wrap>.story-teaser { margin-bottom: 24px; grid-column: 1; }
+@media (min-width: 1280px) {
+  .news-layout .panel-wrap>.story-teaser { grid-row: 1; margin-bottom: 0; }
+  .news-layout .panel-wrap>.panel { grid-row: 2; }
+  .news-layout .panel-wrap>.news-brief--rail { grid-row: 1 / span 2; }
+}
+@media (max-width: 600px) { .story-teaser { padding: 14px; gap: 10px; } .story-teaser-all { display: none; } }
+@media (min-width: 861px) and (max-height: 800px) { .landing-main { padding-top: 16px; padding-bottom: 20px; } .landing-main .star-system { height: 95px; margin-bottom: 18px; } .landing-main .story-teaser { margin-top: 20px; } }

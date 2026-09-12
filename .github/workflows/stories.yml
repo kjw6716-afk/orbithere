@@ -1,0 +1,64 @@
+name: 우주 이야기 발행
+on:
+  schedule:
+    # 08:43 KST. GitHub may delay scheduled runs; the KST ledger prevents duplicates.
+    - cron: '43 23 * * *'
+  push:
+    branches: [main]
+    paths:
+      - '_editorial/articles/**'
+      - 'scripts/stories.py'
+      - 'scripts/site_navigation.py'
+      - '.github/workflows/stories.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  # The news publisher uses this group too: both update main without force-pushing.
+  group: official-news
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 승인 대기열과 중복 발행 검사
+        run: python -m unittest discover -s tests -p 'test_stories.py'
+      - name: 한국 날짜 기준 한 편 발행
+        run: |
+          python scripts/stories.py --publish-next
+          python scripts/site_navigation.py --check
+          python scripts/stories.py --check
+          node tests/links.mjs
+      - name: 발행 기록과 공개 페이지 저장
+        id: publish
+        run: |
+          if git diff --quiet -- _editorial/published.json stories.html stories/ index.html main.html sitemap.xml && [ -z "$(git ls-files --others --exclude-standard stories/)" ]; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add _editorial/published.json stories/ stories.html index.html main.html sitemap.xml
+          git commit -m 'content: publish reviewed ORBIT story'
+          # If main changed concurrently, fail visibly. Never overwrite newer work.
+          git push origin HEAD:main
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+      - name: GitHub Pages 발행 반영
+        # Also retry a previously failed Pages request when a run is repeated.
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"
