@@ -134,8 +134,85 @@ async function ready(page, path = "/main.html#planets") {
   await page.locator(".news-brief-title").first().waitFor();
   await page.clock.pauseAt(new Date(Date.now() + 2000));
 }
+// Playwright's timer clock does not advance the browser's Web Animation timeline.
+// Settle only a running transition; paused transitions must remain untouched.
+async function settle(page) {
+  await page.locator(".news-brief-list").evaluate(el => {
+    el.getAnimations().filter(a => a.playState === "running").forEach(a => a.finish());
+  });
+  await page.waitForFunction(() => !document.querySelector('.news-brief-list').getAnimations().some(a => a.playState === 'finished'));
+}
 const first = (p) => p.locator(".news-brief-title").first().textContent();
 try {
+  {
+    const f = await open(), p = f.page;
+    await ready(p);
+    const titles = await p.locator('.news-brief-title').allTextContents();
+    const before = await p.locator('.news-brief').boundingBox();
+    await p.clock.runFor(8100);
+    await p.locator('.news-brief-heading').hover();
+    const mid = await p.locator('.news-brief-list').evaluate(el => {
+      const a = el.getAnimations()[0];
+      const paused = a.playState === 'paused';
+      a.currentTime = 0;
+      const start = el.children[1].querySelector('.news-brief-meta').getBoundingClientRect().top;
+      a.currentTime = 325;
+      const middle = el.children[1].querySelector('.news-brief-meta').getBoundingClientRect().top;
+      const frames = a.effect.getKeyframes();
+      return {paused, start, middle, frames, duration:a.effect.getTiming().duration};
+    });
+    ok('desktop visibly slides one full row upward over 650ms',mid.duration===650 && mid.start-mid.middle>40 && mid.frames[1].transform.includes('-'));
+    ok('hover freezes an automatic slide already in progress',mid.paused);
+    const pausedTransform = await p.locator('.news-brief-list').evaluate(el=>getComputedStyle(el).transform);
+    await p.clock.runFor(17000);
+    ok('hover keeps the same in-flight position and outgoing headline',await first(p)===titles[0] && await p.locator('.news-brief-list').evaluate(el=>getComputedStyle(el).transform)===pausedTransform);
+    const during = await p.locator('.news-brief').boundingBox();
+    ok('incoming row is clipped without moving the panel footer',Math.abs(during.height-before.height)<1 && await p.locator('.news-brief-viewport').evaluate(el=>getComputedStyle(el).overflow==='hidden'));
+    if(process.env.ORBIT_QA_DIR){
+      await mkdir(process.env.ORBIT_QA_DIR,{recursive:true});
+      await p.screenshot({path:process.env.ORBIT_QA_DIR+'/slide-midpoint.png'});
+    }
+    await p.mouse.move(0,0);
+    ok('pointer exit resumes the same slide',await p.locator('.news-brief-list').evaluate(el=>el.getAnimations()[0].playState==='running'));
+    await p.locator('.news-brief-title').nth(1).focus();
+    ok('keyboard focus also freezes an in-flight slide',await p.locator('.news-brief-list').evaluate(el=>el.getAnimations()[0].playState==='paused'));
+    await p.getByRole('button',{name:'뉴스 자동 전환 재생'}).click();
+    await p.mouse.move(0,0);
+    // Compare the final animated content position with the settled row: no snap.
+    const endTop = await p.locator('.news-brief-list').evaluate(el=>{
+      const a=el.getAnimations()[0];a.pause();a.currentTime=649.999;
+      return el.children[1].querySelector('.news-brief-meta').getBoundingClientRect().top;
+    });
+    await p.locator('.news-brief-list').evaluate(el=>el.getAnimations()[0].finish());
+    await p.waitForFunction(()=>document.querySelectorAll('.news-brief-item').length===3);
+    const settledTop=await p.locator('.news-brief-meta').first().evaluate(el=>el.getBoundingClientRect().top);
+    ok('slide settles on the next article without a vertical jump',await first(p)===titles[1] && Math.abs(settledTop-endTop)<1);
+    for(let n=0;n<5;n++){
+      await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();await settle(p);
+    }
+    ok('the last item wraps smoothly and removes the temporary row',await first(p)===titles[1] && await p.locator('.news-brief-item').count()===3);
+    await p.getByRole('button',{name:'이전 뉴스',exact:true}).click();await settle(p);
+    ok('previous reverses the slide direction and restores the first article',await first(p)===titles[0]);
+    await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();
+    await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();await settle(p);
+    ok('rapid manual navigation does not leave stale rows or callbacks',await first(p)===titles[2] && await p.locator('.news-brief-item').count()===3);
+    await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();
+    await p.emulateMedia({reducedMotion:'reduce'});
+    await p.waitForFunction(()=>document.querySelector('.news-brief-list').getAnimations().length===0);
+    ok('enabling reduced motion clears a slide and its temporary clip',await p.locator('.news-brief-item').count()===3 && await p.locator('.news-brief-viewport').evaluate(el=>!el.style.height && !el.classList.contains('is-moving')));
+    await p.emulateMedia({reducedMotion:'no-preference'});
+    await p.goto(base+'/lounge.html');await p.locator('.news-brief-title').first().waitFor();
+    await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();
+    await p.setViewportSize({width:390,height:844});
+    await p.waitForFunction(()=>document.querySelectorAll('.news-brief-item').length===1 && !document.querySelector('.news-brief-viewport').style.height);
+    ok('resizing during a slide removes the extra row and fixed clipping height');
+    await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();
+    const mobile=await p.locator('.news-brief-list').evaluate(el=>{const a=el.getAnimations()[0];return {duration:a.effect.getTiming().duration,frames:a.effect.getKeyframes()};});
+    ok('mobile uses a brief six-pixel card transition instead of a row ticker',mobile.duration===220 && mobile.frames[0].transform==='translateY(6px)');
+    await settle(p);
+    ok('mobile finishes with one card and no overflow',await p.locator('.news-brief-item').count()===1 && await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+    await f.close();
+  }
   {
     const f = await open(),
       p = f.page;
@@ -147,6 +224,7 @@ try {
     );
     const title = await first(p);
     await p.clock.runFor(8100);
+    await settle(p);
     ok("one item advances after eight seconds", (await first(p)) !== title);
     await p.locator(".news-brief").hover();
     const hovered = await first(p);
@@ -154,6 +232,7 @@ try {
     ok("hover pauses rotation", (await first(p)) === hovered);
     await p.mouse.move(0, 0);
     await p.clock.runFor(8100);
+    await settle(p);
     ok("leaving hover resumes rotation", (await first(p)) !== hovered);
     await p.locator(".news-brief-title").first().focus();
     const focused = await first(p);
@@ -168,6 +247,7 @@ try {
     );
     await p.locator(".side-logo").focus();
     await p.clock.runFor(8100);
+    await settle(p);
     ok(
       "tabbing away does not silently resume rotation",
       (await first(p)) === focused,
@@ -175,16 +255,19 @@ try {
     await p.getByRole("button", { name: "뉴스 자동 전환 재생" }).click();
     await p.mouse.move(0, 0);
     await p.clock.runFor(8100);
+    await settle(p);
     ok("explicit play resumes", (await first(p)) !== focused);
     await p.getByRole("button", { name: "뉴스 자동 전환 정지" }).click();
     await p.mouse.move(0, 0);
     const stopped = await first(p);
     await p.clock.runFor(8100);
+    await settle(p);
     ok(
       "mouse pause button stays paused after pointer leaves",
       (await first(p)) === stopped,
     );
     await p.getByRole("button", { name: "다음 뉴스", exact: true }).click();
+    await settle(p);
     ok(
       "manual next works and announces the headline",
       (await first(p)) !== stopped &&
@@ -239,6 +322,7 @@ try {
         (await p.locator("[data-news-toggle]").isHidden()),
     );
     await p.getByRole("button", { name: "다음 뉴스", exact: true }).click();
+    await settle(p);
     ok(
       "reduced motion still permits manual navigation",
       (await first(p)) !== title,

@@ -33,6 +33,15 @@
   padding: 0;
   list-style: none;
 }
+.news-brief-viewport {
+  /* Leave room for link focus outlines without moving the panel's content. */
+  box-sizing: content-box;
+  margin: -4px;
+  padding: 4px;
+}
+.news-brief-viewport.is-moving {
+  overflow: hidden;
+}
 .news-brief-item + .news-brief-item {
   border-top: 1px solid #2e4058;
   margin-top: 12px;
