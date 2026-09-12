@@ -1,0 +1,733 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "91339ef5e9a488e7",
+      "source": "rocketlab",
+      "url": "https://rocketlabcorp.com/updates/mission-success/",
+      "publishedAt": "2026-09-11T00:00:00Z",
+      "titleOriginal": "MISSION SUCCESS: Rocket Lab Launches 95th Electron Mission",
+      "titleKo": "로켓랩, 일렉트론 95번째 임무 발사 성공",
+      "summaryKo": [
+        "Rocket Lab이 뉴질랜드에서 95번째 Electron 발사에 성공했다고 발표했습니다.",
+        "이번 임무에서는 고객명을 공개하지 않은 지구관측 위성 한 기를 고도 500km 원형 저궤도에 배치했습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "235cf959f1ab0d2c",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32453",
+      "publishedAt": "2026-09-10T00:00:00Z",
+      "titleOriginal": "2026년 ‘올해의 KASI인상’ 수상자로 박병곤 책임연구원 선정",
+      "titleKo": "2026년 ‘올해의 KASI인상’ 수상자로 박병곤 책임연구원 선정",
+      "summaryKo": [
+        "한국천문연구원이 2026년 올해의 KASI인상 수상자로 박병곤 책임연구원을 선정했습니다.",
+        "거대마젤란망원경과 외계행성탐색시스템 등 대형 관측사업을 추진하고 국제 공동연구 기반을 넓힌 공로를 인정했습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "430b8c54b35508e5",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/missions/jason-cs-sentinel-6/how-2-us-european-satellites-are-studying-hurricanes-during-el-nino/",
+      "publishedAt": "2026-09-09T16:00:00Z",
+      "titleOriginal": "How 2 US, European Satellites Are Studying Hurricanes During El Niño",
+      "titleKo": "미국·유럽의 위성 2대, 엘니뇨 시기 허리케인을 관측하다",
+      "summaryKo": [
+        "미국과 유럽의 Sentinel-6 위성 두 기가 해수면 높이를 정밀 측정하며 엘니뇨와 허리케인 연구를 돕고 있습니다.",
+        "해수면 높이로 바다에 축적된 열을 파악할 수 있어, 연구진은 이 자료를 허리케인의 급격한 발달 예측에 활용하려 합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "7dea421284cd9a42",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32449",
+      "publishedAt": "2026-09-09T00:00:00Z",
+      "titleOriginal": "우주에서 역대 가장 먼 원시 초은하단 발견",
+      "titleKo": "우주에서 역대 가장 먼 원시 초은하단 발견",
+      "summaryKo": [
+        "한국천문연구원이 참여한 국제 연구진이 초기 우주의 거대한 원시 초은하단 COSMOS-z3.1-A를 발견했습니다.",
+        "연구진은 우주 나이가 약 20억 년이던 시기의 이 구조가 우리은하 질량의 약 5,000배에 이른다고 분석했습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "3add3c796890f497",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-signs-contract-with-ssc-space-for-two-alpha-launches-from-esrange-space-center/",
+      "publishedAt": "2026-09-09T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Signs Contract with SSC Space for Two Alpha Launches from Esrange Space Center",
+      "titleKo": "파이어플라이, 에스레인지에서 알파 2회 발사 계약 체결",
+      "summaryKo": [
+        "Firefly가 SSC Space와 스웨덴 에스레인지 우주센터에서 Alpha 로켓을 두 차례 발사하는 계약을 체결했습니다.",
+        "발사는 빨라도 2028년을 목표로 하며, 스웨덴 안보 수요와 상업 고객의 탑재체를 함께 지원할 계획입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "347403d862206df2",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32448",
+      "publishedAt": "2026-09-08T00:00:00Z",
+      "titleOriginal": "큐브위성 도요샛, 슈퍼 태양폭풍 속 ‘대기 저항’ 정량적으로 밝혔다",
+      "titleKo": "큐브위성 도요샛, 슈퍼 태양폭풍 속 ‘대기 저항’ 정량적으로 밝혔다",
+      "summaryKo": [
+        "도요샛 연구진이 2024년 5월 태양폭풍 때 위성의 궤도 변화를 분석해 대기 저항 증가를 정량적으로 측정했습니다.",
+        "폭풍이 가장 강할 때 주변 대기 밀도가 평상시의 두 배 이상으로 늘었으며, NASA 위성 관측자료와도 결과를 비교했습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "5d09f610c9fe1c09",
+      "source": "rocketlab",
+      "url": "https://rocketlabcorp.com/updates/rocket-lab-introduces-high-efficiency-solar-cell-to-reduce-reliance-on-supply-constrained-critical-minerals/",
+      "publishedAt": "2026-09-08T00:00:00Z",
+      "titleOriginal": "Rocket Lab Introduces High-Efficiency Solar Cell to Reduce Reliance on Supply-Constrained Critical Minerals",
+      "titleKo": "로켓랩, 핵심 광물 의존도를 줄이는 고효율 태양전지 공개",
+      "summaryKo": [
+        "Rocket Lab이 우주용 태양전지 IMM Apex의 생산 출시를 발표했습니다.",
+        "회사 설명에 따르면 초기 변환 효율은 31.5%이며, 기존 다중접합 전지에 쓰이던 게르마늄 기판을 없애 공급망 의존도를 낮췄습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "be0297cb0c112b00",
+      "source": "esa",
+      "url": "https://www.esa.int/Enabling_Support/Operations/BepiColombo_begins_Mercury_arrival_with_MTM_separation_success",
+      "publishedAt": "2026-09-07T08:25:00Z",
+      "titleOriginal": "BepiColombo begins Mercury arrival with MTM separation success",
+      "titleKo": "베피콜롬보, 수성 전이 모듈 분리 성공으로 수성 도착 절차 시작",
+      "summaryKo": [
+        "ESA가 베피콜롬보의 수성 전이 모듈 MTM이 2026년 9월 3일 성공적으로 분리됐다고 확인했습니다.",
+        "약 8년간의 항해를 지원한 추진 모듈과 작별한 단계로, 두 과학 궤도선을 수성 궤도에 배치하기 위한 후속 절차가 이어집니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "97dd2a41cad6fa63",
+      "source": "esa",
+      "url": "https://www.esa.int/ESA_Multimedia/Videos/2026/09/BepiColombo_s_Mercury_arrival_begins_-_full_replay",
+      "publishedAt": "2026-09-03T15:00:00Z",
+      "titleOriginal": "BepiColombo’s Mercury arrival begins - full replay",
+      "titleKo": "베피콜롬보의 수성 도착 절차 시작 — 전체 영상 다시 보기",
+      "summaryKo": [
+        "베피콜롬보가 수성 도착 절차를 시작한 2026년 9월 3일 생중계를 다시 볼 수 있는 영상입니다.",
+        "임무팀이 수성 전이 모듈 분리와 이후 진행될 복잡한 도착 과정을 설명합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "6b99d3ba0cb19611",
+      "source": "esa",
+      "url": "https://www.esa.int/ESA_Multimedia/Images/2026/09/Hubble_s_superbubble_scene",
+      "publishedAt": "2026-09-03T08:00:00Z",
+      "titleOriginal": "Hubble's superbubble scene",
+      "titleKo": "허블이 포착한 거대한 초거품의 모습",
+      "summaryKo": [
+        "허블우주망원경이 대마젤란은하의 별 탄생 영역 N44에 있는 거대한 빈 공간을 담았습니다.",
+        "이 초거품은 내부 별들의 강한 항성풍과 초신성 폭발이 주변 가스를 밀어내며 만들어진 구조입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "28563e1cf6650be9",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Hubble_tracks_new_decagon_encircling_Saturn_s_south_pole",
+      "publishedAt": "2026-09-02T18:00:00Z",
+      "titleOriginal": "Hubble tracks new decagon encircling Saturn’s south pole",
+      "titleKo": "허블, 토성 남극을 둘러싼 새로운 십각형 구조를 추적하다",
+      "summaryKo": [
+        "허블 관측에서 토성 남극을 둘러싼 거대한 십각형 대기 파동이 발견됐습니다.",
+        "연구진은 2023년 이후 자료를 비교해 구조가 뚜렷해지는 과정을 추적했으며, 북극의 유명한 육각형과의 차이도 연구하고 있습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "b0d5075eb5247564",
+      "source": "rocketlab",
+      "url": "https://rocketlabcorp.com/updates/mission-success-rocket-lab-launches-94th-electron-mission/",
+      "publishedAt": "2026-09-02T00:00:00Z",
+      "titleOriginal": "MISSION SUCCESS: Rocket Lab Launches 94th Electron Mission",
+      "titleKo": "로켓랩, 일렉트론 94번째 임무 발사 성공",
+      "summaryKo": [
+        "Rocket Lab이 94번째 Electron 임무로 Synspective의 StriX 위성을 발사했습니다.",
+        "위성은 고도 575km 저궤도에 배치됐으며, 지표를 레이더로 관측하는 Synspective 위성망 확장에 활용됩니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "658ea0d820dc6f99",
+      "source": "blueorigin",
+      "url": "https://www.blueorigin.com/news/blue-origin-selected-by-nasa-to-help-build-mars-telecommunications-network",
+      "publishedAt": "2026-09-02T00:00:00Z",
+      "titleOriginal": "Blue Origin Selected by NASA to Help Build America's Mars Telecommunications Network",
+      "titleKo": "NASA, 화성 통신망 구축 지원사로 블루오리진 선정",
+      "summaryKo": [
+        "Blue Origin이 NASA의 화성 통신망을 구성할 통신 궤도선 개발·인도 업체로 선정됐다고 발표했습니다.",
+        "Blue Ring 플랫폼을 바탕으로 지구와 화성 사이의 통신을 중계해 과학·로봇·유인 탐사를 지원하는 것이 목표입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "0cc2c2530550a089",
+      "source": "esa",
+      "url": "https://www.esa.int/ESA_Multimedia/Videos/2026/08/Media_briefing_BepiColombo_s_next_milestone_towards_Mercury",
+      "publishedAt": "2026-08-31T14:00:00Z",
+      "titleOriginal": "Media briefing: BepiColombo's next milestone towards Mercury",
+      "titleKo": "언론 브리핑: 수성을 향한 베피콜롬보의 다음 주요 단계",
+      "summaryKo": [
+        "ESA가 2026년 8월 31일 진행한 베피콜롬보 임무 언론 설명회의 다시보기입니다.",
+        "9월 3일로 예정됐던 전이 모듈 분리의 어려움과 이후 수성 궤도 진입·과학 궤도선 분리 절차를 다룹니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "6587a20db72c2bce",
+      "source": "esa",
+      "url": "https://www.esa.int/ESA_Multimedia/Images/2026/08/Roman_lifts_off_on_a_mission_to_survey_the_infrared_sky",
+      "publishedAt": "2026-08-31T07:00:00Z",
+      "titleOriginal": "Roman lifts off on a mission to survey the infrared sky",
+      "titleKo": "로먼 우주망원경, 적외선으로 하늘을 탐사하기 위해 발사",
+      "summaryKo": [
+        "ESA가 2026년 8월 30일 발사된 NASA 로먼 우주망원경의 임무와 유럽의 기여를 소개했습니다.",
+        "ESA는 별 추적기·배터리·코로나그래프 검출기를 제공했으며, 심우주 지상국을 통한 통신과 자료 수신도 지원합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "be1799cedcc10449",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/news-release/nasas-dark-universe-seeking-nancy-grace-roman-space-telescope-launches/",
+      "publishedAt": "2026-08-30T13:18:06Z",
+      "titleOriginal": "NASA’s Dark Universe-Seeking Nancy Grace Roman Space Telescope Launches",
+      "titleKo": "어두운 우주를 탐사할 NASA 낸시 그레이스 로먼 우주망원경 발사",
+      "summaryKo": [
+        "NASA의 낸시 그레이스 로먼 우주망원경이 2026년 8월 30일 Falcon Heavy 로켓으로 발사됐습니다.",
+        "넓은 시야의 적외선 관측으로 암흑에너지·암흑물질과 외계행성을 연구하며, 최종 관측 궤도까지 이동한 뒤 임무를 수행합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "ef24cd7d701cef7b",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Expedition_Sound_podcast_series",
+      "publishedAt": "2026-08-27T07:30:00Z",
+      "titleOriginal": "Expedition Sound podcast series",
+      "titleKo": "팟캐스트 시리즈 「Expedition Sound」",
+      "summaryKo": [
+        "ESA의 팟캐스트 Expedition Sound는 우주 관측 데이터를 소리로 바꿔 들려주는 시리즈입니다.",
+        "과학자와 음향화 전문가가 태양부터 먼 우주까지 안내하며, 시각장애인도 천문학에 접근할 수 있는 방법을 함께 다룹니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "e7a16a750d4f01ff",
+      "source": "esa",
+      "url": "https://www.esa.int/Enabling_Support/Operations/Watch_live_BepiColombo_begins_its_arrival_at_Mercury",
+      "publishedAt": "2026-08-27T05:17:00Z",
+      "titleOriginal": "Watch live: BepiColombo begins its arrival at Mercury",
+      "titleKo": "생중계: 베피콜롬보, 수성 도착 절차 시작",
+      "summaryKo": [
+        "베피콜롬보의 수성 전이 모듈 분리를 앞두고 ESA가 공개한 2026년 9월 3일 생중계 안내입니다.",
+        "약 8년의 항해 뒤 시작되는 수성 도착 단계와 임무 관제팀의 작업을 소개합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "32ed9e7d11d21de1",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32438",
+      "publishedAt": "2026-08-27T00:00:00Z",
+      "titleOriginal": "천문연 박종욱 책임연구원, COSPAR 집행위원 선출",
+      "titleKo": "천문연 박종욱 책임연구원, COSPAR 집행위원 선출",
+      "summaryKo": [
+        "한국천문연구원 박종욱 책임연구원이 국제우주연구위원회 COSPAR 집행위원으로 선출됐습니다.",
+        "한국인으로서는 첫 선출이며, 2026년 8월부터 4년간 정책 논의와 국제협력·학술 교류에 참여할 예정입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "f3ac3655bf675d20",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/technology/space-comms/deep-space-network/new-next-gen-dish-adds-muscle-to-nasas-deep-space-network/",
+      "publishedAt": "2026-08-25T22:28:34Z",
+      "titleOriginal": "New Next-Gen Dish Adds Muscle to NASA’s Deep Space Network",
+      "titleKo": "새 차세대 안테나로 NASA 심우주 통신망 역량 강화",
+      "summaryKo": [
+        "NASA가 캘리포니아 골드스톤 심우주통신단지에 지름 34m 안테나 DSS-23을 추가했습니다.",
+        "이번 증설은 태양계 안팎을 탐사하는 우주선들의 통신과 항법을 지원하는 심우주통신망 확장 사업의 일부입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "0370b5d96bd90098",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/news-release/nasa-sets-coverage-for-roman-space-telescope-launch-from-florida/",
+      "publishedAt": "2026-08-24T20:44:58Z",
+      "titleOriginal": "NASA Sets Coverage for Roman Space Telescope Launch from Florida",
+      "titleKo": "NASA, 플로리다에서 진행할 로먼 우주망원경 발사 중계 일정 공개",
+      "summaryKo": [
+        "NASA가 로먼 우주망원경 발사를 앞두고 사전 행사와 발사 중계 계획을 공개한 안내입니다.",
+        "발표 당시 2026년 8월 30일 Falcon Heavy 발사를 목표로 했으며, 원문에서 중계 채널과 행사 일정을 확인할 수 있습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "4602d76f332cb387",
+      "source": "rocketlab",
+      "url": "https://rocketlabcorp.com/updates/mission-success-rocket-lab-launches-93rd-electron-mission/",
+      "publishedAt": "2026-08-20T00:00:00Z",
+      "titleOriginal": "MISSION SUCCESS: Rocket Lab Launches 93rd Electron Mission",
+      "titleKo": "로켓랩, 일렉트론 93번째 임무 발사 성공",
+      "summaryKo": [
+        "Rocket Lab이 93번째 Electron 발사로 일본 iQPS의 지구관측 위성을 궤도에 올렸습니다.",
+        "QPS-SAR 위성은 고도 575km 저궤도에 배치됐으며, 이번 비행은 회사의 2026년 14번째 Electron 발사였습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "d009d9abab60ebfb",
+      "source": "rocketlab",
+      "url": "https://rocketlabcorp.com/updates/powering-the-emilia-3d-lunar-mission-with-proven-space-robotics/",
+      "publishedAt": "2026-08-19T00:00:00Z",
+      "titleOriginal": "Powering the EMILIA-3D Lunar Mission with Proven Space Robotics",
+      "titleKo": "검증된 우주 로봇 기술로 EMILIA-3D 달 탐사 지원",
+      "summaryKo": [
+        "Rocket Lab Robotics가 달 표면의 3차원 열 모델을 만드는 EMILIA-3D 관측장비용 짐벌을 개발했습니다.",
+        "카메라 방향을 정밀하게 움직이는 이 장치는 달의 거친 환경에서 지형과 열 특성을 조사하도록 설계됐습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "8b30a6e4ebb9eeae",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-onboards-zeno-power-on-blue-ghost-mission-to-demonstrate-radioisotope-technologies-to-survive-the-lunar-night/",
+      "publishedAt": "2026-08-19T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Onboards Zeno Power on Blue Ghost Mission to Demonstrate Radioisotope Technologies to Survive the Lunar Night",
+      "titleKo": "파이어플라이, 달의 밤 생존 기술 실증에 제노파워 참여",
+      "summaryKo": [
+        "Firefly가 Blue Ghost 달 착륙선에 Zeno Power의 방사성동위원소 가열 장치를 싣는 계약을 발표했습니다.",
+        "빨라도 2028년 발사를 목표로 하며, 약 14일간 이어지는 차가운 달의 밤을 견디는 기술을 실증하려 합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "5c1f5820a61819bf",
+      "source": "rocketlab",
+      "url": "https://rocketlabcorp.com/updates/new-blog-posrocket-lab-onboarded-to-u-s-space-forces-981m-nite-star-program-to-advance-space-test-and-training-infrastructure-program/",
+      "publishedAt": "2026-08-18T00:00:00Z",
+      "titleOriginal": "Rocket Lab Onboarded to U.S. Space Force’s $981M NITE-STAR Program to Advance Space Test and Training Infrastructure",
+      "titleKo": "로켓랩, 미 우주군의 9억 8,100만 달러 규모 NITE-STAR 사업 참여",
+      "summaryKo": [
+        "Rocket Lab이 미국 우주군의 시험·훈련 기반시설 사업 NITE-STAR 참여 업체로 선정됐습니다.",
+        "9억 8,100만 달러는 사업 전체의 계약 상한이며, 회사는 앞으로 개별 과업 수주 경쟁에 참여할 자격을 얻었습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "374e76bc2ab2ce56",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/missions/maia/nasa-mission-studies-air-pollution-over-ethiopia/",
+      "publishedAt": "2026-08-17T19:24:34Z",
+      "titleOriginal": "NASA Mission Studies Air Pollution Over Ethiopia",
+      "titleKo": "NASA 임무, 에티오피아 상공의 대기 오염 연구",
+      "summaryKo": [
+        "NASA MAIA 연구진이 에티오피아 아디스아바바의 대기질 관측소 10곳에서 수집한 2022~2025년 자료를 분석했습니다.",
+        "교통과 연소 과정에서 생기는 검댕 오염이 시간대와 계절에 따라 어떻게 달라지는지 살펴본 연구입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "d950057d9c6c0db4",
+      "source": "rocketlab",
+      "url": "https://rocketlabcorp.com/updates/viasat-selects-rocket-lab-to-build-geo-satellite-for-u-s-space-forces-protected-tactical-satcom-global-program-2/",
+      "publishedAt": "2026-08-17T00:00:00Z",
+      "titleOriginal": "Viasat Selects Rocket Lab to Build GEO Satellite for U.S. Space Force’s Protected Tactical SATCOM-Global Program",
+      "titleKo": "비아샛, 미 우주군 보호 전술 위성통신 사업의 정지궤도 위성 제작사로 로켓랩 선정",
+      "summaryKo": [
+        "Viasat가 미국 우주군 PTS-G 통신위성의 본체 제작사로 Rocket Lab을 선정했습니다.",
+        "Rocket Lab의 Lightning-GEO 플랫폼에 Viasat의 통신 탑재체를 결합해 전파 방해에 강한 통신을 제공하는 것이 목표입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "cd965c2c5979943e",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-onboarded-to-nasa-spacecraft-processing-operations-contract/",
+      "publishedAt": "2026-08-17T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Onboarded to NASA Spacecraft Processing Operations Contract",
+      "titleKo": "파이어플라이, NASA 우주선 처리 운영 계약 참여",
+      "summaryKo": [
+        "Firefly가 NASA의 우주선 처리 운영 계약 참여 업체로 선정됐습니다.",
+        "이를 통해 반덴버그에서 발사되는 NASA 임무의 탑재체 처리 시설과 서비스에 관한 개별 과업 수주 경쟁에 참여할 수 있습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "4a143897cbe1f8cc",
+      "source": "rocketlab",
+      "url": "https://rocketlabcorp.com/updates/rocket-lab-satellite-platforms-built-for-mda-space-successfully-reach-orbit-supporting-globalstar-direct-to-device-communications-services/",
+      "publishedAt": "2026-08-16T00:00:00Z",
+      "titleOriginal": "Rocket Lab Satellite Platforms Built for MDA Space Successfully Reach Orbit, Supporting Globalstar Direct-to-Device Communications Services",
+      "titleKo": "로켓랩의 MDA 스페이스용 위성 플랫폼 궤도 도달, 글로벌스타 기기 직접 통신 지원",
+      "summaryKo": [
+        "Rocket Lab이 MDA Space를 위해 제작한 위성 플랫폼 중 첫 8기가 궤도에 도달했다고 발표했습니다.",
+        "회사는 8기 모두와 교신하고 전력 생성을 확인했으며, Globalstar 통신망 지원을 위한 초기 운용 점검을 시작했습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "394011116bf440f3",
+      "source": "blueorigin",
+      "url": "https://www.blueorigin.com/news/blue-origin-begins-global-rollout-quartz-ground-station-network",
+      "publishedAt": "2026-08-13T00:00:00Z",
+      "titleOriginal": "Blue Origin Begins Global Rollout of Quartz Ground Station Network",
+      "titleKo": "블루오리진, 쿼츠 지상국 네트워크의 세계적 구축 시작",
+      "summaryKo": [
+        "Blue Origin이 버뮤다·뉴질랜드·호주에 Quartz 지상국 세 곳을 설치하고 시험을 마쳤다고 발표했습니다.",
+        "다양한 우주 임무에 통신 서비스를 제공하기 위해 2026년 말까지 아홉 곳으로 네트워크를 확대할 계획입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "7f2673ce3f65bde3",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-awarded-contract-to-design-elytra-deorbit-system-for-defense-innovation-unit/",
+      "publishedAt": "2026-08-13T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Awarded Contract to Design Elytra Deorbit System for Defense Innovation Unit",
+      "titleKo": "파이어플라이, 미 국방혁신단의 엘리트라 궤도 이탈 시스템 설계 계약 수주",
+      "summaryKo": [
+        "Firefly가 Elytra 우주선으로 궤도 이탈 서비스를 제공하는 임무의 예비설계검토 계약을 체결했습니다.",
+        "설계검토를 마치면 발사와 우주선 운용을 포함한 다음 단계 사업의 수주 경쟁에 참여할 수 있습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "8d1ebe0560ebacc3",
+      "source": "blueorigin",
+      "url": "https://www.blueorigin.com/news/returning-launch-complex-36-to-two-pads",
+      "publishedAt": "2026-08-12T00:00:00Z",
+      "titleOriginal": "Returning Launch Complex 36 to Two Pads: Blue Origin Begins Construction of LC-36B",
+      "titleKo": "블루오리진, 제36발사단지의 두 번째 발사대 LC-36B 착공",
+      "summaryKo": [
+        "Blue Origin이 New Glenn 9x4 기체를 위한 케이프커내버럴 LC-36B 발사대 건설에 착수했습니다.",
+        "기존 LC-36A는 7x2 기체용으로 유지하고, 추가 조립·탑재체 처리 시설과 함께 발사 역량을 확대할 계획입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "50141f7fb1c495d5",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-announces-extension-of-multi-launch-agreement-with-lockheed-martin-through-2031/",
+      "publishedAt": "2026-08-11T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Announces Extension of Multi-Launch Agreement with Lockheed Martin Through 2031",
+      "titleKo": "파이어플라이, 록히드마틴과 다회 발사 계약 2031년까지 연장",
+      "summaryKo": [
+        "Firefly와 Lockheed Martin이 Alpha 로켓 다회 발사 계약을 2031년까지 연장했습니다.",
+        "개량형 Alpha Block II를 활용해 최대 25회의 전용 발사를 지원하는 내용입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "eb15a4aa556229aa",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/fireflys-scitec-awarded-94-million-u-s-space-force-contract-to-advance-ground-based-radar-digitization-program/",
+      "publishedAt": "2026-08-11T00:00:00Z",
+      "titleOriginal": "Firefly’s SciTec Awarded $94 Million U.S. Space Force Contract to Advance Ground-Based Radar Digitization Program",
+      "titleKo": "파이어플라이 자회사 사이텍, 미 우주군의 9,400만 달러 레이더 디지털화 계약 수주",
+      "summaryKo": [
+        "Firefly 자회사 SciTec이 미국 우주군의 지상 레이더 디지털화 사업 계약을 수주했습니다.",
+        "계약 규모는 약 9,370만 달러이며, 기존 레이더를 현대화할 공통 구조와 설계를 마련하는 사업입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "9dc0d3c774c9802b",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/solar-system/planets/mars/nasas-perseverance-rover-watches-earth-vanish-behind-martian-moon/",
+      "publishedAt": "2026-08-05T15:25:27Z",
+      "titleOriginal": "NASA’s Perseverance Rover Watches Earth Vanish Behind Martian Moon",
+      "titleKo": "NASA 퍼서비어런스 탐사차, 화성의 위성 뒤로 사라지는 지구 관측",
+      "summaryKo": [
+        "NASA의 퍼서비어런스 탐사차가 화성에서 지구가 위성 포보스 뒤로 가려지는 모습을 촬영했습니다.",
+        "2026년 7월 2일 Mastcam-Z로 얻은 연속 영상이며, NASA는 다른 행성 표면에서 포착한 최초의 지구 엄폐 관측이라고 설명했습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "7e30420df21f2fec",
+      "source": "blueorigin",
+      "url": "https://www.blueorigin.com/news/gs1-3-hotfire-updates",
+      "publishedAt": "2026-08-05T00:00:00Z",
+      "titleOriginal": "GS1-3 Hotfire Updates",
+      "titleKo": "GS1-3 연소시험 관련 업데이트",
+      "summaryKo": [
+        "Blue Origin이 New Glenn 연소시험 이상 현상 조사와 발사대 복구 진행 상황을 공개했습니다.",
+        "업데이트에서는 BE-4 엔진의 주 산소 밸브에서 이상이 시작됐다고 설명하며, 밸브 수정과 발사 운용 방식 변경을 추진하고 있습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "4a7aa5598bb2acdc",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/missions/moon-base/nasa-provides-updates-on-moon-base-cargo-landers-tech-demonstrations/",
+      "publishedAt": "2026-08-04T16:14:51Z",
+      "titleOriginal": "NASA Provides Updates on Moon Base Cargo Landers, Tech Demonstrations",
+      "titleKo": "NASA, 달 기지 화물 착륙선과 기술 실증의 진행 상황 공개",
+      "summaryKo": [
+        "NASA가 달 남극 부근의 기지 조성을 지원할 민간 화물 착륙선과 기술 실증 준비 상황을 소개했습니다.",
+        "Blue Origin·Firefly 등 협력사들이 2028년까지 착륙선 인도를 목표로 개발 중이며, 로봇 임무로 장비와 기반시설을 먼저 보내는 구상입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "d459877455309203",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/image-article/nasas-roman-telescope-to-carry-1-35-million-names-to-deep-space/",
+      "publishedAt": "2026-07-31T14:11:34Z",
+      "titleOriginal": "NASA’s Roman Telescope to Carry 1.35 Million Names to Deep Space",
+      "titleKo": "NASA 로먼 우주망원경, 135만 명의 이름을 싣고 심우주로 향한다",
+      "summaryKo": [
+        "NASA가 로먼 우주망원경에 세계 각지에서 제출된 135만 144명의 이름을 담은 메모리카드를 설치했습니다.",
+        "카드는 기념 명판의 일부로 실리며, 망원경과 함께 태양·지구 라그랑주점 L2 부근으로 향하도록 준비됐습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "322e33d604bb9b7a",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32417",
+      "publishedAt": "2026-07-29T00:00:00Z",
+      "titleOriginal": "“우주+AI 기술로 지구 도달 태양풍의 속도를 예측하라!”",
+      "titleKo": "“우주+AI 기술로 지구 도달 태양풍의 속도를 예측하라!”",
+      "summaryKo": [
+        "한국천문연구원과 KAIST가 대학생·대학원생을 대상으로 제3회 천문우주 AI 경진대회 개최를 안내했습니다.",
+        "태양 관측 영상으로 지구에 도달하는 태양풍 속도를 예측하는 주제로, 2026년 8월 예선과 본선을 진행하는 일정입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "833fb17a78eb4603",
+      "source": "blueorigin",
+      "url": "https://www.blueorigin.com/news/blue-origin-nasa-partner-to-test-new-glenn-at-stennis-space-center",
+      "publishedAt": "2026-07-24T00:00:00Z",
+      "titleOriginal": "Blue Origin and NASA Partner to Test New Glenn's Upper Stage at Historic Stennis Space Center",
+      "titleKo": "블루오리진·NASA, 스테니스 우주센터에서 뉴 글렌 상단 시험 협력",
+      "summaryKo": [
+        "Blue Origin과 NASA가 스테니스 우주센터의 B 시험단지를 New Glenn 2단 연소시험에 활용하는 협약을 맺었습니다.",
+        "추가 시험시설을 확보해 상단 성능을 검증하고 LC-36 발사장 운용과 시험 일정의 충돌을 줄이려는 계획입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "063e20b8d7eabd0c",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32390",
+      "publishedAt": "2026-07-10T00:00:00Z",
+      "titleOriginal": "천문연-연세대 항공우주전략연구원, 우주감시 및 우주안보 분야 협력 위한 업무협약 체결",
+      "titleKo": "천문연-연세대 항공우주전략연구원, 우주감시 및 우주안보 분야 협력 위한 업무협약 체결",
+      "summaryKo": [
+        "한국천문연구원과 연세대 항공우주전략연구원이 우주감시·우주안보 분야 협력을 위한 업무협약을 체결했습니다.",
+        "연구와 기술정보를 교류하고 협력 네트워크 구축, 인력 교류 및 전문인력 양성을 추진할 계획입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "da9093a581278078",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32383",
+      "publishedAt": "2026-07-07T00:00:00Z",
+      "titleOriginal": "2026년 여름 천문연수 실시",
+      "titleKo": "2026년 여름 천문연수 실시",
+      "summaryKo": [
+        "한국천문연구원이 교원과 천문 관련 시설 종사자를 위한 2026년 7월 온라인 천문연수를 안내했습니다.",
+        "천문 뉴스를 바탕으로 별의 일생, 중력파, 우주탐사와 빅데이터 등 최신 연구와 배경지식을 해설하는 프로그램입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "c29b10f735889210",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-receives-13-million-nasa-jpl-subcontract-to-build-aeroshell-for-skyfall-mars-mission/",
+      "publishedAt": "2026-07-07T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Receives $13 Million NASA JPL Subcontract to Build Aeroshell for SkyFall Mars Mission",
+      "titleKo": "파이어플라이, 화성 스카이폴 임무 에어로셸 제작에 NASA JPL의 1,300만 달러 하도급 수주",
+      "summaryKo": [
+        "Firefly가 NASA JPL의 화성 SkyFall 임무용 에어로셸 제작·시험·인도 하도급 계약을 체결했습니다.",
+        "1,300만 달러 규모의 계약으로, 2028년 말 발사를 목표로 하는 임무에서 화성 헬리콥터 세 대를 운반할 보호 구조물을 맡습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "9730060225f350e8",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32380",
+      "publishedAt": "2026-07-02T00:00:00Z",
+      "titleOriginal": "세계 최대 우주 타임랩스 프로젝트 LSST, 10년 탐사 시작",
+      "titleKo": "세계 최대 우주 타임랩스 프로젝트 LSST, 10년 탐사 시작",
+      "summaryKo": [
+        "한국천문연구원이 루빈천문대의 LSST 10년 탐사 관측이 공식적으로 시작됐다고 전했습니다.",
+        "남반구 밤하늘을 반복 관측해 시간에 따른 변화를 기록하며, 천문연은 확보한 자료접근권으로 국내 연구자의 활용을 지원할 계획입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "5720e9f3b4d7c7f4",
+      "source": "blueorigin",
+      "url": "https://www.blueorigin.com/news/new-glenn-return-to-flight",
+      "publishedAt": "2026-06-30T00:00:00Z",
+      "titleOriginal": "New Glenn Return to Flight",
+      "titleKo": "뉴 글렌의 비행 재개 계획",
+      "summaryKo": [
+        "Blue Origin이 2026년 5월 28일 New Glenn 연소시험 사고 이후의 복구 계획을 소개했습니다.",
+        "발표 당시 원인을 조사하면서 발사대 재건을 시작했으며, 같은 해 비행 재개를 목표로 운용 방식을 바꾸겠다고 밝혔습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "281c66bdaca972d5",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-awarded-144-million-nasa-clps-contract-for-accelerated-blue-ghost-lunar-mission/",
+      "publishedAt": "2026-06-30T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Awarded $144 Million NASA CLPS Contract for Accelerated Blue Ghost Lunar Mission",
+      "titleKo": "파이어플라이, 블루 고스트 달 탐사 앞당길 NASA CLPS 계약 1억 4,400만 달러 수주",
+      "summaryKo": [
+        "Firefly가 Blue Ghost 착륙선의 추가 달 임무를 위한 1억 4,400만 달러 규모 NASA CLPS 계약을 수주했습니다.",
+        "2028년 발사를 목표로 약 2년 안에 임무를 준비하며, 달 앞면에 NASA 과학장비 세 대를 전달할 계획입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "66336a984a5d1b40",
+      "source": "blueorigin",
+      "url": "https://www.blueorigin.com/news/new-glenn-ng-3-mission",
+      "publishedAt": "2026-04-16T00:00:00Z",
+      "titleOriginal": "New Glenn’s Third Mission Slated for April 19",
+      "titleKo": "뉴 글렌 세 번째 임무, 4월 19일 발사 예정",
+      "summaryKo": [
+        "Blue Origin이 New Glenn의 세 번째 임무를 빨라도 2026년 4월 19일 발사하겠다고 안내한 기사입니다.",
+        "AST SpaceMobile의 BlueBird 7 위성을 저궤도로 운반하고, 앞선 임무에서 회수한 1단 부스터를 다시 사용하는 계획을 설명합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "53eb6fc211f0bbcb",
+      "source": "blueorigin",
+      "url": "https://www.blueorigin.com/news/new-shepard-to-pause-flights",
+      "publishedAt": "2026-01-30T00:00:00Z",
+      "titleOriginal": "Blue Origin to Pause New Shepard Flights for No Less Than Two Years",
+      "titleKo": "블루오리진, 뉴 셰퍼드 비행 최소 2년 중단 예정",
+      "summaryKo": [
+        "Blue Origin이 New Shepard 비행을 최소 2년간 중단하겠다고 발표했습니다.",
+        "유인 달 탐사 역량 개발을 앞당기는 데 인력과 자원을 집중하겠다는 결정입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "1c8694a860773db4",
+      "source": "starlink",
+      "url": "https://starlink.com/public-files/Starlink_Approach_to_Satellite_Demisability.pdf",
+      "publishedAt": "2025-02-27T00:00:00Z",
+      "titleOriginal": "Starlink 위성 소멸성",
+      "titleKo": "Starlink 위성 소멸성",
+      "summaryKo": [
+        "SpaceX가 Starlink 위성의 궤도 이탈과 재진입 시 소멸을 고려한 설계·운용 방식을 설명한 자료입니다.",
+        "고장 위험이 높아진 초기 위성을 선제적으로 하강시키고, 그 과정에서도 충돌 회피와 궤도 정보 공유를 유지한다고 설명합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "eb61e6a3d6f3d33b",
+      "source": "starlink",
+      "url": "https://starlink.com/public-files/Telescope_Boresight_Avoidance.pdf",
+      "publishedAt": "2024-08-09T00:00:00Z",
+      "titleOriginal": "실시간 협력을 통한 전파천문학 보호",
+      "titleKo": "실시간 협력을 통한 전파천문학 보호",
+      "summaryKo": [
+        "SpaceX와 미국 국립전파천문대가 Starlink 통신이 전파망원경 관측에 미치는 간섭을 줄이는 기술을 소개했습니다.",
+        "망원경의 관측 방향과 주파수 정보를 실시간 공유하고, 위성의 전파 빔이 그 방향을 피하도록 조정하는 방식입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "b85c75592b89889b",
+      "source": "starlink",
+      "url": "https://starlink.com/public-files/StarlinkLatency.pdf",
+      "publishedAt": "2024-03-07T00:00:00Z",
+      "titleOriginal": "Starlink 지연 시간 개선",
+      "titleKo": "Starlink 지연 시간 개선",
+      "summaryKo": [
+        "Starlink가 통신 지연 시간을 줄이기 위해 진행한 네트워크 개선 결과를 설명했습니다.",
+        "발표 당시 미국의 혼잡 시간대 지연 중앙값을 48.5ms에서 33ms로 낮췄다고 보고했으며, 지연 시간의 측정 방식도 소개합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "690524d650b70063",
+      "source": "starlink",
+      "url": "https://starlink.com/public-files/Commitment%20to%20Space%20Sustainability.pdf",
+      "publishedAt": "2024-02-12T00:00:00Z",
+      "titleOriginal": "우주 지속가능성을 위한 헌신",
+      "titleKo": "우주 지속가능성을 위한 헌신",
+      "summaryKo": [
+        "SpaceX가 저궤도 위성의 고장 위험을 줄이고 사용을 마친 위성을 하강시키는 운용 방침을 설명했습니다.",
+        "이 자료에서는 일부 초기 Starlink 위성을 선제적으로 궤도에서 이탈시키면서 하강 중에도 충돌 회피 기능을 유지하는 계획을 소개합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    }
+  ]
+}

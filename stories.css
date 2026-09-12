@@ -12,9 +12,9 @@
 .story-eyebrow { color: #f8b574; font-size: .75rem; font-weight: 700; letter-spacing: .13em; margin: 0; }
 .stories-deck { max-width: 34rem; font-size: 1rem; color: #b7c4d7; margin: 0; }
 .stories-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 36px; }
-.editor-sign { display: flex; gap: 12px; align-items: center; flex-shrink: 0; color: #cbd5e1; font-size: .85rem; }
+.editor-sign { min-width: 0; max-width: 100%; display: flex; gap: 12px; align-items: center; flex-shrink: 0; color: #cbd5e1; font-size: .85rem; }
 .editor-sign small { display: block; color: #a6b5c9; margin-top: 5px; font-size: .75rem; }
-.editor-avatar { width: 42px; height: 42px; border: 1px solid #5c4d43; background: #312d30; display: grid; place-items: center; color: #ffbd81; border-radius: 50%; font-size: 24px; }
+.editor-avatar { flex-shrink: 0; width: 42px; height: 42px; border: 1px solid #5c4d43; background: #312d30; display: grid; place-items: center; color: #ffbd81; border-radius: 50%; font-size: 24px; }
 .story-feature { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(220px, .85fr); align-items: center; border: 1px solid #354258; background: #151f32; border-radius: 22px; overflow: hidden; }
 .story-feature-copy { padding: 36px; }
 .story-feature h2 { font-size: clamp(1.65rem, 3vw, 2.45rem); margin: 16px 0; font-weight: 650; text-wrap: balance; }

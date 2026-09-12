@@ -179,7 +179,7 @@ def shell(title, description, path, body, prefix='', schema=None, noindex=False,
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
 <link rel="stylesheet" href="{prefix}orbit.css?v=20260912-brand">
 <link rel="stylesheet" href="{prefix}site-nav.css?v=20260912-navigation">
-<link rel="stylesheet" href="{prefix}stories.css?v=20260912-editor">
+<link rel="stylesheet" href="{prefix}stories.css?v=20260912-disclosure">
 {f'<script type="application/ld+json">{json_script(schema)}</script>' if schema else ''}
 <script src="{prefix}site-nav.js?v=20260912-navigation" defer></script>
 <script src="{prefix}{script}?v=20260912-editor" defer></script>
@@ -195,12 +195,13 @@ def shell(title, description, path, body, prefix='', schema=None, noindex=False,
 '''
 
 
-def byline():
-    return f'<div class="editor-sign"><span class="editor-avatar" aria-hidden="true">{editor_star(24)}</span><div><strong>ORBIT 에디터</strong><small>AI가 쓰는 우주 이야기</small></div></div>'
+def byline(disclose=False):
+    disclosure = '<small>AI가 공식 자료를 바탕으로 작성한 글입니다.</small>' if disclose else ''
+    return f'<div class="editor-sign"><span class="editor-avatar" aria-hidden="true">{editor_star(24)}</span><div><strong>ORBIT 에디터</strong>{disclosure}</div></div>'
 
 
 def meta(article, day):
-    return f'<div class="story-meta"><span class="story-tag">{esc(article["category"])}</span><time datetime="{day}">{day.replace("-", ".")}</time><span>AI 작성</span></div>'
+    return f'<div class="story-meta"><span class="story-tag">{esc(article["category"])}</span><time datetime="{day}">{day.replace("-", ".")}</time></div>'
 
 
 def art():
@@ -218,13 +219,13 @@ def render_list(items):
         search_text = ' '.join(p for section in a['sections'] for p in section['paragraphs'])
         rows.append(f'<article class="story-row" data-story-search="{esc(search_text)}"><span class="story-row-num">{len(items)-n:02d}</span><div>{meta(a, day)}<h3><a href="stories/{a["id"]}.html">{esc(a["title"])}</a></h3><p>{esc(a["summary"])}</p></div><span class="story-row-arrow" aria-hidden="true">↗</span></article>')
     archive = f'<section class="stories-archive" aria-labelledby="archiveTitle"><div class="stories-section-head"><h2 id="archiveTitle">차곡차곡 쌓이는 이야기</h2><span class="stories-count" id="storyCount" role="status">{len(items)}편</span></div><label class="story-search" hidden>이야기 찾기<input id="storySearch" type="search" placeholder="제목·주제·내용으로 찾아보세요" maxlength="100"></label>{"".join(rows)}<p class="editor-note" id="storyEmpty" hidden>찾는 이야기가 없어요. 다른 단어로 검색해보세요.</p></section>'
-    note = '<p class="editor-note">ORBIT 에디터가 공식 자료를 바탕으로 작성하는 AI 콘텐츠입니다. 출처와 확인 날짜를 각 글에 표시하며, 오류 제보는 <a href="lounge.html#ask">질문 게시판</a>에서 받아요. 새로운 글은 검토를 거쳐 한 편씩 전합니다.</p>'
+    note = '<p class="editor-note">이야기마다 출처와 자료 확인 날짜를 함께 전합니다. 오류 제보는 <a href="lounge.html#ask">질문 게시판</a>에서 받아요. 새로운 글은 검토를 거쳐 한 편씩 전합니다.</p>'
     return shell('우주 이야기 — ORBIT 에디터', '달과 행성, 별과 우주, 우주 탐사의 궁금증을 공식 자료와 함께 쉽게 풀어주는 ORBIT 에디터의 우주 이야기.', 'stories.html', head + feature + archive + note)
 
 
 def render_article(a, day):
     ident = a['id']
-    body = f'<article class="story-article"><a class="story-breadcrumb" href="../stories.html">← 우주 이야기 전체보기</a><header>{meta(a, day)}<h1>{esc(a["title"])}</h1><p class="story-standfirst">{esc(a["summary"])}</p><div class="story-byline">{byline()}<span class="story-meta">공식 자료를 바탕으로 쓴 해설</span></div></header><div class="story-body">'
+    body = f'<article class="story-article"><a class="story-breadcrumb" href="../stories.html">← 우주 이야기 전체보기</a><header>{meta(a, day)}<h1>{esc(a["title"])}</h1><p class="story-standfirst">{esc(a["summary"])}</p><div class="story-byline">{byline(disclose=True)}</div></header><div class="story-body">'
     for section in a['sections']:
         refs = ' '.join(f'<a href="#source-{n}" aria-label="출처 {n} 보기">[{n}]</a>' for n in section['sources'])
         paragraphs = ''
@@ -237,7 +238,7 @@ def render_article(a, day):
     body += '<section class="story-sources" aria-labelledby="sourcesTitle"><h2 id="sourcesTitle">이 이야기를 확인한 자료</h2><ol>'
     for n, source in enumerate(a['sources'], 1):
         body += f'<li id="source-{n}"><a href="{esc(source["url"])}" target="_blank" rel="noopener noreferrer">{esc(source["title"])} ↗</a><span>자료 확인 {source["checkedAt"].replace("-", ".")} · 원문 새 탭</span></li>'
-    body += '</ol><p class="editor-note">AI가 작성한 해설입니다. 직접 관측한 후기와 구분하며, 자료의 날짜와 적용 범위를 함께 확인해주세요. <a href="../lounge.html#ask">오류 제보하기 →</a></p></section><div class="story-share"><button class="story-button" id="shareStory" type="button" hidden>이야기 주소 복사</button><a class="story-link" href="../stories.html">다른 이야기 보기 →</a></div><p class="story-status" id="shareStatus" role="status"></p><input class="story-share-fallback" id="shareFallback" aria-label="공유할 이야기 주소" readonly hidden></article>'
+    body += '</ol><p class="editor-note">자료의 날짜와 적용 범위를 함께 확인해주세요. <a href="../lounge.html#ask">오류 제보하기 →</a></p></section><div class="story-share"><button class="story-button" id="shareStory" type="button" hidden>이야기 주소 복사</button><a class="story-link" href="../stories.html">다른 이야기 보기 →</a></div><p class="story-status" id="shareStatus" role="status"></p><input class="story-share-fallback" id="shareFallback" aria-label="공유할 이야기 주소" readonly hidden></article>'
     schema = {'@context': 'https://schema.org', '@type': 'Article', 'headline': a['title'], 'description': a['summary'],
               'datePublished': day, 'inLanguage': 'ko', 'url': f'https://orbithere.com/stories/{ident}.html',
               'author': {'@type': 'Organization', 'name': 'ORBIT 에디터', 'description': 'AI가 쓰는 우주 이야기'},
@@ -250,7 +251,7 @@ def render_teaser(items):
     if not items:
         return '<aside class="story-teaser"><a class="story-teaser-title" href="stories.html">ORBIT 에디터의 우주 이야기 →</a></aside>'
     a, day = items[0]
-    return f'<aside class="story-teaser" aria-label="최신 우주 이야기"><span class="story-teaser-icon" aria-hidden="true">{editor_star(21)}</span><div class="story-teaser-copy"><div class="story-teaser-meta"><span>ORBIT 에디터 · AI 작성</span><time datetime="{day}">{day.replace("-", ".")}</time></div><a class="story-teaser-title" href="stories/{a["id"]}.html">{esc(a["title"])}</a></div><a class="story-teaser-all" href="stories.html">전체보기 →</a></aside>'
+    return f'<aside class="story-teaser" aria-label="최신 우주 이야기"><span class="story-teaser-icon" aria-hidden="true">{editor_star(21)}</span><div class="story-teaser-copy"><div class="story-teaser-meta"><span>ORBIT 에디터</span><time datetime="{day}">{day.replace("-", ".")}</time></div><a class="story-teaser-title" href="stories/{a["id"]}.html">{esc(a["title"])}</a></div><a class="story-teaser-all" href="stories.html">전체보기 →</a></aside>'
 
 
 def outputs(articles, ledger, root=ROOT):

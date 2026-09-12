@@ -7,6 +7,7 @@
   var news = window.OrbitNews,
     sources = news.sources;
   var data = null,
+    summaries = null,
     loading = false,
     lastFocused = "";
   function esc(s) {
@@ -68,10 +69,8 @@
       ? items
           .map(function (item) {
             var english = item.language !== "ko";
-            var korean = news.hasKoreanTitle(item);
-            var translated =
-              "https://translate.google.com/translate?sl=en&tl=ko&u=" +
-              encodeURIComponent(item.url);
+            var summary = news.summaryFor(item, summaries);
+            var korean = english && (summary || news.hasKoreanTitle(item));
             var source = data.sources.find(function (s) {
               return s.id === item.source;
             });
@@ -97,17 +96,16 @@
               '" target="_blank" rel="noopener noreferrer"' +
               (english && !korean ? ' lang="en"' : "") +
               ">" +
-              esc(news.displayTitle(item)) +
+              esc(summary ? summary.titleKo : news.displayTitle(item)) +
               '</a>' +
-              (korean ? '<p class="news-original">원제: <span lang="en">' + esc(item.title) + '</span></p>' : '') +
+              (summary ? '<div class="news-summary"><span class="news-summary-label">핵심 요약</span>' +
+                summary.summaryKo.map(function (sentence) { return '<p>' + esc(sentence) + '</p>'; }).join('') +
+                '</div>' : '<p class="news-summary-pending">요약은 준비 중이에요. 원문에서 먼저 확인할 수 있어요.</p>') +
+              (korean ? '<details class="news-original"><summary>영문 제목 보기</summary><span lang="en">' + esc(item.title) + '</span></details>' : '') +
               '<div class="news-links"><a href="' +
               esc(item.url) +
               '" target="_blank" rel="noopener noreferrer">원문 읽기 ↗</a>' +
-              (english
-                ? '<a href="' +
-                  esc(translated) +
-                  '" target="_blank" rel="noopener noreferrer">한국어 번역 ↗</a>'
-                : "") +
+              (summary ? '<span class="news-summary-date">자료 확인 ' + esc(summary.checkedAt.replaceAll('-', '.')) + '</span>' : '') +
               "</div>" +
               (stale
                 ? '<div class="news-freshness">마지막 정상 확인 ' +
@@ -140,7 +138,9 @@
     button.disabled = true;
     list.setAttribute("aria-busy", "true");
     try {
-      data = await news.load();
+      var result = await Promise.all([news.load(), news.loadSummaries().catch(function () { return null; })]);
+      data = result[0];
+      if (result[1]) summaries = result[1];
       render();
     } catch (e) {
       status.hidden = false;

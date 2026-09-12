@@ -6,7 +6,7 @@
     <title>Orbit | 우주 뉴스</title>
     <meta
       name="description"
-      content="KASI·NASA·ESA와 SpaceX·Rocket Lab·Blue Origin·Firefly의 공식 우주 소식. 원문과 한국어 번역 링크로 읽어보세요."
+      content="KASI·NASA·ESA와 SpaceX·Rocket Lab·Blue Origin·Firefly의 공식 우주 소식. 한국어 핵심 요약과 공식 원문으로 읽어보세요."
     />
     <meta name="theme-color" content="#0F172A" />
     <link rel="canonical" href="https://orbithere.com/news.html" />
@@ -25,7 +25,7 @@
     <meta property="og:title" content="Orbit | 우주 뉴스" />
     <meta
       property="og:description"
-      content="KASI·NASA·ESA와 SpaceX·Rocket Lab·Blue Origin·Firefly의 공식 우주 소식. 원문과 한국어 번역 링크로 읽어보세요."
+      content="KASI·NASA·ESA와 SpaceX·Rocket Lab·Blue Origin·Firefly의 공식 우주 소식. 한국어 핵심 요약과 공식 원문으로 읽어보세요."
     />
     <meta property="og:image" content="https://orbithere.com/images/og.png" />
     <meta property="og:image:width" content="1200" />
@@ -39,7 +39,7 @@
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css"
     />
     <link rel="stylesheet" href="/orbit.css?v=20260912-brand" />
-    <link rel="stylesheet" href="board.css?v=20260912-companies" />
+    <link rel="stylesheet" href="board.css?v=20260912-summaries" />
     <script>
       if (new URLSearchParams(location.search).get('embed'))
         document.documentElement.classList.add('embed');
@@ -93,8 +93,7 @@
         <a href="#firefly" data-source="firefly">Firefly</a>
       </nav>
       <p class="field-hint news-intro">
-        우주기관과 기업의 공식 소식을 발행일 순으로 모았어요. 스타링크와 머스크의 우주사업 소식은 SpaceX에서 함께 볼 수 있어요. 한글 제목이 준비된 해외 소식은 원제도 함께 표시합니다.
-        제목을 누르면 원문이 새 탭에서 열려요.
+        AI가 공식 원문을 바탕으로 핵심을 한국어로 정리했어요. 자세한 내용은 ‘원문 읽기’에서 확인할 수 있어요.
       </p>
       <div class="list-toolbar">
         <p id="newsChecked" role="status">소식을 불러오는 중…</p>
@@ -132,8 +131,7 @@
           <a href="https://fireflyspace.com/news/" target="_blank" rel="noopener noreferrer">Firefly ↗</a>
         </div>
         <p>
-          한글 제목은 원제와 대조해 다듬었습니다. ‘한국어 번역’ 링크는 Google 번역으로 연결됩니다. 자동 번역은 용어나 수치를 잘못 옮길 수 있으니
-          중요한 내용은 원문도 함께 확인해주세요.
+          한국어 요약은 공식 원문과 대조해 제공합니다. 요약에 담기지 않은 내용과 자료 확인 날짜 이후의 변경 사항은 원문을 확인해주세요.
         </p>
       </aside>
       <noscript
@@ -171,8 +169,8 @@
       </div>
     </footer>
 
-    <script src="news-data.js?v=20260912-companies" defer></script>
-    <script src="news.js?v=20260912-companies" defer></script>
+    <script src="news-data.js?v=20260912-summaries" defer></script>
+    <script src="news.js?v=20260912-summaries" defer></script>
   </div></div>
 <script src="site-nav.js?v=20260912-navigation"></script>
 </body>
