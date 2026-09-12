@@ -25,7 +25,7 @@ GitHub Pages 빌드나 방문자의 JavaScript 없이도 직접 페이지의 링
 - 원제가 같으면 다음 RSS 갱신 때도 다듬은 제목을 보존합니다.
 - 번역이 없거나 잘못된 형식이면 원제로 표시하며, 뉴스 수집 자체는 계속됩니다.
 
-현재 16개 영어 제목은 원제와 대조해 한글 제목을 다듬었습니다.
+기존 기관 뉴스의 영어 제목 16개는 원제와 대조해 한글 제목을 다듬었습니다.
 새 영어 제목은 6시간 간격의 기존 뉴스 작업에서 CPU로 번역 초안을 저장합니다.
 실제 기사로 시험할 때 모델이 고유명사와 천문 용어를 오역했으므로 자동 공개하지 않습니다.
 `titleKoDraft`·`titleKoDraftOriginal`·`titleKoDraftModel`은 검토용이며 화면에는 표시하지 않습니다.
@@ -56,3 +56,20 @@ python3 scripts/translate_news.py --approve ARTICLE_ID --title "검토한 한글
 RSS 파서와 번역 캐시·장애 처리는 `npm run test:news`,
 공통 메뉴와 한글 제목·원제 표시 및 fallback은 `npm run test:navigation`으로 확인합니다.
 브라우저 검사는 외부 API·광고 요청 없이 실행합니다.
+
+## 기업 뉴스와 종합 패널
+
+- SpaceX(스타링크 포함), Rocket Lab, Blue Origin, Firefly를 기존 KASI·NASA/JPL·ESA와 함께 제공합니다.
+- `news-data.js`의 기업 주제와 실제 발행 출처는 별개입니다. NASA의 SpaceX 기사도 SpaceX 필터에 포함하지만 NASA 출처는 유지합니다. 머스크는 우주사업 관련 제목일 때 SpaceX로 분류합니다.
+- 목록은 발행일 순입니다. 패널은 기관·기업별 최신 소식을 한 번씩 뽑아 최대 14건을 순환하며, SpaceX 안에서도 스타링크에 차례를 줍니다.
+- 데스크톱은 4칸, 높이 680px 이하에서는 3칸, 모바일 게시판은 1칸입니다. 8초 간격·650ms 세로 이동, 모바일 220ms 전환과 hover/포커스/동작 줄이기 보호를 유지합니다.
+- 기관 RSS는 Python으로, 기업 공식 뉴스 목록은 `scripts/company_news.mjs`의 Playwright Chromium으로 읽습니다. JavaScript로 표시되는 공개 목록의 제목·날짜·주소만 저장하며 기사 본문과 이미지는 저장하지 않습니다. SpaceX 원문은 `#기사주소`를 보존합니다.
+- Starlink의 `/kr/updates`에서는 공식 한국어 제목을 사용합니다. 발행일이 없는 카드는 임의 날짜를 만들지 않고 제외합니다. 소셜 미디어를 별도로 수집하지 않으므로 머스크의 모든 게시물이 들어오는 것은 아닙니다.
+- 출처마다 최대 8건입니다(스타링크는 별도 수집 출처이지만 화면에서는 SpaceX로 통합). 새 기업 영어 제목 32건을 검토해 추가했습니다.
+- 한 출처의 구조 변경·접속 실패는 해당 출처의 기존 뉴스와 검토한 번역을 보존합니다. 브라우저 전체 실패도 세 기관의 RSS 갱신을 막지 않습니다. 실패 상태는 화면에 표시합니다.
+
+로컬 갱신에는 `npm ci`, `npx playwright install chromium`도 필요합니다.
+`python3 scripts/update_news.py`가 기관·기업을 함께 갱신합니다.
+`npm run test:news`는 공식 페이지에서 확인한 DOM 구조의 fixture, 날짜·주소 검증,
+SpaceX fragment 보존, 수집 장애, 혼합 순서, 분류·필터와 반응형 슬라이드를 검증합니다.
+공식 페이지 구조가 바뀌면 `company_news.mjs`의 선택자와 해당 fixture를 함께 갱신합니다.

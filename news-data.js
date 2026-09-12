@@ -8,7 +8,62 @@
       hosts: ["www.nasa.gov", "science.nasa.gov"],
     },
     esa: { name: "ESA 우주과학", badge: "ESA", hosts: ["www.esa.int"] },
+    spacex: { name: "SpaceX", badge: "SpaceX", hosts: ["www.spacex.com"] },
+    starlink: { name: "Starlink · SpaceX", badge: "SpaceX", hosts: ["starlink.com"], company: "spacex" },
+    rocketlab: { name: "Rocket Lab", badge: "Rocket Lab", hosts: ["rocketlabcorp.com"] },
+    blueorigin: { name: "Blue Origin", badge: "Blue Origin", hosts: ["www.blueorigin.com"] },
+    firefly: { name: "Firefly Aerospace", badge: "Firefly", hosts: ["fireflyspace.com"] },
   };
+  var companies = {
+    spacex: "SpaceX", rocketlab: "Rocket Lab", blueorigin: "Blue Origin", firefly: "Firefly",
+  };
+  var topics = {
+    spacex: /\b(space\s*x|starlink|starship|falcon\s*(9|heavy))\b|스페이스\s*엑스|스타링크|스타십|팰컨/i,
+    rocketlab: /\brocket\s*lab\b|로켓\s*랩|로캣\s*랩/i,
+    blueorigin: /\bblue\s*origin\b|블루\s*오리진/i,
+    firefly: /\bfirefly\s*aerospace\b|파이어플라이/i,
+  };
+  function companiesFor(item) {
+    var primary = sources[item.source]?.company || item.source;
+    var found = Object.hasOwn(companies, primary) ? [primary] : [];
+    Object.keys(topics).forEach(function (id) {
+      if (!found.includes(id) && topics[id].test(item.title)) found.push(id);
+    });
+    // Musk belongs to SpaceX only in space-related headlines.
+    if (!found.includes("spacex") && /elon\s*musk|일론\s*머스크/i.test(item.title) &&
+        /space|rocket|satellite|mars|launch|우주|로켓|위성|화성|발사/i.test(item.title)) found.push("spacex");
+    return found;
+  }
+  function matches(item, filter) {
+    if (filter === "all") return true;
+    var company = companiesFor(item);
+    if (filter === "commercial") return company.length > 0;
+    if (filter === "science") return company.length === 0;
+    if (Object.hasOwn(companies, filter)) return company.includes(filter);
+    return item.source === filter;
+  }
+  function briefItems(data) {
+    // Each source/topic gets a turn; frequent Starlink launches cannot fill the rail.
+    var groups = new Map();
+    items(data).forEach(function (item) {
+      var key = companiesFor(item)[0] || item.source;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(item);
+    });
+    var mixed = [], previousSources = new Map();
+    while (mixed.length < 14) {
+      var added = false;
+      groups.forEach(function (rows, key) {
+        if (!rows.length || mixed.length >= 14) return;
+        // Within SpaceX, give the Starlink index a turn too.
+        var position = rows.findIndex(function (item) { return item.source !== previousSources.get(key); });
+        var item = rows.splice(Math.max(0, position), 1)[0];
+        mixed.push(item); previousSources.set(key, item.source); added = true;
+      });
+      if (!added) break;
+    }
+    return mixed;
+  }
   function valid(item) {
     try {
       var u = new URL(item.url);
@@ -98,6 +153,10 @@
   }
   window.OrbitNews = Object.freeze({
     sources: sources,
+    companies: companies,
+    companiesFor: companiesFor,
+    matches: matches,
+    briefItems: briefItems,
     valid: valid,
     items: items,
     articleId: articleId,

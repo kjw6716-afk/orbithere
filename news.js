@@ -35,7 +35,7 @@
   function render() {
     if (!data) return;
     var filter = location.hash.slice(1);
-    if (!Object.hasOwn(sources, filter)) filter = "all";
+    if (!["all", "science", "commercial"].includes(filter) && !Object.hasOwn(sources, filter)) filter = "all";
     document.querySelectorAll("[data-source]").forEach(function (a) {
       if (a.dataset.source === filter) a.setAttribute("aria-current", "page");
       else a.removeAttribute("aria-current");
@@ -43,14 +43,14 @@
     var items = news
       .items(data)
       .filter(function (i) {
-        return filter === "all" || i.source === filter;
+        return news.matches(i, filter);
       })
       .sort(function (a, b) {
         return Date.parse(b.publishedAt) - Date.parse(a.publishedAt);
       });
     var unavailable = data.sources.filter(function (s) {
       return (
-        sources[s.id] && (filter === "all" || s.id === filter) && news.stale(s)
+        sources[s.id] && news.matches({source: s.id, title: ""}, filter) && news.stale(s)
       );
     });
     status.hidden = !unavailable.length;
@@ -76,12 +76,17 @@
               return s.id === item.source;
             });
             var stale = news.stale(source);
+            var companyBadges = news.companiesFor(item).filter(function (id) {
+              return id !== item.source && sources[item.source].company !== id;
+            }).map(function (id) {
+              return '<span class="news-language">' + news.companies[id] + '</span>';
+            }).join('');
             return (
               '<article id="' +
               esc(news.articleId(item)) +
               '" tabindex="-1" class="board-row news-article"><div class="row-meta"><span class="row-category">' +
               sources[item.source].name +
-              '</span><span aria-hidden="true">·</span><time datetime="' +
+              '</span>' + companyBadges + '<span aria-hidden="true">·</span><time datetime="' +
               esc(item.publishedAt) +
               '">' +
               esc(new Date(item.publishedAt).toLocaleDateString("ko-KR")) +

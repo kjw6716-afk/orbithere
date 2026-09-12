@@ -184,22 +184,22 @@ try {
       return el.children[1].querySelector('.news-brief-meta').getBoundingClientRect().top;
     });
     await p.locator('.news-brief-list').evaluate(el=>el.getAnimations()[0].finish());
-    await p.waitForFunction(()=>document.querySelectorAll('.news-brief-item').length===3);
+    await p.waitForFunction(()=>document.querySelectorAll('.news-brief-item').length===4);
     const settledTop=await p.locator('.news-brief-meta').first().evaluate(el=>el.getBoundingClientRect().top);
     ok('slide settles on the next article without a vertical jump',await first(p)===titles[1] && Math.abs(settledTop-endTop)<1);
-    for(let n=0;n<5;n++){
+    for(let n=0;n<14;n++){
       await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();await settle(p);
     }
-    ok('the last item wraps smoothly and removes the temporary row',await first(p)===titles[1] && await p.locator('.news-brief-item').count()===3);
+    ok('the last item wraps smoothly and removes the temporary row',await first(p)===titles[1] && await p.locator('.news-brief-item').count()===4);
     await p.getByRole('button',{name:'이전 뉴스',exact:true}).click();await settle(p);
     ok('previous reverses the slide direction and restores the first article',await first(p)===titles[0]);
     await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();
     await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();await settle(p);
-    ok('rapid manual navigation does not leave stale rows or callbacks',await first(p)===titles[2] && await p.locator('.news-brief-item').count()===3);
+    ok('rapid manual navigation does not leave stale rows or callbacks',await first(p)===titles[2] && await p.locator('.news-brief-item').count()===4);
     await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();
     await p.emulateMedia({reducedMotion:'reduce'});
     await p.waitForFunction(()=>document.querySelector('.news-brief-list').getAnimations().length===0);
-    ok('enabling reduced motion clears a slide and its temporary clip',await p.locator('.news-brief-item').count()===3 && await p.locator('.news-brief-viewport').evaluate(el=>!el.style.height && !el.classList.contains('is-moving')));
+    ok('enabling reduced motion clears a slide and its temporary clip',await p.locator('.news-brief-item').count()===4 && await p.locator('.news-brief-viewport').evaluate(el=>!el.style.height && !el.classList.contains('is-moving')));
     await p.emulateMedia({reducedMotion:'no-preference'});
     await p.goto(base+'/lounge.html');await p.locator('.news-brief-title').first().waitFor();
     await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();
@@ -218,9 +218,9 @@ try {
       p = f.page;
     await ready(p);
     ok(
-      "wide rail shows three of the latest five items",
-      (await p.locator(".news-brief-item").count()) === 3 &&
-        /\/ 5/.test(await p.locator(".news-brief-count").textContent()),
+      "wide rail shows four mixed headlines from a fourteen-item rotation",
+      (await p.locator(".news-brief-item").count()) === 4 &&
+        /\/ 14/.test(await p.locator(".news-brief-count").textContent()),
     );
     const title = await first(p);
     await p.clock.runFor(8100);
@@ -417,8 +417,8 @@ try {
       p = f.page;
     await ready(p, "/lounge.html");
     ok(
-      "standalone desktop board also shows a three-item rail",
-      (await p.locator(".news-brief-item").count()) === 3,
+      "standalone desktop board also shows a four-item rail",
+      (await p.locator(".news-brief-item").count()) === 4,
     );
     await p.goto(base + "/lounge.html?write=1");
     await p.locator("#editorView").waitFor();
@@ -442,7 +442,7 @@ try {
     await p.locator(".news-brief-title").first().waitFor();
     ok(
       "retry recovers without reloading the board",
-      (await p.locator(".news-brief-item").count()) === 3,
+      (await p.locator(".news-brief-item").count()) === 4,
     );
     await f.close();
   }
@@ -489,6 +489,40 @@ try {
       "empty feed does not trigger a resize/refetch loop",
       f.state.requests === 1,
     );
+    await f.close();
+  }
+  {
+    const f = await open(1440, "reduce"), p = f.page;
+    await ready(p);
+    const result = await p.evaluate(data => {
+      const n=window.OrbitNews, mixed=n.briefItems(data);
+      return {sources:mixed.map(i=>i.source), groups:mixed.slice(0,7).map(i=>n.companiesFor(i)[0]||i.source),
+        unique:new Set(mixed.map(i=>i.url)).size,
+        musk:n.matches({source:'nasa',title:'Elon Musk discusses a Mars mission'},'spacex'),
+        unrelated:n.matches({source:'nasa',title:'Elon Musk discusses an election'},'spacex'),
+        starlink:n.matches({source:'starlink',title:'우주 안전 웹 도구'},'spacex'),
+        original:n.sources.nasa.badge,
+        invalid:n.valid({source:'spacex',title:'Bad',url:'https://www.spacex.com.evil.test/story',publishedAt:new Date().toISOString()})};
+    }, fixture);
+    ok('mixed rotation covers all seven institution/company groups before repeats',new Set(result.groups).size===7 && result.unique===14);
+    ok('Starlink and space-related Musk headlines share SpaceX without unrelated Musk coverage',result.starlink && result.musk && !result.unrelated && result.sources.includes('starlink'));
+    ok('company topic never relabels a NASA source and lookalike domains are rejected',result.original==='NASA/JPL' && !result.invalid);
+    await p.setViewportSize({width:1366,height:650});
+    await p.waitForFunction(()=>document.querySelectorAll('.news-brief-item').length===3);
+    ok('short desktop keeps three rows and its footer inside the screen',await p.locator('.news-brief').evaluate(el=>el.getBoundingClientRect().bottom<=innerHeight));
+    await p.goto(base+'/news.html#spacex');
+    await p.locator('.news-article').first().waitFor();
+    ok('SpaceX filter includes its own and Starlink official sources',await p.locator('.row-category').allTextContents().then(rows=>rows.includes('SpaceX')&&rows.includes('Starlink · SpaceX')));
+    for (const id of ['rocketlab','blueorigin','firefly','commercial','science','nasa']) {
+      await p.locator('[data-source="'+id+'"]').click();
+      await p.locator('[data-source="'+id+'"][aria-current="page"]').waitFor();
+      const visible=await p.locator('.news-article').count();
+      const expected=await p.evaluate(({data,id})=>OrbitNews.items(data).filter(i=>OrbitNews.matches(i,id)).length,{data:fixture,id});
+      ok(id+' filter shows matching headlines',visible===expected && visible>0);
+    }
+    await p.setViewportSize({width:390,height:844});
+    ok('company filters wrap without mobile overflow',await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+    if(process.env.ORBIT_QA_DIR) await p.screenshot({path:process.env.ORBIT_QA_DIR+'/news-mobile.png'});
     await f.close();
   }
   console.log(`News discovery: ${checks} checks passed`);

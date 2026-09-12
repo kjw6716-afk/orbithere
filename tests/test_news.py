@@ -4,6 +4,7 @@ import importlib.util
 import io
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 spec=importlib.util.spec_from_file_location('news',Path(__file__).resolve().parents[1]/'scripts/update_news.py')
 news=importlib.util.module_from_spec(spec);spec.loader.exec_module(news)
@@ -39,7 +40,7 @@ class NewsTests(unittest.TestCase):
             if source['id']=='kasi':raise OSError('offline')
             return [{'source':source['id'],'title':'New title','url':source['home'],'publishedAt':NOW.isoformat()}]
         with contextlib.redirect_stderr(io.StringIO()):result,n=news.collect(previous,fetch,NOW)
-        self.assertEqual(n,2);self.assertIn(old[0],result['items'])
+        self.assertEqual(n,len(news.SOURCES)-1);self.assertIn(old[0],result['items'])
         self.assertEqual(result['sources'][0]['status'],'unavailable')
         self.assertEqual(result['sources'][0]['lastSuccessfulAt'],'2026-09-10T00:00:00Z')
     def test_total_outage_never_erases_saved_headlines(self):
@@ -47,6 +48,39 @@ class NewsTests(unittest.TestCase):
         def fail(*args):raise TimeoutError()
         with contextlib.redirect_stderr(io.StringIO()):result,n=news.collect({'items':old},fail,NOW)
         self.assertEqual(n,0);self.assertEqual(result['items'],old)
+
+    def test_company_fragments_dates_and_allowlist(self):
+        source=next(s for s in news.SOURCES if s['id']=='spacex')
+        rows=[{'title':'A','url':source['home']+'#a','date':'May 21, 2026'},
+              {'title':'B','url':source['home']+'#b','date':'Sep 2, 2026'},
+              {'title':'Bad','url':'https://evil.test/updates#c','date':'Sep 2, 2026'},
+              {'title':'Future','url':source['home']+'#future','date':'May 21, 2036'},
+              {'title':'Undated','url':source['home']+'#no-date','date':''}]
+        parsed=news.parse_company_rows(rows+rows,source,NOW)
+        self.assertEqual([i['title'] for i in parsed],['B','A'])
+        self.assertTrue(parsed[0]['url'].endswith('#b'))
+        self.assertNotEqual(parsed[0]['id'],parsed[1]['id'])
+        for invalid in [None,{},[],[{'title':'No date','url':source['home']}]]:
+            with self.assertRaises(ValueError):news.parse_company_rows(invalid,source,NOW)
+    def test_company_outage_keeps_reviewed_cache_and_other_sources(self):
+        source=next(s for s in news.SOURCES if s['id']=='spacex')
+        old=news.parse_company_rows([{'title':'Starship','url':source['home']+'#ship','date':'May 21, 2026'}],source,NOW)[0]
+        old.update(titleKo='스타십',titleKoOriginal='Starship',titleKoMethod='reviewed')
+        def fetch(s,now):
+            if s['id']=='spacex':raise TimeoutError('company index offline')
+            return [{'source':s['id'],'title':'Fresh','url':s['home'],'publishedAt':NOW.isoformat()}]
+        with contextlib.redirect_stderr(io.StringIO()):result,n=news.collect({'items':[old]},fetch,NOW)
+        self.assertEqual(n,len(news.SOURCES)-1)
+        self.assertIn(old,result['items'])
+
+    def test_browser_failure_does_not_block_rss_refresh(self):
+        def rss_fetch(source, now):
+            return [{'source':source['id'],'title':'Fresh RSS','url':source['home'],'publishedAt':NOW.isoformat()}]
+        with patch.object(news,'fetch_company_sources',side_effect=OSError('browser unavailable')), patch.object(news,'fetch_source',side_effect=rss_fetch), contextlib.redirect_stderr(io.StringIO()):
+            result,n=news.collect({},now=NOW)
+        self.assertEqual(n,3)
+        self.assertEqual(len(result['items']),3)
+        self.assertEqual([s['id'] for s in result['sources'] if s['status']=='ok'],['kasi','nasa','esa'])
 
 
 class TranslationTests(unittest.TestCase):
