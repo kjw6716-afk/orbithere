@@ -140,6 +140,17 @@ class EditorialTests(unittest.TestCase):
         self.assertIn('datePublished', stories.render_article(self.article, day))
         self.assertIn('자료 확인', stories.render_article(self.article, day))
 
+    def test_belt_grows_beyond_the_old_five_story_limit(self):
+        items = []
+        for n in range(7):
+            a = copy.deepcopy(self.article)
+            a.update(id=f'belt-story-{n}', title=f'레일에 추가되는 우주 이야기 {n}')
+            items.append((a, '2026-09-12'))
+        html = stories.render_teaser(items, carousel=True)
+        for a, _ in items:
+            self.assertIn(f'href="stories/{a["id"]}.html"', html)
+        self.assertNotIn('<button', html)
+
 
 if __name__ == '__main__':
     unittest.main()

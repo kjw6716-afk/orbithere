@@ -1,94 +1,109 @@
 (() => {
     'use strict';
-    const carousel = document.querySelector('.story-carousel');
-    if (!carousel) return;
-    const slides = [...carousel.querySelectorAll('.story-slide')];
-    if (slides.length < 2) return;
-    const previous = carousel.querySelector('[data-story-prev]');
-    const next = carousel.querySelector('[data-story-next]');
-    const play = carousel.querySelector('.story-carousel-play');
-    const count = carousel.querySelector('.story-carousel-count');
+    const belt = document.querySelector('.story-belt');
+    if (!belt) return;
+    const viewport = belt.querySelector('.story-belt-viewport');
+    const track = belt.querySelector('.story-belt-track');
+    const original = belt.querySelector('[data-story-original]');
+    const cards = [...original.children];
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
-    let active = 0, timer, busy = false, hovered = false, inView = true;
-    let transitions = [];
-    let paused = motion.matches;
+    const speed = 20; // Pixels per second, independent of the number of stories.
+    let frame = null, last = null, phase = 0, cycle = 0, center = 0, step = 0;
+    let hovered = false, touching = false, focused = false, inView = true, pointerFocus = false;
 
-    function schedule() {
-        clearTimeout(timer);
-        if (!paused && !hovered && inView && !document.hidden && !busy) {
-            timer = setTimeout(() => move(1), 4000);
+    function paint() { track.style.transform = `translateX(${center - 2 * cycle + phase}px)`; }
+    function stop() {
+        cancelAnimationFrame(frame);
+        frame = last = null;
+    }
+    function tick(now) {
+        if (last !== null) phase = (phase + Math.min(now - last, 50) * speed / 1000) % cycle;
+        paint();
+        last = now;
+        frame = requestAnimationFrame(tick);
+    }
+    function sync() {
+        stop();
+        if (belt.classList.contains('flowing') && cycle > 0 && !hovered && !touching && !focused && inView && !document.hidden) {
+            phase = ((phase % cycle) + cycle) % cycle;
+            frame = requestAnimationFrame(tick);
         }
     }
-    function update() {
-        play.textContent = paused ? '자동 넘김 시작' : '자동 넘김 정지';
-        play.setAttribute('aria-label', `이야기 ${play.textContent}`);
-        count.setAttribute('aria-live', paused ? 'polite' : 'off');
-        count.textContent = `${active + 1} / ${slides.length}`;
-        schedule();
+    function measure() {
+        if (!belt.classList.contains('flowing')) return;
+        const priorStep = step;
+        cycle = original.getBoundingClientRect().width;
+        step = cycle / cards.length;
+        center = (viewport.clientWidth - cards[0].getBoundingClientRect().width) / 2;
+        if (priorStep) phase *= step / priorStep;
+        paint();
+        sync();
     }
-    function pause() { paused = true; update(); }
-    async function move(direction, manual = false) {
-        if (manual) pause();
-        if (busy) return;
-        busy = true;
-        clearTimeout(timer);
-        const old = slides[active];
-        const hadFocus = old.contains(document.activeElement);
-        active = (active + direction + slides.length) % slides.length;
-        const current = slides[active];
-        old.classList.remove('is-current');
-        old.classList.add('is-outgoing');
-        old.inert = true;
-        old.setAttribute('aria-hidden', 'true');
-        old.querySelector('a').tabIndex = -1;
-        current.classList.add('is-current');
-        current.inert = false;
-        current.removeAttribute('aria-hidden');
-        current.querySelector('a').removeAttribute('tabindex');
-        if (hadFocus) current.querySelector('a').focus({preventScroll: true});
-        update();
-        if (!motion.matches) {
-            const options = {duration: 420, easing: 'cubic-bezier(.22,.61,.36,1)'};
-            // The next story enters from the left; the previous card travels right.
-            transitions = [
-                old.animate([{transform: 'translateX(0)'}, {transform: `translateX(${direction * 110}%)`}], options),
-                current.animate([{transform: `translateX(${-direction * 110}%)`}, {transform: 'translateX(0)'}], options)
-            ];
-            await Promise.allSettled(transitions.map(animation => animation.finished));
-            transitions.forEach(animation => animation.cancel());
-            transitions = [];
+    function configure() {
+        stop();
+        track.querySelectorAll('[data-story-clone]').forEach(group => group.remove());
+        belt.classList.remove('flowing');
+        track.style.transform = '';
+        phase = step = 0;
+        viewport.scrollLeft = 0;
+        focused = belt.contains(document.activeElement);
+        const focusedIndex = cards.findIndex(card => card.contains(document.activeElement));
+        if (motion.matches || cards.length < 2) {
+            if (focusedIndex >= 0) viewport.scrollLeft = cards[focusedIndex].offsetLeft - cards[0].offsetLeft;
+            return;
         }
-        old.classList.remove('is-outgoing');
-        busy = false;
-        schedule();
+        // Two groups before and one after keep both edges covered across the loop.
+        // Copies stay clickable, while keyboard/screen readers see each story once.
+        for (const before of [true, true, false]) {
+            const clone = original.cloneNode(true);
+            clone.removeAttribute('data-story-original');
+            clone.setAttribute('data-story-clone', '');
+            clone.setAttribute('aria-hidden', 'true');
+            clone.querySelectorAll('a').forEach(link => { link.tabIndex = -1; });
+            if (before) track.prepend(clone); else track.append(clone);
+        }
+        belt.classList.add('flowing');
+        measure();
+        if (focusedIndex >= 0) { phase = -focusedIndex * step; paint(); }
     }
-    previous.addEventListener('click', () => move(-1, true));
-    next.addEventListener('click', () => move(1, true));
-    play.addEventListener('click', () => { paused = !paused; update(); });
-    // Reading with the keyboard pauses until the user explicitly restarts.
-    carousel.addEventListener('focusin', event => { if (event.target !== play) pause(); });
-    carousel.addEventListener('pointerenter', event => {
-        if (event.pointerType !== 'touch') { hovered = true; schedule(); }
+    belt.addEventListener('pointerenter', event => {
+        if (event.pointerType !== 'touch') { hovered = true; sync(); }
     });
-    carousel.addEventListener('pointerleave', () => { hovered = false; schedule(); });
-    carousel.addEventListener('keydown', event => {
-        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-            event.preventDefault();
-            move(event.key === 'ArrowRight' ? 1 : -1, true);
+    belt.addEventListener('pointerleave', () => { hovered = false; sync(); });
+    belt.addEventListener('pointerdown', event => {
+        pointerFocus = true;
+        if (event.pointerType === 'touch') { touching = true; sync(); }
+    });
+    for (const event of ['pointerup', 'pointercancel']) {
+        addEventListener(event, () => {
+            pointerFocus = false;
+            if (touching) { touching = false; sync(); }
+        });
+    }
+    belt.addEventListener('focusin', event => {
+        focused = true;
+        sync();
+        const index = cards.indexOf(event.target.closest('.story-belt-card'));
+        if (index >= 0 && !pointerFocus && belt.classList.contains('flowing')) {
+            phase = -index * step;
+            paint();
+            viewport.scrollLeft = 0;
         }
     });
-    document.addEventListener('visibilitychange', schedule);
-    motion.addEventListener('change', () => { transitions.forEach(animation => animation.finish()); pause(); });
-    addEventListener('pagehide', () => clearTimeout(timer));
-    addEventListener('pageshow', schedule);
+    belt.addEventListener('focusout', () => queueMicrotask(() => {
+        focused = belt.contains(document.activeElement);
+        sync();
+    }));
+    document.addEventListener('visibilitychange', sync);
+    addEventListener('pagehide', stop);
+    addEventListener('pageshow', sync);
+    motion.addEventListener('change', configure);
+    new ResizeObserver(measure).observe(viewport);
     if ('IntersectionObserver' in window) {
         new IntersectionObserver(entries => {
             inView = entries[0].isIntersecting;
-            schedule();
-        }, {threshold: 0.15}).observe(carousel);
+            sync();
+        }, {threshold: 0.15}).observe(belt);
     }
-    carousel.classList.add('enhanced');
-    previous.hidden = next.hidden = false;
-    carousel.querySelector('.story-carousel-controls').hidden = false;
-    update();
+    configure();
 })();
