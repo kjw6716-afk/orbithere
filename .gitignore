@@ -2,3 +2,5 @@ node_modules/
 supabase/.temp/
 
 __pycache__/
+
+.venv-news/

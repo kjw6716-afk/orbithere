@@ -244,7 +244,7 @@ console.log('\n[6] 커뮤니티 홈에 끼워 넣었을 때');
 
   const frame = page.frames().find((f) => f.url().includes('planets.html'));
   ok('임베드 모드에서 상단바·본문이 숨겨짐', frame && await frame.evaluate(() =>
-    getComputedStyle(document.querySelector('.site-topbar')).display === 'none' &&
+    getComputedStyle(document.querySelector('.orbit-navigation')).display === 'none' &&
     getComputedStyle(document.querySelector('.seo-content')).display === 'none'));
   await page.close();
 }

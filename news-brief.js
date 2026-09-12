@@ -103,16 +103,22 @@
       link.className = "news-brief-title";
       link.href = "news.html#" + news.articleId(item);
       if (window.parent !== window) link.target = "_top";
-      link.textContent = item.title;
+      link.textContent = news.displayTitle(item);
       link.title = item.title;
-      if (item.language !== "ko") link.lang = "en";
+      if (item.language !== "ko" && !news.hasKoreanTitle(item)) link.lang = "en";
+      if (news.hasKoreanTitle(item)) {
+        var translation = document.createElement("span");
+        translation.className = "news-brief-translation";
+        translation.textContent = "한글 제목";
+        meta.append(translation);
+      }
       row.append(meta, link);
       list.append(row);
     }
     controls.hidden = items.length <= size;
     count.textContent = (items.length ? index + 1 : 0) + " / " + items.length;
     if (manual && items.length)
-      announcement.textContent = index + 1 + "번째 소식. " + items[index].title;
+      announcement.textContent = index + 1 + "번째 소식. " + news.displayTitle(items[index]);
     schedule();
   }
   function move(direction, manual) {

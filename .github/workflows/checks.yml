@@ -56,3 +56,6 @@ jobs:
 
       - name: 공식 뉴스 파서 · 장애 복구 검증
         run: npm run test:news
+
+      - name: 공통 메뉴 · 한글 뉴스 표시 검증
+        run: npm run test:navigation

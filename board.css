@@ -830,3 +830,5 @@ select:focus-visible,
   font-size: 0.75rem;
   color: #cfb9e9;
 }
+
+.news-original { margin: 8px 0 0; color: #a8b7ca; font-size: 13px; line-height: 1.65; overflow-wrap: anywhere; }

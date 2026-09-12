@@ -34,12 +34,29 @@
 
     <script src="notes.js" defer></script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "headline": "관측 노트 — 밤하늘 기록 만들기 | 오빗 Orbit", "description": "관측 대상·시간·장비·하늘 상태를 정리하고 텍스트로 복사하거나 내려받는 관측 노트. 찾지 못한 경험도 다음 관측의 단서로 남겨보세요.", "url": "https://orbithere.com/notes.html", "inLanguage": "ko"}</script>
+<link rel="stylesheet" href="site-nav.css?v=20260912-navigation">
 </head>
 <body>
 <a class="skip-link" href="#main-content">본문으로 바로가기</a>
-<header class="guide-header"><a class="logo orbit-brand" href="index.html" aria-label="ORBIT 홈">ORBIT.</a><nav aria-label="주요 메뉴">
-    <a href="main.html#planets">오늘 밤 행성</a><a href="main.html#sky">밤하늘 달력</a><a href="guide.html">관측 가이드</a>
-    <a href="notes.html" aria-current="page">관측 노트</a><a href="main.html#lounge">글 남기기</a><a href="about.html">소개·문의</a></nav></header>
+<div class="orbit-page-layout">
+<!-- orbit-navigation:start -->
+<aside class="sidebar orbit-navigation">
+<a class="side-logo orbit-brand" href="index.html" aria-label="ORBIT 홈">ORBIT.</a>
+<button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="sideNav" aria-label="메뉴 열기">
+<span class="nt-ic" id="navToggleIc" aria-hidden="true">📝</span>
+<span class="nt-lbl" id="navToggleLbl">관측 노트</span><span class="nt-arrow" aria-hidden="true"></span></button>
+<nav class="side-nav" id="sideNav" aria-label="주요 메뉴">
+<a class="nav-item nav-link" href="main.html#sky"><span class="ic" aria-hidden="true">🔭</span><span class="lbl">밤하늘 달력</span></a>
+<a class="nav-item nav-link" href="main.html#planets"><span class="ic" aria-hidden="true">🪐</span><span class="lbl">오늘 밤 행성</span></a>
+<a class="nav-item nav-link" href="main.html#lounge"><span class="ic" aria-hidden="true">💬</span><span class="lbl">별빛 게시판</span></a>
+<a class="nav-item nav-link" href="news.html"><span class="ic" aria-hidden="true">📰</span><span class="lbl">우주 뉴스</span></a>
+<a class="nav-item nav-link" href="guide.html"><span class="ic" aria-hidden="true">📖</span><span class="lbl">관측 가이드</span></a>
+<a class="nav-item nav-link on" href="notes.html" aria-current="page"><span class="ic" aria-hidden="true">📝</span><span class="lbl">관측 노트</span></a>
+<a class="nav-item nav-link" href="about.html"><span class="ic" aria-hidden="true">ⓘ</span><span class="lbl">소개·문의</span></a>
+</nav></aside>
+<div class="nav-scrim" id="navScrim" aria-hidden="true"></div>
+<!-- orbit-navigation:end -->
+<div class="orbit-page-content">
 <main class="guide-main" id="main-content">
 <div class="guide-hero"><p class="eyebrow">나의 관측 노트</p><h1>본 것과 못 본 것,<br>다음 밤의 단서로</h1>
 <p>짧은 기록이면 충분해요. 관측 조건과 결과를 함께 남기면 다음에 무엇을 바꿔볼지 알 수 있어요.</p>
@@ -80,5 +97,7 @@
         </nav>
         <div class="foot-sign">© 2026 Orbit · 같은 하늘을 보는 사람들</div>
     </footer>
+</div></div>
+<script src="site-nav.js?v=20260912-navigation"></script>
 </body>
 </html>

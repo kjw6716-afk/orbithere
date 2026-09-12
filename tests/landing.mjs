@@ -66,11 +66,12 @@ try{
   await page.getByRole('button',{name:'다시 준비하기'}).click();
   await page.locator('#checkProgress').filter({hasText:'0 / 5 준비 완료'}).waitFor();
   ok('checklist can be reset',await page.locator('#checkProgress').textContent()==='0 / 5 준비 완료');
-  await page.getByRole('link',{name:'소개·문의',exact:true}).first().click();
+  await page.getByRole('button',{name:'메뉴 열기',exact:true}).click();
+  await page.locator('#sideNav').getByRole('link',{name:'소개·문의',exact:true}).click();
   ok('contact uses the existing public question board',await page.getByRole('link',{name:'게시판에 문의 남기기 →'}).getAttribute('href')==='lounge.html#ask');
   await page.goto(base+'/main.html');
   await page.getByRole('button',{name:'메뉴 열기',exact:true}).click();
-  await page.getByRole('link',{name:'📖 관측 가이드'}).click();
+  await page.locator('#sideNav').getByRole('link',{name:'관측 가이드',exact:true}).click();
   await page.getByRole('heading',{name:'처음 별을 보는 밤',exact:true}).waitFor();
   ok('the mobile main menu reaches the new guide');
   await page.setViewportSize({width:740,height:320});

@@ -68,6 +68,7 @@
       ? items
           .map(function (item) {
             var english = item.language !== "ko";
+            var korean = news.hasKoreanTitle(item);
             var translated =
               "https://translate.google.com/translate?sl=en&tl=ko&u=" +
               encodeURIComponent(item.url);
@@ -85,14 +86,16 @@
               '">' +
               esc(new Date(item.publishedAt).toLocaleDateString("ko-KR")) +
               '</time><span class="news-language">' +
-              (english ? "영문" : "한국어") +
+              (korean ? "한글 제목" : (english ? "영문" : "한국어")) +
               '</span></div><a class="row-title" href="' +
               esc(item.url) +
               '" target="_blank" rel="noopener noreferrer"' +
-              (english ? ' lang="en"' : "") +
+              (english && !korean ? ' lang="en"' : "") +
               ">" +
-              esc(item.title) +
-              '</a><div class="news-links"><a href="' +
+              esc(news.displayTitle(item)) +
+              '</a>' +
+              (korean ? '<p class="news-original">원제: <span lang="en">' + esc(item.title) + '</span></p>' : '') +
+              '<div class="news-links"><a href="' +
               esc(item.url) +
               '" target="_blank" rel="noopener noreferrer">원문 읽기 ↗</a>' +
               (english

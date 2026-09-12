@@ -39,20 +39,37 @@
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css"
     />
     <link rel="stylesheet" href="/orbit.css?v=20260912-brand" />
-    <link rel="stylesheet" href="board.css?v=20260912-brand" />
+    <link rel="stylesheet" href="board.css?v=20260912-korean" />
     <script>
       if (new URLSearchParams(location.search).get('embed'))
         document.documentElement.classList.add('embed');
     </script>
     <script src="orbit-config.js"></script>
     <script src="visits.js" defer></script>
-  </head>
+  <link rel="stylesheet" href="site-nav.css?v=20260912-navigation">
+</head>
   <body>
     <div class="bg-glow" aria-hidden="true"></div>
     <a class="board-skip" href="#newsMain">본문으로 바로가기</a>
-    <nav class="site-topbar">
-      <a class="logo orbit-brand" href="index.html" aria-label="ORBIT 홈">ORBIT.</a><a class="nav-back" href="main.html">← 커뮤니티 홈</a>
-    </nav>
+    <div class="orbit-page-layout">
+<!-- orbit-navigation:start -->
+<aside class="sidebar orbit-navigation">
+<a class="side-logo orbit-brand" href="index.html" aria-label="ORBIT 홈">ORBIT.</a>
+<button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="sideNav" aria-label="메뉴 열기">
+<span class="nt-ic" id="navToggleIc" aria-hidden="true">📰</span>
+<span class="nt-lbl" id="navToggleLbl">우주 뉴스</span><span class="nt-arrow" aria-hidden="true"></span></button>
+<nav class="side-nav" id="sideNav" aria-label="주요 메뉴">
+<a class="nav-item nav-link" href="main.html#sky"><span class="ic" aria-hidden="true">🔭</span><span class="lbl">밤하늘 달력</span></a>
+<a class="nav-item nav-link" href="main.html#planets"><span class="ic" aria-hidden="true">🪐</span><span class="lbl">오늘 밤 행성</span></a>
+<a class="nav-item nav-link" href="main.html#lounge"><span class="ic" aria-hidden="true">💬</span><span class="lbl">별빛 게시판</span></a>
+<a class="nav-item nav-link on" href="news.html" aria-current="page"><span class="ic" aria-hidden="true">📰</span><span class="lbl">우주 뉴스</span></a>
+<a class="nav-item nav-link" href="guide.html"><span class="ic" aria-hidden="true">📖</span><span class="lbl">관측 가이드</span></a>
+<a class="nav-item nav-link" href="notes.html"><span class="ic" aria-hidden="true">📝</span><span class="lbl">관측 노트</span></a>
+<a class="nav-item nav-link" href="about.html"><span class="ic" aria-hidden="true">ⓘ</span><span class="lbl">소개·문의</span></a>
+</nav></aside>
+<div class="nav-scrim" id="navScrim" aria-hidden="true"></div>
+<!-- orbit-navigation:end -->
+<div class="orbit-page-content">
     <main class="board-shell" id="newsMain">
       <header class="board-heading">
         <div>
@@ -67,8 +84,8 @@
         ><a href="#nasa" data-source="nasa">NASA</a><a href="#esa" data-source="esa">ESA</a>
       </nav>
       <p class="field-hint news-intro">
-        공식 기관의 소식을 발행일 순으로 모았어요. 제목을 누르면 원문이 새 탭에서 열립니다. 해외
-        소식은 한국어 번역으로도 읽을 수 있어요.
+        공식 기관의 소식을 발행일 순으로 모았어요. 한글 제목이 준비된 해외 소식은 원제도 함께 표시합니다.
+        제목을 누르면 원문이 새 탭에서 열려요.
       </p>
       <div class="list-toolbar">
         <p id="newsChecked" role="status">소식을 불러오는 중…</p>
@@ -101,7 +118,7 @@
           >
         </div>
         <p>
-          ‘한국어 번역’은 Google 번역으로 연결됩니다. 자동 번역은 용어나 수치를 잘못 옮길 수 있으니
+          한글 제목은 원제와 대조해 다듬었습니다. ‘한국어 번역’ 링크는 Google 번역으로 연결됩니다. 자동 번역은 용어나 수치를 잘못 옮길 수 있으니
           중요한 내용은 원문도 함께 확인해주세요.
         </p>
       </aside>
@@ -140,7 +157,9 @@
       </div>
     </footer>
 
-    <script src="news-data.js?v=20260912-discovery" defer></script>
-    <script src="news.js?v=20260912-discovery" defer></script>
-  </body>
+    <script src="news-data.js?v=20260912-korean" defer></script>
+    <script src="news.js?v=20260912-korean" defer></script>
+  </div></div>
+<script src="site-nav.js?v=20260912-navigation"></script>
+</body>
 </html>
