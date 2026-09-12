@@ -41,21 +41,6 @@
             position: absolute; width: clamp(48px, 9vw, 120px); height: 2px;
             border-radius: 99px; opacity: 0; transform-origin: left center;
             background: linear-gradient(90deg, #E6FFF9, #82DED5 12%, rgba(79,209,197,.3) 55%, transparent);
-            --travel: 110vmax; animation: meteor-fall 8s linear infinite;
-        }
-        .meteor:nth-child(1) { left: 18%; top: -5%; animation-delay: -2s; }
-        .meteor:nth-child(2) { left: 58%; top: -8%; animation-delay: -6s; animation-duration: 11s; }
-        .meteor:nth-child(3) { left: 95%; top: 12%; animation-delay: -4s; animation-duration: 9s; }
-        .meteor:nth-child(4) { left: 105%; top: 52%; animation-delay: -1s; animation-duration: 12s; }
-        .meteor:nth-child(5) { left: 38%; top: -12%; animation-delay: -5s; animation-duration: 10s; }
-        .meteor:nth-child(6) { left: 82%; top: -4%; animation-delay: -7s; animation-duration: 13s; }
-        .meteor:nth-child(7) { left: 110%; top: 28%; animation-delay: -3s; animation-duration: 10s; }
-        .meteor:nth-child(8) { left: 70%; top: 5%; animation-delay: -9s; animation-duration: 14s; }
-        @keyframes meteor-fall {
-            0% { transform: translate3d(0,0,0) rotate(-45deg); opacity: 0; }
-            8% { opacity: .65; }
-            45% { opacity: .3; }
-            70%, 100% { transform: translate3d(calc(-1 * var(--travel)),var(--travel),0) rotate(-45deg); opacity: 0; }
         }
         .landing-header, .landing-main, .quick-links { position: relative; z-index: 1; min-width: 0; }
         .landing-header {
@@ -93,7 +78,6 @@
             .landing-nav a { font-size: .8rem; }
             .landing-main { padding: 20px 22px 32px; }
             .star-system { margin-bottom: 16px; }
-            .meteor:nth-child(n+5) { display: none; }
         }
         @media (max-height: 500px) and (min-width: 600px) {
             .landing-header { padding-top: 10px; padding-bottom: 6px; }
@@ -139,17 +123,15 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "오빗", "alternateName": ["Orbit", "오빗 Orbit"], "url": "https://orbithere.com/", "inLanguage": "ko", "description": "오늘 밤 행성, 유성우 일정과 관측 가이드. 같은 하늘을 보는 사람들의 기록."}</script>
 <link rel="stylesheet" href="story-teaser.css?v=20260912-ultrawide">
 <script src="story-carousel.js?v=20260912-ultrawide" defer></script>
-<link rel="stylesheet" href="landing-nebula.css?v=20260912-nebula">
+<link rel="stylesheet" href="landing-nebula.css?v=20260912-random-meteors">
+<script src="landing-meteors.js?v=20260912-random-meteors" defer></script>
 </head>
 <body>
     <picture class="landing-nebula" aria-hidden="true">
         <source media="(max-width: 600px)" srcset="images/nebula-landing-mobile.webp">
         <img src="images/nebula-landing.webp" alt="" width="1584" height="991" fetchpriority="high" decoding="async">
     </picture>
-    <div class="starfield" aria-hidden="true">
-        <i class="meteor"></i><i class="meteor"></i><i class="meteor"></i><i class="meteor"></i>
-        <i class="meteor"></i><i class="meteor"></i><i class="meteor"></i><i class="meteor"></i>
-    </div>
+    <div class="starfield" aria-hidden="true"></div>
     <header class="landing-header">
         <a class="landing-logo orbit-brand" href="index.html" aria-label="ORBIT 홈">ORBIT.</a>
         <nav class="landing-nav" aria-label="주요 메뉴">
