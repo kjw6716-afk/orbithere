@@ -65,7 +65,7 @@ try{
   ok('no browser errors',errors.length===0);await context.close();
  }
  {
-  const {context,page,errors}=await fixture({viewport:{width:1440,height:1000},reducedMotion:'no-preference'});
+  const {context,page,errors}=await fixture({viewport:{width:5120,height:1440},reducedMotion:'no-preference'});
   await page.clock.install();
   await page.clock.pauseAt(new Date(Date.now()+1000));
   await page.goto(base+'/index.html');
@@ -82,7 +82,8 @@ try{
   const initial=await geometry(), view=await page.locator('.story-belt-viewport').boundingBox();
   const centerCard=initial.find(c=>Math.abs(c.x+c.width/2-view.width/2)<2);
   const full=initial.filter(c=>c.x>=0&&c.x+c.width<=view.width);
-  ok('first story starts in the center with two equal neighbors',centerCard?.href.includes(firstStory.id)&&full.length===3&&full.every(c=>c.width===full[0].width&&c.height===full[0].height));
+  ok('ultrawide starts with the first story centered among equal-sized cards',centerCard?.href.includes(firstStory.id)&&full.length>=13&&full.every(c=>c.width===340&&c.height===full[0].height));
+  ok('ultrawide rail leaves only 32px at each edge',Math.abs(view.x-32)<1&&Math.abs(view.width-5056)<1);
   ok('there are no arrows or stop buttons',await belt.locator('button').count()===0);
   ok('every published story is on the original belt',await page.locator('[data-story-original] .story-belt-card').count()===ledger.items.length);
   const startX=await x();
@@ -103,24 +104,44 @@ try{
   const beforeWrap=await geometry();
   await page.clock.runFor(100);
   const afterWrap=await geometry();
+  const covered=cards=>cards.length>0&&Math.min(...cards.map(c=>c.x))<19&&Math.max(...cards.map(c=>c.x+c.width))>view.width-19;
   const continuous=beforeWrap.filter(c=>c.x>20&&c.x+c.width<view.width-20).every(c=>afterWrap.some(n=>n.href===c.href&&Math.abs(n.x-c.x-2)<1));
-  ok('the loop joins without a blank stretch or backward jump',continuous&&afterWrap.filter(c=>c.x>=0&&c.x+c.width<=view.width).length>=2);
+  ok('the ultrawide loop keeps both edges filled without a backward jump',continuous&&covered(beforeWrap)&&covered(afterWrap));
   const last=page.locator('[data-story-original] .story-belt-card').last();
   await last.focus();
   const focusedX=await x(), focusedBox=await last.boundingBox();
   ok('keyboard focus centers the real link',Math.abs(focusedBox.x+focusedBox.width/2-view.x-view.width/2)<2);
+  ok('both edges remain filled while the last original card has focus',covered(await geometry()));
   await page.clock.runFor(4000);
   ok('keyboard reading keeps the belt still',await x()===focusedX);
   ok('visual repeats are not duplicate keyboard stops',await page.locator('[data-story-clone]').evaluateAll(groups=>groups.every(g=>g.getAttribute('aria-hidden')==='true'&&[...g.querySelectorAll('a')].every(a=>a.tabIndex===-1))));
   await page.locator('.entry-secondary').focus();await page.clock.runFor(1000);
   ok('leaving keyboard focus resumes movement',await x()!==focusedX);
+  for(const width of [1920,3440,2560,5120]){
+   await page.setViewportSize({width,height:1440});await page.clock.runFor(100);
+   await first.focus();
+   const resized=await page.locator('.story-belt-viewport').boundingBox(), visible=await geometry();
+   ok(`rail fills ${width}px after resizing without page overflow`,Math.abs(resized.x-32)<1&&Math.abs(resized.width-(width-64))<1&&Math.min(...visible.map(c=>c.x))<19&&Math.max(...visible.map(c=>c.x+c.width))>resized.width-19&&await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+  }
+  await page.locator('.entry-secondary').focus();
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.locator('.story-belt.flowing').waitFor({state:'hidden'});
   await page.clock.runFor(100);
   ok('reduced motion provides one static scrollable copy of every story',!await belt.evaluate(el=>el.classList.contains('flowing'))&&await page.locator('[data-story-clone]').count()===0&&await page.locator('.story-belt-viewport').evaluate(el=>getComputedStyle(el).overflowX==='auto'));
   await page.emulateMedia({reducedMotion:'no-preference'});await page.locator('.story-belt.flowing').waitFor();await page.clock.runFor(100);
-  await page.setViewportSize({width:390,height:844});await page.clock.runFor(100);
+  // ResizeObserver uses the browser's render loop, not Playwright's paused timer clock.
+  // Resume real frames and wait for the resized layout before checking its geometry.
+  await page.clock.resume();
+  await page.setViewportSize({width:390,height:844});
+  await page.waitForFunction(() => {
+   const viewport=document.querySelector('.story-belt-viewport').getBoundingClientRect();
+   const visible=[...document.querySelectorAll('.story-belt-card')].filter(card=>{
+    const r=card.getBoundingClientRect();return r.right>viewport.left&&r.left<viewport.right;
+   });
+   return document.documentElement.scrollWidth<=innerWidth+1&&visible.length>=3;
+  },null,{timeout:5000});
   ok('mobile belt stays within the page and shows neighboring cards',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)&&(await geometry()).length>=3);
+  await belt.hover();
   const mobileCard=page.locator('[data-story-original] .story-belt-card').first();
   await mobileCard.hover();
   const clickBox=await mobileCard.boundingBox(), href=await mobileCard.getAttribute('href');

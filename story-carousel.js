@@ -9,9 +9,10 @@
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     const speed = 20; // Pixels per second, independent of the number of stories.
     let frame = null, last = null, phase = 0, cycle = 0, center = 0, step = 0;
+    let beforeCount = 0, afterCount = 0;
     let hovered = false, touching = false, focused = false, inView = true, pointerFocus = false;
 
-    function paint() { track.style.transform = `translateX(${center - 2 * cycle + phase}px)`; }
+    function paint() { track.style.transform = `translateX(${center - beforeCount * cycle + phase}px)`; }
     function stop() {
         cancelAnimationFrame(frame);
         frame = last = null;
@@ -29,19 +30,39 @@
             frame = requestAnimationFrame(tick);
         }
     }
+    function fillEdges() {
+        // Cover the widest viewport at both the loop boundary and a focused card.
+        const before = Math.ceil(center / cycle) + 1;
+        const after = Math.ceil((viewport.clientWidth - center) / cycle);
+        if (before === beforeCount && after === afterCount) return;
+        track.querySelectorAll('[data-story-clone]').forEach(group => group.remove());
+        beforeCount = before;
+        afterCount = after;
+        for (let i = 0; i < before + after; i++) {
+            const clone = original.cloneNode(true);
+            clone.removeAttribute('data-story-original');
+            clone.setAttribute('data-story-clone', '');
+            clone.setAttribute('aria-hidden', 'true');
+            clone.querySelectorAll('a').forEach(link => { link.tabIndex = -1; });
+            if (i < before) track.prepend(clone); else track.append(clone);
+        }
+    }
     function measure() {
         if (!belt.classList.contains('flowing')) return;
         const priorStep = step;
         cycle = original.getBoundingClientRect().width;
+        if (cycle <= 0 || viewport.clientWidth <= 0) { stop(); return; }
         step = cycle / cards.length;
         center = (viewport.clientWidth - cards[0].getBoundingClientRect().width) / 2;
         if (priorStep) phase *= step / priorStep;
+        fillEdges();
         paint();
         sync();
     }
     function configure() {
         stop();
         track.querySelectorAll('[data-story-clone]').forEach(group => group.remove());
+        beforeCount = afterCount = 0;
         belt.classList.remove('flowing');
         track.style.transform = '';
         phase = step = 0;
@@ -51,16 +72,6 @@
         if (motion.matches || cards.length < 2) {
             if (focusedIndex >= 0) viewport.scrollLeft = cards[focusedIndex].offsetLeft - cards[0].offsetLeft;
             return;
-        }
-        // Two groups before and one after keep both edges covered across the loop.
-        // Copies stay clickable, while keyboard/screen readers see each story once.
-        for (const before of [true, true, false]) {
-            const clone = original.cloneNode(true);
-            clone.removeAttribute('data-story-original');
-            clone.setAttribute('data-story-clone', '');
-            clone.setAttribute('aria-hidden', 'true');
-            clone.querySelectorAll('a').forEach(link => { link.tabIndex = -1; });
-            if (before) track.prepend(clone); else track.append(clone);
         }
         belt.classList.add('flowing');
         measure();
