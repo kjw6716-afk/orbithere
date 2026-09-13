@@ -55,6 +55,10 @@ select:focus-visible,
   outline: 2px solid var(--board-mint);
   outline-offset: 4px;
 }
+summary:focus-visible {
+  outline: 2px solid var(--board-mint);
+  outline-offset: 4px;
+}
 .sr-only,
 .board-skip {
   position: absolute;
@@ -577,9 +581,149 @@ select:focus-visible,
   font-size: 1rem;
 }
 #postForm textarea {
-  min-height: 220px;
+  min-height: 150px;
   resize: vertical;
   line-height: 1.85;
+}
+.editor-intro {
+  margin: 0 0 18px;
+  color: #bac9dc;
+  font-size: 0.9375rem;
+}
+.optional-label {
+  margin-left: 8px;
+  color: var(--board-muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+.observation-fields {
+  margin-top: 12px;
+  border: 1px solid var(--board-line);
+  border-radius: 10px;
+  min-width: 0;
+}
+.observation-fields summary,
+.observation-record-gear summary {
+  padding: 15px 18px;
+  cursor: pointer;
+  min-height: 48px;
+  font-size: 0.875rem;
+}
+.observation-fields summary span {
+  margin-left: 8px;
+  color: var(--board-muted);
+  font-size: 0.75rem;
+}
+.observation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 4px 18px 18px;
+}
+.observation-grid > div {
+  min-width: 0;
+}
+.observation-wide {
+  grid-column: 1 / -1;
+}
+.observation-grid label,
+.writer-identity label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.875rem;
+}
+#postForm input,
+#postForm select {
+  min-width: 0;
+}
+.writer-identity {
+  margin-top: 18px;
+  padding: 17px;
+  border-radius: 10px;
+  background: #192b42;
+}
+.writer-identity .field-hint {
+  margin-top: 8px;
+}
+#writerName {
+  margin-top: 18px;
+}
+.observation-record {
+  margin: 0 0 16px;
+  padding: 17px 18px;
+  border: 1px solid var(--board-line);
+  border-radius: 10px;
+  background: #142237;
+}
+.observation-record h2 {
+  margin: 0 0 12px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.observation-record dl {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.observation-record dl > div {
+  display: grid;
+  grid-template-columns: 165px minmax(0, 1fr);
+  gap: 10px;
+  font-size: 0.875rem;
+}
+.observation-record dt {
+  color: var(--board-muted);
+}
+.observation-record dd {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.observation-record-gear {
+  padding: 0;
+}
+.observation-record-gear dl {
+  padding: 0 18px 18px;
+}
+.glossary-help {
+  font-size: 0.8125rem;
+  color: var(--board-muted);
+  margin: 16px 0 0;
+}
+.glossary-term {
+  display: inline;
+  font: inherit;
+  line-height: inherit;
+  color: var(--board-mint);
+  padding: 0 2px;
+  border: 0;
+  border-bottom: 1px dotted currentColor;
+  border-radius: 2px;
+  background: none;
+  cursor: pointer;
+}
+.glossary-term:hover {
+  background: #24433f;
+}
+.glossary-dialog {
+  max-width: 440px;
+}
+.glossary-dialog > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--board-mint);
+  font-size: 0.8125rem;
+}
+@media (max-width: 520px) {
+  .observation-grid {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 4px 14px 16px;
+  }
+  .observation-record dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
 }
 .field-hint {
   font-size: 0.8125rem;

@@ -107,6 +107,8 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
     ],
     getFail: false,
     postFail: false,
+    observationVersion: 1,
+    observationColumn: true,
     loseCommit: false,
     version,
     signups: 0,
@@ -161,6 +163,8 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
     }
     if (url.pathname.endsWith('/rpc/board_version'))
       return version ? json(version) : json({ code: 'PGRST202', message: 'Not installed' }, 404);
+    if (url.pathname.endsWith('/rpc/board_observation_version'))
+      return state.observationVersion ? json(1) : json({ code: 'PGRST202', message: 'Not installed' }, 404);
     if (url.pathname.endsWith('/rpc/community_version')) return json(2);
     if (url.pathname.endsWith('/rpc/is_admin')) return json(admin);
     if (url.pathname.endsWith('/rpc/record_visit')) return json(null);
@@ -171,7 +175,7 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
         (p) =>
           !!p.is_pinned === !!b.p_pinned &&
           (!b.p_orbit || p.orbit === b.p_orbit) &&
-          (!b.p_query || (p.title + ' ' + p.text).toLowerCase().includes(b.p_query.toLowerCase())),
+          (!b.p_query || (p.title + ' ' + p.text + ' ' + Object.values(p.observation || {}).join(' ')).toLowerCase().includes(b.p_query.toLowerCase())),
       );
       rows = cursor(ordered(rows), b.p_before, b.p_before_id)
         .slice(0, b.p_limit || 21)
@@ -203,7 +207,7 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
         Array.from({ length: b.p_count }, (_, i) => A + '/' + b.p_post_id + '/' + uid(i) + '.jpg'),
       );
     }
-    if (url.pathname.endsWith('/rpc/create_board_post')) {
+    if (/\/rpc\/(create_board_post|create_observation_post)$/.test(url.pathname)) {
       state.inserts++;
       const b = req.postDataJSON();
       if (state.postFail) return json({ message: 'fixture write outage' }, 503);
@@ -212,6 +216,7 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
           id: b.p_id,
           title: b.p_title,
           text: b.p_text,
+          observation: b.p_observation || {},
           nick: b.p_nick,
           orbit: b.p_orbit,
           image_paths: b.p_images,
@@ -282,6 +287,8 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
     if (url.pathname === '/rest/v1/posts') {
       const id = (url.searchParams.get('id') || '').slice(3);
       state.selects.push(url.searchParams.get('select'));
+      if (req.method() === 'GET' && !state.observationColumn && url.searchParams.get('select').includes('observation'))
+        return json({ code: '42703', message: 'column observation does not exist' }, 400);
       if (req.method() === 'GET')
         return state.getFail
           ? json({ message: 'read outage' }, 503)
@@ -362,6 +369,96 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
 }
 try {
   {
+    const f = await fixture({ nickname: '' }), { page, state } = f;
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(base + '/lounge.html?write=1');
+    await page.locator('#postInput').waitFor();
+    ok('first visitor can write before choosing a nickname', await page.locator('#postForm').isVisible() && state.signups === 0);
+    ok('optional observation sections begin collapsed', await page.locator('.observation-fields[open]').count() === 0);
+    ok('a general first story defaults to the existing free channel', await page.locator('#orbitSelect').inputValue() === 'free');
+    await page.locator('#postInput').fill('오늘은 달을 봤어요. 이름은 잘 몰라도 즐거웠어요.');
+    await page.locator('#btnTrace').click();
+    await page.locator('#writeStatus').filter({ hasText: '닉네임을 2~12자' }).waitFor();
+    ok('nickname validation preserves the story and creates no account', state.signups === 0 && state.inserts === 0 && (await page.locator('#postInput').inputValue()).includes('달을 봤어요'));
+    await page.locator('#writerNickname').fill('처음본별');
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.screenshot({ path: '/tmp/orbit-easy-writing-390.png', fullPage: true });
+    await page.locator('#btnTrace').click();
+    await page.locator('.detail-title').filter({ hasText: '오늘은 달을 봤어요.' }).waitFor();
+    ok('one-line posting generates a title without equipment, pictures or signup UI', state.posts[0].title === '오늘은 달을 봤어요.' && state.posts[0].nick === '처음본별' && state.posts[0].image_paths.length === 0 && Object.keys(state.posts[0].observation).length === 0);
+    ok('empty optional metadata adds no empty detail panels', await page.locator('.observation-record').count() === 0);
+    await f.close();
+  }
+  {
+    const f = await fixture(), { page, state } = f;
+    await page.goto(base + '/lounge.html?write=1#report');
+    ok('direct observation link keeps its selected category', await page.locator('#orbitSelect').inputValue() === 'report');
+    await page.locator('#postInput').fill('M13을 봤어요. M13은 작은 솜뭉치 같았어요. 돕으로 함께 봤어요.');
+    await page.locator('#observationFields summary').click();
+    await page.locator('#observedMethod').selectOption('telescope');
+    await page.locator('#observedAt').fill('어젯밤 9시쯤');
+    await page.locator('#observedLocation').fill('서울, 집 창문에서');
+    await page.locator('#observedTarget').fill('M13');
+    await page.locator('#equipmentFields summary').click();
+    await page.locator('#observedTelescope').fill('Nexstar 102GT');
+    await page.locator('#observedExposure').fill('30초씩 35장');
+    for (const width of [320, 390, 1440]) {
+      await page.setViewportSize({ width, height: 950 });
+      ok('expanded writing fields fit ' + width + 'px', await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+    }
+    await page.screenshot({ path: '/tmp/orbit-easy-writing-expanded.png', fullPage: true });
+    state.loseCommit = true;
+    await page.locator('#btnTrace').click();
+    await page.locator('#writeStatus').filter({ hasText: '등록 여부를 확인하지 못했어요' }).waitFor();
+    ok('ambiguous save locks observation fields and retains the data', await page.locator('#observedLocation').isDisabled() && await page.locator('#observedLocation').inputValue() === '서울, 집 창문에서');
+    await page.locator('#btnTrace').click();
+    await page.locator('.detail-title').filter({ hasText: 'M13을 봤어요.' }).waitFor();
+    ok('retry preserves one post and its separate observation record', state.posts.length === 2 && state.posts[0].observation.telescope === 'Nexstar 102GT' && state.posts[0].text === 'M13을 봤어요. M13은 작은 솜뭉치 같았어요. 돕으로 함께 봤어요.');
+    ok('basic record is visible while equipment is folded', (await page.locator('#observationRecord').textContent()).includes('서울, 집 창문에서') && await page.locator('.observation-record-gear[open]').count() === 0);
+    ok('only the first occurrence of each term is annotated across body and record', await page.getByRole('button', { name: 'M13 뜻 보기', exact: true }).count() === 1);
+    await page.getByRole('button', { name: 'M13 뜻 보기', exact: true }).click();
+    await page.getByRole('dialog').waitFor();
+    ok('tap opens a sourced glossary explanation', (await page.getByRole('dialog').textContent()).includes('구상성단') && (await page.getByRole('dialog').locator('a').getAttribute('href')).startsWith('https://science.nasa.gov/'));
+    await page.keyboard.press('Escape');
+    ok('Escape closes the glossary and returns keyboard focus', await page.getByRole('dialog').count() === 0 && await page.evaluate(() => document.activeElement.getAttribute('aria-label') === 'M13 뜻 보기'));
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.getByRole('button', { name: '돕 뜻 보기', exact: true }).click();
+    await page.screenshot({ path: '/tmp/orbit-glossary-390.png', fullPage: true });
+    ok('glossary fits a narrow screen', await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+    await page.getByRole('button', { name: '설명 닫기' }).click();
+    await page.reload();
+    await page.locator('#observationRecord').filter({ hasText: '서울, 집 창문에서' }).waitFor();
+    ok('observation record survives reload', true);
+    await page.screenshot({ path: '/tmp/orbit-observation-detail-390.png', fullPage: true });
+    await f.close();
+  }
+  {
+    const f = await fixture(), { page, state } = f;
+    state.observationColumn = false;
+    await page.goto(base + '/lounge.html?post=' + P);
+    await page.locator('.detail-body').waitFor();
+    ok('old database rollout still permits reading existing posts', (await page.locator('.detail-body').textContent()) === '기존 글의 본문입니다.');
+    state.observationVersion = 0;
+    await page.goto(base + '/lounge.html?write=1');
+    await page.locator('#postInput').fill('추가 정보도 남길게요.');
+    await page.locator('#observationFields summary').click();
+    await page.locator('#observedLocation').fill('광주');
+    await page.locator('#btnTrace').click();
+    await page.locator('#writeStatus').filter({ hasText: '추가 정보를 아직 저장할 수 없어요' }).waitFor();
+    ok('unavailable observation storage never silently drops the record', state.inserts === 0 && await page.locator('#observedLocation').inputValue() === '광주');
+    await f.close();
+  }
+  {
+    const f = await fixture(), { page, state } = f;
+    state.posts[0].text = '도와주셔서 고마워요. 구경 갔어요. M130도 있어요. https://example.com/M13 <img src=x onerror=alert(1)> M57을 봤어요.';
+    state.posts[0].observation = { target: '<img src=x onerror=alert(1)>', telescope: '망원경' };
+    await page.goto(base + '/lounge.html?post=' + P);
+    await page.locator('.detail-body').waitFor();
+    ok('annotation leaves URLs, longer identifiers and ordinary words alone', await page.locator('.glossary-term').count() === 1 && (await page.locator('.glossary-term').textContent()) === 'M57');
+    ok('post and observation markup remain inert text', await page.locator('.detail-body img, #observationRecord img').count() === 0 && (await page.locator('#observationRecord').textContent()).includes('<img'));
+    await f.close();
+  }
+  {
     const f=await fixture(),{page,state}=f;
     state.posts[0].view_count=1234;
     await page.goto(base+'/lounge.html');
@@ -408,8 +505,9 @@ try {
     const f=await fixture(),{page,state}=f;
     state.posts.push({...state.posts[0],id:uid(777),title:'다른 게시글',view_count:20});
     state.viewDelay=250;
+    const firstViewRequest = page.waitForRequest(r=>r.url().endsWith('/rpc/record_post_view'));
     await page.goto(base+'/lounge.html?post='+P);
-    await page.waitForRequest(r=>r.url().endsWith('/rpc/record_post_view'));
+    await firstViewRequest;
     await page.locator('#backToFeed').click();
     await page.getByRole('link',{name:'다른 게시글',exact:true}).click();
     await page.locator('#postViews').filter({hasText:'조회 21'}).waitFor();
@@ -429,8 +527,8 @@ try {
         state.selects.length === 0,
     );
     await page.locator('#writeTop').click();
-    await page.getByLabel('제목 80자 이내').fill('서울에서 본 토성');
-    await page.getByLabel('내용 5,000자 이내').fill('고리가 또렷하게 보였습니다.');
+    await page.getByLabel('제목 선택 · 80자 이내').fill('서울에서 본 토성');
+    await page.getByLabel('이야기나 궁금한 점 5,000자 이내').fill('고리가 또렷하게 보였습니다.');
     state.postFail = true;
     await page.locator('#btnTrace').click();
     await page.locator('#writeStatus').filter({ hasText: '등록 여부' }).waitFor();
@@ -662,6 +760,8 @@ try {
     await page.goto(base + '/lounge.html?write=1');
     await page.locator('#postTitle').fill('사진을 올리는 관측 후기');
     await page.locator('#postInput').fill('달과 토성을 보았습니다.');
+    await page.locator('#observationFields summary').click();
+    await page.locator('#observedMethod').selectOption('phone');
     const payload = await page.evaluate(() => {
       const c = document.createElement('canvas');
       c.width = 2400;
@@ -704,7 +804,7 @@ try {
     ok(
       'retry skips completed upload and sends a thumbnail',
       state.uploads.length === 3 &&
-        state.uploads.filter((p) => p.endsWith('.thumb.jpg')).length === 2,
+        state.uploads.filter((p) => p.endsWith('.thumb.jpg')).length === 2 && state.posts[0].observation.method === 'phone',
     );
     ok(
       'original filename never reaches Storage paths',
