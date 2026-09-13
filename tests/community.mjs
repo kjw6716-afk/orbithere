@@ -81,6 +81,10 @@ function cursor(rows, time, id) {
 async function fixture({ nickname = '관측자', version = 1, admin = false } = {}) {
   const context = await browser.newContext({ viewport: { width: 1200, height: 900 } });
   const state = {
+    viewCalls: [],
+    viewed: new Set(),
+    viewFail: false,
+    viewReadFail: false,
     comments: [],
     commentFail: false,
     reactionFail: false,
@@ -152,6 +156,7 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
       route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
     if (url.pathname === '/auth/v1/signup') {
       state.signups++;
+      if (state.authFail) return json({ message: 'signup unavailable' }, 503);
       return json(session());
     }
     if (url.pathname.endsWith('/rpc/board_version'))
@@ -172,10 +177,25 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
         .slice(0, b.p_limit || 21)
         .map(({ text, ...p }) => ({
           ...p,
+          view_count: p.view_count || 0,
           comment_count: state.comments.filter((c) => c.post_id === p.id).length,
         }));
       if (state.delays[b.p_orbit]) await new Promise((r) => setTimeout(r, state.delays[b.p_orbit]));
       return state.getFail ? json({ message: 'fixture outage' }, 503) : json(rows);
+    }
+    if (url.pathname.endsWith('/rpc/record_post_view')) {
+      const b=req.postDataJSON(); state.viewCalls.push(b);
+      if (state.viewDelay) await new Promise(r=>setTimeout(r,state.viewDelay));
+      if (state.viewFail) return json({message:'counter unavailable'},503);
+      const p=state.posts.find(p=>p.id===b.p_post_id);
+      if (!p) return json(null);
+      if (!state.viewed.has(p.id)) { p.view_count=(p.view_count||0)+1; state.viewed.add(p.id); }
+      return json(p.view_count);
+    }
+    if (url.pathname==='/rest/v1/post_view_counts') {
+      if(state.viewReadFail) return json({message:'counter unavailable'},503);
+      const id=url.searchParams.get('post_id').slice(3), p=state.posts.find(p=>p.id===id);
+      return json(p?{view_count:p.view_count||0}:null);
     }
     if (url.pathname.endsWith('/rpc/reserve_board_images')) {
       const b = req.postDataJSON();
@@ -341,6 +361,61 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
   };
 }
 try {
+  {
+    const f=await fixture(),{page,state}=f;
+    state.posts[0].view_count=1234;
+    await page.goto(base+'/lounge.html');
+    await page.locator('.row-meta .view-count').filter({hasText:'조회 1,234'}).waitFor();
+    ok('list displays formatted views without counting',state.viewCalls.length===0&&state.signups===0);
+    await page.locator('.row-title').click();
+    await page.locator('#postViews').filter({hasText:'조회 1,235'}).waitFor();
+    ok('a successful detail open requests the server counter',state.viewCalls.length===1);
+    await page.locator('#backToFeed').click();
+    await page.locator('.row-meta .view-count').filter({hasText:'조회 1,235'}).waitFor();
+    ok('returning to the list retains the updated count');
+    await page.locator('.row-title').click();
+    await page.locator('#postViews').filter({hasText:'조회 1,235'}).waitFor();
+    ok('reopening keeps the deduplicated server count');
+    state.viewFail=true;
+    await page.reload();
+    await page.locator('.detail-body').waitFor();
+    await page.locator('#postViews').filter({hasText:'조회 1,235'}).waitFor();
+    ok('counter failure preserves the readable body and last known total');
+    state.viewReadFail=true;
+    await page.reload();
+    await page.locator('.detail-body').waitFor();
+    ok('complete counter outage never shows a fabricated zero',await page.locator('#postViews').textContent()==='조회 —');
+    for(const width of [320,390,1440]) {
+      await page.setViewportSize({width,height:900});
+      ok('detail views fit '+width+'px',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+    }
+    await f.close();
+  }
+  {
+    const f=await fixture(),{page,state}=f;
+    state.authFail=true;
+    await page.goto(base+'/lounge.html?post='+P);
+    await page.locator('.detail-body').waitFor();
+    await page.waitForFunction(()=>document.querySelector('#postViews').textContent==='조회 0');
+    ok('authentication failure leaves the post readable',await page.locator('.detail-title').textContent()==='기존 관측 후기');
+    const before=state.viewCalls.length;
+    await page.goto(base+'/lounge.html?post='+uid(999));
+    await page.getByRole('heading',{name:'글을 찾을 수 없어요'}).waitFor();
+    ok('missing post does not request a view increment',state.viewCalls.length===before);
+    await f.close();
+  }
+  {
+    const f=await fixture(),{page,state}=f;
+    state.posts.push({...state.posts[0],id:uid(777),title:'다른 게시글',view_count:20});
+    state.viewDelay=250;
+    await page.goto(base+'/lounge.html?post='+P);
+    await page.waitForRequest(r=>r.url().endsWith('/rpc/record_post_view'));
+    await page.locator('#backToFeed').click();
+    await page.getByRole('link',{name:'다른 게시글',exact:true}).click();
+    await page.locator('#postViews').filter({hasText:'조회 21'}).waitFor();
+    ok('late response for the previous post never overwrites the current count');
+    await f.close();
+  }
   {
     const f = await fixture(),
       { page, state } = f;

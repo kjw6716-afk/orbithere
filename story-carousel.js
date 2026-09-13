@@ -6,6 +6,21 @@
     const track = belt.querySelector('.story-belt-track');
     const original = belt.querySelector('[data-story-original]');
     const cards = [...original.children];
+    // Shuffle once per page load, before measuring or creating repeat copies.
+    let previous = null;
+    try { previous = sessionStorage.getItem('orbit_story_start'); } catch (_) { /* Storage is optional. */ }
+    for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+    if (cards.length > 1 && cards[0].getAttribute('href') === previous) {
+        const next = 1 + Math.floor(Math.random() * (cards.length - 1));
+        [cards[0], cards[next]] = [cards[next], cards[0]];
+    }
+    original.append(...cards);
+    try {
+        if (cards.length) sessionStorage.setItem('orbit_story_start', cards[0].getAttribute('href'));
+    } catch (_) { /* Random ordering still works when storage is blocked. */ }
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     const speed = 20; // Pixels per second, independent of the number of stories.
     let frame = null, last = null, phase = 0, cycle = 0, center = 0, step = 0;

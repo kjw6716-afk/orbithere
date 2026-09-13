@@ -36,6 +36,25 @@ async function fixture(options={}){
  return {context,page,sent,errors};
 }
 try{
+ {
+  const {context,page}=await fixture({viewport:{width:390,height:844},reducedMotion:'reduce'});
+  const starts=new Set(); let previous=null;
+  for(let i=0;i<8;i++) {
+   await page.goto(base+'/index.html');
+   const hrefs=await page.locator('[data-story-original] .story-belt-card').evaluateAll(cards=>cards.map(c=>c.getAttribute('href')));
+   ok('shuffle preserves every story exactly once',new Set(hrefs).size===ledger.items.length&&ledger.items.every(item=>hrefs.some(h=>h.includes(item.id))));
+   ok('refresh avoids repeating the previous starting story',hrefs[0]!==previous);
+   previous=hrefs[0]; starts.add(previous);
+  }
+  ok('refresh changes the starting story',starts.size>1);
+  await page.evaluate(()=>sessionStorage.setItem('orbit_story_start','stories/removed-story.html'));
+  await page.reload();
+  ok('removed previous story does not break the belt',await page.locator('[data-story-original] .story-belt-card').count()===ledger.items.length);
+  await context.addInitScript(()=>{Storage.prototype.getItem=Storage.prototype.setItem=()=>{throw new Error('storage blocked')};});
+  await page.reload();
+  ok('blocked storage still leaves all stories readable',await page.locator('[data-story-original] .story-belt-card').count()===ledger.items.length);
+  await context.close();
+ }
  for(const width of [320,390,860,1440]){
   const {context,page,errors}=await fixture({viewport:{width,height:900}});
   for(const path of ['stories.html',...ledger.items.map(i=>`stories/${i.id}.html`),'notes.html']){
@@ -58,7 +77,8 @@ try{
   if(process.env.ORBIT_QA_DIR&&[390,1440].includes(width))await page.screenshot({path:`${process.env.ORBIT_QA_DIR}/main-${width}.png`});
   await page.goto(base+'/index.html');
   const current=page.locator('[data-story-original] .story-belt-card').first();
-  ok(`landing starts with the first story at ${width}px`,await current.isVisible()&&(await current.getAttribute('href')).includes(firstStory.id));
+  const currentHref=await current.getAttribute('href');
+  ok(`landing starts with a published story at ${width}px`,await current.isVisible()&&ledger.items.some(i=>(currentHref || '').includes(i.id)));
   ok(`carousel fits ${width}px`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   ok('story dates are absent from the teaser',await page.locator('.story-belt time').count()===0);
   if(process.env.ORBIT_QA_DIR&&[390,1440].includes(width))await page.screenshot({path:`${process.env.ORBIT_QA_DIR}/index-${width}.png`});
@@ -82,7 +102,7 @@ try{
   const initial=await geometry(), view=await page.locator('.story-belt-viewport').boundingBox();
   const centerCard=initial.find(c=>Math.abs(c.x+c.width/2-view.width/2)<2);
   const full=initial.filter(c=>c.x>=0&&c.x+c.width<=view.width);
-  ok('ultrawide starts with the first story centered among equal-sized cards',centerCard?.href.includes(firstStory.id)&&full.length>=13&&full.every(c=>c.width===340&&c.height===full[0].height));
+  ok('ultrawide centers the shuffled first story among equal-sized cards',centerCard?.href===await first.getAttribute('href')&&full.length>=13&&full.every(c=>c.width===340&&c.height===full[0].height));
   ok('ultrawide rail leaves only 32px at each edge',Math.abs(view.x-32)<1&&Math.abs(view.width-5056)<1);
   ok('there are no arrows or stop buttons',await belt.locator('button').count()===0);
   ok('every published story is on the original belt',await page.locator('[data-story-original] .story-belt-card').count()===ledger.items.length);

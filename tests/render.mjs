@@ -261,9 +261,12 @@ console.log('\n[7] 키보드만으로 조작되는가');
   ok('한 번 더 누르면 접힘', await page.evaluate(() => !document.querySelector('.pl').classList.contains('open')));
 
   await page.evaluate(() => document.getElementById('scrubRange').focus());
+  // Start at a known boundary: at some times of day the initial value is
+  // already the minimum, so ArrowLeft correctly leaves it unchanged.
+  await page.keyboard.press('Home');
   const before = await page.locator('#scrubNow').textContent();
-  await page.keyboard.press('ArrowLeft');
-  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('ArrowRight');
   ok('시각 막대가 방향키로 움직임', (await page.locator('#scrubNow').textContent()) !== before);
   await page.close();
 }

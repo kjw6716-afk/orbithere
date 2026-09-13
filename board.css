@@ -4,6 +4,12 @@
   --board-muted: #a4b3c8;
   --board-mint: #69dfcf;
 }
+.view-count {
+  white-space: nowrap;
+  color: var(--board-muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
 * {
   box-sizing: border-box;
 }
