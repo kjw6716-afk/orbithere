@@ -6,7 +6,7 @@
     <title>Orbit | 별빛 게시판</title>
     <meta
       name="description"
-      content="어젯밤 뭘 보셨나요 — 관측 후기와 장비, 실시간 하늘 이야기를 남기는 곳."
+      content="별 이름을 몰라도, 사진이 없어도 괜찮아요. 오늘 본 하늘과 궁금한 점을 나누는 별빛 게시판."
     />
     <meta name="theme-color" content="#0F172A" />
     <link rel="canonical" href="https://orbithere.com/lounge.html" />
@@ -25,7 +25,7 @@
     <meta property="og:title" content="Orbit | 별빛 게시판" />
     <meta
       property="og:description"
-      content="어젯밤 뭘 보셨나요 — 관측 후기와 장비, 실시간 하늘 이야기를 남기는 곳."
+      content="별 이름을 몰라도, 사진이 없어도 괜찮아요. 오늘 본 하늘과 궁금한 점을 나누는 별빛 게시판."
     />
     <meta property="og:image" content="https://orbithere.com/images/og.png" />
     <meta property="og:image:width" content="1200" />
@@ -39,7 +39,7 @@
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css"
     />
     <link rel="stylesheet" href="/orbit.css?v=20260912-brand" />
-    <link rel="stylesheet" href="board.css?v=20260912-korean" />
+    <link rel="stylesheet" href="board.css?v=20260913-writing" />
     <script>
       if (new URLSearchParams(location.search).get('embed'))
         document.documentElement.classList.add('embed');
@@ -79,7 +79,7 @@
         <header class="board-heading">
           <div>
             <h1>별빛 게시판</h1>
-            <p>같은 하늘을 보는 사람들의 이야기</p>
+            <p>오늘 본 하늘부터, 아직 모르는 별까지.</p>
           </div>
           <a class="button primary" id="writeTop" href="lounge.html?write=1">글쓰기</a>
         </header>
@@ -130,34 +130,32 @@
       </section>
       <section id="editorView" hidden>
         <a class="back-link" id="cancelWriteLink" href="lounge.html">← 목록</a>
-        <h1>글쓰기</h1>
-        <div id="writerGate" hidden>
-          <p>닉네임을 정하면 글과 사진을 남길 수 있어요.</p>
-          <button class="button primary" type="button" id="joinBoard">닉네임 정하기</button>
-        </div>
-        <form id="postForm">
-          <label for="orbitSelect">분류</label
-          ><select id="orbitSelect" name="orbit" required></select>
-          <label for="postTitle">제목 <span class="field-hint">80자 이내</span></label
+        <h1>오늘 본 하늘을 들려주세요</h1>
+        <p class="editor-intro">한 줄도 좋아요. 별 이름이나 장비를 몰라도 괜찮아요.</p>
+        <form id="postForm" novalidate>
+          <label for="postTitle">제목 <span class="field-hint">선택 · 80자 이내</span></label
           ><input
             id="postTitle"
             name="title"
             maxlength="80"
-            required
-            placeholder="어떤 이야기를 나누고 싶으세요?"
+            aria-describedby="titleHelp"
+            placeholder="예: 집 앞에서 본 밝은 점, 별일까요?"
           />
-          <label for="postInput">내용 <span class="field-hint">5,000자 이내</span></label
+          <p class="field-hint" id="titleHelp">비워두면 이야기의 첫 문장을 제목으로 써요.</p>
+          <label for="postInput">이야기나 궁금한 점 <span class="field-hint">5,000자 이내</span></label
           ><textarea
             id="postInput"
             name="text"
             maxlength="5000"
-            rows="10"
+            rows="5"
             required
-            placeholder="관측한 대상·시각·대략적인 지역·장비를 함께 적어주세요."
+            placeholder="퇴근길에 밝은 점 하나를 봤어요. 이름은 모르지만 한참 바라봤네요."
           ></textarea>
           <p class="field-hint" id="charCount">0 / 5,000</p>
+          <label for="orbitSelect">어떤 글인가요?</label>
+          <select id="orbitSelect" name="orbit" required></select>
           <div class="photo-heading">
-            <label for="photoInput" class="button">사진 첨부</label
+            <label for="photoInput" class="button">사진 첨부 <span class="optional-label">선택</span></label
             ><span id="photoCount" class="field-hint">0 / 5장</span>
           </div>
           <input
@@ -173,6 +171,41 @@
             본인에게 게시 권한이 있는 사진만 첨부해주세요.
           </p>
           <div id="photoPreviews" class="photo-previews" aria-label="첨부할 사진"></div>
+          <details class="observation-fields" id="observationFields">
+            <summary>관측 정보 추가 <span>선택</span></summary>
+            <div class="observation-grid">
+              <div class="observation-wide">
+                <label for="observedMethod">어떻게 봤나요?</label>
+                <select id="observedMethod" data-observation="method">
+                  <option value="">선택하지 않아도 괜찮아요</option>
+                  <option value="naked-eye">맨눈</option><option value="phone">휴대폰</option>
+                  <option value="binoculars">쌍안경</option><option value="telescope">망원경</option>
+                </select>
+              </div>
+              <div><label for="observedAt">언제 봤나요?</label><input id="observedAt" data-observation="observed_at" maxlength="120" placeholder="예: 어젯밤 9시쯤"></div>
+              <div><label for="observedLocation">어디서 봤나요?</label><input id="observedLocation" data-observation="location" maxlength="120" placeholder="예: 서울, 집 창문에서"></div>
+              <div><label for="observedTarget">무엇을 봤나요?</label><input id="observedTarget" data-observation="target" maxlength="120" placeholder="예: 달 / 이름은 모르겠어요"></div>
+              <div><label for="observedDirection">어느 쪽이었나요?</label><input id="observedDirection" data-observation="direction" maxlength="120" placeholder="예: 서쪽, 건물 바로 위"></div>
+              <p class="field-hint observation-wide">이름이 궁금한 천체라면 본 날짜·시각과 방향이 답변에 도움이 돼요. 아는 만큼만 적어주세요.</p>
+            </div>
+          </details>
+          <details class="observation-fields" id="equipmentFields">
+            <summary>장비·촬영 정보 추가 <span>선택</span></summary>
+            <div class="observation-grid">
+              <div><label for="observedTelescope">망원경 본체 · 경통</label><input id="observedTelescope" data-observation="telescope" maxlength="120" placeholder="예: Nexstar 102GT"></div>
+              <div><label for="observedMount">망원경 받침 · 가대</label><input id="observedMount" data-observation="mount" maxlength="120" placeholder="예: 경위대"></div>
+              <div><label for="observedCamera">카메라</label><input id="observedCamera" data-observation="camera" maxlength="120" placeholder="모델명 또는 휴대폰 기종"></div>
+              <div><label for="observedFilter">필터</label><input id="observedFilter" data-observation="filter" maxlength="120" placeholder="사용했다면 적어주세요"></div>
+              <div><label for="observedExposure">노출 시간 · 촬영 장수</label><input id="observedExposure" data-observation="exposure" maxlength="120" placeholder="예: 30초씩 35장"></div>
+              <div><label for="observedProcessing">사진 보정 프로그램</label><input id="observedProcessing" data-observation="processing" maxlength="120" placeholder="예: DSS"></div>
+            </div>
+          </details>
+          <div id="writerGate" class="writer-identity" hidden>
+            <label for="writerNickname">닉네임 <span class="field-hint">2~12자</span></label>
+            <input id="writerNickname" maxlength="12" minlength="2" autocomplete="nickname" placeholder="어떤 이름으로 이야기할까요?" aria-describedby="nicknameHelp">
+            <p class="field-hint" id="nicknameHelp">회원가입 없이 닉네임만 정해요. 이 기기에 저장되며, 다른 사람도 같은 이름을 쓸 수 있어요.</p>
+          </div>
+          <p class="field-hint" id="writerName" hidden></p>
           <label id="pinEditor" class="check-field" hidden
             ><input type="checkbox" id="postPinned" /> 공지로 상단 고정</label
           >
@@ -182,7 +215,7 @@
           <p id="writeStatus" role="status" aria-live="polite"></p>
           <div class="editor-actions">
             <button class="button subtle" type="button" id="cancelWrite">취소</button
-            ><button class="button primary" id="btnTrace" type="submit">등록하기</button>
+            ><button class="button primary" id="btnTrace" type="submit">글 남기기</button>
           </div>
         </form>
       </section>
@@ -219,7 +252,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
     <script src="orbit-backend.js"></script>
     <script src="board-media.js?v=20260912-board"></script>
-    <script src="lounge.js?v=20260912-board"></script>
+    <script src="board-writing.js?v=20260913-writing"></script>
+    <script src="board-glossary.js?v=20260913-writing"></script>
+    <script src="lounge.js?v=20260913-writing"></script>
   </div></div>
 <script src="site-nav.js?v=20260912-navigation"></script>
 </body>

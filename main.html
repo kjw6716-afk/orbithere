@@ -425,6 +425,9 @@
             if(ev.data && ev.data.orbit === 'loungeReady'){
                 ev.source.postMessage({ orbit:'panelActive', active: activePanel === 'lounge' }, location.origin);
             }
+            if(ev.data && ev.data.orbit === 'profileChanged' && ev.source === document.getElementById('loungeFrame').contentWindow){
+                syncChip();
+            }
             if(ev.data && ev.data.orbit === 'skyHeight' && ev.source === document.getElementById('skyFrame').contentWindow){
                 var h = parseInt(ev.data.height, 10);
                 if(h > 0 && h < 8000) document.getElementById('skyFrame').style.height = h + 'px';
@@ -436,7 +439,7 @@
         });
 
         // ===== 궤도 진입(닉네임) 대화상자 =====
-        // 홈 패널이 없어졌으므로 닉네임을 정하는 자리는 여기 하나뿐이다.
+        // 프로필 변경 대화상자. 첫 글의 닉네임은 게시판에서도 정할 수 있다.
         var EMOJIS = ['🌟','⭐','🪐','🌙','☄️','🔭','🛸','💫','🌌','✨'];
         function avatarOf(nick){ return EMOJIS[nick.charCodeAt(0) % EMOJIS.length]; }
 

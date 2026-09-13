@@ -577,6 +577,35 @@ await denied(
   `select * from orbit_private.board_uploads`,
 );
 
+// Optional observations use the same ownership, image and rate-limit guards.
+await db.exec('reset role');
+await db.exec(`delete from orbit_private.write_events`);
+const observedPost = 'bbbbbbbb-bbbb-4bbb-8bbb-000000000001';
+const note = '{"method":"naked-eye","location":"서울 창문","target":"모르겠어요","telescope":"50%_장비"}';
+const observedPublish = `select create_observation_post('${observedPost}','첫별','달을 봤어요.','free','달을 봤어요.','{}',false,'${note}'::jsonb)`;
+await denied('observation RPC rejects unauthenticated callers', 'anon', null, observedPublish);
+await denied('observation RPC requires a valid session', 'authenticated', null, observedPublish);
+await as('authenticated', A, observedPublish);
+await as('authenticated', A, observedPublish);
+const storedNote = (await as('anon', null, `select text,observation,author_id from posts where id='${observedPost}'`)).rows;
+check('observation retry preserves a single original body and owner', storedNote.length === 1 && storedNote[0].text === '달을 봤어요.' && storedNote[0].author_id === A && storedNote[0].observation.target === '모르겠어요');
+await denied('observation retry cannot change its payload', 'authenticated', A, observedPublish.replace('서울 창문', '부산'));
+await denied('another writer cannot claim an observation post', 'authenticated', B, observedPublish);
+await denied('observation cannot be edited through the pin API', 'authenticated', A, `update posts set observation='{}' where id='${observedPost}'`);
+check('observation values participate in literal search', (await as('anon', null, `select id from board_posts(p_query:='50%_장비')`)).rows.some(r => r.id === observedPost));
+check('Korean method labels participate in search', (await as('anon', null, `select id from board_posts(p_query:='맨눈')`)).rows.some(r => r.id === observedPost));
+for (const invalid of ['null', '[]', '"text"', '{"location":null}', '{"location":12}', '{"location":{"x":"y"}}', '{"location":"   "}', '{"latitude":"37"}', '{"method":"gps"}', JSON.stringify({location:'별'.repeat(121)})]) {
+  await denied('invalid observation rejected: ' + invalid.slice(0,45), 'authenticated', A,
+    `select create_observation_post(gen_random_uuid(),'첫별','제목','free','본문','{}',false,'${invalid}'::jsonb)`);
+}
+await denied('direct inserts cannot bypass observation validation', 'authenticated', B,
+  `insert into posts(nick,title,orbit,text,observation) values('다른별','제목','free','본문','{"latitude":"37"}')`);
+await denied('new observation RPC cannot attach unowned photos', 'authenticated', B,
+  `select create_observation_post(gen_random_uuid(),'다른별','제목','report','본문',array['${path}'],false,'{}')`);
+await denied('new observation RPC cannot forge a pin', 'authenticated', B,
+  `select create_observation_post(gen_random_uuid(),'다른별','제목','report','본문','{}',true,'{}')`);
+check('existing posts remain without optional metadata', (await as('anon', null, `select count(*)::int as n from posts where observation='{}'::jsonb`)).rows[0].n > 0);
+
 // Real SQL view counting: clients cannot set totals or inspect viewer history.
 await db.exec('reset role');
 const viewPost = (await db.query(`select id from public.posts limit 1`)).rows[0].id;

@@ -170,7 +170,36 @@
     return u.pathname + u.search + u.hash;
   }
   function dirty() {
-    return $('postTitle').value.trim() || $('postInput').value.trim() || photos.length;
+    return $('postTitle').value.trim() || $('postInput').value.trim() || photos.length ||
+      $('writerNickname').value.trim() || Object.keys(OrbitBoardWriting.collect($('postForm'))).length;
+  }
+  function syncWriter() {
+    var name = nick();
+    $('writerGate').hidden = !!name;
+    $('writerName').hidden = !name;
+    $('writerName').textContent = name ? name + ' 이름으로 남겨요.' : '';
+  }
+  function prepareNickname() {
+    if (nick()) return true;
+    var input = $('writerNickname'), value = input.value.trim();
+    if (value.length < 2 || value.length > 12 || /[<>"'\/\\]/.test(value)) {
+      writeStatus('닉네임을 2~12자로 정해주세요. < > 따옴표와 빗금은 사용할 수 없어요.', true);
+      input.focus();
+      return false;
+    }
+    try {
+      localStorage.setItem('orbit_nickname', value);
+      if (!localStorage.getItem('orbit_jointime')) {
+        localStorage.setItem('orbit_joindate', new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }));
+        localStorage.setItem('orbit_jointime', Date.now());
+      }
+    } catch (_) {
+      writeStatus('이 브라우저에 닉네임을 저장하지 못했어요. 사이트 저장소를 허용한 뒤 다시 시도해주세요.', true);
+      return false;
+    }
+    syncWriter();
+    if (embed && parent !== window) parent.postMessage({ orbit: 'profileChanged' }, location.origin);
+    return true;
   }
   function canLeave() {
     if (busy || preparing || commentBusy) {
@@ -178,7 +207,7 @@
       return false;
     }
     if (attempt && attempt.uncertain) {
-      status('등록 여부를 아직 확인하지 못했어요. 등록하기를 다시 눌러 확인해주세요.', true);
+      status('등록 여부를 아직 확인하지 못했어요. ‘글 남기기’를 다시 눌러 확인해주세요.', true);
       return false;
     }
     if (
@@ -403,13 +432,12 @@
   async function loadDetail(id, token) {
     $('postDetail').innerHTML = '<p class="empty-state">글을 불러오고 있어요…</p>';
     try {
-      var p = checked(
-        await sb
-          .from('posts')
-          .select('id,title,nick,orbit,text,created_at,author_id,image_paths,is_pinned,pinned_at')
-          .eq('id', id)
-          .maybeSingle(),
-      );
+      var columns = 'id,title,nick,orbit,text,created_at,author_id,image_paths,is_pinned,pinned_at';
+      var result = await sb.from('posts').select(columns + ',observation').eq('id', id).maybeSingle();
+      // Keep old posts readable while a rollout's optional column is unavailable.
+      if (result.error && /^(42703|PGRST204)$/.test(result.error.code || ''))
+        result = await sb.from('posts').select(columns).eq('id', id).maybeSingle();
+      var p = checked(result);
       if (token !== route) return;
       if (!p) {
         $('postDetail').innerHTML =
@@ -431,7 +459,7 @@
         esc(p.created_at) +
         '">' +
         esc(date(p.created_at)) +
-        '</time><span class="view-count" id="postViews">조회 —</span></div><div class="detail-body"></div><div class="detail-images">' +
+        '</time><span class="view-count" id="postViews">조회 —</span></div><p class="glossary-help" id="glossaryHelp" hidden>밑줄 친 용어를 누르면 짧은 설명을 볼 수 있어요.</p><div class="detail-body"></div><div id="observationRecord"></div><div class="detail-images">' +
         (p.image_paths || [])
           .map(function (path, i) {
             return (
@@ -459,8 +487,16 @@
           ? '<button class="text-button" type="button" data-action="delete-post">글 삭제</button>'
           : '') +
         (!own ? reportButton('post', p.id) : '') +
-        '</div><section class="comments-section" aria-label="댓글"><div class="comments-heading"><h2>댓글</h2><button class="text-button" type="button" data-action="refresh-comments">새로고침</button></div><div id="commentList"></div><p class="comment-message" id="commentMessage" role="status"></p><button class="button subtle" type="button" id="moreComments" hidden>이전 댓글 더 보기</button><form class="comment-form" id="commentForm"><label class="sr-only" for="commentInput">댓글 내용</label><textarea id="commentInput" maxlength="300" rows="2" required placeholder="댓글을 남겨주세요 (300자 이내)"></textarea><button class="button primary" type="submit">등록</button></form></section>';
+        '</div><section class="comments-section" aria-label="댓글"><div class="comments-heading"><h2>댓글</h2><button class="text-button" type="button" data-action="refresh-comments">새로고침</button></div><div id="commentList"></div><p class="comment-message" id="commentMessage" role="status"></p><button class="button subtle" type="button" id="moreComments" hidden>이전 댓글 더 보기</button><form class="comment-form" id="commentForm"><label class="sr-only" for="commentInput">댓글 내용</label><textarea id="commentInput" maxlength="300" rows="2" required placeholder="경험을 나누거나 궁금한 점을 더 물어보세요. (300자 이내)"></textarea><button class="button primary" type="submit">등록</button></form></section>';
       $('postDetail').querySelector('.detail-body').textContent = p.text;
+      OrbitBoardWriting.render($('observationRecord'), p.observation);
+      if (window.OrbitBoardGlossary) {
+        var termCount = OrbitBoardGlossary.annotate([
+          $('postDetail').querySelector('.detail-body'),
+          ...$('observationRecord').querySelectorAll('dd'),
+        ]);
+        $('glossaryHelp').hidden = termCount === 0;
+      }
       $('commentInput').value = commentDrafts[p.id] || '';
       $('commentInput').addEventListener('input', function () {
         commentDrafts[p.id] = this.value;
@@ -795,7 +831,7 @@
   }
   async function clearAttempt() {
     if (!attempt) return;
-    if (attempt.uncertain) throw new Error('등록하기를 다시 눌러 등록 여부를 먼저 확인해주세요.');
+    if (attempt.uncertain) throw new Error('‘글 남기기’를 다시 눌러 등록 여부를 먼저 확인해주세요.');
     var old = attempt;
     attempt = null;
     if (old.paths.length) {
@@ -815,21 +851,25 @@
   async function submitPost(ev) {
     ev.preventDefault();
     if (busy || preparing) return;
-    if (!nick()) {
-      join();
+    var text = $('postInput').value.trim(),
+      title = OrbitBoardWriting.title(text, $('postTitle').value),
+      observation = OrbitBoardWriting.collect($('postForm'));
+    if (!text || text.length > 5000 || title.length > 80) {
+      writeStatus(!text ? '이야기나 궁금한 점을 한 줄 남겨주세요.' : '제목은 80자, 이야기는 5,000자 이내로 적어주세요.', true);
+      (!text || text.length > 5000 ? $('postInput') : $('postTitle')).focus();
       return;
     }
-    var title = $('postTitle').value.trim(),
-      text = $('postInput').value.trim();
-    if (!title || !text) {
-      writeStatus('제목과 내용을 입력해주세요.', true);
+    if (Object.values(observation).some(function (value) { return value.length > 120; })) {
+      writeStatus('추가 정보는 항목마다 120자 이내로 적어주세요.', true);
       return;
     }
+    if (!prepareNickname()) return;
     var fingerprint = JSON.stringify([
       title,
       text,
       $('orbitSelect').value,
       $('postPinned').checked,
+      observation,
       photos.map(function (p) {
         return p.url;
       }),
@@ -839,6 +879,11 @@
     writeStatus('등록을 준비하고 있어요…');
     try {
       await ensureWriter();
+      if (Object.keys(observation).length) {
+        var readiness = await sb.rpc('board_observation_version');
+        if (readiness.error || readiness.data !== 1)
+          throw new Error('추가 정보를 아직 저장할 수 없어요. 입력한 내용을 그대로 두고 잠시 후 다시 시도해주세요.');
+      }
       if (attempt && attempt.fingerprint !== fingerprint) await clearAttempt();
       if (!attempt)
         attempt = {
@@ -886,10 +931,11 @@
         p_text: text,
         p_images: attempt.paths,
         p_pinned: isAdmin && $('postPinned').checked,
+        ...(Object.keys(observation).length ? { p_observation: observation } : {}),
       };
       writeStatus('글을 등록하고 있어요…');
       attempt.uncertain = true;
-      var saved = await sb.rpc('create_board_post', attempt.payload);
+      var saved = await sb.rpc(attempt.payload.p_observation ? 'create_observation_post' : 'create_board_post', attempt.payload);
       if (saved.error) {
         // Constraint/auth failures roll back; network/5xx errors can be a lost
         // response after commit. Keep the UUID and frozen payload for retry.
@@ -901,6 +947,8 @@
       attempt = null;
       cache = null;
       $('postForm').reset();
+      $('observationFields').open = $('equipmentFields').open = false;
+      syncWriter();
       photos.forEach(function (p) {
         URL.revokeObjectURL(p.url);
       });
@@ -915,7 +963,7 @@
     } catch (e) {
       writeStatus(
         (attempt && attempt.uncertain
-          ? '등록 여부를 확인하지 못했어요. 같은 글이 중복되지 않도록 등록하기를 다시 눌러 확인해주세요. '
+          ? '등록 여부를 확인하지 못했어요. 같은 글이 중복되지 않도록 ‘글 남기기’를 다시 눌러 확인해주세요. '
           : '등록 실패 — ') + hint(e),
         true,
       );
@@ -925,6 +973,7 @@
     }
   }
   async function showRoute() {
+    document.querySelectorAll('.glossary-dialog').forEach(function (dialog) { dialog.close(); });
     activeURL = location.href;
     var token = ++route;
     ++commentSeq;
@@ -949,11 +998,10 @@
     $('writeTop').href = $('writeBottom').href = url({ write: true });
     window.scrollTo(0, 0);
     if (view === 'editor') {
-      $('writerGate').hidden = !!nick();
-      $('postForm').hidden = !nick();
+      syncWriter();
       $('pinEditor').hidden = !isAdmin;
-      if (!dirty()) $('orbitSelect').value = channel === 'all' ? 'report' : channel;
-      $('postTitle').focus({ preventScroll: true });
+      if (!dirty()) $('orbitSelect').value = channel === 'all' ? 'free' : channel;
+      $('postInput').focus({ preventScroll: true });
       return;
     }
     if (view === 'detail') {
@@ -1114,6 +1162,9 @@
     })
     .join('');
   $('postForm').addEventListener('submit', submitPost);
+  $('writerNickname').addEventListener('input', function () {
+    if (!busy) writeStatus('');
+  });
   $('postInput').addEventListener('input', function () {
     $('charCount').textContent = this.value.length.toLocaleString('ko-KR') + ' / 5,000';
   });
@@ -1134,7 +1185,7 @@
         photos.push(await OrbitBoardMedia.prepare(file));
         renderPreviews();
       }
-      writeStatus('사진 준비가 끝났어요. 등록하기를 누르면 함께 올라갑니다.');
+      writeStatus('사진 준비가 끝났어요. ‘글 남기기’를 누르면 함께 올라갑니다.');
     } catch (e) {
       writeStatus(hint(e), true);
     } finally {
@@ -1145,7 +1196,6 @@
   $('cancelWrite').onclick = function () {
     navigate(url());
   };
-  $('joinBoard').onclick = join;
   $('feedSearch').onsubmit = function (ev) {
     ev.preventDefault();
     if (!canLeave()) return;
@@ -1201,8 +1251,7 @@
     )
       return;
     if (view === 'editor') {
-      $('writerGate').hidden = !!nick();
-      $('postForm').hidden = !nick();
+      syncWriter();
     }
   });
   if (embed) parent.postMessage({ orbit: 'loungeReady' }, location.origin);
