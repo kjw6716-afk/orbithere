@@ -54,15 +54,19 @@
         sources[s.id] && news.matches({source: s.id, title: ""}, filter) && news.stale(s)
       );
     });
-    status.hidden = !unavailable.length;
-    status.textContent = unavailable.length
-      ? unavailable
+    var notices = [];
+    if (unavailable.length) notices.push(unavailable
           .map(function (s) {
             return sources[s.id].name;
           })
           .join(" · ") +
-        "의 새 소식을 확인하지 못했어요. 저장된 목록을 표시하며, 공식 사이트에서 최신 소식을 확인할 수 있어요."
-      : "";
+        "의 새 소식을 확인하지 못했어요. 저장된 목록을 표시하며, 공식 사이트에서 최신 소식을 확인할 수 있어요.");
+    var lastChecked = Date.parse(data.checkedAt);
+    if (Number.isFinite(lastChecked) && Date.now() - lastChecked > 4 * 60 * 60 * 1000) {
+      notices.push("마지막 목록 확인 후 4시간이 지났어요. 최신 소식은 각 기사의 공식 원문에서도 확인해주세요.");
+    }
+    status.hidden = !notices.length;
+    status.textContent = notices.join(" ");
     checked.textContent =
       "마지막 확인 " + format(data.checkedAt) + " · " + items.length + "건";
     list.innerHTML = items.length
@@ -100,7 +104,7 @@
               '</a>' +
               (summary ? '<div class="news-summary"><span class="news-summary-label">핵심 요약</span>' +
                 summary.summaryKo.map(function (sentence) { return '<p>' + esc(sentence) + '</p>'; }).join('') +
-                '</div>' : '<p class="news-summary-pending">요약은 준비 중이에요. 원문에서 먼저 확인할 수 있어요.</p>') +
+                '</div>' : '') +
               (korean ? '<details class="news-original"><summary>영문 제목 보기</summary><span lang="en">' + esc(item.title) + '</span></details>' : '') +
               '<div class="news-links"><a href="' +
               esc(item.url) +

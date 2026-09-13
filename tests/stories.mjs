@@ -137,12 +137,23 @@ try{
   ok('visual repeats are not duplicate keyboard stops',await page.locator('[data-story-clone]').evaluateAll(groups=>groups.every(g=>g.getAttribute('aria-hidden')==='true'&&[...g.querySelectorAll('a')].every(a=>a.tabIndex===-1))));
   await page.locator('.entry-secondary').focus();await page.clock.runFor(1000);
   ok('leaving keyboard focus resumes movement',await x()!==focusedX);
+  // ResizeObserver is delivered by real browser frames, outside the paused clock.
+  // Wait for its layout update before asserting edge coverage after each resize.
+  await page.clock.resume();
   for(const width of [1920,3440,2560,5120]){
-   await page.setViewportSize({width,height:1440});await page.clock.runFor(100);
+   await page.setViewportSize({width,height:1440});
    await first.focus();
+   await page.waitForFunction(() => {
+    const viewport=document.querySelector('.story-belt-viewport').getBoundingClientRect();
+    const cards=[...document.querySelectorAll('.story-belt-card')].map(card=>card.getBoundingClientRect());
+    return Math.abs(viewport.width-(innerWidth-64))<1&&
+     Math.min(...cards.map(card=>card.left))<viewport.left+19&&
+     Math.max(...cards.map(card=>card.right))>viewport.right-19;
+   },null,{timeout:5000});
    const resized=await page.locator('.story-belt-viewport').boundingBox(), visible=await geometry();
    ok(`rail fills ${width}px after resizing without page overflow`,Math.abs(resized.x-32)<1&&Math.abs(resized.width-(width-64))<1&&Math.min(...visible.map(c=>c.x))<19&&Math.max(...visible.map(c=>c.x+c.width))>resized.width-19&&await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   }
+  await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));
   await page.locator('.entry-secondary').focus();
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.locator('.story-belt.flowing').waitFor({state:'hidden'});

@@ -2,7 +2,7 @@
 """Validate source-checked Korean briefs; list uncovered news for editorial work.
 
 This validates structure and article identity, not factual accuracy. Authors must
-read each official source before adding a brief. The six-hour headline collector
+read each official source before adding a brief. The two-hour headline collector
 does not modify this separate file, so refreshes cannot erase checked summaries.
 """
 import argparse

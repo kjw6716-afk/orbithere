@@ -57,8 +57,15 @@ try{
         await page.keyboard.press('Escape');
         ok(`${name} Escape closes and restores focus`,await page.locator('#navToggle').evaluate(el=>el===document.activeElement&&el.getAttribute('aria-expanded')==='false'));
       }
-      if(process.env.ORBIT_QA_DIR && ['news','notes','main'].includes(name) && [390,1440].includes(width)){
+      if(process.env.ORBIT_QA_DIR && ['news','notes','main','guide'].includes(name) && [390,1440].includes(width)){
         await mkdir(process.env.ORBIT_QA_DIR,{recursive:true});
+        await page.evaluate(()=>document.fonts.ready);
+        if(name==='guide')await page.locator('#choose-tonight').scrollIntoViewIfNeeded();
+        if(name==='news'){
+          await page.getByRole('link',{name:'SpaceX',exact:true}).click();
+          await page.locator('[data-source="spacex"][aria-current="page"]').waitFor();
+          await page.locator('.news-summary').first().waitFor();
+        }
         await page.screenshot({path:`${process.env.ORBIT_QA_DIR}/${name}-${width}.png`});
       }
     }
@@ -130,10 +137,21 @@ try{
     await page.waitForFunction(()=>!document.querySelector('#reloadNews').disabled);
     ok('summary refresh failure preserves an already readable brief',await page.locator('.news-summary p').count()===row.summaryKo.length);
     await page.reload();await page.locator('.news-article').first().waitFor();
-    ok('first-load summary outage still offers the headline and original',await page.locator('.news-summary').count()===0 && await page.locator('.news-summary-pending').isVisible() && await page.getByRole('link',{name:'원문 읽기 ↗',exact:true}).isVisible());
+    ok('first-load summary outage offers the original without a promised summary',await page.locator('.news-summary').count()===0 && !(await page.locator('#newsList').innerText()).includes('준비 중') && await page.getByRole('link',{name:'원문 읽기 ↗',exact:true}).isVisible());
     summaryFailure=false;summaryResponse={version:1,items:[null,{...row,method:'draft'}]};
     await page.locator('#reloadNews').click();await page.waitForFunction(()=>!document.querySelector('#reloadNews').disabled);
     ok('a malformed summary entry cannot break news rendering',await page.locator('.news-summary').count()===0 && await page.locator('.news-article').count()===1);
+    feed.sources.forEach(s=>{s.status='ok';});
+    feed.checkedAt='2026-09-13T00:00:00Z';
+    await page.clock.setFixedTime(new Date('2026-09-13T04:00:00Z'));
+    await page.locator('#reloadNews').click();await page.waitForFunction(()=>!document.querySelector('#reloadNews').disabled);
+    ok('a four-hour-old list has no overdue notice',!(await page.locator('#newsStatus').textContent()).includes('4시간'));
+    await page.clock.setFixedTime(new Date('2026-09-13T04:00:01Z'));
+    await page.locator('#reloadNews').click();await page.waitForFunction(()=>!document.querySelector('#reloadNews').disabled);
+    ok('an overdue collection is explained without hiding original links',(await page.locator('#newsStatus').innerText()).includes('4시간') && await page.getByRole('link',{name:'원문 읽기 ↗',exact:true}).isVisible());
+    feed.checkedAt='2026-09-13T04:00:01Z';
+    await page.locator('#reloadNews').click();await page.waitForFunction(()=>!document.querySelector('#reloadNews').disabled);
+    ok('a refreshed collection clears the overdue notice',await page.locator('#newsStatus').isHidden());
     await ctx.close();
   }
   console.log(`Navigation and Korean news: ${checks} checks passed`);

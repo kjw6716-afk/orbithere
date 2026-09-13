@@ -728,6 +728,174 @@
       ],
       "checkedAt": "2026-09-12",
       "method": "source-checked"
+    },
+    {
+      "id": "e6c998265f6c7ce4",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#terafab",
+      "publishedAt": "2026-08-06T00:00:00Z",
+      "titleOriginal": "Breaking Ground on Terafab in Texas",
+      "titleKo": "텍사스에서 테라팹 건설 시작",
+      "summaryKo": [
+        "SpaceX와 Tesla가 텍사스에 반도체 공장 테라팹을 건설한다고 발표했습니다.",
+        "초기 투자 약 168억 달러와 최소 3,000명 고용을 계획했습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "aec0a47720977d60",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#first-starship-interplanetary-mission",
+      "publishedAt": "2026-05-21T00:00:00Z",
+      "titleOriginal": "FIRST STARSHIP INTERPLANETARY HUMAN SPACEFLIGHT MISSION",
+      "titleKo": "스타십의 첫 유인 행성 간 우주비행 임무 발표",
+      "summaryKo": [
+        "SpaceX가 춘 왕의 스타십 유인 화성 근접 비행 계획을 소개했습니다.",
+        "약 2년간 비행한 뒤 지구로 돌아오는 구상이며, 앞서 달 근접 비행에도 참여할 예정입니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "7f1eb04ef1cbf17d",
+      "source": "starlink",
+      "url": "https://starlink.com/kr/updates/space-safety-web-interface",
+      "publishedAt": "2026-05-21T00:00:00Z",
+      "titleOriginal": "우주 안전 웹 도구",
+      "titleKo": "우주 안전 웹 도구",
+      "summaryKo": [
+        "Starlink가 참여 위성 운용사에 무료로 제공하는 우주 안전 웹 도구를 소개했습니다.",
+        "궤적을 주고받고 위성 간 근접 위험을 살펴보며, 정기적으로 궤도 정보를 제출하면 예측 정확도에 대한 피드백도 받을 수 있습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "a28764a16b78c2ac",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#starship-v3",
+      "publishedAt": "2026-05-12T00:00:00Z",
+      "titleOriginal": "Introducing Starship V3",
+      "titleKo": "스타십 V3 소개",
+      "summaryKo": [
+        "SpaceX가 랩터 3 엔진을 사용하는 스타십·슈퍼헤비 V3의 설계 변경을 공개했습니다.",
+        "추진계와 도킹 장치를 개선해 재사용과 우주에서의 추진제 이송을 지원하도록 설계했습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "d937fb9b8f2dfd16",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#xai-joins-spacex",
+      "publishedAt": "2026-02-02T00:00:00Z",
+      "titleOriginal": "xAI joins SpaceX to Accelerate Humanity’s Future",
+      "titleKo": "xAI, SpaceX에 합류",
+      "summaryKo": [
+        "SpaceX가 인공지능 기업 xAI를 인수했다고 발표했습니다.",
+        "스타십을 활용한 궤도 데이터센터 구상을 제시했으며, 비용 절감 전망은 회사 측 추정입니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "7fc56caf5a65604d",
+      "source": "starlink",
+      "url": "https://starlink.com/kr/updates/stargaze",
+      "publishedAt": "2026-01-29T00:00:00Z",
+      "titleOriginal": "Stargaze: SpaceX의 우주 상황 인식 시스템",
+      "titleKo": "Stargaze: SpaceX의 우주 상황 인식 시스템",
+      "summaryKo": [
+        "SpaceX가 위성에 탑재한 별 추적기의 관측을 이용해 주변 물체의 궤도를 추정하는 Stargaze를 소개했습니다.",
+        "2026년 1월 발표 당시, 궤도 정보를 공유하는 운용사에 충돌 위험 분석 자료를 그해 봄부터 무료로 제공할 계획이라고 밝혔습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "522111233c7d9298",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#moon-and-beyond",
+      "publishedAt": "2025-10-30T00:00:00Z",
+      "titleOriginal": "To the Moon and Beyond",
+      "titleKo": "달을 넘어 더 먼 우주로",
+      "summaryKo": [
+        "SpaceX가 아르테미스용 스타십 달 착륙선 개발 진척과 남은 시험을 설명했습니다.",
+        "2025년 발표 당시 장기 비행과 기체 간 추진제 이송 시험을 2026년 목표로 제시했습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "28b871d66d4c0ff5",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#multiuser-spaceport",
+      "publishedAt": "2025-09-18T00:00:00Z",
+      "titleOriginal": "Evolving the Multi-User Spaceport",
+      "titleKo": "여러 사용자가 함께 쓰는 우주항의 발전",
+      "summaryKo": [
+        "SpaceX가 여러 발사업체의 잦은 발사를 지원할 우주항 운영 방안을 제안했습니다.",
+        "추진제 공급시설 투자와 시험자료에 기반한 위험구역 조정, 관계기관 협력을 강조했습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "01a860a08d851d70",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#dtc-gen2-spectrum",
+      "publishedAt": "2025-09-08T00:00:00Z",
+      "titleOriginal": "THE FUTURE OF STARLINK DIRECT TO CELL",
+      "titleKo": "스타링크 다이렉트 투 셀의 미래",
+      "summaryKo": [
+        "SpaceX가 EchoStar의 미국 S밴드 50MHz와 글로벌 위성통신 주파수 이용권 매입 계약을 발표했습니다.",
+        "이를 활용해 일반 휴대폰용 차세대 위성통신의 용량을 확대할 계획입니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "555c7fcbba4e3088",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#flight-9-report",
+      "publishedAt": "2025-08-15T00:00:00Z",
+      "titleOriginal": "FLIGHT 9 AND SHIP 36 REPORT",
+      "titleKo": "스타십 9차 비행·36호 기체 보고서",
+      "summaryKo": [
+        "SpaceX가 스타십 9차 비행과 36호 기체 지상시험 사고의 유력 원인 및 개선책을 공개했습니다.",
+        "연료 공급·가압 계통과 압력용기의 문제를 지목하고 설계 변경과 검사를 강화한다고 설명했습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "cfb5f58ca87d63c4",
+      "source": "starlink",
+      "url": "https://starlink.com/kr/updates/starlink-beam-switching",
+      "publishedAt": "2025-07-30T00:00:00Z",
+      "titleOriginal": "Starlink 빔 전환",
+      "titleKo": "Starlink 빔 전환",
+      "summaryKo": [
+        "Starlink는 나무나 건물에 신호가 가려질 때 연결할 위성을 바꾸는 빔 전환 방식을 설명했습니다.",
+        "고정 단말기는 장애물 지도로 미리 연결을 고르고, 이동 중 갑작스러운 가림에는 0.1초 미만으로 전환한다고 밝혔습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "008c9ea74800563b",
+      "source": "starlink",
+      "url": "https://starlink.com/kr/updates/network-update",
+      "publishedAt": "2025-07-14T00:00:00Z",
+      "titleOriginal": "Starlink 네트워크 업데이트",
+      "titleKo": "Starlink 네트워크 업데이트",
+      "summaryKo": [
+        "Starlink는 미국 피크 시간대 다운로드 속도 중앙값이 2025년 7월 약 200Mbps, 왕복 지연시간 중앙값이 같은 해 6월 25.7ms였다고 발표했습니다.",
+        "위성 추가와 지상망 확충을 개선 요인으로 들었으며, 이 수치는 당시 미국 측정값으로 모든 지역의 속도를 뜻하지 않습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
     }
   ]
 }
