@@ -35,7 +35,7 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
-  <url><loc>https://orbithere.com/guide.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://orbithere.com/guide.html</loc><lastmod>2026-09-13</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://orbithere.com/about.html</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>https://orbithere.com/reading-sky.html</loc><lastmod>2026-09-12</lastmod></url>
   <url><loc>https://orbithere.com/news.html</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
