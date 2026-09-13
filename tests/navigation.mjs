@@ -63,6 +63,7 @@ try{
         if(name==='guide')await page.locator('#choose-tonight').scrollIntoViewIfNeeded();
         if(name==='news'){
           await page.getByRole('link',{name:'SpaceX',exact:true}).click();
+          await page.locator('[data-source="spacex"][aria-current="page"]').waitFor();
           await page.locator('.news-summary').first().waitFor();
         }
         await page.screenshot({path:`${process.env.ORBIT_QA_DIR}/${name}-${width}.png`});
