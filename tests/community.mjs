@@ -369,6 +369,62 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
 }
 try {
   {
+    const f = await fixture(), { page, state } = f;
+    state.posts = [];
+    await page.goto(base + '/lounge.html?embed=1');
+    await page.getByRole('link', { name: '한 줄 남기기', exact: true }).waitFor();
+    ok('empty board offers a first story without duplicate bottom writing controls',
+      await page.getByRole('heading', { name: '오늘 하늘은 어땠나요?' }).isVisible() &&
+      await page.locator('#writeBottom').isHidden());
+    await page.getByLabel('질문만 보기', { exact: true }).check();
+    await page.getByRole('link', { name: '질문 남기기', exact: true }).click();
+    ok('question invitation keeps the embedded route and preselects a question',
+      new URL(page.url()).searchParams.get('embed') === '1' &&
+      await page.locator('#orbitSelect').inputValue() === 'ask');
+    await page.locator('#cancelWriteLink').click();
+    await page.getByRole('link', { name: '전체 글 보기', exact: true }).click();
+    await page.getByRole('link', { name: '한 줄 남기기', exact: true }).waitFor();
+    ok('empty question recovery returns to the unified feed',
+      new URL(page.url()).hash === '#all' && !await page.getByLabel('질문만 보기', { exact: true }).isChecked());
+    await page.getByRole('link', { name: '한 줄 남기기', exact: true }).click();
+    ok('first story invitation still uses the free category', await page.locator('#orbitSelect').inputValue() === 'free');
+    await page.locator('#cancelWriteLink').click();
+    await page.getByLabel('질문만 보기', { exact: true }).check();
+    await page.getByLabel('게시글 찾기').fill('없는 단어');
+    await page.getByRole('button', { name: '검색', exact: true }).click();
+    await page.getByRole('link', { name: '검색어 지우기', exact: true }).click();
+    await page.getByRole('heading', { name: '아직 올라온 질문이 없어요' }).waitFor();
+    ok('search recovery removes only the query and preserves the question filter',
+      !new URL(page.url()).searchParams.has('q') && new URL(page.url()).hash === '#ask');
+    state.getFail = true;
+    await page.locator('#refreshList').click();
+    await page.getByRole('button', { name: '다시 불러오기', exact: true }).waitFor();
+    ok('a failed request is not presented as an empty community', await page.locator('.board-empty').count() === 0);
+    await f.close();
+  }
+  {
+    const f = await fixture(), { page, state } = f;
+    await page.goto(base + '/lounge.html#report');
+    await page.getByRole('link', { name: '기존 관측 후기', exact: true }).waitFor();
+    ok('old category URLs retain their filter and offer an escape',
+      state.boardCalls.some(b => b.p_orbit === 'report') && await page.locator('#clearChannel').isVisible());
+    await page.locator('#clearChannel').click();
+    await page.getByRole('link', { name: '기존 관측 후기', exact: true }).waitFor();
+    for (const width of [320, 390, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      const geometry = await page.evaluate(() => {
+        const list = document.getElementById('postList').getBoundingClientRect();
+        const news = document.querySelector('.news-brief--board').getBoundingClientRect();
+        const write = document.getElementById('writeBottom').getBoundingClientRect();
+        return { list: { bottom: list.bottom, right: list.right }, news: { top: news.top, left: news.left }, write: write.bottom,
+          fits: document.documentElement.scrollWidth <= innerWidth + 1 };
+      });
+      ok('community comes before news without overflow at ' + width + 'px', geometry.fits &&
+        (width < 1280 ? geometry.news.top >= Math.max(geometry.list.bottom, geometry.write) : geometry.news.left >= geometry.list.right));
+    }
+    await f.close();
+  }
+  {
     const f = await fixture({ nickname: '' }), { page, state } = f;
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(base + '/lounge.html?write=1');
@@ -579,13 +635,14 @@ try {
       author_id: null,
       image_paths: [],
     });
-    state.delays.gear = 250;
-    await page.locator('[data-orbit=gear]').click();
-    await page.locator('[data-orbit=report]').click();
+    state.delays.ask = 250;
+    await page.getByLabel('질문만 보기', { exact: true }).check();
+    await page.getByLabel('질문만 보기', { exact: true }).uncheck();
     await page.waitForTimeout(350);
     ok(
-      'slow previous category cannot overwrite the selected category',
-      (await page.locator('.row-title').filter({ hasText: '늦은 장비 글' }).count()) === 0,
+      'slow question response cannot overwrite the unified feed',
+      (await page.locator('.row-title').filter({ hasText: '늦은 장비 글' }).count()) === 1 &&
+        !await page.getByLabel('질문만 보기', { exact: true }).isChecked(),
     );
     await f.close();
   }

@@ -39,14 +39,14 @@
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css"
     />
     <link rel="stylesheet" href="/orbit.css?v=20260912-brand" />
-    <link rel="stylesheet" href="board.css?v=20260913-writing" />
+    <link rel="stylesheet" href="board.css?v=20260914-community" />
     <script>
       if (new URLSearchParams(location.search).get('embed'))
         document.documentElement.classList.add('embed');
     </script>
     <script src="orbit-config.js"></script>
     <script src="visits.js" defer></script>
-    <link rel="stylesheet" href="news-brief.css?v=20260912-companies">
+    <link rel="stylesheet" href="news-brief.css?v=20260914-community">
     <script src="news-data.js?v=20260912-companies" defer></script>
     <script src="news-brief.js?v=20260912-companies" defer></script>
   <link rel="stylesheet" href="site-nav.css?v=20260912-navigation">
@@ -83,23 +83,13 @@
           </div>
           <a class="button primary" id="writeTop" href="lounge.html?write=1">글쓰기</a>
         </header>
-        <aside class="news-brief news-brief--board" data-news-brief aria-labelledby="newsBriefHeading">
-          <h2 class="news-brief-heading" id="newsBriefHeading">최신 우주 뉴스</h2>
-          <ul class="news-brief-list" aria-label="최신 뉴스 미리보기" aria-live="off"></ul>
-          <p class="news-brief-notice">공식 기관의 우주 소식을 모았어요.</p>
-          <div class="news-brief-footer">
-            <a class="news-brief-all" href="news.html" target="_top">우주 뉴스 전체보기 →</a>
-            <div class="news-brief-controls" role="group" aria-label="뉴스 넘기기" hidden>
-              <button type="button" data-news-prev aria-label="이전 뉴스">‹</button>
-              <span class="news-brief-count" aria-hidden="true"></span>
-              <button type="button" data-news-next aria-label="다음 뉴스">›</button>
-              <button type="button" data-news-toggle aria-label="뉴스 자동 전환 정지">정지</button>
-            </div>
-            <button class="text-button" type="button" data-news-retry hidden>다시 불러오기</button>
+        <div class="board-filters" role="group" aria-label="게시글 필터">
+          <p class="board-filter-label" id="activeChannel">모든 이야기</p>
+          <div class="board-filter-actions">
+            <a class="text-button" id="clearChannel" data-board-nav href="lounge.html#all" hidden>전체 글 보기</a>
+            <label class="question-filter" for="questionFilter"><input type="checkbox" id="questionFilter">질문만 보기</label>
           </div>
-          <span class="news-brief-sr" role="status" aria-live="polite"></span>
-        </aside>
-        <nav class="board-tabs" id="orbitTabs" aria-label="게시판 분류"></nav>
+        </div>
         <form class="board-search" id="feedSearch" role="search">
           <label class="sr-only" for="searchInput">게시글 찾기</label
           ><input
@@ -123,6 +113,22 @@
         <a class="button primary bottom-write" id="writeBottom" href="lounge.html?write=1"
           >글쓰기</a
         >
+        <aside class="news-brief news-brief--board" data-news-brief aria-labelledby="newsBriefHeading">
+          <h2 class="news-brief-heading" id="newsBriefHeading">최신 우주 뉴스</h2>
+          <ul class="news-brief-list" aria-label="최신 뉴스 미리보기" aria-live="off"></ul>
+          <p class="news-brief-notice">공식 기관의 우주 소식을 모았어요.</p>
+          <div class="news-brief-footer">
+            <a class="news-brief-all" href="news.html" target="_top">우주 뉴스 전체보기 →</a>
+            <div class="news-brief-controls" role="group" aria-label="뉴스 넘기기" hidden>
+              <button type="button" data-news-prev aria-label="이전 뉴스">‹</button>
+              <span class="news-brief-count" aria-hidden="true"></span>
+              <button type="button" data-news-next aria-label="다음 뉴스">›</button>
+              <button type="button" data-news-toggle aria-label="뉴스 자동 전환 정지">정지</button>
+            </div>
+            <button class="text-button" type="button" data-news-retry hidden>다시 불러오기</button>
+          </div>
+          <span class="news-brief-sr" role="status" aria-live="polite"></span>
+        </aside>
       </section>
       <section id="detailView" hidden>
         <a id="backToFeed" class="back-link" href="lounge.html">← 목록</a>
@@ -254,7 +260,7 @@
     <script src="board-media.js?v=20260912-board"></script>
     <script src="board-writing.js?v=20260913-writing"></script>
     <script src="board-glossary.js?v=20260913-writing"></script>
-    <script src="lounge.js?v=20260913-writing"></script>
+    <script src="lounge.js?v=20260914-community"></script>
   </div></div>
 <script src="site-nav.js?v=20260912-navigation"></script>
 </body>
