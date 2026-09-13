@@ -1,10 +1,12 @@
 import copy
 from datetime import datetime
+from email.utils import parsedate_to_datetime
 import json
 from pathlib import Path
 import sys
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
@@ -99,6 +101,36 @@ class EditorialTests(unittest.TestCase):
         self.assertFalse(any(second['title'] in text for text in rendered.values()))
         self.assertIn('stories/moon-face-and-phases.html', rendered)
         self.assertNotIn('notes.html</loc>', rendered['sitemap.xml'])
+
+    def test_rss_contains_full_published_story_and_valid_dates(self):
+        day = '2026-09-12'
+        rss = stories.render_rss([(self.article, day)])
+        channel = ET.fromstring(rss).find('channel')
+        self.assertEqual(channel.findtext('link'), 'https://orbithere.com/stories.html')
+        item = channel.find('item')
+        self.assertEqual(item.findtext('guid'),
+                         f'https://orbithere.com/stories/{self.article["id"]}.html')
+        self.assertEqual(parsedate_to_datetime(item.findtext('pubDate')).utcoffset().total_seconds(), 9 * 3600)
+        description = item.findtext('description')
+        for section in self.article['sections']:
+            self.assertIn(section['heading'], description)
+            for paragraph in section['paragraphs']:
+                self.assertIn(paragraph, description)
+        self.assertIn(self.article['takeaway'], description)
+        self.assertIn(self.article['sources'][0]['title'], description)
+        self.assertNotIn(self.article['sources'][0]['url'], description)
+
+    def test_rss_keeps_only_the_latest_twenty_items(self):
+        items = []
+        for n in range(22):
+            article = copy.deepcopy(self.article)
+            article.update(id=f'rss-story-{n}', title=f'RSS 최신 이야기 순서 확인 {n}')
+            items.append((article, '2026-09-12'))
+        channel = ET.fromstring(stories.render_rss(items)).find('channel')
+        links = [item.findtext('link') for item in channel.findall('item')]
+        self.assertEqual(len(links), 20)
+        self.assertTrue(links[0].endswith('/rss-story-0.html'))
+        self.assertTrue(links[-1].endswith('/rss-story-19.html'))
 
     def test_empty_archive_has_working_fallback(self):
         html = stories.render_list([])
