@@ -45,13 +45,13 @@ jobs:
       - name: 발행 기록과 공개 페이지 저장
         id: publish
         run: |
-          if git diff --quiet -- _editorial/published.json stories.html stories/ index.html main.html sitemap.xml && [ -z "$(git ls-files --others --exclude-standard stories/)" ]; then
+          if git diff --quiet -- _editorial/published.json stories.html stories/ index.html main.html sitemap.xml rss.xml && [ -z "$(git ls-files --others --exclude-standard stories/ rss.xml)" ]; then
             echo 'changed=false' >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add _editorial/published.json stories/ stories.html index.html main.html sitemap.xml
+          git add _editorial/published.json stories/ stories.html index.html main.html sitemap.xml rss.xml
           git commit -m 'content: publish reviewed ORBIT story'
           # If main changed concurrently, fail visibly. Never overwrite newer work.
           git push origin HEAD:main
