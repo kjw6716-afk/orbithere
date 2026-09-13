@@ -6,6 +6,7 @@ This renderer never calls a model or treats a successful syntax check as fact ch
 """
 import argparse
 from datetime import date, datetime
+from email.utils import format_datetime
 import hashlib
 from html import escape
 import json
@@ -158,6 +159,55 @@ def esc(value):
     return escape(str(value), quote=True)
 
 
+def rss_date(day):
+    published = date.fromisoformat(day)
+    return format_datetime(datetime(published.year, published.month, published.day,
+                                    tzinfo=ZoneInfo('Asia/Seoul')))
+
+
+def render_rss_body(article):
+    body = [f'<p>{esc(article["summary"])}</p>']
+    for section in article['sections']:
+        body.append(f'<h2>{esc(section["heading"])}</h2>')
+        body.extend(f'<p>{esc(paragraph)}</p>' for paragraph in section['paragraphs'])
+    body.append(f'<h2>오늘 기억할 한 가지</h2><p>{esc(article["takeaway"])}</p>')
+    body.append('<h2>이 이야기를 확인한 자료</h2><ol>')
+    body.extend(f'<li>{esc(source["title"])} · 자료 확인 {esc(source["checkedAt"])}</li>'
+                for source in article['sources'])
+    body.append('</ol>')
+    return ''.join(body)
+
+
+def render_rss(items):
+    # RSS announces recent releases; the sitemap remains the complete URL inventory.
+    items = items[:20]
+    channel = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<rss version="2.0">',
+        '<channel>',
+        '<title>ORBIT 우주 이야기</title>',
+        '<link>https://orbithere.com/stories.html</link>',
+        '<description>달과 행성, 별과 우주, 우주 탐사의 궁금증을 공식 자료와 함께 쉽게 풀어주는 이야기입니다.</description>',
+        '<language>ko-KR</language>',
+    ]
+    if items:
+        channel.append(f'<lastBuildDate>{rss_date(items[0][1])}</lastBuildDate>')
+    for article, day in items:
+        url = f'https://orbithere.com/stories/{article["id"]}.html'
+        channel.extend([
+            '<item>',
+            f'<title>{esc(article["title"])}</title>',
+            f'<link>{url}</link>',
+            f'<guid isPermaLink="true">{url}</guid>',
+            f'<pubDate>{rss_date(day)}</pubDate>',
+            f'<category>{esc(article["category"])}</category>',
+            f'<description>{esc(render_rss_body(article))}</description>',
+            '</item>',
+        ])
+    channel.extend(['</channel>', '</rss>'])
+    return '\n'.join(channel) + '\n'
+
+
 def json_script(value):
     return json.dumps(value, ensure_ascii=False).replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
 
@@ -176,6 +226,7 @@ def shell(title, description, path, body, prefix='', schema=None, noindex=False,
 <meta name="color-scheme" content="dark"><meta name="theme-color" content="#0F172A">
 {'<meta name="robots" content="noindex,follow">' if noindex else ''}
 <link rel="canonical" href="{canonical}">
+<link rel="alternate" type="application/rss+xml" title="ORBIT 우주 이야기 RSS" href="https://orbithere.com/rss.xml">
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
 <meta property="og:type" content="{'article' if schema else 'website'}"><meta property="og:site_name" content="Orbit">
@@ -274,7 +325,7 @@ def render_teaser(items, carousel=False):
 
 def outputs(articles, ledger, root=ROOT):
     items = [(articles[item['id']], item['date']) for item in sorted(reversed(ledger['items']), key=lambda i: i['date'], reverse=True)]
-    result = {'stories.html': render_list(items)}
+    result = {'stories.html': render_list(items), 'rss.xml': render_rss(items)}
     result.update({f'stories/{a["id"]}.html': render_article(a, day) for a, day in items})
     for filename in ('index.html', 'main.html'):
         src = (root / filename).read_text()
