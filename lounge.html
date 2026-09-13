@@ -39,7 +39,7 @@
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css"
     />
     <link rel="stylesheet" href="/orbit.css?v=20260912-brand" />
-    <link rel="stylesheet" href="board.css?v=20260914-community" />
+    <link rel="stylesheet" href="board.css?v=20260914-activity" />
     <script>
       if (new URLSearchParams(location.search).get('embed'))
         document.documentElement.classList.add('embed');
@@ -78,11 +78,19 @@
       <section id="listView">
         <header class="board-heading">
           <div>
-            <h1>별빛 게시판</h1>
-            <p>오늘 본 하늘부터, 아직 모르는 별까지.</p>
+            <h1 id="boardTitle">별빛 게시판</h1>
+            <p id="boardIntro">오늘 본 하늘부터, 아직 모르는 별까지.</p>
           </div>
-          <a class="button primary" id="writeTop" href="lounge.html?write=1">글쓰기</a>
+          <div class="board-heading-actions">
+            <a class="button subtle" id="activityLink" data-board-nav href="lounge.html?activity=mine">내 활동 <span class="activity-badge" id="activityBadge" hidden></span></a>
+            <a class="button primary" id="writeTop" href="lounge.html?write=1">글쓰기</a>
+          </div>
         </header>
+        <div class="activity-status" id="activityStatus" role="status" hidden>새 답글을 확인하지 못했어요. <button class="text-button" id="activityRetry" type="button">다시 확인</button></div>
+        <div class="activity-panel" id="activityPanel" hidden>
+          <nav class="activity-tabs" aria-label="내 활동 분류" id="activityTabs"></nav>
+          <p class="activity-note">이 브라우저에서 남긴 글과 댓글을 모았어요. 브라우저 데이터를 지우거나 다른 기기로 옮기면 이전 활동을 이어서 확인할 수 없어요.</p>
+        </div>
         <div class="board-filters" role="group" aria-label="게시글 필터">
           <p class="board-filter-label" id="activeChannel">모든 이야기</p>
           <div class="board-filter-actions">
@@ -132,6 +140,8 @@
       </section>
       <section id="detailView" hidden>
         <a id="backToFeed" class="back-link" href="lounge.html">← 목록</a>
+        <a id="detailActivityLink" class="back-link detail-activity-link" data-board-nav href="lounge.html?activity=mine">내 활동에서 다시 찾기 →</a>
+        <div id="readSyncStatus" class="activity-status" role="status" hidden>읽음 상태를 저장하지 못했어요. <button id="readSyncRetry" class="text-button" type="button">다시 저장</button></div>
         <article id="postDetail" tabindex="-1"></article>
       </section>
       <section id="editorView" hidden>
@@ -260,7 +270,8 @@
     <script src="board-media.js?v=20260912-board"></script>
     <script src="board-writing.js?v=20260913-writing"></script>
     <script src="board-glossary.js?v=20260913-writing"></script>
-    <script src="lounge.js?v=20260914-community"></script>
+    <script src="board-activity.js?v=20260914-activity"></script>
+    <script src="lounge.js?v=20260914-activity"></script>
   </div></div>
 <script src="site-nav.js?v=20260912-navigation"></script>
 </body>

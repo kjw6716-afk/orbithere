@@ -29,7 +29,7 @@
   },
   "sb-unwxpuvfqyjhgrcrmuhu-auth-token": {
     "section": "storage-auth",
-    "purpose": "Supabase SDK 인증 유지"
+    "purpose": "Supabase SDK 인증 유지·내 활동과 새 답글 구분"
   },
   "orbit_zodiac": {
     "section": "storage-legacy",

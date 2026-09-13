@@ -21,6 +21,7 @@
     commentSeq = 0,
     view = '',
     channel = 'all',
+    activity = '',
     query = '',
     posts = [],
     more = false,
@@ -41,6 +42,54 @@
     reported = new Set(),
     boardReady = false,
     activeURL = location.href;
+  var activityScopes = [['mine', '내 글'], ['joined', '참여한 글'], ['unread', '새 답글']],
+    summarySeq = 0, summaryTime = 0, unreadThreads = 0, commentsLoaded = false;
+  var activityReader = OrbitBoardActivity.createReader({
+    client: sb,
+    user: function () { return userId; },
+    invalidate: function () { cache = null; },
+    changed: function () { cache = null; $('readSyncStatus').hidden = true; refreshActivity(); },
+    error: function () { $('readSyncStatus').hidden = false; },
+  });
+  function activityURL(scope) {
+    var u = new URL('lounge.html', location.href);
+    if (embed) u.searchParams.set('embed', '1');
+    if (scope) u.searchParams.set('activity', scope);
+    u.hash = 'all';
+    return u.pathname + u.search + u.hash;
+  }
+  function updateActivityLink() {
+    $('activityLink').href = activityURL(activity ? '' : unreadThreads ? 'unread' : 'mine');
+    $('activityLink').firstChild.textContent = activity ? '전체 글 ' : '내 활동 ';
+    $('activityBadge').hidden = !!activity || !unreadThreads;
+    $('activityBadge').textContent = '새 답글 ' + (unreadThreads > 99 ? '99+' : unreadThreads);
+  }
+  async function refreshActivity() {
+    var seq = ++summarySeq, actor = userId;
+    if (!actor) { unreadThreads = 0; updateActivityLink(); $('activityStatus').hidden = true; return; }
+    try {
+      var result = checked(await sb.rpc('board_activity_summary'));
+      if (seq !== summarySeq || userId !== actor) return;
+      unreadThreads = Math.max(0, Number(result) || 0);
+      summaryTime = Date.now();
+      $('activityStatus').hidden = true;
+      updateActivityLink();
+    } catch (_) {
+      if (seq === summarySeq && userId === actor) $('activityStatus').hidden = false;
+    }
+  }
+  function activityHeading() {
+    $('boardTitle').textContent = activity ? '내 활동' : '별빛 게시판';
+    $('boardIntro').textContent = activity ? '내가 남긴 이야기와 이어지는 대화를 확인해요.' : '오늘 본 하늘부터, 아직 모르는 별까지.';
+    $('activityPanel').hidden = !activity;
+    document.querySelector('.board-filters').hidden = !!activity;
+    $('activityTabs').innerHTML = activityScopes.map(function (scope) {
+      return '<a data-board-nav href="' + esc(activityURL(scope[0])) + '"' +
+        (activity === scope[0] ? ' aria-current="page"' : '') + '>' + scope[1] + '</a>';
+    }).join('');
+    $('detailActivityLink').href = activityURL(activity || 'mine');
+    updateActivityLink();
+  }
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -163,6 +212,7 @@
   function url(options) {
     var u = new URL('lounge.html', location.href);
     if (embed) u.searchParams.set('embed', '1');
+    if (activity) u.searchParams.set('activity', activity);
     if (query) u.searchParams.set('q', query);
     u.hash = channel;
     if (options && options.post) u.searchParams.set('post', options.post);
@@ -222,10 +272,10 @@
     if (!canLeave()) return;
     if (view === 'list')
       cache = {
-        key: channel + '|' + query,
+        key: activity + '|' + channel + '|' + query,
         posts: posts.slice(),
         more: more,
-        pins: $('pinnedPosts').innerHTML,
+        pins: activity || $('pinnedPosts').hidden ? '' : $('pinnedPosts').innerHTML,
         scroll: window.scrollY,
       };
     history[replace ? 'replaceState' : 'pushState'](null, '', href);
@@ -280,13 +330,23 @@
   }
   function emptyList() {
     var title, message, action, href;
-    if (query) {
+    if (activity && !userId) {
+      title = '이 브라우저에서 시작한 활동이 없어요';
+      message = '글이나 댓글을 남기면 여기서 다시 찾을 수 있어요. 닉네임이 같아도 다른 브라우저의 글은 연결되지 않아요.';
+      action = '이야기 둘러보기'; href = activityURL('');
+    } else if (query) {
       title = '검색 결과가 없어요';
       message = '다른 단어로 찾아보거나 검색어를 지워보세요.';
       action = '검색어 지우기';
       var clear = new URL(url(), location.href);
       clear.searchParams.delete('q');
       href = clear.pathname + clear.search + clear.hash;
+    } else if (activity) {
+      title = activity === 'unread' ? '새로 확인할 답글이 없어요' : activity === 'joined' ? '아직 참여한 대화가 없어요' : '아직 남긴 글이 없어요';
+      message = activity === 'unread' ? '내 글이나 댓글 단 글에 새 답글이 달리면 여기서 확인할 수 있어요.' :
+        activity === 'joined' ? '다른 사람의 글에 댓글을 남기면 이곳에 모아드려요.' : '사진 없이 한 줄만 남겨도 좋아요.';
+      action = activity === 'mine' ? '한 줄 남기기' : '이야기 둘러보기';
+      href = activity === 'mine' ? url({ write: true }) : activityURL('');
     } else {
       title = channel === 'ask' ? '아직 올라온 질문이 없어요' :
         channel === 'all' ? '오늘 하늘은 어땠나요?' : '이 분류에는 아직 글이 없어요';
@@ -299,14 +359,14 @@
     var all = new URL(url(), location.href);
     all.hash = 'all';
     return '<div class="empty-state board-empty"><h2>' + title + '</h2><p>' + message + '</p>' +
-      (!query && channel === 'all' ? '<p class="empty-example">“퇴근길에 밝은 점 하나를 봤어요. 이름은 모르지만 한참 바라봤네요.”</p>' : '') +
+      (!activity && !query && channel === 'all' ? '<p class="empty-example">“퇴근길에 밝은 점 하나를 봤어요. 이름은 모르지만 한참 바라봤네요.”</p>' : '') +
       '<div class="empty-actions"><a class="button primary" data-board-nav href="' + esc(href) + '">' + action + '</a>' +
       (channel !== 'all' ? '<a class="text-button" data-board-nav href="' + esc(all.pathname + all.search + all.hash) + '">' +
         (query ? '모든 글에서 검색' : '전체 글 보기') + '</a>' : '') + '</div></div>';
   }
   function renderPosts() {
     $('feedContext').textContent =
-      (query ? '“' + query + '” 검색 · ' : label(channel) + ' · ') + posts.length + '개 표시';
+      (query ? '“' + query + '” 검색 · ' : (activity ? activityScopes.find(function (s) { return s[0] === activity; })[1] : label(channel)) + ' · ') + posts.length + '개 표시';
     $('postList').innerHTML = posts.length
       ? posts
           .map(function (p) {
@@ -317,6 +377,8 @@
               esc(p.id) +
               '"><div class="row-main"><div class="row-category">' +
               esc(label(p.orbit)) +
+              (activity && p.is_pinned ? ' · 공지' : '') +
+              (activity && Number(p.unread_count) > 0 ? '<span class="reply-badge">새 답글 ' + Math.min(999, Number(p.unread_count)) + '개</span>' : '') +
               '</div><a class="row-title" data-board-nav href="' +
               esc(href) +
               '">' +
@@ -367,8 +429,16 @@
     if (!posts.length)
       $('postList').innerHTML = '<p class="empty-state">게시글을 불러오고 있어요…</p>';
     try {
+      if (activity && !userId) {
+        posts = []; more = false; renderPosts();
+        $('pinnedPosts').hidden = true;
+        return;
+      }
       var requests = [
-        sb.rpc('board_posts', {
+        activity ? sb.rpc('board_activity_posts', {
+          p_scope: activity, p_query: query,
+          p_before: last ? last.created_at : null, p_before_id: last ? last.id : null, p_limit: 21,
+        }) : sb.rpc('board_posts', {
           p_orbit: channel === 'all' ? null : channel,
           p_query: query,
           p_before: last ? last.created_at : null,
@@ -377,7 +447,7 @@
           p_pinned: false,
         }),
       ];
-      if (!append) requests.push(sb.rpc('board_posts', { p_pinned: true, p_limit: 3 }));
+      if (!append && !activity) requests.push(sb.rpc('board_posts', { p_pinned: true, p_limit: 3 }));
       var results = await Promise.all(requests);
       if (token !== route) return;
       var rows = checked(results[0]);
@@ -396,7 +466,7 @@
       );
       revokeImages();
       renderPosts();
-      if (!append) {
+      if (!append && !activity) {
         var pins = results[1];
         if (!pins.error) {
           $('pinnedPosts').innerHTML = (pins.data || [])
@@ -546,6 +616,8 @@
       token = route,
       seq = ++commentSeq;
     if (!p) return;
+    commentsLoaded = false;
+    activityReader.reset();
     $('commentMessage').textContent = '댓글을 불러오는 중…';
     $('moreComments').disabled = true;
     try {
@@ -594,6 +666,8 @@
         ? '최근 댓글부터 ' + comments.length + '개 표시'
         : '첫 댓글을 남겨보세요.';
       $('moreComments').hidden = !commentsMore;
+      commentsLoaded = true;
+      activityReader.observe($('commentList'), p.id, comments);
     } catch (e) {
       if (token === route && seq === commentSeq)
         $('commentMessage').textContent =
@@ -656,6 +730,7 @@
       if (token !== route) return;
       input.value = '';
       status('댓글을 등록했어요.');
+      refreshActivity();
       await loadComments(false);
     } catch (e) {
       if (token === route) status('댓글 등록 실패 — ' + hint(e), true);
@@ -968,6 +1043,7 @@
       busy = false;
       lockEditor(false);
       status('글을 등록했어요.');
+      refreshActivity();
       navigate(url({ post: id }), true);
     } catch (e) {
       writeStatus(
@@ -982,6 +1058,9 @@
     }
   }
   async function showRoute() {
+    activityReader.reset();
+    commentsLoaded = false;
+    $('readSyncStatus').hidden = true;
     document.querySelectorAll('.glossary-dialog').forEach(function (dialog) { dialog.close(); });
     activeURL = location.href;
     var token = ++route;
@@ -991,11 +1070,13 @@
     revokeImages();
     var params = new URLSearchParams(location.search),
       h = location.hash.slice(1);
+    activity = activityScopes.some(function (s) { return s[0] === params.get('activity'); }) ? params.get('activity') : '';
     channel = channels.some(function (c) {
       return c[0] === h;
     })
       ? h
       : 'all';
+    if (activity) channel = 'all';
     query = (params.get('q') || '').trim().slice(0, 80);
     var id = params.get('post');
     view = id ? 'detail' : params.has('write') ? 'editor' : 'list';
@@ -1003,6 +1084,8 @@
       $(v + 'View').hidden = v !== view;
     });
     document.title = 'Orbit | 별빛 게시판';
+    activityHeading();
+    if (activity && view === 'list') document.title = '내 활동 | Orbit';
     $('backToFeed').href = $('cancelWriteLink').href = url();
     $('writeTop').href = $('writeBottom').href = url({ write: true });
     window.scrollTo(0, 0);
@@ -1021,11 +1104,12 @@
       return;
     }
     syncFilters();
+    refreshActivity();
     $('searchInput').value = query;
     $('clearSearch').hidden = !query;
     $('pageStatus').textContent = '';
     $('refreshList').disabled = false;
-    if (cache && cache.key === channel + '|' + query) {
+    if (cache && cache.key === activity + '|' + channel + '|' + query) {
       posts = cache.posts.slice();
       more = cache.more;
       $('pinnedPosts').innerHTML = cache.pins;
@@ -1035,6 +1119,7 @@
     } else {
       posts = [];
       more = false;
+      $('pinnedPosts').replaceChildren();
       $('pinnedPosts').hidden = true;
       $('loadMore').hidden = true;
       $('writeBottom').hidden = true;
@@ -1229,7 +1314,10 @@
     cache = null;
     status('');
     loadList(false);
+    refreshActivity();
   };
+  $('activityRetry').onclick = function () { refreshActivity(); };
+  $('readSyncRetry').onclick = function () { activityReader.retry(); };
   $('loadMore').onclick = function () {
     loadList(true);
   };
@@ -1256,6 +1344,11 @@
       ev.preventDefault();
       ev.returnValue = '';
     }
+  });
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { activityReader.reset(); return; }
+    if (Date.now() - summaryTime > 60000) refreshActivity();
+    if (view === 'detail' && detail && commentsLoaded) activityReader.observe($('commentList'), detail.id, comments);
   });
   window.addEventListener('message', function (ev) {
     if (
@@ -1287,5 +1380,24 @@
       return;
     }
     await showRoute();
+    sb.auth.onAuthStateChange(function (event, session) {
+      var next = session && session.user && session.user.id || null;
+      if (next === userId) return;
+      var previous = userId;
+      userId = next;
+      isAdmin = false;
+      if (previous || activity) cache = null;
+      activityReader.reset();
+      ++summarySeq;
+      unreadThreads = 0;
+      updateActivityLink();
+      if (previous) {
+        ++route;
+        ++commentSeq;
+        commentsLoaded = false;
+        if (activity && view === 'list') { posts = []; $('postList').replaceChildren(); }
+      }
+      if (view === 'list') setTimeout(showRoute, 0);
+    });
   })();
 })();
