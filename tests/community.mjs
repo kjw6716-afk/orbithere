@@ -78,9 +78,10 @@ function cursor(rows, time, id) {
     ? rows.filter((r) => r.created_at < time || (r.created_at === time && r.id < id))
     : rows;
 }
-async function fixture({ nickname = '관측자', version = 1, admin = false } = {}) {
+async function fixture({ nickname = '관측자', version = 1, admin = false, signedIn = false } = {}) {
   const context = await browser.newContext({ viewport: { width: 1200, height: 900 } });
   const state = {
+    receipts: new Set(), readCalls: [], activityCalls: [], activityFail: false, readFail: false,
     viewCalls: [],
     viewed: new Set(),
     viewFail: false,
@@ -125,8 +126,17 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
       if (nickname) localStorage.setItem('orbit_nickname', nickname);
       if (auth) localStorage.setItem('sb-unwxpuvfqyjhgrcrmuhu-auth-token', JSON.stringify(auth));
     },
-    { nickname, auth: admin ? session() : null },
+    { nickname, auth: admin || signedIn ? session() : null },
   );
+  function unreadRows(p) {
+    return state.comments.filter(c => c.post_id === p.id && c.author_id !== A && !state.receipts.has(c.id) &&
+      (p.author_id === A || state.comments.some(own => own.post_id === p.id && own.author_id === A &&
+        (own.created_at < c.created_at || own.created_at === c.created_at && own.id < c.id))));
+  }
+  function activityRows(scope) {
+    return state.posts.filter(p => scope === 'mine' ? p.author_id === A : scope === 'joined' ?
+      p.author_id !== A && state.comments.some(c => c.post_id === p.id && c.author_id === A) : unreadRows(p).length > 0);
+  }
   await context.route('**/*', async (route) => {
     const req = route.request(),
       url = new URL(req.url());
@@ -167,6 +177,23 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
       return state.observationVersion ? json(1) : json({ code: 'PGRST202', message: 'Not installed' }, 404);
     if (url.pathname.endsWith('/rpc/community_version')) return json(2);
     if (url.pathname.endsWith('/rpc/is_admin')) return json(admin);
+    if (url.pathname.endsWith('/rpc/board_activity_summary'))
+      return state.activityFail ? json({message:'activity unavailable'},503) : json(activityRows('unread').length);
+    if (url.pathname.endsWith('/rpc/board_activity_posts')) {
+      const b = req.postDataJSON(); state.activityCalls.push(b);
+      if (state.activityFail) return json({message:'activity unavailable'},503);
+      const rows = activityRows(b.p_scope).filter(p => !b.p_query || (p.title+' '+p.text).includes(b.p_query));
+      return json(cursor(ordered(rows),b.p_before,b.p_before_id).slice(0,b.p_limit).map(p => ({...p,
+        comment_count:state.comments.filter(c=>c.post_id===p.id).length,unread_count:unreadRows(p).length})));
+    }
+    if (url.pathname.endsWith('/rpc/mark_board_comments_read')) {
+      const b = req.postDataJSON(); state.readCalls.push(b);
+      if (state.readFail) return json({message:'receipt unavailable'},503);
+      const p=state.posts.find(p=>p.id===b.p_post_id);
+      const ids=p?unreadRows(p).filter(c=>b.p_comment_ids.includes(c.id)).map(c=>c.id):[];
+      ids.forEach(id=>state.receipts.add(id));
+      return json(ids.length);
+    }
     if (url.pathname.endsWith('/rpc/record_visit')) return json(null);
     if (url.pathname.endsWith('/rpc/board_posts')) {
       const b = req.postDataJSON();
@@ -368,6 +395,90 @@ async function fixture({ nickname = '관측자', version = 1, admin = false } = 
   };
 }
 try {
+
+  {
+    const f=await fixture({nickname:''}), {page,state}=f;
+    await page.goto(base+'/lounge.html?activity=mine&embed=1');
+    await page.getByRole('heading',{name:'이 브라우저에서 시작한 활동이 없어요'}).waitFor();
+    ok('viewing personal activity never creates an anonymous account or fetches someone else\'s posts', state.signups===0&&state.activityCalls.length===0);
+    await page.getByRole('link',{name:'이야기 둘러보기',exact:true}).click();
+    await page.locator('.board-row').waitFor();
+    ok('personal empty state returns to the embedded community',new URL(page.url()).searchParams.get('embed')==='1'&&!new URL(page.url()).searchParams.has('activity'));
+    await f.close();
+  }
+  {
+    const f=await fixture({signedIn:true}), {page,state}=f;
+    state.posts[0].author_id=A;
+    state.posts[0].text='긴 이야기입니다.\n'.repeat(150);
+    state.comments=Array.from({length:23},(_,i)=>({id:uid(300+i),post_id:P,nick:'답하는별',text:'새로운 답글 '+i,author_id:uid(99),created_at:new Date(Date.UTC(2026,8,13,10,i)).toISOString()}));
+    await page.goto(base+'/lounge.html');
+    await page.locator('#activityBadge').filter({hasText:'새 답글 1'}).waitFor();
+    await page.locator('#activityLink').click();
+    await page.locator('.reply-badge').filter({hasText:'23개'}).waitFor();
+    ok('the new reply badge opens unread conversations directly',new URL(page.url()).searchParams.get('activity')==='unread');
+    await page.locator('.row-title').click();
+    await page.locator('#commentMessage').filter({hasText:'20개 표시'}).waitFor();
+    ok('opening a long article does not mark offscreen replies read',state.readCalls.length===0);
+    const late={id:uid(900),post_id:P,nick:'늦은별',text:'화면을 연 뒤 달린 답글',author_id:uid(99),created_at:'2026-09-13T12:00:00Z'};
+    state.comments.push(late);
+    state.readFail=true;
+    await page.locator('.comment-item').first().scrollIntoViewIfNeeded();
+    await page.locator('#readSyncStatus').waitFor();
+    ok('failed read receipt keeps replies unread and offers retry',state.receipts.size===0&&await page.locator('#readSyncRetry').isVisible());
+    state.readFail=false;
+    const saved=page.waitForResponse(r=>r.url().endsWith('/rpc/mark_board_comments_read')&&r.status()===200);
+    await page.locator('#readSyncRetry').click();
+    await saved;
+    await page.locator('#readSyncStatus').waitFor({state:'hidden'});
+    ok('only rendered replies are acknowledged, excluding older pages and concurrent arrivals',state.receipts.size>0&&state.receipts.size<23&&![uid(300),uid(301),uid(302),late.id].some(id=>state.receipts.has(id)));
+    await page.locator('#backToFeed').click();
+    await page.locator('.reply-badge').waitFor();
+    ok('returning to activity retains unread replies and a clean personal route',new URL(page.url()).searchParams.get('activity')==='unread'&&await page.locator('.board-row').count()===1);
+    await page.reload();
+    await page.locator('.reply-badge').waitFor();
+    ok('personal activity and read state survive a page reload',state.receipts.size>0&&state.signups===0);
+    state.activityFail=true;
+    await page.locator('#refreshList').click();
+    await page.locator('#activityStatus').waitFor();
+    ok('activity service failure keeps the previously readable list',await page.locator('.board-row').count()===1);
+    state.activityFail=false;
+    await page.locator('#activityRetry').click();
+    await page.locator('#activityStatus').waitFor({state:'hidden'});
+    for(const width of [320,390,1440]) {
+      await page.setViewportSize({width,height:900});
+      ok('personal activity fits '+width+'px',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+    }
+    await f.close();
+  }
+  {
+    const f=await fixture({signedIn:true}),{page,state}=f;
+    state.posts=Array.from({length:23},(_,i)=>({id:uid(600+i),title:'내 이야기 '+i,text:'내용',nick:'나',orbit:'free',author_id:A,created_at:'2026-09-13T12:00:00Z',image_paths:[],is_pinned:i===22}));
+    state.posts.push({id:P,title:'다른 사람의 이야기',text:'내용',nick:'다른별',orbit:'free',author_id:uid(88),created_at:'2026-09-13T13:00:00Z',image_paths:[]});
+    state.comments=[{id:uid(800),post_id:P,nick:'나',text:'참여했어요',author_id:A,created_at:'2026-09-13T14:00:00Z'}];
+    await page.goto(base+'/lounge.html?activity=mine');
+    await page.locator('#feedContext').filter({hasText:'20개 표시'}).waitFor();
+    ok('personal feed includes owned pinned posts without unrelated notices',await page.locator('.row-title').filter({hasText:'내 이야기 22'}).count()===1&&await page.locator('.pinned-row').count()===0);
+    await page.locator('#loadMore').click();
+    await page.locator('#feedContext').filter({hasText:'23개 표시'}).waitFor();
+    ok('personal cursor pagination loads older posts once',new Set(await page.locator('.board-row').evaluateAll(rows=>rows.map(r=>r.id))).size===23);
+    await page.getByRole('link',{name:'참여한 글',exact:true}).click();
+    await page.getByRole('link',{name:'다른 사람의 이야기',exact:true}).waitFor();
+    ok('participated conversations are separate from authored posts',await page.locator('.board-row').count()===1);
+    await page.getByLabel('게시글 찾기').fill('존재하지 않는 단어');
+    await page.getByRole('button',{name:'검색',exact:true}).click();
+    await page.getByRole('link',{name:'검색어 지우기',exact:true}).click();
+    await page.locator('.row-title').waitFor();
+    ok('empty personal search restores its current activity scope',new URL(page.url()).searchParams.get('activity')==='joined'&&!new URL(page.url()).searchParams.has('q'));
+    await page.locator('#activityLink').click();
+    await page.locator('.pinned-row').waitFor();
+    await page.locator('#activityLink').click();
+    await page.locator('.row-title').first().click();
+    await page.locator('.detail-title').waitFor();
+    await page.locator('#backToFeed').click();
+    await page.locator('.row-title').first().waitFor();
+    ok('returning from a personal detail never restores notices from the public feed',await page.locator('#pinnedPosts').isHidden()&&await page.locator('.pinned-row').count()===0);
+    await f.close();
+  }
   {
     const f = await fixture(), { page, state } = f;
     state.posts = [];

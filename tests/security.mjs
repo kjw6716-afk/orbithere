@@ -636,5 +636,66 @@ check('account deletion removes private viewer records but retains totals',(awai
 await db.exec(`delete from posts where id='${viewPost}'`);
 check('post deletion cascades to its cumulative count',(await db.query(`select count(*)::int as n from post_view_counts where post_id='${viewPost}'`)).rows[0].n===0);
 
+
+
+// Private activity uses verified identities and receipts for exact comment IDs.
+await db.exec('reset role');
+const C='55555555-5555-4555-8555-555555555555', D='66666666-6666-4666-8666-666666666666', E='77777777-7777-4777-8777-777777777777';
+await db.exec(`insert into auth.users values('${C}'),('${D}'),('${E}');`);
+async function activityPost(actor, title) {
+ return (await as('authenticated',actor,`insert into posts(nick,title,orbit,text) values('활동자','${title}','free','문자 50%_ 기록') returning id`)).rows[0].id;
+}
+async function activityComment(actor, id, title) {
+ return (await as('authenticated',actor,`insert into comments(post_id,nick,text) values('${id}','참여자','${title}') returning id`)).rows[0].id;
+}
+const mine1=await activityPost(C,'내 첫 글'), mine2=await activityPost(C,'내 공지'), joined=await activityPost(D,'다른 대화');
+await as('authenticated',ADMIN,`update posts set is_pinned=true where id='${mine2}'`);
+const reply=await activityComment(D,mine1,'다른 사람의 답글');
+await activityComment(C,mine1,'내 댓글');
+const beforeJoin=await activityComment(D,joined,'참여 전 댓글'), ownJoin=await activityComment(C,joined,'참여'), afterJoin=await activityComment(D,joined,'참여 후 댓글');
+await db.exec('reset role');
+await db.exec(`update comments set created_at='2026-09-13T01:00:00Z' where id='${beforeJoin}';
+ update comments set created_at='2026-09-13T02:00:00Z' where id='${ownJoin}';
+ update comments set created_at='2026-09-13T03:00:00Z' where id='${afterJoin}';`);
+for(const fn of ["board_activity_posts()","board_activity_summary()",`mark_board_comments_read('${mine1}',array['${reply}']::uuid[])`]) {
+ await denied('anonymous role cannot access '+fn.split('(')[0],'anon',null,'select * from '+fn);
+ await denied('missing identity cannot access '+fn.split('(')[0],'authenticated',null,'select * from '+fn);
+}
+const mineRows=(await as('authenticated',C,`select * from board_activity_posts()`)).rows;
+check('mine includes only owned posts, including owned pinned posts',mineRows.length===2 && mineRows.every(p=>p.author_id===C) && mineRows.some(p=>p.id===mine2&&p.is_pinned));
+const joinedRows=(await as('authenticated',C,`select * from board_activity_posts('joined')`)).rows;
+check('participated feed excludes own posts and counts only replies after joining',joinedRows.length===1&&joinedRows[0].id===joined&&joinedRows[0].unread_count===1);
+check('own comments are not new replies',mineRows.find(p=>p.id===mine1).unread_count===1);
+check('summary counts unread conversations rather than individual comments',(await as('authenticated',C,'select board_activity_summary() as n')).rows[0].n===2);
+check('a different signed-in user has an independent empty activity feed',(await as('authenticated',E,'select * from board_activity_posts()')).rows.length===0);
+const firstPage=(await as('authenticated',C,`select * from board_activity_posts(p_limit:=1)`)).rows[0];
+const nextPage=(await as('authenticated',C,`select * from board_activity_posts(p_before:='${firstPage.created_at.toISOString()}',p_before_id:='${firstPage.id}',p_limit:=1)`)).rows;
+check('personal list cursor does not duplicate the previous page',nextPage.length===1&&nextPage[0].id!==firstPage.id);
+check('personal search keeps literal wildcard semantics',(await as('authenticated',C,`select id from board_activity_posts(p_query:='50%_')`)).rows.length===2);
+await denied('unknown activity scope is rejected','authenticated',C,`select * from board_activity_posts('someone-else')`);
+check('unrelated users cannot mark another conversation read',(await as('authenticated',E,`select mark_board_comments_read('${mine1}',array['${reply}']::uuid[]) as n`)).rows[0].n===0);
+check('comment IDs from a different post are ignored',(await as('authenticated',C,`select mark_board_comments_read('${mine1}',array['${afterJoin}']::uuid[]) as n`)).rows[0].n===0);
+check('a visible reply can be marked once',(await as('authenticated',C,`select mark_board_comments_read('${mine1}',array['${reply}']::uuid[]) as n`)).rows[0].n===1);
+check('read receipt retries are idempotent',(await as('authenticated',C,`select mark_board_comments_read('${mine1}',array['${reply}']::uuid[]) as n`)).rows[0].n===0);
+check('another account cannot read private receipts',(await as('authenticated',D,'select * from orbit_activity_private.read_comments')).rows.length===0);
+check('owner can read only their own receipt',(await as('authenticated',C,'select * from orbit_activity_private.read_comments')).rows.length===1);
+for(const statement of [`insert into orbit_activity_private.read_comments values('${D}','${reply}')`, `update orbit_activity_private.read_comments set user_id='${D}'`, 'delete from orbit_activity_private.read_comments', 'truncate orbit_activity_private.read_comments']) {
+ await denied('client cannot bypass the read receipt helper: '+statement.split(' ')[0],'authenticated',C,statement);
+}
+await denied('anonymous users cannot read receipts','anon',null,'select * from orbit_activity_private.read_comments');
+await denied('receipt requests have a strict batch bound','authenticated',C,`select mark_board_comments_read('${mine1}',array_fill('${reply}'::uuid,array[51]))`);
+const newer=await activityComment(D,mine1,'읽는 도중 새로 달린 답글');
+check('acknowledging a snapshot leaves later and unloaded replies unread',(await as('authenticated',C,`select unread_count from board_activity_posts('unread') where id='${mine1}'`)).rows[0].unread_count===1);
+await as('authenticated',C,`select mark_board_comments_read('${joined}',array['${afterJoin}']::uuid[])`);
+check('read state persists across role and session switches',(await as('authenticated',C,'select board_activity_summary() as n')).rows[0].n===1);
+await as('authenticated',D,`delete from comments where id='${reply}'`);
+check('comment deletion removes its receipt',(await as('authenticated',C,`select * from orbit_activity_private.read_comments where comment_id='${reply}'`)).rows.length===0);
+await as('authenticated',C,`select mark_board_comments_read('${mine1}',array['${newer}']::uuid[])`);
+await as('authenticated',C,`delete from posts where id='${mine1}'`);
+check('post deletion cascades to its replies and receipts',(await as('authenticated',C,`select * from orbit_activity_private.read_comments where comment_id='${newer}'`)).rows.length===0);
+await db.exec('reset role');
+await db.exec(`delete from auth.users where id='${C}'`);
+check('account deletion removes its private receipts',(await db.query(`select * from orbit_activity_private.read_comments where user_id='${C}'`)).rows.length===0);
+
 await db.close();
 console.log(`Security: ${count} checks passed`);
