@@ -73,6 +73,37 @@
         })
       : '';
   }
+  function viewLabel(value) {
+    var n = Number(value);
+    return '조회 ' + (value != null && Number.isSafeInteger(n) && n >= 0 ? n.toLocaleString('ko-KR') : '—');
+  }
+  async function loadPostViews(p, token) {
+    function show(value) {
+      if (token !== route || detail !== p) return;
+      p.view_count = value;
+      $('postViews').textContent = viewLabel(value);
+      // The cached list must show the count obtained after opening this post.
+      if (cache) {
+        cache.posts.forEach(function (row) { if (row.id === p.id) row.view_count = value; });
+        var pins = document.createElement('div');
+        pins.innerHTML = cache.pins;
+        var count = pins.querySelector('[data-post-views="' + p.id + '"]');
+        if (count) count.textContent = viewLabel(value);
+        cache.pins = pins.innerHTML;
+      }
+    }
+    try {
+      var counts = checked(await sb.from('post_view_counts').select('view_count').eq('post_id', p.id).maybeSingle());
+      show(counts ? counts.view_count : 0);
+    } catch (_) { /* An unavailable counter must never prevent reading. */ }
+    if (token !== route || detail !== p) return;
+    try {
+      await ensureWriter();
+      if (token !== route || detail !== p) return;
+      var count = checked(await sb.rpc('record_post_view', { p_post_id: p.id }));
+      if (count != null) show(count);
+    } catch (_) { /* Keep the last known count if authentication/counting fails. */ }
+  }
   function status(message, error) {
     $('loungeStatus').textContent = message || '';
     $('loungeStatus').classList.toggle('error', !!error);
@@ -255,7 +286,7 @@
               esc(p.created_at) +
               '">' +
               esc(date(p.created_at)) +
-              '</time></div></div><div class="row-side">' +
+              '</time><span class="view-count">' + viewLabel(p.view_count) + '</span></div></div><div class="row-side">' +
               (images.length
                 ? '<a class="row-thumb-link" data-board-nav href="' +
                   esc(href) +
@@ -337,7 +368,7 @@
                 esc(url({ post: p.id })) +
                 '"><span class="pin-badge">공지</span><span class="pin-title">' +
                 esc(p.title) +
-                '</span><span class="pin-arrow" aria-hidden="true">›</span></a>'
+                '</span><span class="view-count" data-post-views="' + esc(p.id) + '">' + viewLabel(p.view_count) + '</span><span class="pin-arrow" aria-hidden="true">›</span></a>'
               );
             })
             .join('');
@@ -400,7 +431,7 @@
         esc(p.created_at) +
         '">' +
         esc(date(p.created_at)) +
-        '</time></div><div class="detail-body"></div><div class="detail-images">' +
+        '</time><span class="view-count" id="postViews">조회 —</span></div><div class="detail-body"></div><div class="detail-images">' +
         (p.image_paths || [])
           .map(function (path, i) {
             return (
@@ -443,6 +474,7 @@
       hydrateImages($('postDetail'), token);
       loadComments(false);
       loadReactions(p, token);
+      loadPostViews(p, token);
       $('postDetail').focus({ preventScroll: true });
     } catch (e) {
       if (token !== route) return;

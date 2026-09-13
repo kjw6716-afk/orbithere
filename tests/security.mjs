@@ -576,5 +576,36 @@ await denied(
   A,
   `select * from orbit_private.board_uploads`,
 );
+
+// Real SQL view counting: clients cannot set totals or inspect viewer history.
+await db.exec('reset role');
+const viewPost = (await db.query(`select id from public.posts limit 1`)).rows[0].id;
+await denied('unauthenticated view increments are rejected','anon',null,`select record_post_view('${viewPost}')`);
+await denied('a role without a valid user cannot increment','authenticated',null,`select record_post_view('${viewPost}')`);
+check('first detail view increments once',(await as('authenticated',A,`select record_post_view('${viewPost}') as n`)).rows[0].n===1);
+check('retrying and refreshing in 30 minutes do not inflate views',(await as('authenticated',A,`select record_post_view('${viewPost}') as n`)).rows[0].n===1);
+check('another viewer increments independently',(await as('authenticated',B,`select record_post_view('${viewPost}') as n`)).rows[0].n===2);
+check('public can read only the cumulative count',(await as('anon',null,`select view_count from post_view_counts where post_id='${viewPost}'`)).rows[0].view_count===2);
+for (const role of ['anon','authenticated']) {
+ await denied(role+' cannot forge a count',role,A,`insert into post_view_counts values('${viewPost}',99999)`);
+ await denied(role+' cannot overwrite a count',role,A,`update post_view_counts set view_count=99999`);
+ await denied(role+' cannot delete counters',role,A,`delete from post_view_counts`);
+ await denied(role+' cannot truncate counters',role,A,`truncate post_view_counts`);
+ await denied(role+' cannot inspect viewer records',role,A,`select * from orbit_view_private.recent_views`);
+}
+await db.exec('reset role');
+await db.exec(`update orbit_view_private.recent_views set viewed_at=now()-interval '31 minutes'`);
+check('the same viewer counts again after the window expires',(await as('authenticated',A,`select record_post_view('${viewPost}') as n`)).rows[0].n===3);
+await db.exec('reset role');
+check('expired viewer records are removed while the refreshed record remains',(await db.query(`select viewer_id from orbit_view_private.recent_views`)).rows.every(r=>r.viewer_id===A));
+check('deleted or unknown posts do not create views',(await as('authenticated',A,`select record_post_view(gen_random_uuid()) as n`)).rows[0].n===null);
+const row=(await as('anon',null,`select * from board_posts(p_pinned:=(select is_pinned from posts where id='${viewPost}')) where id='${viewPost}'`)).rows[0];
+check('board list includes the authoritative count without the body',row.view_count===3&&!('text' in row));
+await db.exec('reset role');
+await db.exec(`delete from auth.users where id='${A}'`);
+check('account deletion removes private viewer records but retains totals',(await db.query(`select count(*)::int as n from orbit_view_private.recent_views where viewer_id='${A}'`)).rows[0].n===0&&(await db.query(`select view_count from post_view_counts where post_id='${viewPost}'`)).rows[0].view_count===3);
+await db.exec(`delete from posts where id='${viewPost}'`);
+check('post deletion cascades to its cumulative count',(await db.query(`select count(*)::int as n from post_view_counts where post_id='${viewPost}'`)).rows[0].n===0);
+
 await db.close();
 console.log(`Security: ${count} checks passed`);
