@@ -269,28 +269,40 @@
       loadImage(img, img.dataset.path, token);
     });
   }
-  function tabs() {
-    $('orbitTabs').innerHTML =
-      channels
-        .map(function (c) {
-          var u = new URL(url(), location.href);
-          u.hash = c[0];
-          return (
-            '<a data-orbit="' +
-            c[0] +
-            '" href="' +
-            esc(u.pathname + u.search + u.hash) +
-            '"' +
-            (channel === c[0] ? ' aria-current="page"' : '') +
-            '>' +
-            c[1] +
-            '</a>'
-          );
-        })
-        .join('') +
-      '<a href="news.html"' +
-      (embed ? ' target="_top"' : '') +
-      '>뉴스 ↗</a>';
+  function syncFilters() {
+    $('activeChannel').textContent = channel === 'all' ? '모든 이야기' : label(channel);
+    $('questionFilter').checked = channel === 'ask';
+    var all = new URL(url(), location.href);
+    all.hash = 'all';
+    $('clearChannel').href = all.pathname + all.search + all.hash;
+    // Existing category URLs still work, with a visible way back to the full list.
+    $('clearChannel').hidden = channel === 'all' || channel === 'ask';
+  }
+  function emptyList() {
+    var title, message, action, href;
+    if (query) {
+      title = '검색 결과가 없어요';
+      message = '다른 단어로 찾아보거나 검색어를 지워보세요.';
+      action = '검색어 지우기';
+      var clear = new URL(url(), location.href);
+      clear.searchParams.delete('q');
+      href = clear.pathname + clear.search + clear.hash;
+    } else {
+      title = channel === 'ask' ? '아직 올라온 질문이 없어요' :
+        channel === 'all' ? '오늘 하늘은 어땠나요?' : '이 분류에는 아직 글이 없어요';
+      message = channel === 'ask' ? '별 이름을 몰라도 괜찮아요. 궁금했던 것부터 물어보세요.' :
+        channel === 'all' ? '아직 나눈 이야기가 없어요. 사진 없이 한 줄만 남겨도 좋아요.' :
+        '오늘 본 하늘이나 문득 떠오른 생각을 편하게 나눠주세요.';
+      action = channel === 'ask' ? '질문 남기기' : '한 줄 남기기';
+      href = url({ write: true });
+    }
+    var all = new URL(url(), location.href);
+    all.hash = 'all';
+    return '<div class="empty-state board-empty"><h2>' + title + '</h2><p>' + message + '</p>' +
+      (!query && channel === 'all' ? '<p class="empty-example">“퇴근길에 밝은 점 하나를 봤어요. 이름은 모르지만 한참 바라봤네요.”</p>' : '') +
+      '<div class="empty-actions"><a class="button primary" data-board-nav href="' + esc(href) + '">' + action + '</a>' +
+      (channel !== 'all' ? '<a class="text-button" data-board-nav href="' + esc(all.pathname + all.search + all.hash) + '">' +
+        (query ? '모든 글에서 검색' : '전체 글 보기') + '</a>' : '') + '</div></div>';
   }
   function renderPosts() {
     $('feedContext').textContent =
@@ -337,11 +349,8 @@
             );
           })
           .join('')
-      : '<div class="empty-state"><p>' +
-        (query
-          ? '검색 결과가 없어요. 다른 단어로 찾아보세요.'
-          : '아직 게시글이 없어요.<br>첫 관측 이야기를 남겨보세요.') +
-        '</p></div>';
+      : emptyList();
+    $('writeBottom').hidden = !posts.length;
     $('loadMore').hidden = !more;
     $('loadMore').disabled = listBusy;
     hydrateImages($('postList'), route);
@@ -1011,7 +1020,7 @@
           '<div class="empty-state"><h1>글 주소가 올바르지 않아요</h1><p>목록에서 다시 찾아주세요.</p></div>';
       return;
     }
-    tabs();
+    syncFilters();
     $('searchInput').value = query;
     $('clearSearch').hidden = !query;
     $('pageStatus').textContent = '';
@@ -1028,12 +1037,13 @@
       more = false;
       $('pinnedPosts').hidden = true;
       $('loadMore').hidden = true;
+      $('writeBottom').hidden = true;
       await loadList(false);
     }
   }
   document.addEventListener('click', async function (ev) {
     var link = ev.target.closest(
-      'a[data-board-nav],#writeTop,#writeBottom,#backToFeed,#cancelWriteLink,[data-orbit]',
+      'a[data-board-nav],#writeTop,#writeBottom,#backToFeed,#cancelWriteLink',
     );
     if (link && !ev.ctrlKey && !ev.metaKey && !ev.shiftKey && ev.button === 0) {
       ev.preventDefault();
@@ -1195,6 +1205,11 @@
   });
   $('cancelWrite').onclick = function () {
     navigate(url());
+  };
+  $('questionFilter').onchange = function () {
+    var next = new URL(url(), location.href);
+    next.hash = this.checked ? 'ask' : 'all';
+    navigate(next.pathname + next.search + next.hash);
   };
   $('feedSearch').onsubmit = function (ev) {
     ev.preventDefault();
