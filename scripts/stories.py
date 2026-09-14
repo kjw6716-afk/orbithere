@@ -237,7 +237,7 @@ def shell(title, description, path, body, prefix='', schema=None, noindex=False,
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
 <link rel="stylesheet" href="{prefix}orbit.css?v=20260912-brand">
 <link rel="stylesheet" href="{prefix}site-nav.css?v=20260914-community">
-<link rel="stylesheet" href="{prefix}stories.css?v=20260912-launch">
+<link rel="stylesheet" href="{prefix}stories.css?v=20260914-text-feature">
 {f'<script type="application/ld+json">{json_script(schema)}</script>' if schema else ''}
 <script src="{prefix}site-nav.js?v=20260914-community" defer></script>
 <script src="{prefix}{script}?v=20260912-editor" defer></script>
@@ -262,17 +262,12 @@ def meta(article, day):
     return f'<div class="story-meta"><span class="story-tag">{esc(article["category"])}</span></div>'
 
 
-def art(article):
-    style = '' if article['category'] == '달과 행성' else ' story-art--deep-space'
-    return f'<div class="story-art{style}" aria-hidden="true"><i class="spark"></i><span class="story-art-label">A LITTLE CLOSER TO SPACE</span></div>'
-
-
 def render_list(items):
     head = '<header class="stories-heading"><div><p class="story-eyebrow">ORBIT STORIES</p><h1><a class="page-title-link" href="stories.html">우주를 조금 더 가까이.</a></h1><p class="stories-deck">궁금한 질문 하나에서 시작하는 우주 이야기.<br>어려운 말은 풀어서, 믿을 만한 자료와 함께 전해요.</p></div>' + byline() + '</header>'
     feature = '<p class="editor-note">첫 번째 이야기를 준비하고 있어요. <a href="news.html">우주 뉴스 둘러보기 →</a></p>'
     if items:
         a, day = items[0]
-        feature = f'<section class="story-feature" aria-labelledby="latestStoryTitle"><div class="story-feature-copy"><p class="story-eyebrow">가장 최근의 이야기</p>{meta(a, day)}<h2 id="latestStoryTitle"><a href="stories/{a["id"]}.html">{esc(a["title"])}</a></h2><p>{esc(a["summary"])}</p><a class="story-link" href="stories/{a["id"]}.html">이야기 읽기 <span aria-hidden="true">↗</span></a></div>{art(a)}</section>'
+        feature = f'<section class="story-feature" aria-labelledby="latestStoryTitle"><div class="story-feature-copy"><p class="story-eyebrow">가장 최근의 이야기</p>{meta(a, day)}<h2 id="latestStoryTitle"><a href="stories/{a["id"]}.html">{esc(a["title"])}</a></h2><p>{esc(a["summary"])}</p><a class="story-link" href="stories/{a["id"]}.html">이야기 읽기 <span aria-hidden="true">↗</span></a></div></section>'
     rows = []
     for n, (a, day) in enumerate(items):
         search_text = ' '.join(p for section in a['sections'] for p in section['paragraphs'])
