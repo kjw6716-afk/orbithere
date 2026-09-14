@@ -129,9 +129,12 @@
 <script src="landing-meteors.js?v=20260912-random-meteors" defer></script>
 </head>
 <body>
+    <!-- object-fit:cover로 화면을 덮으므로 세로 화면에서는 100vw보다 훨씬 넓게 그려진다.
+         그래서 세로일 때만 sizes를 키워 더 큰 자산을 고르게 한다. -->
     <picture class="landing-nebula" aria-hidden="true">
-        <source media="(max-width: 600px)" srcset="images/nebula-landing-mobile.webp">
-        <img src="images/nebula-landing.webp" alt="" width="1584" height="991" fetchpriority="high" decoding="async">
+        <source type="image/avif" sizes="(max-aspect-ratio: 1/1) 170vw, 100vw" srcset="images/nebula-landing-1200.avif 1200w, images/nebula-landing-1600.avif 1600w, images/nebula-landing-2000.avif 2000w, images/nebula-landing-2430.avif 2430w">
+        <source type="image/webp" sizes="(max-aspect-ratio: 1/1) 170vw, 100vw" srcset="images/nebula-landing-1200.webp 1200w, images/nebula-landing-1600.webp 1600w, images/nebula-landing-2000.webp 2000w, images/nebula-landing-2430.webp 2430w">
+        <img src="images/nebula-landing-1600.webp" alt="" width="2430" height="1457" fetchpriority="high" decoding="async">
     </picture>
     <div class="starfield" aria-hidden="true"></div>
     <header class="landing-header">
