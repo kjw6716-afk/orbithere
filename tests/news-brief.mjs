@@ -519,13 +519,19 @@ try {
     await p.goto(base+'/news.html#spacex');
     await p.locator('.news-article').first().waitFor();
     ok('SpaceX filter includes its own and Starlink official sources',await p.locator('.row-category').allTextContents().then(rows=>rows.includes('SpaceX')&&rows.includes('Starlink · SpaceX')));
-    for (const id of ['rocketlab','blueorigin','firefly','commercial','science','nasa']) {
+    for (const id of ['rocketlab','ast','firefly','commercial','science','nasa']) {
       await p.locator('[data-source="'+id+'"]').click();
       await p.locator('[data-source="'+id+'"][aria-current="page"]').waitFor();
       const visible=await p.locator('.news-article').count();
       const expected=await p.evaluate(({data,id})=>OrbitNews.items(data).filter(i=>OrbitNews.matches(i,id)).length,{data:fixture,id});
       ok(id+' filter shows matching headlines',visible===expected && visible>0);
     }
+    ok('AST rejects unrelated issuers on its shared news provider',await p.evaluate(()=> {
+      const item={source:'ast',title:'AST satellite launch',publishedAt:'2026-08-05T00:00:00Z',url:'https://feeds.issuerdirect.com/news-release.html?newsid=7160159586249128&symbol=ASTS'};
+      return OrbitNews.valid(item) && !OrbitNews.valid({...item,url:item.url.replace('ASTS','OTHER')}) &&
+        !OrbitNews.valid({...item,url:item.url+'&symbol=OTHER'}) &&
+        !OrbitNews.valid({...item,url:item.url+'&redirect=https://evil.test'});
+    }));
     await p.setViewportSize({width:390,height:844});
     ok('company filters wrap without mobile overflow',await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
     if(process.env.ORBIT_QA_DIR) await p.screenshot({path:process.env.ORBIT_QA_DIR+'/news-mobile.png'});

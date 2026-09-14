@@ -896,6 +896,62 @@
       ],
       "checkedAt": "2026-09-13",
       "method": "source-checked"
+    },
+    {
+      "id": "e3f8f543a27fc9bb",
+      "source": "ast",
+      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=6958873302542032&symbol=ASTS",
+      "publishedAt": "2026-08-10T20:30:00Z",
+      "titleOriginal": "AST SpaceMobile Provides Business Update and Second Quarter 2026 Results",
+      "titleKo": "AST 스페이스모바일, 2026년 2분기 실적과 사업 진행 상황 발표",
+      "summaryKo": [
+        "AST SpaceMobile은 2분기 사업 발표에서 궤도상 위성이 13기로 늘었으며 블루버드 17~46호를 생산·조립 중이라고 밝혔습니다.",
+        "회사는 일부 통신사 파트너와 2026년 베타 서비스를 준비하고 있다고 설명했으며, 이는 서비스 개시를 완료했다는 발표는 아닙니다."
+      ],
+      "checkedAt": "2026-09-14",
+      "method": "source-checked"
+    },
+    {
+      "id": "56aa5799997983bf",
+      "source": "ast",
+      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=8860215372754512&symbol=ASTS",
+      "publishedAt": "2026-08-06T12:50:00Z",
+      "titleOriginal": "AST SpaceMobile Accelerates Presence Across Europe with Leading Mobile Network Operators",
+      "titleKo": "AST 스페이스모바일, 유럽 주요 통신사와 위성통신 연동 시험 확대",
+      "summaryKo": [
+        "AST SpaceMobile은 보다폰·오렌지·텔레포니카 등과 유럽 여러 국가에서 위성통신과 지상 이동통신망의 연동 시험을 진행한다고 발표했습니다.",
+        "별도 개조 없이 일반 스마트폰을 연결하는 서비스를 목표로 하며, 시험과 향후 서비스 전개에는 각국의 규제 승인이 필요합니다."
+      ],
+      "checkedAt": "2026-09-14",
+      "method": "source-checked"
+    },
+    {
+      "id": "347fc4155258efc1",
+      "source": "ast",
+      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=7160159586249128&symbol=ASTS",
+      "publishedAt": "2026-08-05T12:00:00Z",
+      "titleOriginal": "AST SpaceMobile Announces Successful Orbital Launch of BlueBirds 11, 12, and 13",
+      "titleKo": "AST 스페이스모바일, 블루버드 11·12·13호 궤도 발사 성공",
+      "summaryKo": [
+        "AST SpaceMobile은 2026년 8월 5일 팰컨 9으로 블루버드 11·12·13호를 궤도에 발사했다고 발표했습니다.",
+        "일반 스마트폰에 직접 연결하는 위성통신망을 확대하는 임무로, 회사는 차세대 위성의 최고 전송속도가 약 200Mbps에 이를 것으로 기대한다고 설명했습니다."
+      ],
+      "checkedAt": "2026-09-14",
+      "method": "source-checked"
+    },
+    {
+      "id": "49c7835168fa5bcf",
+      "source": "ast",
+      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=5582238976711971&symbol=ASTS",
+      "publishedAt": "2026-07-28T11:05:00Z",
+      "titleOriginal": "AST SpaceMobile Announces Launch Date for BlueBird Satellites 11, 12, and 13",
+      "titleKo": "AST 스페이스모바일, 블루버드 11·12·13호 발사 일정 발표",
+      "summaryKo": [
+        "AST SpaceMobile이 7월 28일 공개한 발사 예고로, 당시 블루버드 11·12·13호의 발사 목표일은 2026년 8월 5일이었습니다.",
+        "팰컨 9을 이용해 위성통신망을 확대한다는 계획을 담았으며, 이 기사는 발사 성공을 보고한 후속 발표와 구분됩니다."
+      ],
+      "checkedAt": "2026-09-14",
+      "method": "source-checked"
     }
   ]
 }

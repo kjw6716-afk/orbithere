@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 import re
 
-from update_news import SOURCES, safe_url, published
+from update_news import SOURCES, ARCHIVED_SOURCES, safe_url, published
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -33,7 +33,7 @@ def validate(data):
     for row in rows:
         if not isinstance(row, dict):
             raise ValueError('Invalid summary entry')
-        source = next((s for s in SOURCES if s['id'] == row.get('source')), None)
+        source = next((s for s in SOURCES + ARCHIVED_SOURCES if s['id'] == row.get('source')), None)
         url = row.get('url')
         if not source or not isinstance(url, str) or safe_url(url, source) != url:
             raise ValueError('Summary must link to its official source')

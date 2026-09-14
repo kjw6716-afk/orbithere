@@ -22,8 +22,12 @@ SOURCES = [
     {'id': 'spacex', 'name': 'SpaceX', 'language': 'en', 'host': 'www.spacex.com', 'kind': 'browser', 'feed': 'https://www.spacex.com/updates', 'home': 'https://www.spacex.com/updates', 'fragments': True},
     {'id': 'starlink', 'name': 'Starlink · SpaceX', 'language': 'ko', 'host': 'starlink.com', 'kind': 'browser', 'feed': 'https://starlink.com/kr/updates', 'home': 'https://starlink.com/kr/updates'},
     {'id': 'rocketlab', 'name': 'Rocket Lab', 'language': 'en', 'host': 'rocketlabcorp.com', 'kind': 'browser', 'feed': 'https://rocketlabcorp.com/updates/', 'home': 'https://rocketlabcorp.com/updates/'},
-    {'id': 'blueorigin', 'name': 'Blue Origin', 'language': 'en', 'host': 'www.blueorigin.com', 'kind': 'browser', 'feed': 'https://www.blueorigin.com/news', 'home': 'https://www.blueorigin.com/news'},
+    {'id': 'ast', 'name': 'AST SpaceMobile', 'language': 'en', 'host': 'feeds.issuerdirect.com', 'kind': 'json', 'feed': 'https://investors.ast-science.com/press-releases', 'home': 'https://investors.ast-science.com/press-releases'},
     {'id': 'firefly', 'name': 'Firefly Aerospace', 'language': 'en', 'host': 'fireflyspace.com', 'kind': 'browser', 'feed': 'https://fireflyspace.com/news/', 'home': 'https://fireflyspace.com/news/'},
+]
+# Preserve previously checked summaries when a rolling collection source retires.
+ARCHIVED_SOURCES = [
+    {'id': 'blueorigin', 'host': 'www.blueorigin.com'},
 ]
 UTC = dt.timezone.utc
 MAX_BYTES = 2 * 1024 * 1024
@@ -60,6 +64,12 @@ def safe_url(raw, source):
         # Feeds sometimes retain http links; always upgrade on these HTTPS sites.
         if url.scheme not in ('https', 'http') or url.hostname != source['host'] or url.username or url.password or url.port not in (None, 80, 443):
             return None
+        if source['id'] == 'ast':
+            query = urllib.parse.parse_qs(url.query, keep_blank_values=True)
+            if (url.path != '/news-release.html' or query.get('symbol') != ['ASTS']
+                    or set(query) != {'newsid', 'symbol'} or len(query['newsid']) != 1
+                    or not re.fullmatch(r'[0-9]+', query['newsid'][0])):
+                return None
         return urllib.parse.urlunsplit(('https', source['host'], url.path, url.query, url.fragment if source.get('fragments') else ''))
     except ValueError:
         return None
@@ -124,6 +134,8 @@ class OfficialRedirect(urllib.request.HTTPRedirectHandler):
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 def fetch_source(source, now):
+    if source.get('kind') == 'json':
+        return fetch_ast_source(source, now)
     request = urllib.request.Request(source['feed'], headers={'User-Agent': 'OrbitNews/1.0 (+https://orbithere.com/news.html)', 'Accept': 'application/rss+xml, application/xml, text/xml'})
     with urllib.request.build_opener(OfficialRedirect(source)).open(request, timeout=20) as response:
         if not safe_url(response.url, source):
@@ -149,6 +161,54 @@ def parse_company_rows(rows, source, now):
     if not result:
         raise ValueError('No dated official company headlines')
     return sorted(result, key=lambda row: row['publishedAt'], reverse=True)[:8]
+
+
+def parse_ast_feed(body, source, now):
+    if len(body) > MAX_BYTES:
+        raise ValueError('AST feed too large')
+    payload = json.loads(body)
+    # The provider serves either a JSON object or a JSON-encoded object string.
+    if isinstance(payload, str):
+        payload = json.loads(payload)
+    groups = payload.get('results', {}).get('news', [])
+    rows = []
+    for group in groups[:10]:
+        if group.get('topicstring') != 'ASTS':
+            continue
+        for item in group.get('newsitem', [])[:100]:
+            ident = str(item.get('newsid', ''))
+            title = item.get('headline', '')
+            # The shared provider also returns market commentary about ASTS.
+            # Accept AST company releases, not third-party investment headlines.
+            if (item.get('qmsource') != 'bwi' or not isinstance(title, str)
+                    or not title.startswith('AST SpaceMobile ') or not re.fullmatch(r'[0-9]+', ident)):
+                continue
+            rows.append({'title': title, 'date': item.get('datetime'),
+                         'url': f'https://feeds.issuerdirect.com/news-release.html?newsid={ident}&symbol=ASTS'})
+    recent = parse_company_rows(rows, source, now)
+    selected = [row for row in recent if not re.search(
+        r'\b(?:private|public) offering\b|\bto host\b.*\bcall\b', row['title'], re.I)]
+    if not selected:
+        raise ValueError('No eligible AST company headlines')
+    return selected
+
+
+def fetch_ast_source(source, now):
+    # Public metadata endpoint used by the feed embedded on AST's official IR.
+    # Request no bodies or thumbnails; article reading/review is a separate step.
+    query = urllib.parse.urlencode({
+        'topics': 'ASTS', 'excludeTopics': 'NONCOMPANY', 'noSrc': 'qmr',
+        'src': 'bwi', 'summary': 'false', 'thumbnailurl': 'false',
+        'start': (now - dt.timedelta(days=365)).strftime('%Y-%m-%d'), 'end': '3000-01-01',
+    })
+    url = 'https://www.accesswire.com/qm/data/getHeadlines.json?' + query
+    transport = {'id': 'ast_feed', 'host': 'www.accesswire.com'}
+    request = urllib.request.Request(url, headers={
+        'User-Agent': 'OrbitNews/1.0 (+https://orbithere.com/news.html)', 'Accept': 'application/json'})
+    with urllib.request.build_opener(OfficialRedirect(transport)).open(request, timeout=20) as response:
+        if not safe_url(response.url, transport):
+            raise ValueError('Unexpected AST metadata destination')
+        return parse_ast_feed(response.read(MAX_BYTES + 1), source, now)
 
 def fetch_company_sources():
     script = Path(__file__).with_name('company_news.mjs')

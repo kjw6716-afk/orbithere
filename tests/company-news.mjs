@@ -5,7 +5,6 @@ const fixtures = {
   spacex: '<div class="header"><div class="date">May 21, 2026</div><div class="title"><a href="updates#starship">Starship update</a></div></div>',
   starlink: '<div><h2>우주 안전 웹 도구</h2><div>2026년 5월 21일 본문은 복사하지 않습니다. <a href="/docs">관련 링크</a></div><div><a href="/kr/updates/safety">더 보기</a></div></div><div><h2>날짜 없는 소식</h2><div>본문</div><a href="/kr/updates/undated">더 보기</a></div>',
   rocketlab: '<article><a class="blog__article" href="/updates/mission/"><span class="blog__article-date">September 11, 2026</span><span class="blog__article-title">Mission success</span><span>Read more</span></a></article>',
-  blueorigin: '<div role="group" aria-label="Post"><div class="Card__badge">Sep 2, 2026</div><a href="/news/mission"><h2>Mars network</h2></a><p>Do not copy the summary</p></div>',
   firefly: '<article><p>Press Release | <time>September 9, 2026</time></p><h2><a href="/news/alpha/"><strong>Alpha launch</strong></a></h2></article>',
 };
 const browser = await chromium.launch();
