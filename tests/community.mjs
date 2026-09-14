@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { join, dirname, extname, resolve } from 'node:path';
+import { join, dirname, extname, resolve, sep } from 'node:path';
 import { chromium } from 'playwright';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const types = {
@@ -17,7 +17,7 @@ const types = {
 const server = createServer(async (req, res) => {
   const path = decodeURIComponent(req.url.split('?')[0]),
     full = resolve(root, '.' + (path === '/' ? '/index.html' : path));
-  if (!full.startsWith(root + '/')) {
+  if (!full.startsWith(root + sep)) {
     res.writeHead(403);
     res.end();
     return;
@@ -44,14 +44,14 @@ function ok(name, condition = true) {
   checks++;
   console.log('✓ ' + name);
 }
-function session() {
+function session(anonymous = true) {
   const exp = Math.floor(Date.now() / 1000) + 3600,
     encode = (v) => Buffer.from(JSON.stringify(v)).toString('base64url');
   return {
     access_token:
       encode({ alg: 'HS256', typ: 'JWT' }) +
       '.' +
-      encode({ sub: A, exp, role: 'authenticated', is_anonymous: true }) +
+      encode({ sub: A, exp, role: 'authenticated', is_anonymous: anonymous }) +
       '.test-signature',
     token_type: 'bearer',
     expires_in: 3600,
@@ -61,7 +61,7 @@ function session() {
       id: A,
       aud: 'authenticated',
       role: 'authenticated',
-      is_anonymous: true,
+      is_anonymous: anonymous,
       app_metadata: { provider: 'anonymous' },
       user_metadata: {},
       created_at: now(),
@@ -78,7 +78,7 @@ function cursor(rows, time, id) {
     ? rows.filter((r) => r.created_at < time || (r.created_at === time && r.id < id))
     : rows;
 }
-async function fixture({ nickname = '관측자', version = 1, admin = false, signedIn = false } = {}) {
+async function fixture({ nickname = '관측자', version = 1, admin = false, signedIn = false, registered = false } = {}) {
   const context = await browser.newContext({ viewport: { width: 1200, height: 900 } });
   const state = {
     receipts: new Set(), readCalls: [], activityCalls: [], activityFail: false, readFail: false,
@@ -126,7 +126,7 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
       if (nickname) localStorage.setItem('orbit_nickname', nickname);
       if (auth) localStorage.setItem('sb-unwxpuvfqyjhgrcrmuhu-auth-token', JSON.stringify(auth));
     },
-    { nickname, auth: admin || signedIn ? session() : null },
+    { nickname, auth: admin || signedIn ? session(!(admin || registered)) : null },
   );
   function unreadRows(p) {
     return state.comments.filter(c => c.post_id === p.id && c.author_id !== A && !state.receipts.has(c.id) &&
@@ -177,6 +177,9 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
       return state.observationVersion ? json(1) : json({ code: 'PGRST202', message: 'Not installed' }, 404);
     if (url.pathname.endsWith('/rpc/community_version')) return json(2);
     if (url.pathname.endsWith('/rpc/is_admin')) return json(admin);
+    if (url.pathname.endsWith('/rpc/visit_stats')) return json([{day:'2026-09-13',count:19,total:46}]);
+    if (url.pathname.endsWith('/rpc/report_queue')) return json([]);
+    if (url.pathname === '/auth/v1/logout') return json({});
     if (url.pathname.endsWith('/rpc/board_activity_summary'))
       return state.activityFail ? json({message:'activity unavailable'},503) : json(activityRows('unread').length);
     if (url.pathname.endsWith('/rpc/board_activity_posts')) {
@@ -395,6 +398,47 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
   };
 }
 try {
+  {
+    const f = await fixture({admin:true}), {page,state} = f;
+    await page.goto(base+'/admin.html');
+    await page.locator('#noticePanel').waitFor();
+    await page.locator('.vs-bar').first().waitFor({state:'attached'});
+    ok('visit chart includes fourteen calendar days, with zero-visit days preserved',await page.locator('.vs-bar').count()===14&&await page.locator('.vs-bar').evaluateAll(rows=>rows.filter(r=>r.style.height==='0%').length>=12));
+    await page.locator('#noticeTitle').fill('처음 오신 분께');
+    await page.locator('#noticeBody').fill('자유롭게 이야기를 나눠주세요.');
+    state.loseCommit = true;
+    await page.locator('#publishNotice').click();
+    await page.locator('#noticeStatus').filter({hasText:'중복 등록되지'}).waitFor();
+    ok('uncertain notice save freezes its literal payload',await page.locator('#noticeTitle').evaluate(e=>e.readOnly));
+    await page.locator('#publishNotice').click();
+    await page.locator('.notice-row').waitFor();
+    ok('notice retry publishes one pinned post',state.posts.filter(p=>p.is_pinned).length===1);
+    const link=await page.locator('.notice-row a').getAttribute('href');
+    ok('notice opens its permanent board URL',new URL(link,base).searchParams.get('post')===state.posts[0].id);
+    for (const width of [390,1440]) {
+      await page.setViewportSize({width,height:1000});
+      ok('admin notice controls fit '+width+'px',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+    }
+    if(process.env.ORBIT_QA_DIR) await page.screenshot({path:process.env.ORBIT_QA_DIR+'/admin-desktop.png',fullPage:true});
+    await page.locator('.notice-row button').click();
+    await page.locator('#noticeStatus').filter({hasText:'고정을 해제'}).waitFor();
+    ok('unpin keeps the published post',state.posts.length===2&&!state.posts[0].is_pinned);
+    await page.locator('#btnOut').click();
+    await page.locator('#loginView').waitFor();
+    ok('logout closes notice and private operations',await page.locator('#noticePanel').isHidden()&&await page.locator('#reportPanel').isHidden());
+    await f.close();
+  }
+  for(const registered of [false,true]) {
+    const f=await fixture({signedIn:true,registered}), {page}=f;
+    await page.goto(base+'/admin.html');
+    await page.locator(registered?'#whoRole':'#loginView').waitFor();
+    if(registered) await page.locator('#whoRole').filter({hasText:'권한 없음'}).waitFor();
+    ok('non-admin cannot see notice controls, registered='+registered,await page.locator('#noticePanel').isHidden());
+    await page.goto(base+'/lounge.html?write=1');
+    await page.locator('#postInput').waitFor();
+    ok('ordinary writer has no notice toggle',await page.locator('#postPinned').count()===0);
+    await f.close();
+  }
 
   {
     const f=await fixture({signedIn:true}),{page,state}=f;

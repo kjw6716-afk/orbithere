@@ -12,7 +12,7 @@ const firstStory=[...ledger.items].sort((a,b)=>a.date.localeCompare(b.date))[0];
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.woff2':'font/woff2'};
 const server=createServer(async(req,res)=>{
  const file=resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
- if(!file.startsWith(root.replace(/\/$/,'')+sep)){res.writeHead(403);res.end();return;}
+ if(!file.startsWith(resolve(root)+sep)){res.writeHead(403);res.end();return;}
  try{res.writeHead(200,{'Content-Type':types[extname(file)]||'application/octet-stream'});res.end(await readFile(file));}
  catch{res.writeHead(404);res.end();}
 });

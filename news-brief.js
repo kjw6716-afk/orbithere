@@ -24,6 +24,10 @@
       /* Standalone fallback for an external embed. */
     }
   }
+  var updated = document.createElement("p");
+  updated.className = "news-brief-updated";
+  updated.hidden = true;
+  root.querySelector(".news-brief-heading").after(updated);
   var list = root.querySelector(".news-brief-list");
   var viewport = document.createElement("div");
   viewport.className = "news-brief-viewport";
@@ -195,6 +199,11 @@
       var data = await news.load();
       clearMotion();
       items = news.briefItems(data);
+      var checkedAt = new Date(data.checkedAt);
+      updated.hidden = !Number.isFinite(checkedAt.getTime());
+      if (!updated.hidden) updated.textContent = checkedAt.toLocaleString("ko-KR", {
+        timeZone: "Asia/Seoul", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false,
+      }) + " 확인 · 한국 시간";
       index = 0;
       var stale = Object.keys(news.sources).some(function (id) {
         return news.stale(
@@ -273,7 +282,7 @@
   });
   window.addEventListener("pageshow", schedule);
   // Changing only the viewport height does not resize the rail until we render.
-  matchMedia("(min-width: 861px) and (max-height: 800px)").addEventListener("change", function () {
+  window.addEventListener("resize", function () {
     if (shown() && capacity() !== size) render(false);
   });
   new ResizeObserver(function () {

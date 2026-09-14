@@ -236,10 +236,10 @@ def shell(title, description, path, body, prefix='', schema=None, noindex=False,
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
 <link rel="stylesheet" href="{prefix}orbit.css?v=20260912-brand">
-<link rel="stylesheet" href="{prefix}site-nav.css?v=20260914-layout">
+<link rel="stylesheet" href="{prefix}site-nav.css?v=20260914-community">
 <link rel="stylesheet" href="{prefix}stories.css?v=20260912-launch">
 {f'<script type="application/ld+json">{json_script(schema)}</script>' if schema else ''}
-<script src="{prefix}site-nav.js?v=20260914-layout" defer></script>
+<script src="{prefix}site-nav.js?v=20260914-community" defer></script>
 <script src="{prefix}{script}?v=20260912-editor" defer></script>
 <script src="{prefix}orbit-config.js"></script><script src="{prefix}visits.js" defer></script>
 </head>
@@ -373,7 +373,7 @@ def main():
         destination = ROOT / path
         if not destination.exists() or destination.read_text() != content:
             drift.append(path)
-    stray = [p for p in (ROOT / 'stories').glob('*.html') if str(p.relative_to(ROOT)) not in rendered]
+    stray = [p for p in (ROOT / 'stories').glob('*.html') if p.relative_to(ROOT).as_posix() not in rendered]
     if stray:
         raise ValueError('Unexpected/unpublished HTML in stories/: ' + ', '.join(p.name for p in stray))
     if args.check and drift:

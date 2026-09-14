@@ -19,7 +19,7 @@ def editor_star(size=20):
 MENU = [
     ('sky', '🔭', '밤하늘 달력', 'main.html#sky'),
     ('planets', '🪐', '오늘 밤 행성', 'main.html#planets'),
-    ('lounge', '💬', '별빛 게시판', 'main.html#lounge'),
+    ('lounge', '💬', '자유게시판', 'main.html#lounge'),
     ('news', '📰', '우주 뉴스', 'news.html'),
     ('guide', '📖', '관측 가이드', 'guide.html'),
     ('stories', editor_star(), '우주 이야기', 'stories.html'),

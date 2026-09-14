@@ -13,7 +13,15 @@
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
     <link rel="stylesheet" href="/orbit.css?v=20260912-brand">
     <style>
-        .wrap { max-width: 420px; margin: 130px auto 80px; padding: 0 20px; }
+        .wrap { width: 100%; max-width: 760px; margin: 60px auto 80px; padding: 0 20px; }
+        [hidden] { display: none !important; }
+        #noticePanel { padding: 24px; background: var(--card-bg); border: 1px solid rgba(255,159,67,.15); border-radius: 20px; }
+        .notice-help, #noticeList, #noticeStatus { font-size: 13px; line-height: 1.7; color: #CBD5E1; }
+        .notice-row { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+        .notice-row a { flex: 1; min-width: 0; overflow-wrap: anywhere; color: #E2E8F0; }
+        .notice-row .btn-line { width: auto; flex-shrink: 0; margin: 0; }
+        #noticeForm { margin-top: 22px; }
+        .field textarea { min-height: 180px; resize: vertical; }
 
         .panel {
             background: var(--card-bg);
@@ -26,16 +34,16 @@
 
         .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
         .field label { font-size: 11px; color: #94A3B8; font-weight: 600; letter-spacing: 0.03em; }
-        .field input {
+        .field input, .field textarea {
             background: rgba(15,23,42,0.5);
             border: 1px solid rgba(255,159,67,0.25);
             border-radius: 12px; padding: 12px 14px;
             color: var(--text-main); font-family: 'Pretendard'; font-size: 14px;
             outline: none; transition: border-color 0.2s;
         }
-        .field input:focus { border-color: var(--accent); }
+        .field input:focus, .field textarea:focus { border-color: var(--accent); }
         /* 모바일에서 16px 미만이면 iOS Safari가 포커스 순간 페이지를 자동 확대한다 */
-        @media (max-width: 768px) { .field input { font-size: 16px; } }
+        @media (max-width: 768px) { .field input, .field textarea { font-size: 16px; } }
 
         .btn-main {
             width: 100%; padding: 13px; margin-top: 4px;
@@ -189,7 +197,7 @@
 
         ::selection { background-color: #4FD1C5; color: #0F172A; }
     </style>
-<link rel="stylesheet" href="site-nav.css?v=20260914-layout">
+<link rel="stylesheet" href="site-nav.css?v=20260914-community">
 </head>
 <body>
     <div class="bg-glow"></div>
@@ -204,7 +212,7 @@
 <nav class="side-nav" id="sideNav" aria-label="주요 메뉴">
 <a class="nav-item nav-link" href="main.html#sky"><span class="ic" aria-hidden="true">🔭</span><span class="lbl">밤하늘 달력</span></a>
 <a class="nav-item nav-link" href="main.html#planets"><span class="ic" aria-hidden="true">🪐</span><span class="lbl">오늘 밤 행성</span></a>
-<a class="nav-item nav-link" href="main.html#lounge"><span class="ic" aria-hidden="true">💬</span><span class="lbl">별빛 게시판</span></a>
+<a class="nav-item nav-link" href="main.html#lounge"><span class="ic" aria-hidden="true">💬</span><span class="lbl">자유게시판</span></a>
 <a class="nav-item nav-link" href="news.html"><span class="ic" aria-hidden="true">📰</span><span class="lbl">우주 뉴스</span></a>
 <a class="nav-item nav-link" href="guide.html"><span class="ic" aria-hidden="true">📖</span><span class="lbl">관측 가이드</span></a>
 <a class="nav-item nav-link" href="stories.html"><span class="ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span><span class="lbl">우주 이야기</span></a>
@@ -219,7 +227,7 @@
             <!-- 로그인 전 -->
             <div id="loginView">
                 <h1>🛰️ <strong>관제실</strong></h1>
-                <p class="sub">운영자만 들어오는 곳이에요. 로그인하면 광장의 모든 궤적과 답을 지울 수 있습니다.</p>
+                <p class="sub">운영자 계정으로 로그인해 공지, 신고함, 방문 통계를 관리하세요.</p>
                 <form id="loginForm" autocomplete="on">
                     <div class="field">
                         <label for="email">이메일</label>
@@ -236,7 +244,7 @@
             <!-- 로그인 후 -->
             <div id="doneView" style="display:none;">
                 <h1>🛰️ <strong>관제실</strong></h1>
-                <p class="sub">관리자로 로그인되어 있습니다.</p>
+                <p class="sub" id="sessionStatus">계정 권한을 확인하고 있습니다.</p>
                 <div class="who">
                     <span class="dot"></span>
                     <span class="txt">
@@ -244,12 +252,25 @@
                         <span class="t2" id="whoMail"></span>
                     </span>
                 </div>
-                <a class="btn-line" href="lounge.html">광장으로 가기 →</a>
+                <a class="btn-line" href="main.html#lounge">자유게시판으로 가기 →</a>
                 <button class="btn-line" id="btnOut" type="button">로그아웃</button>
             </div>
 
             <div class="note" id="note"></div>
         </div>
+
+        <section class="log-panel" id="noticePanel" hidden>
+            <h2>공지 관리</h2>
+            <p class="notice-help">공지는 자유게시판 상단에 최대 3개까지 표시돼요. 고정을 해제해도 글은 게시판에 남습니다.</p>
+            <div id="noticeList"></div>
+            <button class="btn-line" id="refreshNotices" type="button">공지 목록 새로고침</button>
+            <form id="noticeForm">
+                <div class="field"><label for="noticeTitle">공지 제목</label><input id="noticeTitle" maxlength="80" required></div>
+                <div class="field"><label for="noticeBody">공지 내용</label><textarea id="noticeBody" maxlength="5000" required></textarea></div>
+                <button class="btn-main" id="publishNotice" type="submit" disabled>공지 등록 · 상단 고정</button>
+            </form>
+            <p id="noticeStatus" role="status" aria-live="polite"></p>
+        </section>
 
         <!-- 방문 집계 — 로그인한 관리자에게만 보인다 -->
         <section class="log-panel" id="visitPanel" style="display:none;">
@@ -318,9 +339,12 @@
     <script src="orbit-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
     <script src="orbit-backend.js"></script>
+    <script src="admin-notices.js?v=20260914-community"></script>
     <script>
     (function(){
         var sb = window.createOrbitBackend();
+        var notices = sb ? window.createOrbitNotices(sb) : null;
+        var sessionGeneration = 0;
 
         var note = document.getElementById('note');
         function say(msg, kind){
@@ -368,11 +392,12 @@
         }
 
         async function loadVisits(){
+            var token = sessionGeneration;
             var card = document.getElementById('vsCard');
             var r = await sb.rpc('visit_stats');
+            if(token !== sessionGeneration) return;
             if(r.error){
-                card.innerHTML = '<div class="vs-empty">방문 집계를 불러오지 못했어요 — ' + esc(r.error.message) +
-                    '<br>migration_010_visit_guard.sql이 아직 실행되지 않았을 수 있어요.</div>';
+                card.innerHTML = '<div class="vs-empty">방문 집계를 불러오지 못했어요. 연결과 운영자 로그인을 확인하고 새로고침해주세요.</div>';
                 return;
             }
             var rows = r.data || [];              // 최신 날짜부터 최대 60일
@@ -389,8 +414,11 @@
             for(var i = 0; i < 7; i++) week += byDay[kstDay(-i)] || 0;
             var total = Number(rows[0].total) || 0;   // 모든 행이 같은 값을 물고 온다
 
-            // 막대는 오래된 날이 왼쪽에 오도록 뒤집고, 최근 14일만 본다
-            var recent = rows.slice(0, 14).reverse();
+            // 방문이 없던 날도 포함해야 '최근 14일'의 날짜 간격이 정확하다.
+            var recent = Array.from({length:14}, function(_, i){
+                var day = kstDay(i - 13);
+                return { day: day, count: byDay[day] || 0 };
+            });
             var peak = Math.max.apply(null, recent.map(function(x){ return Number(x.count) || 0; })) || 1;
             var todayKey = kstDay(0);
 
@@ -402,7 +430,7 @@
                 '<div class="vs-bars">' + recent.map(function(x){
                     var n = Number(x.count) || 0;
                     return '<div class="vs-bar' + (x.day === todayKey ? ' today' : '') + '"' +
-                        ' style="height:' + Math.max(4, Math.round(n / peak * 100)) + '%"' +
+                        ' style="height:' + (n ? Math.max(4, Math.round(n / peak * 100)) : 0) + '%"' +
                         ' title="' + esc(x.day) + ' · ' + n + '"></div>';
                 }).join('') + '</div>' +
                 '<div class="vs-foot">최근 ' + recent.length + '일 · 한국 시간 기준. ' +
@@ -434,13 +462,14 @@
         }
 
         async function loadReports(){
+            var token = sessionGeneration;
             var list = document.getElementById('rqList');
             var count = document.getElementById('rqCount');
             var r = await sb.rpc('report_queue');
+            if(token !== sessionGeneration) return;
             if(r.error){
                 count.textContent = '–';
-                list.innerHTML = '<div class="rq-empty">신고함을 불러오지 못했어요 — ' + esc(r.error.message) +
-                    '<br>migration_007_reports.sql이 아직 실행되지 않았을 수 있어요.</div>';
+                list.innerHTML = '<div class="rq-empty">신고함을 불러오지 못했어요. 연결과 운영자 로그인을 확인하고 새로고침해주세요.</div>';
                 return;
             }
             var rows = r.data || [];
@@ -456,7 +485,7 @@
                 return '<div class="rq-item' + (x.handled ? ' handled' : '') + '" data-id="' + esc(x.id) + '">' +
                     '<div class="rq-top">' +
                     '<span class="rq-reason">' + esc(RQ_REASONS[x.reason] || x.reason) + '</span>' +
-                    '<span class="rq-kind">' + (x.target_type === 'post' ? '궤적' : '답') +
+                    '<span class="rq-kind">' + (x.target_type === 'post' ? '게시글' : '댓글') +
                     (x.orbit ? ' · ' + esc(x.orbit) : '') + '</span>' +
                     (Number(x.dup_count) > 1 ? '<span class="rq-dup">신고 ' + x.dup_count + '건</span>' : '') +
                     '<span class="rq-when">' + ago(x.created_at) + '</span>' +
@@ -497,7 +526,9 @@
         });
 
         async function showSession(session){
-            if(!session){
+            var token = ++sessionGeneration;
+            notices.setAuthorized(false);
+            if(!session || session.user.is_anonymous){
                 document.getElementById('loginView').style.display = '';
                 document.getElementById('doneView').style.display = 'none';
                 showLog(false);
@@ -507,22 +538,26 @@
             document.getElementById('loginView').style.display = 'none';
             document.getElementById('doneView').style.display = '';
             document.getElementById('whoMail').textContent = session.user.email || session.user.id;
+            document.getElementById('sessionStatus').textContent = '계정 권한을 확인하고 있습니다.';
 
             var r = await sb.rpc('is_admin');
+            if(token !== sessionGeneration) return;
             if(r.error){
                 document.getElementById('whoRole').textContent = '권한 확인 실패';
-                say('관리자 여부를 확인하지 못했어요 — ' + (r.error.message || '') +
-                    '\n마이그레이션(migration_005_admin.sql)이 아직 실행되지 않았을 수 있어요.', 'err');
+                say('운영자 권한을 확인하지 못했어요. 연결을 확인하고 다시 로그인해주세요.', 'err');
                 return;
             }
             if(r.data === true){
                 document.getElementById('whoRole').textContent = '관리자';
+                document.getElementById('sessionStatus').textContent = '운영자로 로그인되어 있습니다.';
                 showLog(true);
+                notices.setAuthorized(true);
                 loadReports();
                 loadVisits();
-                say('광장에서 모든 궤적과 답에 삭제 버튼이 보입니다.', 'ok');
+                say('공지 등록과 신고 처리를 이곳에서 관리할 수 있어요.', 'ok');
             } else {
                 document.getElementById('whoRole').textContent = '일반 계정 (권한 없음)';
+                document.getElementById('sessionStatus').textContent = '운영자 권한이 없는 계정입니다.';
                 say('로그인은 됐지만 이 계정은 관리자로 등록되어 있지 않아요.\n' +
                     'admins 테이블에 이 계정의 UID를 넣어야 합니다.\n\nUID: ' + session.user.id, 'err');
             }
@@ -554,7 +589,6 @@
                 return;
             }
             document.getElementById('pw').value = '';
-            showSession(res.data.session);
         });
 
         document.getElementById('btnOut').addEventListener('click', async function(){
@@ -563,10 +597,14 @@
             showSession(null);
         });
 
-        sb.auth.getSession().then(function(r){ showSession(r.data.session); });
+        // Keep cross-tab login/logout in sync; RPCs run after the auth callback
+        // returns, so they cannot deadlock the Supabase auth lock.
+        sb.auth.onAuthStateChange(function(event, session){
+            setTimeout(function(){ showSession(session); }, 0);
+        });
     })();
     </script>
 </div></div>
-<script src="site-nav.js?v=20260914-layout"></script>
+<script src="site-nav.js?v=20260914-community"></script>
 </body>
 </html>
