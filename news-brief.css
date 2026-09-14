@@ -172,6 +172,8 @@
   .sidebar .news-brief-controls { width: 100%; justify-content: space-between; }
 }
 @media (max-width: 860px) {
+  /* Resizing changes CSS before the widget is returned to its mobile position. */
+  .sidebar > .news-brief { display: none; }
   .news-brief-controls button { min-width: 44px; min-height: 44px; }
   .news-brief-footer { margin-top: 4px; }
 }
