@@ -1,0 +1,24 @@
+name: 뉴스 갱신 지연 감지·복구
+on:
+  schedule:
+    - cron: "47 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+concurrency:
+  group: news-watchdog
+  cancel-in-progress: false
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: 공개 뉴스 지연 확인 · 중복 없이 재수집 요청
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/news-watchdog.mjs
