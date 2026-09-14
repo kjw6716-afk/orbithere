@@ -310,9 +310,9 @@ def render_teaser(items, carousel=False):
     cards = []
     # Start with the first published story in the center; append every new release.
     for article, _ in reversed(items):
-        cards.append(f'<a class="story-belt-card" href="stories/{article["id"]}.html"><span class="story-belt-card-head"><span class="story-teaser-icon" aria-hidden="true">{editor_star(21)}</span><span><span class="story-teaser-meta">ORBIT 에디터</span><span class="story-teaser-category">{esc(article["category"])}</span></span></span><span class="story-teaser-title">{esc(article["title"])}</span></a>')
+        cards.append(f'<a class="story-belt-card" href="stories/{article["id"]}.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true">{editor_star(10)}</span></span><span class="story-teaser-category">{esc(article["category"])}</span></span><span class="story-teaser-title">{esc(article["title"])}</span></a>')
     return f'''<aside class="story-belt" aria-label="우주 이야기">
-<div class="story-belt-heading"><span>우주 이야기</span><a class="story-teaser-all" href="stories.html">전체보기 →</a></div>
+<div class="story-belt-heading"><a class="story-teaser-all" href="stories.html">전체보기 →</a></div>
 <div class="story-belt-viewport"><div class="story-belt-track"><div class="story-belt-group" data-story-original>{''.join(cards)}</div></div></div>
 </aside>'''
 

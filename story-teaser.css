@@ -11,14 +11,15 @@
 .landing-main { grid-template-columns: minmax(0, 1fr); }
 .landing-main .content { min-width: 0; }
 .story-belt { --story-card-width: clamp(232px, 72vw, 340px); --story-gap: 18px; --story-rail-width: min(1120px, calc(100vw - 24px)); position: relative; width: var(--story-rail-width); left: 50%; transform: translateX(-50%); margin-top: 26px; text-align: left; }
-.story-belt-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; max-width: 1120px; margin-inline: auto; padding: 0 16px; color: #c5cfdf; font-size: 12px; }
+.story-belt-heading { display: flex; justify-content: flex-end; align-items: center; padding: 0 4px; color: #c5cfdf; font-size: 12px; }
 .story-belt-heading .story-teaser-all { display: inline-flex; }
 .story-belt-viewport { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: #59657a transparent; scroll-snap-type: x proximity; padding: 6px 0; }
 .story-belt-track { display: flex; width: max-content; padding-inline: max(0px, calc((var(--story-rail-width) - var(--story-card-width)) / 2)); }
 .story-belt-group { display: flex; flex: none; gap: var(--story-gap); padding-right: var(--story-gap); }
-.story-belt-card { box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 12px; flex: 0 0 var(--story-card-width); width: var(--story-card-width); min-height: 136px; padding: 18px 20px; border: 1px solid #4c464b; border-radius: 14px; background: #222734; color: #e8edf4; text-decoration: none; scroll-snap-align: center; }
-.story-belt-card-head { display: flex; align-items: center; gap: 10px; }
-.story-belt-card .story-teaser-meta { display: block; margin-bottom: 2px; }
+.story-belt-card { box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 8px; flex: 0 0 var(--story-card-width); width: var(--story-card-width); min-height: 98px; padding: 12px 18px; border: 1px solid #4c464b; border-radius: 12px; background: #222734; color: #e8edf4; text-decoration: none; scroll-snap-align: center; }
+.story-belt-card-head { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; }
+.story-belt-card .story-teaser-meta { display: inline-flex; align-items: center; gap: 4px; margin: 0; white-space: nowrap; }
+.story-editor-star { display: inline-flex; color: #ffb36b; }
 .story-teaser-category { display: block; color: #b7c3d4; font-size: 11px; line-height: 1.5; }
 .story-belt-card .story-teaser-title { display: block; font-size: 15px; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
 .story-belt-card:hover { border-color: #a08066; }
