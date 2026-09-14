@@ -72,7 +72,8 @@ try{
   if(width===1440){
    await page.locator('.news-brief-title').first().waitFor();
    const rail=await page.locator('.news-brief--rail').boundingBox();
-   ok('news panel remains alongside the teaser and tool',rail.x>=box.x+box.width&&Math.abs(rail.y-box.y)<2);
+   const about=await page.locator('#sideNav a[href="about.html"]').boundingBox();
+   ok('news sits below the left menu without reducing teaser or tool width',rail.x+rail.width<=box.x&&rail.y>=about.y+about.height&&Math.abs(box.x+box.width-panel.x-panel.width)<2);
   }
   if(process.env.ORBIT_QA_DIR&&[390,1440].includes(width))await page.screenshot({path:`${process.env.ORBIT_QA_DIR}/main-${width}.png`});
   await page.goto(base+'/index.html');
