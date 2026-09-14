@@ -42,5 +42,9 @@
   "orbit_story_start": {
     "section": "storage-story",
     "purpose": "현재 탭에서 직전 시작 이야기를 기억해 연속 중복 방지 (sessionStorage, 서버 전송 없음)"
+  },
+  "orbit_google_return": {
+    "section": "storage-google-return",
+    "purpose": "Google 탈퇴 재인증 전 계정 ID와 시각의 임시 저장 (sessionStorage, 복귀·로그아웃·탭 종료 시 삭제)"
   }
 }

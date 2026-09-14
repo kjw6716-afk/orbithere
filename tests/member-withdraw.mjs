@@ -46,6 +46,10 @@ function fixture(overrides = {}) {
                     id: "actor",
                     is_anonymous: state.anonymous,
                     email_confirmed_at: state.confirmed ? "2026-09-14" : null,
+                    identities: state.google
+                      ? [{ provider: "google" }]
+                      : [{ provider: "email" }],
+                    user_metadata: { provider: "google" },
                   }
                 : null,
             },
@@ -122,6 +126,36 @@ for (const [name, options, req, status] of [
   ["anonymous user", { anonymous: true }, {}, 401],
   ["unconfirmed email", { confirmed: false }, {}, 401],
   [
+    "OAuth proof without a verified Google identity",
+    {},
+    { payload: { amr: [{ method: "oauth", timestamp: now }] } },
+    401,
+  ],
+  [
+    "stale Google OAuth proof",
+    { google: true },
+    { payload: { amr: [{ method: "oauth", timestamp: now - 301 }] } },
+    401,
+  ],
+  [
+    "future Google OAuth proof",
+    { google: true },
+    { payload: { amr: [{ method: "oauth", timestamp: now + 31 }] } },
+    401,
+  ],
+  [
+    "string Google OAuth timestamp",
+    { google: true },
+    { payload: { amr: [{ method: "oauth", timestamp: String(now) }] } },
+    401,
+  ],
+  [
+    "token refresh is not Google reauthentication",
+    { google: true },
+    { payload: { amr: [{ method: "token_refresh", timestamp: now }] } },
+    401,
+  ],
+  [
     "expired password proof",
     {},
     { payload: { amr: [{ method: "password", timestamp: now - 301 }] } },
@@ -197,5 +231,14 @@ ok(
   "operator protection reports an actionable message",
   (await res.json()).error === "admin_transfer_required" &&
     !f.state.calls.some((c) => c[0] === "auth-delete"),
+);
+f = fixture({ google: true });
+res = await f.handler(
+  request({ payload: { amr: [{ method: "oauth", timestamp: now }] } }),
+);
+ok(
+  "fresh Google OAuth proof permits withdrawal for the verified user",
+  res.status === 200 &&
+    f.state.calls.find((c) => c[0] === "auth-delete")[1] === "actor",
 );
 console.log("Withdrawal: " + count + " checks passed");

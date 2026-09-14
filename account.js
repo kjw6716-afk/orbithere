@@ -15,6 +15,22 @@
     pending = false,
     editing = false;
   var callback = location.origin + location.pathname;
+  var policyVersion = "2026-09-14-members",
+    googleReturnKey = "orbit_google_return";
+  var googleWithdrawalUserId = null,
+    googleReturnHandled = false;
+  function googleOnly(user) {
+    var providers = (user &&
+      user.app_metadata &&
+      user.app_metadata.providers) || [
+      user && user.app_metadata && user.app_metadata.provider,
+    ];
+    return providers.includes("google") && !providers.includes("email");
+  }
+  function clearGoogleReturn() {
+    sessionStorage.removeItem(googleReturnKey);
+    googleWithdrawalUserId = null;
+  }
   function say(text) {
     $("accountStatus").textContent = text;
   }
@@ -34,6 +50,16 @@
       return "탈퇴 처리가 진행 중이에요. 아래 회원 탈퇴에서 다시 시도하면 남은 삭제를 이어갑니다.";
     if (/admin_transfer_required/.test(message))
       return "운영자 계정은 권한 이전 후 탈퇴할 수 있어요.";
+    if (
+      /manual_linking_disabled|provider_disabled|unsupported_provider/.test(
+        code || message,
+      )
+    )
+      return "Google 로그인을 준비하고 있어요. 이메일 가입을 이용하거나 잠시 후 다시 시도해주세요.";
+    if (/reauthentication_required/.test(message))
+      return "본인 확인 시간이 지났어요. 다시 인증한 뒤 탈퇴를 진행해주세요.";
+    if (/session_changed/.test(message))
+      return "다른 계정으로 로그인되어 삭제하지 않았어요. 탈퇴하려던 계정으로 다시 로그인해주세요.";
     if (/over_email_send_rate_limit|over_request_rate_limit/.test(code || ""))
       return "요청이 많아요. 잠시 기다린 뒤 다시 시도해주세요.";
     if (/email_address_not_authorized|email_provider_disabled/.test(code || ""))
@@ -79,10 +105,10 @@
     $("authHelp").textContent =
       mode === "signup"
         ? anon
-          ? "이 브라우저의 익명 계정에 이메일을 연결해요. 이메일 인증을 마친 뒤 비밀번호를 설정하면 기존 글의 작성 권한이 이어집니다."
+          ? "이메일 또는 Google을 연결하면 이 브라우저에서 쓴 글의 작성 권한이 이어집니다. 이메일은 인증을 마친 뒤 비밀번호를 설정해요."
           : "이메일 인증을 마치면 닉네임과 프로필을 정할 수 있어요."
         : mode === "login" && anon
-          ? "다른 기존 계정으로 로그인하면 현재 익명 계정의 활동은 합쳐지지 않아요. 지금 활동을 보관하려면 회원가입에서 이메일을 연결해주세요."
+          ? "다른 기존 계정으로 로그인하면 현재 익명 활동은 합쳐지지 않아요. 지금 활동을 보관하려면 회원가입에서 이메일 또는 Google을 연결해주세요."
           : "";
     var password = mode === "login" || (mode === "signup" && !anon);
     show("passwordField", password);
@@ -91,6 +117,10 @@
     $("password").autocomplete =
       mode === "login" ? "current-password" : "new-password";
     show("signupConsent", mode === "signup");
+    show(
+      "googleAuth",
+      !!window.ORBIT_CONFIG.googleAuthEnabled && mode !== "reset",
+    );
     $("consent").required = mode === "signup";
     $("authSubmit").textContent = {
       login: "로그인",
@@ -102,10 +132,12 @@
     var s = member.state,
       u = s.user,
       registered = u && !u.is_anonymous && u.email_confirmed_at;
+    if (!u || googleWithdrawalUserId !== u.id) googleWithdrawalUserId = null;
     show("authCard", !registered);
     show("sessionCard", registered);
     var needsPassword =
       registered &&
+      !googleOnly(u) &&
       (recovery || (u.user_metadata && u.user_metadata.orbit_needs_password));
     show("passwordCard", needsPassword);
     show(
@@ -118,6 +150,23 @@
     );
     setMode(mode);
     if (!registered) return;
+    var google = googleOnly(u);
+    show("changePassword", !google);
+    show("googleManage", google);
+    show("withdrawPasswordField", !google);
+    show("googleWithdrawHelp", google);
+    $("withdrawPassword").required = !google;
+    $("withdrawForm").querySelector("button").textContent =
+      google && googleWithdrawalUserId !== u.id
+        ? "Google로 본인 확인"
+        : "내 계정과 활동 삭제";
+    show("editProfile", !!s.profile);
+    var accepted =
+      !!s.profile ||
+      (u.user_metadata &&
+        u.user_metadata.orbit_policy_version === policyVersion);
+    show("profileConsentField", !accepted);
+    if (accepted) $("profileConsent").checked = true;
     if (s.error) {
       say(errorText(s.error));
       return;
@@ -151,6 +200,27 @@
       say("");
     }),
   );
+  $("googleSignIn").addEventListener("click", () =>
+    run(async () => {
+      if (
+        !window.ORBIT_CONFIG.membersEnabled ||
+        !window.ORBIT_CONFIG.googleAuthEnabled
+      )
+        throw new Error("provider_disabled");
+      clearGoogleReturn();
+      var session = checked(await sb.auth.getSession()).session;
+      if (session && !session.user.is_anonymous)
+        throw new Error("session_changed");
+      var options = {
+        redirectTo: callback,
+        queryParams: { prompt: "select_account" },
+      };
+      if (mode === "signup" && session)
+        checked(await sb.auth.linkIdentity({ provider: "google", options }));
+      else
+        checked(await sb.auth.signInWithOAuth({ provider: "google", options }));
+    }),
+  );
   $("authForm").addEventListener("submit", function (e) {
     e.preventDefault();
     run(async () => {
@@ -171,7 +241,13 @@
         if (session)
           checked(
             await sb.auth.updateUser(
-              { email, data: { orbit_needs_password: true } },
+              {
+                email,
+                data: {
+                  orbit_needs_password: true,
+                  orbit_policy_version: policyVersion,
+                },
+              },
               { emailRedirectTo: callback },
             ),
           );
@@ -180,7 +256,10 @@
             await sb.auth.signUp({
               email,
               password,
-              options: { emailRedirectTo: callback },
+              options: {
+                emailRedirectTo: callback,
+                data: { orbit_policy_version: policyVersion },
+              },
             }),
           );
         $("password").value = "";
@@ -207,7 +286,7 @@
       checked(
         await sb.rpc("member_save_profile", {
           p_nickname: nickname,
-          p_policy_version: "2026-09-14-members",
+          p_policy_version: policyVersion,
         }),
       );
       editing = false;
@@ -252,6 +331,7 @@
   $("signOut").addEventListener("click", () =>
     run(async () => {
       checked(await sb.auth.signOut());
+      clearGoogleReturn();
       member.clearNickname();
       editing = false;
       recovery = false;
@@ -263,17 +343,36 @@
     e.preventDefault();
     run(async () => {
       var original = member.state.user;
+      if (!original) return;
+      if (googleOnly(original) && googleWithdrawalUserId !== original.id) {
+        sessionStorage.setItem(
+          googleReturnKey,
+          JSON.stringify({ userId: original.id, startedAt: Date.now() }),
+        );
+        checked(
+          await sb.auth.signInWithOAuth({
+            provider: "google",
+            options: {
+              redirectTo: callback + "?flow=google-withdraw",
+              queryParams: { prompt: "select_account" },
+            },
+          }),
+        );
+        return;
+      }
       if (
         !original ||
         !confirm("계정과 작성한 글·댓글·사진·별빛을 영구 삭제할까요?")
       )
         return;
-      var data = checked(
-        await sb.auth.signInWithPassword({
-          email: original.email,
-          password: $("withdrawPassword").value,
-        }),
-      );
+      var data = googleOnly(original)
+        ? checked(await sb.auth.getUser())
+        : checked(
+            await sb.auth.signInWithPassword({
+              email: original.email,
+              password: $("withdrawPassword").value,
+            }),
+          );
       $("withdrawPassword").value = "";
       if (data.user.id !== original.id) throw new Error("session_changed");
       say("계정과 활동을 삭제하고 있어요. 이 화면을 닫지 말아주세요.");
@@ -281,6 +380,8 @@
         body: { confirmation: "DELETE_MY_ACCOUNT" },
       });
       if (response.error) {
+        googleWithdrawalUserId = null;
+        render();
         var reason;
         try {
           reason = await response.error.context.json();
@@ -290,11 +391,50 @@
       if (!response.data || !response.data.deleted)
         throw new Error("withdrawal_failed");
       await sb.auth.signOut({ scope: "local" });
+      clearGoogleReturn();
       member.clearNickname();
       await member.refresh();
       say("회원 탈퇴와 활동 삭제를 마쳤어요.");
     });
   });
+  async function handleGoogleReturn() {
+    if (
+      googleReturnHandled ||
+      new URLSearchParams(location.search).get("flow") !== "google-withdraw"
+    )
+      return;
+    googleReturnHandled = true;
+    var saved;
+    try {
+      saved = JSON.parse(sessionStorage.getItem(googleReturnKey));
+    } catch (_) {}
+    sessionStorage.removeItem(googleReturnKey);
+    history.replaceState(null, "", location.pathname);
+    var user = checked(await sb.auth.getUser()).user;
+    if (
+      !saved ||
+      !Number.isFinite(saved.startedAt) ||
+      !user ||
+      user.id !== saved.userId ||
+      !googleOnly(user) ||
+      Date.now() - saved.startedAt > 15 * 60 * 1000 ||
+      saved.startedAt > Date.now()
+    ) {
+      googleWithdrawalUserId = null;
+      say(
+        "계정 확인을 완료하지 못해 삭제하지 않았어요. 탈퇴하려던 계정에서 다시 시도해주세요.",
+      );
+      return;
+    }
+    googleWithdrawalUserId = user.id;
+    render();
+    $("withdrawDetails").open = true;
+    $("withdrawConsent").checked = false;
+    say(
+      "Google 계정을 확인했어요. 삭제할 내용을 다시 확인한 뒤 탈퇴를 완료해주세요.",
+    );
+    $("withdrawDetails").scrollIntoView({ block: "nearest" });
+  }
   window.addEventListener("orbit:member", render);
   if (!sb || !window.ORBIT_CONFIG.membersEnabled) {
     say(
@@ -311,5 +451,17 @@
   member.refresh().then(() => {
     if (!member.state.error) say("");
     render();
+    var oauthError =
+      new URLSearchParams(location.search).get("error") ||
+      new URLSearchParams(location.hash.slice(1)).get("error");
+    if (oauthError) {
+      clearGoogleReturn();
+      history.replaceState(null, "", location.pathname);
+      say(
+        "Google 로그인을 완료하지 못했어요. 취소했거나 연결에 문제가 생겼다면 다시 시도해주세요.",
+      );
+      return;
+    }
+    handleGoogleReturn().catch((error) => say(errorText(error)));
   });
 })();

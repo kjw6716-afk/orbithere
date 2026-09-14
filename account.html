@@ -34,6 +34,18 @@
         </div>
         <h2 id="authTitle">다시 만나 반가워요</h2>
         <p id="authHelp" class="account-help"></p>
+        <div id="googleAuth" hidden>
+          <button id="googleSignIn" class="google-signin" type="button">
+            <img
+              src="google-signin-icon.svg"
+              width="40"
+              height="40"
+              alt=""
+              aria-hidden="true"
+            /><span>Google로 계속하기</span>
+          </button>
+          <p class="account-help account-divider">또는 이메일로 계속하기</p>
+        </div>
         <form id="authForm">
           <label for="email">이메일</label
           ><input
@@ -66,7 +78,8 @@
           ><button id="authSubmit" type="submit">로그인</button>
         </form>
         <p class="account-help">
-          글 읽기는 가입 없이 할 수 있어요. 이메일은 게시판에 공개되지 않습니다.
+          가입 없이도 읽기·글쓰기·댓글이 가능해요. 회원은 다른 기기에서도 활동을
+          이어가고 별빛과 레벨을 쌓을 수 있어요. 이메일은 공개되지 않습니다.
         </p>
       </section>
       <section id="setupCard" class="account-card" hidden>
@@ -82,7 +95,7 @@
             maxlength="12"
             autocomplete="nickname"
             required
-          /><label class="account-consent"
+          /><label id="profileConsentField" class="account-consent"
             ><input id="profileConsent" type="checkbox" required /><span
               >만 14세 이상이며
               <a href="terms.html" target="_blank" rel="noopener">이용약관</a>과
@@ -143,6 +156,15 @@
           ><button id="changePassword" class="secondary" type="button">
             비밀번호 변경
           </button>
+          <a
+            id="googleManage"
+            class="account-help"
+            href="https://myaccount.google.com/security"
+            target="_blank"
+            rel="noopener"
+            hidden
+            >Google 계정 관리</a
+          >
         </div>
         <details id="withdrawDetails">
           <summary>회원 탈퇴</summary>
@@ -156,13 +178,20 @@
             계정은 운영 권한을 이전한 뒤 탈퇴할 수 있습니다.
           </p>
           <form id="withdrawForm">
-            <label for="withdrawPassword">현재 비밀번호</label
-            ><input
-              id="withdrawPassword"
-              type="password"
-              autocomplete="current-password"
-              required
-            /><label class="account-consent"
+            <div id="withdrawPasswordField">
+              <label for="withdrawPassword">현재 비밀번호</label
+              ><input
+                id="withdrawPassword"
+                type="password"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+            <p id="googleWithdrawHelp" class="account-help" hidden>
+              Google에서 본인 계정을 다시 확인한 뒤, 이 화면에서 삭제를 최종
+              확인합니다.
+            </p>
+            <label class="account-consent"
               ><input id="withdrawConsent" type="checkbox" required /><span
                 >삭제할 내용을 확인했으며 회원 탈퇴에 동의합니다.</span
               ></label

@@ -14,6 +14,24 @@ export function recentPasswordClaim(payload, now) {
   );
 }
 
+export function recentAuthenticationClaim(payload, user, now) {
+  if (recentPasswordClaim(payload, now)) return true;
+  // Only server-validated Google identities may use a recent OAuth proof.
+  return (
+    Array.isArray(user.identities) &&
+    user.identities.some((x) => x.provider === "google") &&
+    Array.isArray(payload.amr) &&
+    payload.amr.some(
+      (x) =>
+        x.method === "oauth" &&
+        typeof x.timestamp === "number" &&
+        Number.isFinite(x.timestamp) &&
+        x.timestamp <= now + 30 &&
+        now - x.timestamp <= 300,
+    )
+  );
+}
+
 export function createWithdrawalHandler(
   createClient,
   env,
@@ -67,8 +85,8 @@ export function createWithdrawalHandler(
       const payload = JSON.parse(
         atob(segment.padEnd(Math.ceil(segment.length / 4) * 4, "=")),
       );
-      if (!recentPasswordClaim(payload, now()))
-        return reply({ error: "password_reauthentication_required" }, 401);
+      if (!recentAuthenticationClaim(payload, data.user, now()))
+        return reply({ error: "reauthentication_required" }, 401);
       const admin = createClient(url, env("SUPABASE_SERVICE_ROLE_KEY"), {
         auth: { persistSession: false, autoRefreshToken: false },
       });

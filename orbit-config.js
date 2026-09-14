@@ -3,5 +3,6 @@ window.ORBIT_CONFIG = Object.freeze({
     url: 'https://unwxpuvfqyjhgrcrmuhu.supabase.co',
     publishableKey: 'sb_publishable_KnyriHKUHNWw0QyIAXBmOA_0KaHPcXI',
     membersEnabled:false, // Enable only after SMTP, redirects, migrations and withdrawal are verified.
+    googleAuthEnabled:false, // Enable after the Google provider and real callback are verified.
     requestTimeoutMs: 12000
 });

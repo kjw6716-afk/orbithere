@@ -101,6 +101,7 @@ async function fixture({
   auth = null,
   p = profile(),
   enabled = true,
+  google = true,
   width = 1280,
 } = {}) {
   const context = await browser.newContext({
@@ -139,10 +140,9 @@ async function fixture({
       if (url.pathname === "/orbit-config.js")
         return route.fulfill({
           contentType: "application/javascript",
-          body: (await readFile(root + "/orbit-config.js", "utf8")).replace(
-            "membersEnabled:false",
-            "membersEnabled:" + enabled,
-          ),
+          body: (await readFile(root + "/orbit-config.js", "utf8"))
+            .replace("membersEnabled:false", "membersEnabled:" + enabled)
+            .replace("googleAuthEnabled:false", "googleAuthEnabled:" + google),
         });
       return route.continue();
     }
@@ -156,7 +156,21 @@ async function fixture({
       });
     if (url.hostname !== "unwxpuvfqyjhgrcrmuhu.supabase.co")
       return route.abort();
-    state.calls.push({ path: url.pathname, method: req.method(), body });
+    state.calls.push({
+      path: url.pathname,
+      method: req.method(),
+      body,
+      query: Object.fromEntries(url.searchParams),
+    });
+    if (url.pathname === "/auth/v1/authorize")
+      return route.fulfill({
+        contentType: "text/html",
+        body: "<p>Google authorization fixture</p>",
+      });
+    if (url.pathname === "/auth/v1/user/identities/authorize")
+      return json({
+        url: "https://unwxpuvfqyjhgrcrmuhu.supabase.co/auth/v1/authorize?provider=google&linked=true",
+      });
     if (url.pathname === "/auth/v1/token") {
       state.auth = session();
       return json(state.auth);
@@ -249,6 +263,177 @@ async function fixture({
   return { context, page, state, errors, close: () => context.close() };
 }
 try {
+  let oauthFixture = await fixture({ google: false });
+  await oauthFixture.page.goto(base + "/account.html");
+  await oauthFixture.page.locator("#authCard").waitFor();
+  ok(
+    "Google button stays hidden until provider setup is verified",
+    await oauthFixture.page.locator("#googleAuth").isHidden(),
+  );
+  await oauthFixture.close();
+  oauthFixture = await fixture();
+  await oauthFixture.page.goto(base + "/account.html");
+  await oauthFixture.page.locator("#googleSignIn").click();
+  await oauthFixture.page.waitForURL("**/auth/v1/authorize?**");
+  const oauthCall = oauthFixture.state.calls.find(
+    (c) => c.path === "/auth/v1/authorize",
+  );
+  ok(
+    "Google starts OAuth with a fixed return URL and account selector",
+    oauthCall.query.provider === "google" &&
+      oauthCall.query.redirect_to === base + "/account.html" &&
+      oauthCall.query.prompt === "select_account",
+  );
+  await oauthFixture.close();
+  oauthFixture = await fixture({ auth: session(true), p: null });
+  await oauthFixture.page.goto(base + "/account.html?mode=signup");
+  await oauthFixture.page.locator("#googleSignIn").click();
+  await oauthFixture.page.waitForURL("**/auth/v1/authorize?**");
+  ok(
+    "Google signup links the current anonymous identity without replacing its account",
+    oauthFixture.state.calls.some(
+      (c) => c.path === "/auth/v1/user/identities/authorize",
+    ) &&
+      !oauthFixture.state.calls.some(
+        (c) => c.path === "/auth/v1/signup" || c.path === "/auth/v1/logout",
+      ),
+  );
+  await oauthFixture.close();
+  const googleSession = () => {
+    const s = session(false, { orbit_needs_password: true });
+    s.user.app_metadata = { provider: "google", providers: ["google"] };
+    s.user.identities = [{ provider: "google", user_id: A }];
+    return s;
+  };
+  oauthFixture = await fixture({ auth: googleSession(), p: null });
+  await oauthFixture.page.goto(base + "/account.html");
+  await oauthFixture.page.locator("#setupCard").waitFor();
+  ok(
+    "first Google visit asks for nickname and consent without an Orbit password",
+    (await oauthFixture.page.locator("#profileConsentField").isVisible()) &&
+      (await oauthFixture.page.locator("#passwordCard").isHidden()),
+  );
+  await oauthFixture.page.locator("#memberNickname").fill("구글회원");
+  await oauthFixture.page.locator("#profileForm button").click();
+  ok(
+    "profile is not saved before first consent",
+    !oauthFixture.state.calls.some((c) =>
+      c.path.endsWith("member_save_profile"),
+    ),
+  );
+  await oauthFixture.page.locator("#profileConsent").check();
+  await oauthFixture.page.locator("#profileForm button").click();
+  await oauthFixture.page.locator("#profileCard").waitFor();
+  await oauthFixture.page.reload();
+  await oauthFixture.page.locator("#profileCard").waitFor();
+  ok(
+    "returning Google member opens the mini profile and external password management",
+    (await oauthFixture.page.locator("#setupCard").isHidden()) &&
+      (await oauthFixture.page.locator("#changePassword").isHidden()) &&
+      (await oauthFixture.page.locator("#googleManage").isVisible()),
+  );
+  await oauthFixture.page.locator("#withdrawDetails summary").click();
+  await oauthFixture.page.locator("#withdrawConsent").check();
+  await oauthFixture.page.locator("#withdrawForm button").click();
+  await oauthFixture.page.waitForURL("**/auth/v1/authorize?**");
+  ok(
+    "Google withdrawal redirects for reauthentication without deleting or asking a password",
+    !oauthFixture.state.deleted &&
+      oauthFixture.state.calls.some(
+        (c) =>
+          c.path === "/auth/v1/authorize" &&
+          c.query.redirect_to === base + "/account.html?flow=google-withdraw",
+      ),
+  );
+  await oauthFixture.page.goto(base + "/account.html?flow=google-withdraw");
+  await oauthFixture.page
+    .getByText("Google 계정을 확인했어요.", { exact: false })
+    .waitFor();
+  ok(
+    "Google return requires a second explicit deletion confirmation",
+    !oauthFixture.state.deleted &&
+      !(await oauthFixture.page.locator("#withdrawConsent").isChecked()),
+  );
+  await oauthFixture.page.locator("#withdrawConsent").check();
+  oauthFixture.page.once("dialog", (d) => d.accept());
+  await oauthFixture.page.locator("#withdrawForm button").click();
+  await oauthFixture.page
+    .getByText("회원 탈퇴와 활동 삭제를 마쳤어요.")
+    .waitFor();
+  ok(
+    "confirmed Google withdrawal does not invoke password login",
+    oauthFixture.state.deleted &&
+      !oauthFixture.state.calls.some((c) => c.path === "/auth/v1/token"),
+  );
+  await oauthFixture.close();
+  oauthFixture = await fixture({ auth: googleSession() });
+  await oauthFixture.context.addInitScript(() =>
+    sessionStorage.setItem(
+      "orbit_google_return",
+      JSON.stringify({ userId: "someone-else", startedAt: Date.now() }),
+    ),
+  );
+  await oauthFixture.page.goto(base + "/account.html?flow=google-withdraw");
+  await oauthFixture.page
+    .getByText("계정 확인을 완료하지 못해 삭제하지 않았어요.", { exact: false })
+    .waitFor();
+  ok(
+    "switching Google accounts cannot delete the previous account",
+    !oauthFixture.state.deleted &&
+      !oauthFixture.state.calls.some(
+        (c) => c.path === "/functions/v1/member-withdraw",
+      ),
+  );
+  await oauthFixture.close();
+  oauthFixture = await fixture({ auth: googleSession() });
+  await oauthFixture.context.addInitScript(
+    (id) =>
+      sessionStorage.setItem(
+        "orbit_google_return",
+        JSON.stringify({ userId: id, startedAt: Date.now() }),
+      ),
+    A,
+  );
+  await oauthFixture.page.goto(base + "/account.html?flow=google-withdraw");
+  await oauthFixture.page
+    .getByText("Google 계정을 확인했어요.", { exact: false })
+    .waitFor();
+  await oauthFixture.page.evaluate(() => {
+    window.OrbitMembers.state.user.id = "another-account";
+    window.dispatchEvent(new Event("orbit:member"));
+  });
+  ok(
+    "changing account after reauthentication clears the deletion approval",
+    (await oauthFixture.page.locator("#withdrawForm button").textContent()) ===
+      "Google로 본인 확인" && !oauthFixture.state.deleted,
+  );
+  await oauthFixture.close();
+  oauthFixture = await fixture();
+  await oauthFixture.page.goto(
+    base +
+      "/account.html?error=access_denied&error_description=provider-detail",
+  );
+  await oauthFixture.page
+    .getByText("Google 로그인을 완료하지 못했어요.", { exact: false })
+    .waitFor();
+  ok(
+    "cancelled OAuth offers retry and clears provider error from URL",
+    !oauthFixture.page.url().includes("error=") &&
+      !(await oauthFixture.page.locator("#googleAuth").isHidden()),
+  );
+  await oauthFixture.close();
+  oauthFixture = await fixture({
+    auth: session(false, { orbit_policy_version: "2026-09-14-members" }),
+    p: null,
+  });
+  await oauthFixture.page.goto(base + "/account.html");
+  await oauthFixture.page.locator("#setupCard").waitFor();
+  ok(
+    "email signup consent is not requested again after email verification",
+    (await oauthFixture.page.locator("#profileConsentField").isHidden()) &&
+      (await oauthFixture.page.locator("#profileConsent").isChecked()),
+  );
+  await oauthFixture.close();
   let f = await fixture({ enabled: false });
   await f.page.goto(base + "/account.html");
   await f.page
@@ -391,7 +576,7 @@ try {
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     );
-    await f.page.setViewportSize({width,height:500});
+    await f.page.setViewportSize({ width, height: 500 });
     await f.page.screenshot({
       path: root + "/../member-" + width + ".png",
       fullPage: true,

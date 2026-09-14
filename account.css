@@ -82,6 +82,32 @@
   opacity: 0.5;
   cursor: wait;
 }
+.account-card .google-signin {
+  width: 100%;
+  margin: 0;
+  background: #f2f2f2;
+  color: #1f1f1f;
+  border: 0;
+  font-weight: 500;
+  font-size: 14px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 12px 2px 2px;
+}
+.google-signin img {
+  flex: 0 0 40px;
+}
+.account-divider {
+  text-align: center;
+  font-size: 12px;
+  margin: 18px 0 0;
+}
+.account-settings #googleManage {
+  font-size: 12px;
+  padding: 10px 9px;
+}
 .account-tabs {
   margin-bottom: 18px;
   display: flex;
