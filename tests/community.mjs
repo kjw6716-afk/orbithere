@@ -62,7 +62,9 @@ function session(anonymous = true) {
       aud: 'authenticated',
       role: 'authenticated',
       is_anonymous: anonymous,
-      app_metadata: { provider: 'anonymous' },
+      email: anonymous ? undefined : 'member@example.test',
+      email_confirmed_at: anonymous ? null : now(),
+      app_metadata: { provider: anonymous ? 'anonymous' : 'email' },
       user_metadata: {},
       created_at: now(),
     },
@@ -78,9 +80,10 @@ function cursor(rows, time, id) {
     ? rows.filter((r) => r.created_at < time || (r.created_at === time && r.id < id))
     : rows;
 }
-async function fixture({ nickname = '관측자', version = 1, admin = false, signedIn = false, registered = false } = {}) {
+async function fixture({ nickname = '관측자', version = 1, admin = false, signedIn = true, registered = true, profileReady = true } = {}) {
   const context = await browser.newContext({ viewport: { width: 1200, height: 900 } });
   const state = {
+    profile: registered && profileReady ? {nickname:nickname || '관측자',level:2,xp:10,level_start:10,next_level:30,joined_at:now()} : null,
     receipts: new Set(), readCalls: [], activityCalls: [], activityFail: false, readFail: false,
     viewCalls: [],
     viewed: new Set(),
@@ -177,7 +180,8 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
       return state.observationVersion ? json(1) : json({ code: 'PGRST202', message: 'Not installed' }, 404);
     if (url.pathname.endsWith('/rpc/community_version')) return json(2);
     if (url.pathname.endsWith('/rpc/is_admin')) return json(admin);
-    if (url.pathname.endsWith('/rpc/member_profile') || url.pathname.endsWith('/rpc/member_visit')) return json(null);
+    if (url.pathname.endsWith('/rpc/member_profile') || url.pathname.endsWith('/rpc/member_visit')) return json(state.profile);
+    if (url.pathname.endsWith('/rpc/member_save_profile')) {state.profile.nickname=req.postDataJSON().p_nickname; return json(state.profile);}
     if (url.pathname.endsWith('/rpc/member_cards')) return json([]);
     if (url.pathname.endsWith('/rpc/visit_stats')) return json([{day:'2026-09-13',count:19,total:46}]);
     if (url.pathname.endsWith('/rpc/report_queue')) return json([]);
@@ -437,7 +441,7 @@ try {
     if(registered) await page.locator('#whoRole').filter({hasText:'권한 없음'}).waitFor();
     ok('non-admin cannot see notice controls, registered='+registered,await page.locator('#noticePanel').isHidden());
     await page.goto(base+'/lounge.html?write=1');
-    await page.locator('#postInput').waitFor();
+    await page.locator(registered ? '#postInput' : '#memberWriteGate').waitFor();
     ok('ordinary writer has no notice toggle',await page.locator('#postPinned').count()===0);
     await f.close();
   }
@@ -506,7 +510,7 @@ try {
     await f.close();
   }
   {
-    const f=await fixture({nickname:''}), {page,state}=f;
+    const f=await fixture({nickname:'',signedIn:false,registered:false}), {page,state}=f;
     await page.goto(base+'/lounge.html?activity=mine&embed=1');
     await page.getByRole('heading',{name:'이 브라우저에서 시작한 활동이 없어요'}).waitFor();
     ok('viewing personal activity never creates an anonymous account or fetches someone else\'s posts', state.signups===0&&state.activityCalls.length===0);
@@ -646,23 +650,17 @@ try {
     await f.close();
   }
   {
-    const f = await fixture({ nickname: '' }), { page, state } = f;
+    const f = await fixture({ nickname: '처음본별' }), { page, state } = f;
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(base + '/lounge.html?write=1');
     await page.locator('#postInput').waitFor();
-    ok('first visitor can write before choosing a nickname', await page.locator('#postForm').isVisible() && state.signups === 0);
+    ok('members write directly with their account nickname', await page.locator('#postForm').isVisible() && state.signups === 0);
     ok('optional observation sections begin collapsed', await page.locator('.observation-fields[open]').count() === 0);
     ok('a general first story defaults to the existing free channel', await page.locator('#orbitSelect').inputValue() === 'free');
     await page.locator('#postInput').fill('오늘은 달을 봤어요. 이름은 잘 몰라도 즐거웠어요.');
     await page.locator('#btnTrace').click();
-    await page.locator('#writeStatus').filter({ hasText: '닉네임을 2~12자' }).waitFor();
-    ok('nickname validation preserves the story and creates no account', state.signups === 0 && state.inserts === 0 && (await page.locator('#postInput').inputValue()).includes('달을 봤어요'));
-    await page.locator('#writerNickname').fill('처음본별');
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await page.screenshot({ path: '/tmp/orbit-easy-writing-390.png', fullPage: true });
-    await page.locator('#btnTrace').click();
     await page.locator('.detail-title').filter({ hasText: '오늘은 달을 봤어요.' }).waitFor();
-    ok('one-line posting generates a title without equipment, pictures or signup UI', state.posts[0].title === '오늘은 달을 봤어요.' && state.posts[0].nick === '처음본별' && state.posts[0].image_paths.length === 0 && Object.keys(state.posts[0].observation).length === 0);
+    ok('one-line posting uses the member nickname without a second nickname form', state.posts[0].title === '오늘은 달을 봤어요.' && state.posts[0].nick === '처음본별' && state.posts[0].image_paths.length === 0 && Object.keys(state.posts[0].observation).length === 0);
     ok('empty optional metadata adds no empty detail panels', await page.locator('.observation-record').count() === 0);
     await f.close();
   }
@@ -767,7 +765,7 @@ try {
     await f.close();
   }
   {
-    const f=await fixture(),{page,state}=f;
+    const f=await fixture({signedIn:false,registered:false}),{page,state}=f;
     state.authFail=true;
     await page.goto(base+'/lounge.html?post='+P);
     await page.locator('.detail-body').waitFor();
@@ -828,7 +826,7 @@ try {
     await page.getByRole('heading', { name: '서울에서 본 토성', exact: true }).waitFor();
     ok(
       'lost commit response retry publishes exactly once',
-      state.posts.filter((p) => p.title === '서울에서 본 토성').length === 1 && state.signups === 1,
+      state.posts.filter((p) => p.title === '서울에서 본 토성').length === 1 && state.signups === 0,
     );
     ok(
       'success opens a permanent detail URL',
@@ -1117,7 +1115,7 @@ try {
     await f.close();
   }
   {
-    const f = await fixture({ admin: true }),
+    const f = await fixture({ admin: true, profileReady:false }),
       { page, state } = f;
     await page.goto(base + '/lounge.html?post=' + P);
     await page.getByRole('button', { name: '공지로 고정' }).click();
@@ -1129,13 +1127,19 @@ try {
     await f.close();
   }
   {
-    const f = await fixture({ signedIn: true, registered: true }), { page, state } = f;
+    const f = await fixture({ signedIn: true, registered: true, profileReady:false }), { page, state } = f;
     await page.goto(base + '/lounge.html?write=1');
-    await page.locator('#postTitle').fill('프로필 설정 전 글쓰기');
-    await page.locator('#postInput').fill('아직 공개 닉네임을 정하지 않은 회원');
-    await page.locator('#btnTrace').click();
-    await page.locator('#writeStatus').filter({ hasText: '프로필 설정을 먼저' }).waitFor();
+    await page.locator('.account-dialog #setupCard').waitFor();
+    ok('profile setup opens over the board without navigation',new URL(page.url()).pathname==='/lounge.html' && await page.locator('#postForm').isHidden());
     ok('registered author must finish the profile before new writing', state.inserts === 0);
+    await f.close();
+  }
+  {
+    const f=await fixture({signedIn:false,registered:false}), {page,state}=f;
+    await page.goto(base+'/lounge.html?post='+P);
+    await page.getByRole('button',{name:'로그인하고 댓글 쓰기'}).click();
+    await page.locator('.account-dialog #authCard').waitFor();
+    ok('visitor comments open login on the same readable post',new URL(page.url()).searchParams.get('post')===P&&state.comments.length===0&&await page.locator('#commentInput').isHidden());
     await f.close();
   }
   {
@@ -1260,10 +1264,11 @@ try {
     await frame.locator('#writeTop').click();
     await frame.locator('#postTitle').fill('보존할 초안');
     await page.locator('#profileChip').click();
-    await page.locator('#btnRename').click();
-    await page.locator('#nicknameInput').fill('새로운별');
-    await page.locator('#nicknameInput').press('Enter');
-    await page.locator('#joinBack').waitFor({ state: 'hidden' });
+    await page.locator('#editProfile').click();
+    await page.locator('#memberNickname').fill('새로운별');
+    await page.locator('#profileForm button').click();
+    await page.locator('#profileNickname').filter({hasText:'새로운별'}).waitFor();
+    await page.locator('.account-close').click();
     ok(
       'embedded board preserves the editor when nickname changes',
       (await frame.locator('#postTitle').inputValue()) === '보존할 초안',
@@ -1282,19 +1287,19 @@ try {
     await page.locator('#panel-sky.on').waitFor();
     ok('browser back restores previous panel');
     await page.locator('#profileChip').click();
-    await page.locator('#btnRename').click();
+    await page.locator('#editProfile').click();
     await page.keyboard.press('Escape');
     ok(
       'cancelling nickname change preserves existing nickname',
       (await page.evaluate(() => localStorage.getItem('orbit_nickname'))) === '관측자',
     );
     await page.locator('#profileChip').click();
-    await page.locator('#joinClose').focus();
+    await page.locator('.account-close').focus();
     await page.keyboard.press('Tab');
     ok(
       'dialog keyboard focus stays inside',
       await page.evaluate(() =>
-        document.querySelector('#joinBack').contains(document.activeElement),
+        document.querySelector('.account-dialog').contains(document.activeElement),
       ),
     );
     await page.keyboard.press('Escape');

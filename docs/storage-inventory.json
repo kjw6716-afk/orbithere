@@ -46,5 +46,9 @@
   "orbit_google_return": {
     "section": "storage-google-return",
     "purpose": "Google 탈퇴 재인증 전 계정 ID와 시각의 임시 저장 (sessionStorage, 복귀·로그아웃·탭 종료 시 삭제)"
+  },
+  "orbit_account_return": {
+    "section": "storage-account-return",
+    "purpose": "인증 후 현재 페이지의 계정 팝업으로 복귀 (sessionStorage, 같은 사이트 경로·시각만 저장, 1시간 유효, 탭 종료 시 삭제)"
   }
 }

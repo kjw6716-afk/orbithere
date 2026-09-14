@@ -226,10 +226,8 @@
             <div class="topbar">
                 <h1 class="panel-title" id="panelTitle"><a class="page-title-link" id="panelTitleLink" href="planets.html">오늘 밤 <span>행성</span></a></h1>
                 <div class="topbar-right">
-                    <span class="nickname-hint">
-                        닉네임은 이 브라우저에 저장돼요.<br>다른 사람도 같은 이름을 쓸 수 있어요.
-                    </span>
-                    <button class="profile-chip" id="profileChip" type="button">
+                    <button class="account-signup-link" id="headerSignup" data-account-open="signup" type="button">회원가입</button>
+                    <button class="profile-chip" id="profileChip" type="button" aria-haspopup="dialog" aria-expanded="false">
                         <span id="profileChipText">궤도 진입하기</span>
                     </button>
                 </div>
@@ -299,44 +297,12 @@
         </div>
     </div>
 
-    <!-- 궤도 진입(닉네임) 대화상자 — 기본은 닫힘. JS가 열고 닫는다. -->
-    <div class="join-back" id="joinBack" style="display:none;">
-        <div class="join-box" role="dialog" aria-modal="true" aria-labelledby="joinTitle">
-            <h2 id="joinTitle">궤도 <span>진입하기</span></h2>
-            <p class="jb-sub" id="joinSub">닉네임만 정하면 바로 글을 남길 수 있어요. 이메일·비밀번호 없이 시작하며, 작성 권한은 이 브라우저에 저장돼요.</p>
-
-            <!-- 미진입 -->
-            <div id="joinNew">
-                <div class="join-form">
-                    <input type="text" id="nicknameInput" placeholder="닉네임을 입력하세요" maxlength="12" autocomplete="off">
-                    <div class="join-error" id="joinError"></div>
-                    <button class="btn-mint" id="joinBtn" type="button">궤도 진입</button>
-                </div>
-            </div>
-
-            <!-- 진입 완료 -->
-            <div id="joinDone" style="display:none;">
-                <div class="joined-badge">
-                    <span id="joinedNickname">—</span>
-                </div>
-                <button class="btn-outline" id="btnRename" type="button" style="width:100%;">닉네임 바꾸기</button>
-                <button class="btn-leave" id="btnLeave" type="button" style="width:100%;">이 기기에서 닉네임 지우기</button>
-            </div>
-
-            <p class="join-note" id="memberJoinLinks" hidden><a href="account.html?mode=signup" style="color:#ffb36b">이메일로 활동 보관하기</a> · <a href="account.html" style="color:#ffb36b">로그인</a></p>
-            <p class="join-note">
-                닉네임은 이 브라우저에 저장되며, 다른 사람도 같은 이름을 쓸 수 있어요.
-                내 글·댓글의 삭제 권한과 내 활동은 <b>이 브라우저의 인증 세션</b>으로 확인해요.
-                브라우저 데이터를 지우면 이전 활동을 이어서 확인하거나 직접 삭제할 수 없어요.
-            </p>
-            <button class="btn-outline" id="joinClose" type="button" style="width:100%;margin-top:12px;">닫기</button>
-        </div>
-    </div>
-
-    <link rel="stylesheet" href="account.css?v=20260914-members">
+    <link rel="stylesheet" href="account.css?v=20260914-popover">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
     <script src="orbit-backend.js"></script>
-    <script src="members.js?v=20260914-members"></script>
+    <script src="members.js?v=20260914-popover"></script>
+    <script src="account.js?v=20260914-popover"></script>
+    <script src="account-panel.js?v=20260914-popover"></script>
     <script src="site-nav.js?v=20260914-community"></script>
     <script>
     // ===== 패널 전환 =====
@@ -347,7 +313,7 @@
             lounge:  '<span>자유게시판</span>'
         };
         var DEFAULT_PANEL = 'planets';
-        var activePanel = DEFAULT_PANEL, joinReturnFocus = null;
+        var activePanel = DEFAULT_PANEL;
         var loungeLoaded = false, skyLoaded = false, planetsLoaded = false;
 
         function setMenu(open) { window.OrbitNavigation.setOpen(open); }
@@ -441,125 +407,17 @@
             }
         });
 
-        // ===== 궤도 진입(닉네임) 대화상자 =====
-        // 프로필 변경 대화상자. 첫 글의 닉네임은 게시판에서도 정할 수 있다.
-
-        var back  = document.getElementById('joinBack');
-        var input = document.getElementById('nicknameInput');
-        var errEl = document.getElementById('joinError');
-
-        function nickname(){ return localStorage.getItem('orbit_nickname'); }
-
-        // 상단바 칩 — 진입 여부를 그대로 보여준다
         function syncChip(){
-            var profile = window.OrbitMembers && window.OrbitMembers.state.profile;
-            var n = profile ? profile.nickname + ' · Lv.' + profile.level : nickname();
-            if(window.ORBIT_CONFIG.membersEnabled){
-                document.getElementById('memberJoinLinks').hidden=false;
-                document.querySelector('.nickname-hint').textContent=profile?'별빛과 배지는 내 계정에서 확인해요.':'이메일로 가입하면 다른 기기에서도 활동이 이어져요.';
-            }
-            document.getElementById('profileChipText').textContent = n || '궤도 진입하기';
+            var state = window.OrbitMembers.state, profile = state.profile;
+            var registered = state.user && !state.user.is_anonymous && state.user.email_confirmed_at;
+            document.getElementById('profileChipText').textContent = profile
+                ? profile.nickname + ' · Lv.' + profile.level : registered ? '내 계정' : '궤도 진입하기';
+            document.getElementById('headerSignup').hidden = !!registered;
+            if(loungeLoaded) document.getElementById('loungeFrame').contentWindow.postMessage({orbit:'profileChanged'},location.origin);
         }
-
-        window.addEventListener('orbit:member',syncChip);
-        function openJoin(){
-            if(window.ORBIT_CONFIG.membersEnabled && window.OrbitMembers && window.OrbitMembers.state.user && !window.OrbitMembers.state.user.is_anonymous){ location.href='account.html'; return; }
-            if (back.style.display === 'none') joinReturnFocus = document.activeElement;
-            var n = nickname();
-            document.getElementById('joinNew').style.display  = n ? 'none' : '';
-            document.getElementById('joinDone').style.display = n ? '' : 'none';
-            document.getElementById('joinTitle').innerHTML = n
-                ? '궤도에 <span>있어요</span>' : '궤도 <span>진입하기</span>';
-            document.getElementById('joinSub').textContent = n
-                ? '이 기기는 아래 닉네임으로 글을 남기고 있어요.'
-                : '닉네임만 정하면 바로 글을 남길 수 있어요. 이메일·비밀번호 없이 시작하며, 작성 권한은 이 브라우저에 저장돼요.';
-            if(n){
-                document.getElementById('joinedNickname').textContent = n;
-            } else {
-                input.value = '';
-                input.classList.remove('error');
-                errEl.style.display = 'none';
-            }
-            back.style.display = '';
-            document.querySelector('.app').inert = true;
-            setTimeout(function(){ if (back.style.display !== 'none') (document.getElementById('joinNew').style.display === 'none' ? document.getElementById('joinClose') : input).focus(); }, 0);
-            document.addEventListener('keydown', onEsc);
-        }
-        function closeJoin(){
-            back.style.display = 'none';
-            document.querySelector('.app').inert = false;
-            document.removeEventListener('keydown', onEsc);
-            // 대화상자를 여는 신호로 쓴 해시를 남겨두면 새로고침 때 다시 열린다
-            if(location.hash === '#join') history.replaceState(null, '', '#' + activePanel);
-            if(joinReturnFocus && joinReturnFocus.isConnected) joinReturnFocus.focus();
-        }
-        function onEsc(e){
-            if(e.key === 'Escape') { closeJoin(); return; }
-            if(e.key !== 'Tab') return;
-            var items = Array.from(back.querySelectorAll('button, input, a[href]')).filter(function(el){ return !el.disabled && el.getClientRects().length; });
-            var first = items[0], last = items[items.length - 1];
-            if(e.shiftKey && (document.activeElement === first || !back.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
-            else if(!e.shiftKey && (document.activeElement === last || !back.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
-        }
-
-        back.addEventListener('click', function(e){ if(e.target === back) closeJoin(); });
-        document.getElementById('joinClose').addEventListener('click', closeJoin);
+        function openJoin(){ window.OrbitAccount.open({anchor:document.getElementById('profileChip')}); }
+        window.addEventListener('orbit:member', syncChip);
         document.getElementById('profileChip').addEventListener('click', openJoin);
-
-        function showError(msg){
-            input.classList.add('error');
-            errEl.textContent = msg;
-            errEl.style.display = 'block';
-            input.focus();
-        }
-
-        document.getElementById('joinBtn').addEventListener('click', function(){
-            var val = input.value.trim();
-            input.classList.remove('error');
-            errEl.style.display = 'none';
-
-            // 서버(posts.nick check 제약)가 2~12자를 요구하므로 여기서 같은 기준으로 걸러준다
-            if(!val)            return showError('닉네임을 입력해주세요');
-            if(val.length < 2)  return showError('닉네임은 2자 이상이어야 해요');
-            if(val.length > 12) return showError('닉네임은 12자 이하여야 해요');
-            if(/[<>\"\'\/\\]/.test(val)) return showError('사용할 수 없는 문자가 포함되어 있어요');
-
-            localStorage.setItem('orbit_nickname', val);
-            localStorage.setItem('orbit_joindate', new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}));
-            localStorage.setItem('orbit_jointime', Date.now());
-            syncChip();
-            closeJoin();
-            // 열린 게시판에 별칭 변경을 알린다. 초안·첨부 사진을 보존한다.
-            reloadLounge();
-            switchPanel('lounge', true);
-        });
-        input.addEventListener('keydown', function(e){
-            if(e.key === 'Enter') { e.preventDefault(); document.getElementById('joinBtn').click(); }
-        });
-
-        document.getElementById('btnRename').addEventListener('click', function(){
-            openJoin();
-            document.getElementById('joinNew').style.display = '';
-            document.getElementById('joinDone').style.display = 'none';
-            input.value = nickname() || '';
-            input.focus();
-        });
-        document.getElementById('btnLeave').addEventListener('click', function(){
-            if(!confirm('이 기기에서 닉네임을 지울까요?\n이미 남긴 글과 브라우저의 인증 정보는 그대로 남아요.')) return;
-            localStorage.removeItem('orbit_nickname');
-            localStorage.removeItem('orbit_joindate');
-            localStorage.removeItem('orbit_jointime');
-            syncChip();
-            closeJoin();
-            reloadLounge();
-        });
-
-        // 광장 iframe을 아직 안 열었으면 건드리지 않는다 — 열 때 어차피 새로 읽는다
-        function reloadLounge(){
-            if(!loungeLoaded) return;
-            var fr = document.getElementById('loungeFrame');
-            fr.contentWindow.postMessage({orbit:'profileChanged'},location.origin);
-        }
 
         // ===== 초기 상태 =====
         syncChip();
