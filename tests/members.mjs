@@ -183,7 +183,10 @@ async function fixture({
       state.auth = session(false,body.type === 'email_change' ? {orbit_needs_password:true,orbit_policy_version:'2026-09-14-members'} : {orbit_policy_version:'2026-09-14-members'});
       return json(state.auth);
     }
-    if (url.pathname === "/auth/v1/resend") return json({});
+    if (url.pathname === "/auth/v1/resend") {
+      if (state.resendGate) await state.resendGate;
+      return json({});
+    }
     if (url.pathname === "/auth/v1/signup") {
       if (state.signupFail)
         return json(
@@ -294,8 +297,16 @@ try {
     ok('wrong or expired code keeps the visitor outside member setup',await f.page.locator('#verifyCard').isVisible()&&await f.page.locator('#setupCard').isHidden());
     await f.page.clock.fastForward(301000);
     ok('expired code cannot be submitted',await f.page.locator('#verifySubmit').isDisabled());
+    let releaseResend;
+    f.state.resendGate = new Promise(resolve => { releaseResend = resolve; });
+    const resending = f.page.waitForRequest(r => r.url().endsWith('/auth/v1/resend'));
     await f.page.locator('#resendCode').click();
-    await f.page.waitForFunction(()=>document.querySelector('#resendCode').disabled);
+    await resending;
+    ok('pending resend keeps expired verification disabled',await f.page.locator('#resendCode').isDisabled()&&await f.page.locator('#verifySubmit').isDisabled());
+    releaseResend();
+    // A disabled resend button means either pending I/O or cooldown. Only the
+    // re-enabled verification control proves the response renewed the expiry.
+    await f.page.waitForFunction(()=>!document.querySelector('#verifySubmit').disabled);
     ok('resend uses signup endpoint and restarts the expiry',f.state.calls.some(c=>c.path==='/auth/v1/resend'&&c.body.type==='signup')&&!(await f.page.locator('#verifySubmit').isDisabled()));
     await f.page.locator('#emailCode').fill('123456');
     await f.page.locator('.account-close').click();
@@ -761,3 +772,4 @@ try {
   await browser.close();
   await new Promise((r) => server.close(r));
 }
+
