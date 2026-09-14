@@ -177,6 +177,8 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
       return state.observationVersion ? json(1) : json({ code: 'PGRST202', message: 'Not installed' }, 404);
     if (url.pathname.endsWith('/rpc/community_version')) return json(2);
     if (url.pathname.endsWith('/rpc/is_admin')) return json(admin);
+    if (url.pathname.endsWith('/rpc/member_profile') || url.pathname.endsWith('/rpc/member_visit')) return json(null);
+    if (url.pathname.endsWith('/rpc/member_cards')) return json([]);
     if (url.pathname.endsWith('/rpc/visit_stats')) return json([{day:'2026-09-13',count:19,total:46}]);
     if (url.pathname.endsWith('/rpc/report_queue')) return json([]);
     if (url.pathname === '/auth/v1/logout') return json({});
@@ -1120,10 +1122,20 @@ try {
     await page.goto(base + '/lounge.html?post=' + P);
     await page.getByRole('button', { name: '공지로 고정' }).click();
     await page.getByRole('button', { name: '공지 해제' }).waitFor();
-    ok('administrator can pin an existing post', state.posts[0].is_pinned);
+    ok('administrator without a member profile can pin an existing post', state.posts[0].is_pinned);
     await page.locator('#backToFeed').click();
     await page.locator('.pinned-row').waitFor();
     ok('pinned notice appears above normal posts');
+    await f.close();
+  }
+  {
+    const f = await fixture({ signedIn: true, registered: true }), { page, state } = f;
+    await page.goto(base + '/lounge.html?write=1');
+    await page.locator('#postTitle').fill('프로필 설정 전 글쓰기');
+    await page.locator('#postInput').fill('아직 공개 닉네임을 정하지 않은 회원');
+    await page.locator('#btnTrace').click();
+    await page.locator('#writeStatus').filter({ hasText: '프로필 설정을 먼저' }).waitFor();
+    ok('registered author must finish the profile before new writing', state.inserts === 0);
     await f.close();
   }
   {

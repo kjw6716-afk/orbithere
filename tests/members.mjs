@@ -141,8 +141,8 @@ async function fixture({
         return route.fulfill({
           contentType: "application/javascript",
           body: (await readFile(root + "/orbit-config.js", "utf8"))
-            .replace("membersEnabled:false", "membersEnabled:" + enabled)
-            .replace("googleAuthEnabled:false", "googleAuthEnabled:" + google),
+            .replace(/membersEnabled:(?:true|false)/, "membersEnabled:" + enabled)
+            .replace(/googleAuthEnabled:(?:true|false)/, "googleAuthEnabled:" + google),
         });
       return route.continue();
     }

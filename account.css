@@ -99,6 +99,9 @@
 .google-signin img {
   flex: 0 0 40px;
 }
+.embed [data-account-link] {
+  display: none !important;
+}
 .account-divider {
   text-align: center;
   font-size: 12px;

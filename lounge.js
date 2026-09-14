@@ -198,11 +198,6 @@
       if (!user) user = checked(await sb.auth.signInAnonymously()).user;
       if (!user) throw new Error('작성 권한을 확인하지 못했어요.');
       userId = user.id;
-      if (window.ORBIT_CONFIG.membersEnabled && !user.is_anonymous) {
-        var profile = checked(await sb.rpc('member_profile'));
-        if (!profile) throw new Error('내 계정에서 프로필 설정을 먼저 마쳐주세요.');
-        localStorage.setItem('orbit_nickname', profile.nickname);
-      }
       return user.id;
     })();
     try {
@@ -210,6 +205,20 @@
     } finally {
       writerPromise = null;
     }
+  }
+  async function ensureAuthor() {
+    var id = await ensureWriter();
+    // Only new writing needs a public nickname; moderation and deletion remain available.
+    if (window.ORBIT_CONFIG.membersEnabled) {
+      var s = checked(await sb.auth.getSession()),
+        user = s.session && s.session.user;
+      if (user && !user.is_anonymous) {
+        var profile = checked(await sb.rpc('member_profile'));
+        if (!profile) throw new Error('내 계정에서 프로필 설정을 먼저 마쳐주세요.');
+        localStorage.setItem('orbit_nickname', profile.nickname);
+      }
+    }
+    return id;
   }
   function join() {
     if (embed && parent !== window) parent.postMessage({ orbit: 'join' }, location.origin);
@@ -699,7 +708,7 @@
     button.disabled = true;
     input.disabled = true;
     try {
-      await ensureWriter();
+      await ensureAuthor();
       var pending = commentAttempts[p.id],
         alreadySaved = false;
       if (pending && pending.text === text) {
@@ -968,7 +977,7 @@
     lockEditor(true);
     writeStatus('등록을 준비하고 있어요…');
     try {
-      await ensureWriter();
+      await ensureAuthor();
       if (Object.keys(observation).length) {
         var readiness = await sb.rpc('board_observation_version');
         if (readiness.error || readiness.data !== 1)
