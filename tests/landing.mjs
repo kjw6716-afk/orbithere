@@ -6,7 +6,7 @@ import {resolve,extname,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {chromium} from 'playwright';
 const root=fileURLToPath(new URL('..',import.meta.url));
-const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp'};
+const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.avif':'image/avif'};
 const server=createServer(async(req,res)=>{
  const full=resolve(root,'.'+(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));
  if(!full.startsWith(resolve(root)+sep)){res.writeHead(403);res.end();return;}
@@ -70,8 +70,14 @@ try{
  for(const [w,h,mobile] of [[412,800,true],[360,740,true],[768,1024,true],[1024,768,true],[1366,768,false],[1920,1080,false],[740,360,true]]){
   const {ctx,page,errors}=await open(w,h,mobile);
   await page.locator('.landing-nebula img').evaluate(img=>img.decode());
-  ok('background image decodes and uses the matching viewport asset',await page.locator('.landing-nebula img').evaluate((img,small)=>
-   img.naturalWidth>0&&img.currentSrc.endsWith(small?'nebula-landing-mobile.webp':'nebula-landing.webp'),w<=600));
+  // naturalWidth reports the density-corrected width sizes asked for, not the file's
+  // own pixels, so the served width comes from the file name that encodes it.
+  // Asserting the resolution rather than one literal name keeps this passing when a
+  // width variant is added or dropped, while still catching a too-small asset.
+  ok('background serves a resolution that suits the viewport',await page.locator('.landing-nebula img').evaluate((img,widest)=>{
+   const served=Number((img.currentSrc.match(/nebula-landing-(\d+)\.(?:avif|webp)$/)||[])[1]);
+   return img.naturalWidth>0&&served>=Math.min(innerWidth*devicePixelRatio,widest)*0.95;
+  },2430));
   ok('the shared ORBIT wordmark is white',await page.locator('.orbit-brand').evaluate(el=>getComputedStyle(el).color==='rgb(255, 255, 255)'));
   for(const ms of [0,1900,3900,6100,7900]){
    const box=await page.evaluate(t=>{

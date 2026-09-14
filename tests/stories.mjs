@@ -9,7 +9,7 @@ const root=fileURLToPath(new URL('..',import.meta.url));
 const seed=JSON.parse(await readFile(resolve(root,'_editorial/articles/moon-face-and-phases.json'),'utf8'));
 const ledger=JSON.parse(await readFile(resolve(root,'_editorial/published.json'),'utf8'));
 const firstStory=[...ledger.items].sort((a,b)=>a.date.localeCompare(b.date))[0];
-const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.woff2':'font/woff2'};
+const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.woff2':'font/woff2','.webp':'image/webp','.avif':'image/avif'};
 const server=createServer(async(req,res)=>{
  const file=resolve(root,'.'+new URL(req.url,'http://localhost').pathname);
  if(!file.startsWith(resolve(root)+sep)){res.writeHead(403);res.end();return;}
