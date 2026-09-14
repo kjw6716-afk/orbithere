@@ -16,7 +16,7 @@
     if (dialog && dialog.open) dialog.close();
   }
   async function prepare(initial) {
-    var response = await fetch('account.html?v=20260914-popover');
+    var response = await fetch('account.html?v=20260914-codes');
     if (!response.ok) throw new Error('account_unavailable');
     var parsed = new DOMParser().parseFromString(await response.text(), 'text/html');
     var template = parsed.getElementById('accountTemplate');

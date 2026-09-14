@@ -360,7 +360,7 @@
     var all = new URL(url(), location.href);
     all.hash = 'all';
     return '<div class="empty-state board-empty"><h2>' + title + '</h2><p>' + message + '</p>' +
-      (!activity && !query && channel === 'all' ? '<p class="empty-example">“퇴근길에 밝은 점 하나를 봤어요. 이름은 모르지만 한참 바라봤네요.”</p>' : '') +
+      (!activity && !query && channel === 'all' ? '<p class="empty-example">“오늘 퇴근길에 별을 봤어요.”</p>' : '') +
       '<div class="empty-actions"><a class="button primary" data-board-nav href="' + esc(href) + '">' + action + '</a>' +
       (channel !== 'all' ? '<a class="text-button" data-board-nav href="' + esc(all.pathname + all.search + all.hash) + '">' +
         (query ? '모든 글에서 검색' : '전체 글 보기') + '</a>' : '') + '</div></div>';

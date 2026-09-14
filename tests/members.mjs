@@ -78,6 +78,7 @@ function profile() {
   return {
     nickname: "밤하늘",
     joined_at: "2026-09-14T00:00:00Z",
+    nickname_change_available_at: "2026-09-01T00:00:00Z",
     level: 12,
     xp: 700,
     level_start: 660,
@@ -133,6 +134,7 @@ async function fixture({
       json = (data, status = 200) =>
         route.fulfill({
           status,
+          headers: {"x-supabase-api-version":"2024-01-01", "access-control-expose-headers":"X-Supabase-Api-Version"},
           contentType: "application/json",
           body: JSON.stringify(data),
         });
@@ -175,6 +177,13 @@ async function fixture({
       state.auth = session();
       return json(state.auth);
     }
+    if (url.pathname === "/auth/v1/verify") {
+      if (state.otpFail) return json({code:"otp_expired",msg:"invalid or expired"},403);
+      if (state.otpPartial) return json({message:"Confirmation pending"});
+      state.auth = session(false,body.type === 'email_change' ? {orbit_needs_password:true,orbit_policy_version:'2026-09-14-members'} : {orbit_policy_version:'2026-09-14-members'});
+      return json(state.auth);
+    }
+    if (url.pathname === "/auth/v1/resend") return json({});
     if (url.pathname === "/auth/v1/signup") {
       if (state.signupFail)
         return json(
@@ -263,6 +272,62 @@ async function fixture({
   return { context, page, state, errors, close: () => context.close() };
 }
 try {
+
+  {
+    const f = await fixture({p:null,width:390});
+    await f.page.clock.install();
+    await f.page.goto(base+'/account.html?mode=signup');
+    await f.page.locator('#email').fill('code@example.test');
+    await f.page.locator('#password').fill('abcdef');
+    await f.page.locator('#consent').check();
+    await f.page.locator('#authSubmit').click();
+    await f.page.locator('#verifyCard').waitFor();
+    ok('six-character signup reaches Auth and opens code entry on the same page', f.state.calls.some(c=>c.path==='/auth/v1/signup'&&c.body.password==='abcdef')&&new URL(f.page.url()).pathname==='/main.html');
+    ok('resend waits one minute and the form shows a five-minute expiry', await f.page.locator('#resendCode').isDisabled()&&/남은 시간 [45]:/.test(await f.page.locator('#verifyExpiry').textContent()));
+    await f.page.locator('#emailCode').fill('1234');
+    await f.page.locator('#verifySubmit').click();
+    ok('short code is rejected before verification',!f.state.calls.some(c=>c.path==='/auth/v1/verify'));
+    f.state.otpFail=true;
+    await f.page.locator('#emailCode').fill('123456');
+    await f.page.locator('#verifySubmit').click();
+    await f.page.getByText('인증번호가 다르거나 만료됐어요.',{exact:false}).waitFor();
+    ok('wrong or expired code keeps the visitor outside member setup',await f.page.locator('#verifyCard').isVisible()&&await f.page.locator('#setupCard').isHidden());
+    await f.page.clock.fastForward(301000);
+    ok('expired code cannot be submitted',await f.page.locator('#verifySubmit').isDisabled());
+    await f.page.locator('#resendCode').click();
+    await f.page.waitForFunction(()=>document.querySelector('#resendCode').disabled);
+    ok('resend uses signup endpoint and restarts the expiry',f.state.calls.some(c=>c.path==='/auth/v1/resend'&&c.body.type==='signup')&&!(await f.page.locator('#verifySubmit').isDisabled()));
+    await f.page.locator('#emailCode').fill('123456');
+    await f.page.locator('.account-close').click();
+    await f.page.locator('#profileChip').click();
+    await f.page.locator('#verifyCard').waitFor();
+    ok('closing clears the code while reopening resumes verification',await f.page.locator('#emailCode').inputValue()==='');
+    f.state.otpFail=false; f.state.otpPartial=true;
+    await f.page.locator('#emailCode').fill('123456');
+    await f.page.locator('#verifySubmit').click();
+    await f.page.waitForFunction(()=>!document.querySelector('#verifySubmit').disabled);
+    ok('partial verification without a session does not complete signup',await f.page.locator('#setupCard').isHidden());
+    f.state.otpPartial=false;
+    await f.page.locator('#emailCode').fill('123456');
+    await f.page.locator('#verifySubmit').click();
+    await f.page.locator('#setupCard').waitFor();
+    ok('verified code opens first nickname setup without navigating away',new URL(f.page.url()).pathname==='/main.html'&&f.state.calls.some(c=>c.path==='/auth/v1/verify'&&c.body.type==='signup'));
+    ok('code flow fits mobile width',await f.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+    await f.close();
+  }
+  {
+    const f = await fixture({auth:session(),p:{...profile(),nickname_change_available_at:new Date(Date.now()+86400000).toISOString()}});
+    await f.page.goto(base+'/account.html');
+    await f.page.locator('#profileCard').waitFor();
+    ok('nickname cooldown disables editing and shows the next date',await f.page.locator('#editProfile').isDisabled()&&await f.page.locator('#nicknameChangeHelp').isVisible());
+    await f.page.locator('#changePassword').click();
+    await f.page.locator('#newPassword').fill('abcdef');
+    await f.page.locator('#confirmPassword').fill('abcdef');
+    await f.page.locator('#newPasswordForm button').click();
+    await f.page.locator('#profileCard').waitFor();
+    ok('other account actions cannot re-enable a locked nickname',await f.page.locator('#editProfile').isDisabled());
+    await f.close();
+  }
   let oauthFixture = await fixture({ google: false });
   await oauthFixture.page.goto(base + "/account.html");
   await oauthFixture.page.locator("#authCard").waitFor();
@@ -459,7 +524,7 @@ try {
   await f.page.locator("#consent").check();
   await f.page.locator("#authSubmit").click();
   await f.page
-    .getByText("입력한 주소로 인증메일을 요청했어요.", { exact: false })
+    .locator("#verifyCard")
     .waitFor();
   ok(
     "new signup sends confirmation to the account callback",
@@ -472,6 +537,7 @@ try {
     "signup clears the password after submission",
     (await f.page.locator("#password").inputValue()) === "",
   );
+  await f.page.locator("#verifyBack").click();
   await f.page
     .getByRole("button", { name: "비밀번호 찾기", exact: true })
     .click();
@@ -521,7 +587,7 @@ try {
   await f.page.locator("#consent").check();
   await f.page.locator("#authSubmit").click();
   await f.page
-    .getByText("입력한 주소로 인증메일을 요청했어요.", { exact: false })
+    .locator("#verifyCard")
     .waitFor();
   ok(
     "upgrade links email on the existing user instead of creating another account",
@@ -533,6 +599,11 @@ try {
     ) && !f.state.calls.some((c) => c.path === "/auth/v1/signup"),
   );
   ok("upgrade preserves the anonymous identity", f.state.auth.user.id === A);
+  await f.page.locator('#emailCode').fill('123456');
+  await f.page.locator('#verifySubmit').click();
+  await f.page.locator('#passwordCard').waitFor();
+  ok('anonymous email code uses email_change and preserves the account', f.state.calls.some(c=>c.path==='/auth/v1/verify'&&c.body.type==='email_change'&&c.body.email==='link@example.test')&&f.state.auth.user.id===A);
+
   await f.close();
   f = await fixture({
     auth: session(false, { orbit_needs_password: true }),

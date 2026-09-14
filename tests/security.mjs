@@ -48,7 +48,7 @@ await db.exec(sql('migration_011_authenticated_ownership.sql'));
 await db.exec(sql('migration_011_authenticated_ownership.sql'));
 for (const name of readdirSync(new URL('../supabase/migrations/', import.meta.url))
   // Build pre-membership activity first, then verify the upgrade boundary below.
-  .filter((n) => n.endsWith('.sql') && !n.endsWith('_member_only_writing.sql'))
+  .filter((n) => n.endsWith('.sql') && !n.endsWith('_member_only_writing.sql') && !n.endsWith('_nickname_change_cooldown.sql'))
   .sort()) {
   await db.exec(sql('migrations/' + name));
   await db.exec(sql('migrations/' + name));
@@ -794,5 +794,30 @@ await db.exec(`reset role; update auth.users set is_anonymous=false,email_confir
 await as('authenticated',ADMIN,'update posts set is_pinned=false where is_pinned');
 check('existing operator can publish notices without member onboarding',(await as('authenticated',ADMIN,`insert into posts(nick,orbit,text,title,is_pinned) values('운영자','free','공지 내용','공지 제목',true) returning is_pinned`)).rows[0].is_pinned);
 await denied('member-only helper is not a new public callable definer','authenticated',U,'select orbit_members_private.require_writer()');
+await db.exec('reset role');
+const nicknameMigration = readdirSync(new URL('../supabase/migrations/', import.meta.url)).find(n => n.endsWith('_nickname_change_cooldown.sql'));
+await db.exec(sql('migrations/' + nicknameMigration));
+await db.exec(sql('migrations/' + nicknameMigration));
+let nicknameProfile=(await as('authenticated',U,'select member_profile() as p')).rows[0].p;
+check('existing profile gets a 30-day nickname cooldown',Date.parse(nicknameProfile.nickname_change_available_at)-Date.parse(nicknameProfile.joined_at)===30*86400000);
+await denied('direct RPC cannot change nickname during cooldown','authenticated',U,`select member_save_profile('너무일찍','2026-09-14-members')`);
+const unchanged=(await as('authenticated',U,`select member_save_profile('새회원','2026-09-14-members') as p`)).rows[0].p;
+check('same-name retry does not extend cooldown',unchanged.nickname_change_available_at===nicknameProfile.nickname_change_available_at);
+await denied('members cannot tamper with nickname change time','authenticated',U,`update orbit_members_private.profiles set nickname_changed_at=now()-interval '31 days' where user_id='${U}'`);
+await db.exec(`reset role; update orbit_members_private.profiles set nickname_changed_at=now()-interval '720 hours'+interval '10 seconds' where user_id='${U}'`);
+await denied('30-day boundary is enforced before expiry','authenticated',U,`select member_save_profile('아직안됨','2026-09-14-members')`);
+await db.exec(`reset role; update orbit_members_private.profiles set nickname_changed_at=now()-interval '720 hours' where user_id='${U}'`);
+nicknameProfile=(await as('authenticated',U,`select member_save_profile('새닉네임','2026-09-14-members') as p`)).rows[0].p;
+check('nickname changes after exactly 30 days and starts another cooldown',nicknameProfile.nickname==='새닉네임'&&Date.parse(nicknameProfile.nickname_change_available_at)>Date.now()+29*86400000);
+await denied('immediate second rename is blocked','authenticated',U,`select member_save_profile('또바꾸기','2026-09-14-members')`);
+await db.exec(`reset role; update orbit_members_private.profiles set nickname_changed_at=now()-interval '721 hours' where user_id='${U}'`);
+await denied('nickname uniqueness still applies after cooldown','authenticated',U,`select member_save_profile('second','2026-09-14-members')`);
+check('failed rename leaves cooldown and nickname intact',(await as('authenticated',U,'select member_profile() as p')).rows[0].p.nickname==='새닉네임');
+const N='77777777-7777-4777-8777-777777777779';
+await db.exec(`reset role; insert into auth.users(id,is_anonymous,email_confirmed_at) values('${N}',false,now())`);
+const firstNickname=(await as('authenticated',N,`select member_save_profile('첫닉네임','2026-09-14-members') as p`)).rows[0].p;
+check('first nickname can be saved immediately',firstNickname.nickname==='첫닉네임');
+await denied('first nickname also starts the 30-day interval','authenticated',N,`select member_save_profile('두번째','2026-09-14-members')`);
+check('public cards do not expose nickname-change timestamps',!(await as('anon',null,`select member_cards(array['${U}']::uuid[]) as p`)).rows[0].p[0].nickname_change_available_at);
 await db.close();
 console.log(`Security: ${count} checks passed`);

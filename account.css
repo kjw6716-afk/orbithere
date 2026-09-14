@@ -326,13 +326,6 @@ body.account-callback {
   font-size: 16px;
 }
 
-.account-profile[hidden] ~ .account-settings {
-  margin-top: 16px;
-  border: 1px solid #304058;
-  border-radius: 14px;
-  padding-top: 8px;
-}
-
 /* The same account controls live in a small dialog on the current page. */
 .account-dialog {
   position: fixed;
@@ -399,6 +392,15 @@ body.account-callback {
 .account-dialog .account-level { font-size: 13px; letter-spacing: 0; }
 .account-dialog .account-progress-label { margin: 7px 0 14px; font-size: 11px; }
 .account-dialog .account-settings { margin-top: 16px; }
+.account-dialog #nicknameChangeHelp { font-size: 11px; margin: 0 0 8px; word-break: keep-all; }
+.account-dialog #editProfile:disabled { cursor: default; }
+.account-dialog #emailCode { text-align: center; letter-spacing: .35em; font-size: 24px; font-variant-numeric: tabular-nums; }
+.account-dialog #verifyEmail { overflow-wrap: anywhere; }
+.account-dialog .account-help { word-break: keep-all; overflow-wrap: anywhere; }
+.account-dialog #verifyExpiry { font-size: 12px; font-variant-numeric: tabular-nums; }
+.account-dialog #verifySubmit { width: 100%; }
+.account-dialog .account-verify-actions { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 10px; }
+.account-dialog .account-verify-actions button { border: 0; padding: 6px 0; margin: 0; font-size: 12px; }
 .account-dialog .account-settings .account-row button { margin: 0; padding: 9px 8px; font-size: 12px; }
 .account-dialog .account-settings details { font-size: 12px; }
 .account-dialog .account-main > .account-help:last-child { margin: 17px 0 0; font-size: 11px; }
