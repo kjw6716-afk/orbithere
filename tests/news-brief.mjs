@@ -184,22 +184,23 @@ try {
       return el.children[1].querySelector('.news-brief-meta').getBoundingClientRect().top;
     });
     await p.locator('.news-brief-list').evaluate(el=>el.getAnimations()[0].finish());
-    await p.waitForFunction(()=>document.querySelectorAll('.news-brief-item').length===4);
+    await p.waitForFunction(()=>document.querySelectorAll('.news-brief-item').length===2);
     const settledTop=await p.locator('.news-brief-meta').first().evaluate(el=>el.getBoundingClientRect().top);
     ok('slide settles on the next article without a vertical jump',await first(p)===titles[1] && Math.abs(settledTop-endTop)<1);
     for(let n=0;n<14;n++){
       await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();await settle(p);
     }
-    ok('the last item wraps smoothly and removes the temporary row',await first(p)===titles[1] && await p.locator('.news-brief-item').count()===4);
+    ok('the last item wraps smoothly and removes the temporary row',await first(p)===titles[1] && await p.locator('.news-brief-item').count()===2);
+    const thirdTitle=await p.locator('.news-brief-title').nth(1).textContent();
     await p.getByRole('button',{name:'이전 뉴스',exact:true}).click();await settle(p);
     ok('previous reverses the slide direction and restores the first article',await first(p)===titles[0]);
     await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();
     await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();await settle(p);
-    ok('rapid manual navigation does not leave stale rows or callbacks',await first(p)===titles[2] && await p.locator('.news-brief-item').count()===4);
+    ok('rapid manual navigation does not leave stale rows or callbacks',await first(p)===thirdTitle && await p.locator('.news-brief-item').count()===2);
     await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();
     await p.emulateMedia({reducedMotion:'reduce'});
     await p.waitForFunction(()=>document.querySelector('.news-brief-list').getAnimations().length===0);
-    ok('enabling reduced motion clears a slide and its temporary clip',await p.locator('.news-brief-item').count()===4 && await p.locator('.news-brief-viewport').evaluate(el=>!el.style.height && !el.classList.contains('is-moving')));
+    ok('enabling reduced motion clears a slide and its temporary clip',await p.locator('.news-brief-item').count()===2 && await p.locator('.news-brief-viewport').evaluate(el=>!el.style.height && !el.classList.contains('is-moving')));
     await p.emulateMedia({reducedMotion:'no-preference'});
     await p.goto(base+'/lounge.html');await p.locator('.news-brief-title').first().waitFor();
     await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();
@@ -218,8 +219,8 @@ try {
       p = f.page;
     await ready(p);
     ok(
-      "wide rail shows four mixed headlines from a fourteen-item rotation",
-      (await p.locator(".news-brief-item").count()) === 4 &&
+      "sidebar shows two mixed headlines from a fourteen-item rotation",
+      (await p.locator(".news-brief-item").count()) === 2 &&
         /\/ 14/.test(await p.locator(".news-brief-count").textContent()),
     );
     const title = await first(p);
@@ -399,15 +400,15 @@ try {
         () => document.documentElement.scrollWidth <= innerWidth + 1,
       ),
     );
-    if (width >= 1280) {
+    if (width >= 861) {
       await p.locator(".news-brief-title").first().waitFor();
       const [rail, board] = await Promise.all([
         p.locator(".news-brief").boundingBox(),
         p.locator("#loungeFrame").boundingBox(),
       ]);
       ok(
-        `${width}px rail stays beside the content without overlap`,
-        rail.x >= board.x + board.width + 20 && rail.width === 288,
+        `${width}px news stays left of the expanded content without overlap`,
+        rail.x + rail.width <= board.x && rail.width >= 200 && rail.width <= 244,
       );
     }
     await f.close();
@@ -417,14 +418,14 @@ try {
       p = f.page;
     await ready(p, "/lounge.html");
     ok(
-      "standalone desktop board also shows a four-item rail",
-      (await p.locator(".news-brief-item").count()) === 4,
+      "standalone desktop board also shows a two-item sidebar",
+      (await p.locator(".news-brief-item").count()) === 2,
     );
     await p.goto(base + "/lounge.html?write=1");
     await p.locator("#editorView").waitFor();
     ok(
-      "news does not distract from the mobile/standalone editor",
-      await p.locator(".news-brief").isHidden(),
+      "desktop editor keeps news below the menu outside the writing area",
+      await p.locator(".sidebar > .news-brief").isVisible(),
     );
     await f.close();
   }
@@ -442,7 +443,7 @@ try {
     await p.locator(".news-brief-title").first().waitFor();
     ok(
       "retry recovers without reloading the board",
-      (await p.locator(".news-brief-item").count()) === 4,
+      (await p.locator(".news-brief-item").count()) === 2,
     );
     await f.close();
   }
@@ -508,8 +509,8 @@ try {
     ok('Starlink and space-related Musk headlines share SpaceX without unrelated Musk coverage',result.starlink && result.musk && !result.unrelated && result.sources.includes('starlink'));
     ok('company topic never relabels a NASA source and lookalike domains are rejected',result.original==='NASA/JPL' && !result.invalid);
     await p.setViewportSize({width:1366,height:650});
-    await p.waitForFunction(()=>document.querySelectorAll('.news-brief-item').length===3);
-    ok('short desktop keeps three rows and its footer inside the screen',await p.locator('.news-brief').evaluate(el=>el.getBoundingClientRect().bottom<=innerHeight));
+    await p.waitForFunction(()=>document.querySelectorAll('.news-brief-item').length===1);
+    ok('short desktop keeps one row and its footer inside the screen',await p.locator('.news-brief').evaluate(el=>el.getBoundingClientRect().bottom<=innerHeight));
     await p.goto(base+'/news.html#spacex');
     await p.locator('.news-article').first().waitFor();
     ok('SpaceX filter includes its own and Starlink official sources',await p.locator('.row-category').allTextContents().then(rows=>rows.includes('SpaceX')&&rows.includes('Starlink · SpaceX')));

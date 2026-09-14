@@ -2,6 +2,19 @@
   "use strict";
   var sidebar = document.querySelector('.orbit-navigation');
   if (!sidebar) return;
+  // Keep one news widget: below the menu on desktop, in the document on mobile.
+  var brief = document.querySelector('[data-news-brief]');
+  if (brief && !document.documentElement.classList.contains('embed')) {
+    var briefHome = document.createComment('news position on mobile');
+    brief.before(briefHome);
+    var desktop = matchMedia('(min-width: 861px)');
+    function placeBrief() {
+      if (desktop.matches) sidebar.append(brief);
+      else briefHome.after(brief);
+    }
+    desktop.addEventListener('change', placeBrief);
+    placeBrief();
+  }
   var toggle = document.getElementById('navToggle');
   var scrim = document.getElementById('navScrim');
   sidebar.classList.add('enhanced');

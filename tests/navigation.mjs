@@ -45,6 +45,11 @@ try{
       await page.locator('.orbit-navigation.enhanced').waitFor();
       ok(`${name} ${width}px fits viewport`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
       ok(`${name} has one shared logo/menu`,await page.locator('.orbit-brand').count()===1 && await page.locator('#sideNav .nav-item').count()===7);
+      if(width===1440&&['main','sky','planets','lounge','news','guide','stories','about'].includes(name)){
+        const titleLink=page.locator('h1 .page-title-link').first();
+        const target=new URL(await titleLink.getAttribute('href'),page.url());
+        ok(name+' heading links to its menu page',target.pathname.endsWith('/'+(name==='main'?'planets':name)+'.html'));
+      }
       const selected=page.locator('#sideNav [aria-current="page"]');
       ok(`${name} marks current section`,active?(await selected.locator('.lbl').textContent()).trim()===active:await selected.count()===0);
       const logo=await page.locator('.orbit-brand').evaluate(el=>{const s=getComputedStyle(el),r=el.getBoundingClientRect();return [r.x,r.y,r.width,r.height,s.fontSize,s.color,s.fontFamily];});

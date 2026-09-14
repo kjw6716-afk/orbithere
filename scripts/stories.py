@@ -236,10 +236,10 @@ def shell(title, description, path, body, prefix='', schema=None, noindex=False,
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
 <link rel="stylesheet" href="{prefix}orbit.css?v=20260912-brand">
-<link rel="stylesheet" href="{prefix}site-nav.css?v=20260912-navigation">
+<link rel="stylesheet" href="{prefix}site-nav.css?v=20260914-layout">
 <link rel="stylesheet" href="{prefix}stories.css?v=20260912-launch">
 {f'<script type="application/ld+json">{json_script(schema)}</script>' if schema else ''}
-<script src="{prefix}site-nav.js?v=20260912-navigation" defer></script>
+<script src="{prefix}site-nav.js?v=20260914-layout" defer></script>
 <script src="{prefix}{script}?v=20260912-editor" defer></script>
 <script src="{prefix}orbit-config.js"></script><script src="{prefix}visits.js" defer></script>
 </head>
@@ -268,7 +268,7 @@ def art(article):
 
 
 def render_list(items):
-    head = '<header class="stories-heading"><div><p class="story-eyebrow">ORBIT STORIES</p><h1>우주를 조금 더 가까이.</h1><p class="stories-deck">궁금한 질문 하나에서 시작하는 우주 이야기.<br>어려운 말은 풀어서, 믿을 만한 자료와 함께 전해요.</p></div>' + byline() + '</header>'
+    head = '<header class="stories-heading"><div><p class="story-eyebrow">ORBIT STORIES</p><h1><a class="page-title-link" href="stories.html">우주를 조금 더 가까이.</a></h1><p class="stories-deck">궁금한 질문 하나에서 시작하는 우주 이야기.<br>어려운 말은 풀어서, 믿을 만한 자료와 함께 전해요.</p></div>' + byline() + '</header>'
     feature = '<p class="editor-note">첫 번째 이야기를 준비하고 있어요. <a href="news.html">우주 뉴스 둘러보기 →</a></p>'
     if items:
         a, day = items[0]

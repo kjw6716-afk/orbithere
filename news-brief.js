@@ -11,7 +11,7 @@
     window.parent !== window
   ) {
     try {
-      var parentWide = window.parent.matchMedia("(min-width: 1280px)");
+      var parentWide = window.parent.matchMedia("(min-width: 861px)");
       var syncParent = function () {
         document.documentElement.classList.toggle(
           "news-parent-wide",
@@ -273,7 +273,7 @@
   });
   window.addEventListener("pageshow", schedule);
   // Changing only the viewport height does not resize the rail until we render.
-  matchMedia("(min-width: 1280px) and (max-height: 680px)").addEventListener("change", function () {
+  matchMedia("(min-width: 861px) and (max-height: 800px)").addEventListener("change", function () {
     if (shown() && capacity() !== size) render(false);
   });
   new ResizeObserver(function () {

@@ -31,12 +31,7 @@
         .bg-glow { z-index: 0; }   /* 앱 셸(.app)이 z-index:1이라 뒤로 밀지 않는다 */
 
         /* ===== 앱 셸 ===== */
-        /* 폭 상한을 두고 가운데 정렬한다.
-           울트라와이드(3440px)에서는 사이드바가 화면 왼쪽 끝에 붙고 본문은
-           680px에 머물러, 둘 사이가 1200px 넘게 벌어지고 오른쪽이 통째로 비었다.
-           셸 전체를 묶어 가운데로 보내면 사이드바와 본문이 하나의 창처럼 붙는다.
-           1280px 미만 화면에서는 아무 영향이 없다. */
-        .app { display: flex; min-height: 100vh; position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; }
+        .app { display: flex; min-height: 100vh; position: relative; z-index: 1; max-width: 1680px; margin: 0 auto; }
 
         /* 콘텐츠 */
         .content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
@@ -79,12 +74,12 @@
 
         /* 글 남기기 iframe */
         .lounge-frame {
-            width: 100%; height: calc(100vh - 152px);
+            display: block; width: 100%; height: 620px;
             border: none; border-radius: 16px; background: transparent;
         }
 
         /* ===== 임베드 패널 (sky.html iframe) ===== */
-        .embed-wrap { max-width: 680px; }
+        .embed-wrap { width: 100%; max-width: none; }
         .embed-frame {
             width: 100%; height: 620px;
             border: none; border-radius: 16px; background: transparent;
@@ -181,7 +176,6 @@
             .app { flex-direction: column; }
             .topbar { padding: 16px 18px; }
             .panel-wrap { padding: 20px 18px 50px; }
-            .lounge-frame { height: calc(100vh - 132px); }
             /* 같은 안내를 닉네임 대화상자에서도 제공합니다. */
             .nickname-hint { display: none; }
         }
@@ -202,11 +196,11 @@
     <script src="effects.js?v=20260911-layout" defer></script>
     <script src="orbit-config.js"></script>
     <script src="visits.js" defer></script>
-    <link rel="stylesheet" href="news-brief.css?v=20260914-community">
+    <link rel="stylesheet" href="news-brief.css?v=20260914-layout">
     <script src="news-data.js?v=20260912-companies" defer></script>
-    <script src="news-brief.js?v=20260912-companies" defer></script>
-<link rel="stylesheet" href="site-nav.css?v=20260912-navigation">
-<link rel="stylesheet" href="story-teaser.css?v=20260912-ultrawide">
+    <script src="news-brief.js?v=20260914-layout" defer></script>
+<link rel="stylesheet" href="site-nav.css?v=20260914-layout">
+<link rel="stylesheet" href="story-teaser.css?v=20260914-layout">
 </head>
 <body>
     <div class="bg-glow"></div>
@@ -234,7 +228,7 @@
         <!-- 콘텐츠 -->
         <div class="content">
             <div class="topbar">
-                <h1 class="panel-title" id="panelTitle">밤하늘 <span>달력</span></h1>
+                <h1 class="panel-title" id="panelTitle"><a class="page-title-link" id="panelTitleLink" href="planets.html">오늘 밤 <span>행성</span></a></h1>
                 <div class="topbar-right">
                     <span class="nickname-hint">
                         닉네임은 이 브라우저에 저장돼요.<br>다른 사람도 같은 이름을 쓸 수 있어요.
@@ -343,7 +337,7 @@
         </div>
     </div>
 
-    <script src="site-nav.js?v=20260912-navigation"></script>
+    <script src="site-nav.js?v=20260914-layout"></script>
     <script>
     // ===== 패널 전환 =====
     (function(){
@@ -374,7 +368,8 @@
             document.querySelectorAll('.panel').forEach(function(p){
                 p.classList.toggle('on', p.id === 'panel-' + name);
             });
-            document.getElementById('panelTitle').innerHTML = TITLES[name];
+            document.getElementById('panelTitleLink').innerHTML = TITLES[name];
+            document.getElementById('panelTitleLink').href = {sky:'sky.html',planets:'planets.html',lounge:'lounge.html'}[name];
             // 처음 열 때만 iframe 로드 (지연 로딩)
             if(name === 'lounge' && !loungeLoaded){
                 var fr = document.getElementById('loungeFrame');
@@ -424,7 +419,19 @@
             if(ev.data && ev.data.orbit === 'profileChanged' && ev.source === document.getElementById('loungeFrame').contentWindow){
                 syncChip();
             }
-            if(ev.data && ev.data.orbit === 'skyHeight' && ev.source === document.getElementById('skyFrame').contentWindow){
+            if(ev.data && ev.data.orbit === 'loungeHeight' && ev.source === document.getElementById('loungeFrame').contentWindow){
+                var boardFrame = document.getElementById('loungeFrame');
+                var boardHeight = Number(ev.data.height);
+                if(Number.isFinite(boardHeight) && boardHeight > 0 && boardHeight < 200000){
+                    boardFrame.style.height = Math.ceil(boardHeight) + 'px';
+                    if(activePanel === 'lounge' && Number.isFinite(ev.data.scrollY)){
+                        var inset = document.querySelector('.topbar').getBoundingClientRect().bottom + 12;
+                        var top = boardFrame.getBoundingClientRect().top + window.scrollY;
+                        window.scrollTo(0, Math.max(0, top + Math.max(0, ev.data.scrollY) - inset));
+                    }
+                }
+            }
+            if(ev.data && ev.data.orbit === 'skyHeight'  && ev.source === document.getElementById('skyFrame').contentWindow){
                 var h = parseInt(ev.data.height, 10);
                 if(h > 0 && h < 8000) document.getElementById('skyFrame').style.height = h + 'px';
             }
