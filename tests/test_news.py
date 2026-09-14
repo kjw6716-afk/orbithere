@@ -2,6 +2,7 @@ import contextlib
 import datetime as dt
 import importlib.util
 import io
+import json
 from pathlib import Path
 import unittest
 from unittest.mock import patch
@@ -62,6 +63,37 @@ class NewsTests(unittest.TestCase):
         self.assertNotEqual(parsed[0]['id'],parsed[1]['id'])
         for invalid in [None,{},[],[{'title':'No date','url':source['home']}]]:
             with self.assertRaises(ValueError):news.parse_company_rows(invalid,source,NOW)
+    def test_ast_shared_provider_is_scoped_to_official_release_links(self):
+        source=next(s for s in news.SOURCES if s['id']=='ast')
+        link='https://feeds.issuerdirect.com/news-release.html?newsid=7160159586249128&symbol=ASTS'
+        self.assertEqual(news.safe_url(link,source),link)
+        for bad in [link.replace('ASTS','OTHER'),link+'&symbol=OTHER',link+'&redirect=https://evil.test',
+                    link.replace('news-release.html','news.html'),link.replace('7160159586249128','abc'),
+                    link.replace('feeds.issuerdirect.com','feeds.issuerdirect.com.evil.test')]:
+            self.assertIsNone(news.safe_url(bad,source))
+
+    def test_ast_metadata_formats_filters_identity_and_timezone(self):
+        source=next(s for s in news.SOURCES if s['id']=='ast')
+        release={'newsid':7160159586249128,'headline':'AST SpaceMobile Announces Successful Orbital Launch of BlueBirds 11, 12, and 13',
+                 'datetime':'2026-08-05T21:00:00+09:00','qmsource':'bwi','body':'Do not copy this body.'}
+        payload={'results':{'news':[{'topicstring':'ASTS','newsitem':[
+            release, release,
+            dict(release,newsid=123,headline='Market commentary about AST SpaceMobile'),
+            dict(release,newsid=124,qmsource='prn'),
+            dict(release,newsid=125,headline='AST SpaceMobile Announces Private Offering of Notes'),
+            dict(release,newsid=126,headline='AST SpaceMobile to Host Business Update Call'),
+            dict(release,newsid='not-an-id'),
+            dict(release,newsid=127,datetime='2035-01-01T00:00:00Z')
+        ]}, {'topicstring':'OTHER','newsitem':[dict(release,newsid=999)]}]}}
+        for body in [json.dumps(payload).encode(),json.dumps(json.dumps(payload)).encode()]:
+            rows=news.parse_ast_feed(body,source,NOW)
+            self.assertEqual(len(rows),1)
+            self.assertEqual(rows[0]['publishedAt'],'2026-08-05T12:00:00Z')
+            self.assertNotIn('Do not copy',str(rows))
+            self.assertTrue(rows[0]['url'].endswith('newsid=7160159586249128&symbol=ASTS'))
+        for body in [b'{}',b'x'*(news.MAX_BYTES+1)]:
+            with self.assertRaises(ValueError):news.parse_ast_feed(body,source,NOW)
+
     def test_company_outage_keeps_reviewed_cache_and_other_sources(self):
         source=next(s for s in news.SOURCES if s['id']=='spacex')
         old=news.parse_company_rows([{'title':'Starship','url':source['home']+'#ship','date':'May 21, 2026'}],source,NOW)[0]
@@ -73,14 +105,14 @@ class NewsTests(unittest.TestCase):
         self.assertEqual(n,len(news.SOURCES)-1)
         self.assertIn(old,result['items'])
 
-    def test_browser_failure_does_not_block_rss_refresh(self):
+    def test_browser_failure_does_not_block_rss_or_json_refresh(self):
         def rss_fetch(source, now):
             return [{'source':source['id'],'title':'Fresh RSS','url':source['home'],'publishedAt':NOW.isoformat()}]
         with patch.object(news,'fetch_company_sources',side_effect=OSError('browser unavailable')), patch.object(news,'fetch_source',side_effect=rss_fetch), contextlib.redirect_stderr(io.StringIO()):
             result,n=news.collect({},now=NOW)
-        self.assertEqual(n,3)
-        self.assertEqual(len(result['items']),3)
-        self.assertEqual([s['id'] for s in result['sources'] if s['status']=='ok'],['kasi','nasa','esa'])
+        self.assertEqual(n,4)
+        self.assertEqual(len(result['items']),4)
+        self.assertEqual([s['id'] for s in result['sources'] if s['status']=='ok'],['kasi','nasa','esa','ast'])
 
 
 class TranslationTests(unittest.TestCase):

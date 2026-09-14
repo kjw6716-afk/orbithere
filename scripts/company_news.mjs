@@ -6,7 +6,6 @@ export const companyPages = {
   spacex: { url: 'https://www.spacex.com/updates', ready: '.header .title a[href*="updates#"]' },
   starlink: { url: 'https://starlink.com/kr/updates', ready: 'h2' },
   rocketlab: { url: 'https://rocketlabcorp.com/updates/', ready: 'article .blog__article-title' },
-  blueorigin: { url: 'https://www.blueorigin.com/news', ready: '[role="group"][aria-label="Post"] h2' },
   firefly: { url: 'https://fireflyspace.com/news/', ready: 'article h2 a' },
 };
 
@@ -25,8 +24,6 @@ export function extractHeadlines(source) {
   });
   if (source === 'rocketlab') return [...document.querySelectorAll('article')].slice(0,100).map(el =>
     row(el.querySelector('.blog__article-title'), el.querySelector('a.blog__article'), text(el.querySelector('.blog__article-date'))));
-  if (source === 'blueorigin') return [...document.querySelectorAll('[role="group"][aria-label="Post"]')].slice(0,100).map(el =>
-    row(el.querySelector('h2'), el.querySelector('h2')?.closest('a'), text(el.querySelector('[class*="__badge"]'))));
   if (source === 'firefly') return [...document.querySelectorAll('article')].slice(0,100).map(el =>
     row(el.querySelector('h2'), el.querySelector('h2 a'), text(el.querySelector('time'))));
   throw new Error('Unknown source');

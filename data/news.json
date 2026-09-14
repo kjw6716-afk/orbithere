@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-09-14T05:00:47Z",
+  "checkedAt": "2026-09-14T07:02:45Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-09-14T05:00:47Z",
+      "lastCheckedAt": "2026-09-14T07:02:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-14T05:00:47Z"
+      "lastSuccessfulAt": "2026-09-14T07:02:45Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-09-14T05:00:47Z",
+      "lastCheckedAt": "2026-09-14T07:02:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-14T05:00:47Z"
+      "lastSuccessfulAt": "2026-09-14T07:02:45Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-09-14T05:00:47Z",
+      "lastCheckedAt": "2026-09-14T07:02:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-14T05:00:47Z"
+      "lastSuccessfulAt": "2026-09-14T07:02:45Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-09-14T05:00:47Z",
+      "lastCheckedAt": "2026-09-14T07:02:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-14T05:00:47Z"
+      "lastSuccessfulAt": "2026-09-14T07:02:45Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-09-14T05:00:47Z",
+      "lastCheckedAt": "2026-09-14T07:02:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-14T05:00:47Z"
+      "lastSuccessfulAt": "2026-09-14T07:02:45Z"
     },
     {
       "id": "rocketlab",
@@ -58,19 +58,19 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-09-14T05:00:47Z",
+      "lastCheckedAt": "2026-09-14T07:02:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-14T05:00:47Z"
+      "lastSuccessfulAt": "2026-09-14T07:02:45Z"
     },
     {
-      "id": "blueorigin",
-      "name": "Blue Origin",
+      "id": "ast",
+      "name": "AST SpaceMobile",
       "language": "en",
-      "feed": "https://www.blueorigin.com/news",
-      "home": "https://www.blueorigin.com/news",
-      "lastCheckedAt": "2026-09-14T05:00:47Z",
-      "status": "unavailable",
-      "lastSuccessfulAt": "2026-09-12T00:55:49Z"
+      "feed": "https://investors.ast-science.com/press-releases",
+      "home": "https://investors.ast-science.com/press-releases",
+      "lastCheckedAt": "2026-09-14T07:02:45Z",
+      "status": "ok",
+      "lastSuccessfulAt": "2026-09-14T07:02:45Z"
     },
     {
       "id": "firefly",
@@ -78,9 +78,9 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-09-14T05:00:47Z",
+      "lastCheckedAt": "2026-09-14T07:02:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-14T05:00:47Z"
+      "lastSuccessfulAt": "2026-09-14T07:02:45Z"
     }
   ],
   "items": [
@@ -205,17 +205,6 @@
       "language": "en",
       "titleKo": "로켓랩, 일렉트론 94번째 임무 발사 성공",
       "titleKoOriginal": "MISSION SUCCESS: Rocket Lab Launches 94th Electron Mission",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "658ea0d820dc6f99",
-      "source": "blueorigin",
-      "title": "Blue Origin Selected by NASA to Help Build America's Mars Telecommunications Network",
-      "url": "https://www.blueorigin.com/news/blue-origin-selected-by-nasa-to-help-build-mars-telecommunications-network",
-      "publishedAt": "2026-09-02T00:00:00Z",
-      "language": "en",
-      "titleKo": "NASA, 화성 통신망 구축 지원사로 블루오리진 선정",
-      "titleKoOriginal": "Blue Origin Selected by NASA to Help Build America's Mars Telecommunications Network",
       "titleKoMethod": "reviewed"
     },
     {
@@ -392,17 +381,6 @@
       "titleKoMethod": "reviewed"
     },
     {
-      "id": "394011116bf440f3",
-      "source": "blueorigin",
-      "title": "Blue Origin Begins Global Rollout of Quartz Ground Station Network",
-      "url": "https://www.blueorigin.com/news/blue-origin-begins-global-rollout-quartz-ground-station-network",
-      "publishedAt": "2026-08-13T00:00:00Z",
-      "language": "en",
-      "titleKo": "블루오리진, 쿼츠 지상국 네트워크의 세계적 구축 시작",
-      "titleKoOriginal": "Blue Origin Begins Global Rollout of Quartz Ground Station Network",
-      "titleKoMethod": "reviewed"
-    },
-    {
       "id": "7f2673ce3f65bde3",
       "source": "firefly",
       "title": "Firefly Aerospace Awarded Contract to Design Elytra Deorbit System for Defense Innovation Unit",
@@ -411,17 +389,6 @@
       "language": "en",
       "titleKo": "파이어플라이, 미 국방혁신단의 엘리트라 궤도 이탈 시스템 설계 계약 수주",
       "titleKoOriginal": "Firefly Aerospace Awarded Contract to Design Elytra Deorbit System for Defense Innovation Unit",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "8d1ebe0560ebacc3",
-      "source": "blueorigin",
-      "title": "Returning Launch Complex 36 to Two Pads: Blue Origin Begins Construction of LC-36B",
-      "url": "https://www.blueorigin.com/news/returning-launch-complex-36-to-two-pads",
-      "publishedAt": "2026-08-12T00:00:00Z",
-      "language": "en",
-      "titleKo": "블루오리진, 제36발사단지의 두 번째 발사대 LC-36B 착공",
-      "titleKoOriginal": "Returning Launch Complex 36 to Two Pads: Blue Origin Begins Construction of LC-36B",
       "titleKoMethod": "reviewed"
     },
     {
@@ -447,6 +414,28 @@
       "titleKoMethod": "reviewed"
     },
     {
+      "id": "e3f8f543a27fc9bb",
+      "source": "ast",
+      "title": "AST SpaceMobile Provides Business Update and Second Quarter 2026 Results",
+      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=6958873302542032&symbol=ASTS",
+      "publishedAt": "2026-08-10T20:30:00Z",
+      "language": "en",
+      "titleKo": "AST 스페이스모바일, 2026년 2분기 실적과 사업 진행 상황 발표",
+      "titleKoOriginal": "AST SpaceMobile Provides Business Update and Second Quarter 2026 Results",
+      "titleKoMethod": "reviewed"
+    },
+    {
+      "id": "56aa5799997983bf",
+      "source": "ast",
+      "title": "AST SpaceMobile Accelerates Presence Across Europe with Leading Mobile Network Operators",
+      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=8860215372754512&symbol=ASTS",
+      "publishedAt": "2026-08-06T12:50:00Z",
+      "language": "en",
+      "titleKo": "AST 스페이스모바일, 유럽 주요 통신사와 위성통신 연동 시험 확대",
+      "titleKoOriginal": "AST SpaceMobile Accelerates Presence Across Europe with Leading Mobile Network Operators",
+      "titleKoMethod": "reviewed"
+    },
+    {
       "id": "e6c998265f6c7ce4",
       "source": "spacex",
       "title": "Breaking Ground on Terafab in Texas",
@@ -469,14 +458,14 @@
       "titleKoMethod": "reviewed"
     },
     {
-      "id": "7e30420df21f2fec",
-      "source": "blueorigin",
-      "title": "GS1-3 Hotfire Updates",
-      "url": "https://www.blueorigin.com/news/gs1-3-hotfire-updates",
-      "publishedAt": "2026-08-05T00:00:00Z",
+      "id": "347fc4155258efc1",
+      "source": "ast",
+      "title": "AST SpaceMobile Announces Successful Orbital Launch of BlueBirds 11, 12, and 13",
+      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=7160159586249128&symbol=ASTS",
+      "publishedAt": "2026-08-05T12:00:00Z",
       "language": "en",
-      "titleKo": "GS1-3 연소시험 관련 업데이트",
-      "titleKoOriginal": "GS1-3 Hotfire Updates",
+      "titleKo": "AST 스페이스모바일, 블루버드 11·12·13호 궤도 발사 성공",
+      "titleKoOriginal": "AST SpaceMobile Announces Successful Orbital Launch of BlueBirds 11, 12, and 13",
       "titleKoMethod": "reviewed"
     },
     {
@@ -510,14 +499,14 @@
       "language": "ko"
     },
     {
-      "id": "833fb17a78eb4603",
-      "source": "blueorigin",
-      "title": "Blue Origin and NASA Partner to Test New Glenn's Upper Stage at Historic Stennis Space Center",
-      "url": "https://www.blueorigin.com/news/blue-origin-nasa-partner-to-test-new-glenn-at-stennis-space-center",
-      "publishedAt": "2026-07-24T00:00:00Z",
+      "id": "49c7835168fa5bcf",
+      "source": "ast",
+      "title": "AST SpaceMobile Announces Launch Date for BlueBird Satellites 11, 12, and 13",
+      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=5582238976711971&symbol=ASTS",
+      "publishedAt": "2026-07-28T11:05:00Z",
       "language": "en",
-      "titleKo": "블루오리진·NASA, 스테니스 우주센터에서 뉴 글렌 상단 시험 협력",
-      "titleKoOriginal": "Blue Origin and NASA Partner to Test New Glenn's Upper Stage at Historic Stennis Space Center",
+      "titleKo": "AST 스페이스모바일, 블루버드 11·12·13호 발사 일정 발표",
+      "titleKoOriginal": "AST SpaceMobile Announces Launch Date for BlueBird Satellites 11, 12, and 13",
       "titleKoMethod": "reviewed"
     },
     {
@@ -554,17 +543,6 @@
       "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32380",
       "publishedAt": "2026-07-02T00:00:00Z",
       "language": "ko"
-    },
-    {
-      "id": "5720e9f3b4d7c7f4",
-      "source": "blueorigin",
-      "title": "New Glenn Return to Flight",
-      "url": "https://www.blueorigin.com/news/new-glenn-return-to-flight",
-      "publishedAt": "2026-06-30T00:00:00Z",
-      "language": "en",
-      "titleKo": "뉴 글렌의 비행 재개 계획",
-      "titleKoOriginal": "New Glenn Return to Flight",
-      "titleKoMethod": "reviewed"
     },
     {
       "id": "281c66bdaca972d5",
@@ -608,17 +586,6 @@
       "titleKoMethod": "reviewed"
     },
     {
-      "id": "66336a984a5d1b40",
-      "source": "blueorigin",
-      "title": "New Glenn’s Third Mission Slated for April 19",
-      "url": "https://www.blueorigin.com/news/new-glenn-ng-3-mission",
-      "publishedAt": "2026-04-16T00:00:00Z",
-      "language": "en",
-      "titleKo": "뉴 글렌 세 번째 임무, 4월 19일 발사 예정",
-      "titleKoOriginal": "New Glenn’s Third Mission Slated for April 19",
-      "titleKoMethod": "reviewed"
-    },
-    {
       "id": "d937fb9b8f2dfd16",
       "source": "spacex",
       "title": "xAI joins SpaceX to Accelerate Humanity’s Future",
@@ -627,17 +594,6 @@
       "language": "en",
       "titleKo": "xAI, SpaceX에 합류",
       "titleKoOriginal": "xAI joins SpaceX to Accelerate Humanity’s Future",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "53eb6fc211f0bbcb",
-      "source": "blueorigin",
-      "title": "Blue Origin to Pause New Shepard Flights for No Less Than Two Years",
-      "url": "https://www.blueorigin.com/news/new-shepard-to-pause-flights",
-      "publishedAt": "2026-01-30T00:00:00Z",
-      "language": "en",
-      "titleKo": "블루오리진, 뉴 셰퍼드 비행 최소 2년 중단 예정",
-      "titleKoOriginal": "Blue Origin to Pause New Shepard Flights for No Less Than Two Years",
       "titleKoMethod": "reviewed"
     },
     {

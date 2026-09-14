@@ -11,16 +11,16 @@
     spacex: { name: "SpaceX", badge: "SpaceX", hosts: ["www.spacex.com"] },
     starlink: { name: "Starlink · SpaceX", badge: "SpaceX", hosts: ["starlink.com"], company: "spacex" },
     rocketlab: { name: "Rocket Lab", badge: "Rocket Lab", hosts: ["rocketlabcorp.com"] },
-    blueorigin: { name: "Blue Origin", badge: "Blue Origin", hosts: ["www.blueorigin.com"] },
+    ast: { name: "AST SpaceMobile", badge: "AST SpaceMobile", hosts: ["feeds.issuerdirect.com"] },
     firefly: { name: "Firefly Aerospace", badge: "Firefly", hosts: ["fireflyspace.com"] },
   };
   var companies = {
-    spacex: "SpaceX", rocketlab: "Rocket Lab", blueorigin: "Blue Origin", firefly: "Firefly",
+    spacex: "SpaceX", rocketlab: "Rocket Lab", ast: "AST SpaceMobile", firefly: "Firefly",
   };
   var topics = {
     spacex: /\b(space\s*x|starlink|starship|falcon\s*(9|heavy))\b|스페이스\s*엑스|스타링크|스타십|팰컨/i,
     rocketlab: /\brocket\s*lab\b|로켓\s*랩|로캣\s*랩/i,
-    blueorigin: /\bblue\s*origin\b|블루\s*오리진/i,
+    ast: /\bast\s*space\s*mobile\b|AST\s*스페이스\s*모바일/i,
     firefly: /\bfirefly\s*aerospace\b|파이어플라이/i,
   };
   function companiesFor(item) {
@@ -74,6 +74,10 @@
         !u.username &&
         !u.password &&
         !u.port &&
+        (item.source !== "ast" || (u.pathname === "/news-release.html" &&
+          u.searchParams.getAll("symbol").length === 1 && u.searchParams.get("symbol") === "ASTS" &&
+          u.searchParams.getAll("newsid").length === 1 && /^[0-9]+$/.test(u.searchParams.get("newsid") || "") &&
+          [...u.searchParams.keys()].every(function (key) { return key === "symbol" || key === "newsid"; }))) &&
         typeof item.title === "string" &&
         item.title.trim().length > 0 &&
         item.title.length <= 240 &&

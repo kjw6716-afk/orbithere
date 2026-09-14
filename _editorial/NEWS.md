@@ -30,6 +30,8 @@
 
 ## 갱신 지연 점검
 
+2026-09-14에는 Blue Origin의 공개 목록 접근이 계속 막혀 활성 수집 출처를 AST SpaceMobile로 교체했습니다. 공식 IR의 Issuer Direct 피드에서 ASTS 보도자료만 수집하며 증권 발행·전화회의 일정 공지는 제외합니다. Blue Origin의 기존 원문 대조 요약은 `ARCHIVED_SOURCES`로 검증해 보존합니다. 새 AST 기사 네 건은 정상 표시된 공식 본문을 읽고 한국어 제목·요약을 대조했습니다. 원문의 발행일을 유지하며 과거 발사 예고를 현재 예정이나 새 소식으로 소개하지 않습니다.
+
 2026-09-13 최근 수집 실행은 약 1분 만에 성공했지만, 직전 뉴스 실행과 약 7시간 간격이 있었습니다. 수집 처리 지연과 예약 실행 간격을 구분해야 합니다. 당시 SpaceX·Starlink 수집은 정상이고 Blue Origin은 이전 목록을 보존한 상태였습니다. 이 기록만으로 GitHub 내부의 지연 원인을 확정할 수는 없습니다.
 
 [GitHub 공식 문서](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)는 예약 실행이 부하에 따라 지연·누락될 수 있다고 설명합니다. 현재 예약은 정각을 피한 UTC 17분이며, 임의의 다른 분으로 옮기는 것만으로 개선된다고 보장하지 않습니다.
