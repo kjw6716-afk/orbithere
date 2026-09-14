@@ -23,6 +23,18 @@
 
     var config = window.ORBIT_CONFIG;
     if(!config) return;
+    // Attendance is independent of aggregate visit counting and its local stamp.
+    // No anonymous account is created for readers.
+    if(config.membersEnabled && !window.OrbitMembers){
+        (async function(){
+            function load(src){return new Promise(function(resolve,reject){var s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});}
+            try {
+                if(!window.supabase) await load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0');
+                if(!window.createOrbitBackend) await load('/orbit-backend.js');
+                if(!window.OrbitMembers) await load('/members.js?v=20260914-members');
+            } catch (_) { /* A failed attendance request can be retried on the next page. */ }
+        })();
+    }
     var SB_URL = config.url, SB_KEY = config.publishableKey;
 
     // 서버 집계와 같은 한국 날짜를 YYYY-MM-DD 형식으로 기록한다.

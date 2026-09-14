@@ -7,11 +7,11 @@ const sql = (p) => readFileSync(new URL('../supabase/' + p, import.meta.url), 'u
 const A = '11111111-1111-4111-8111-111111111111',
   B = '22222222-2222-4222-8222-222222222222',
   ADMIN = '33333333-3333-4333-8333-333333333333';
-await db.exec(`create role anon; create role authenticated; create schema auth;
-create table auth.users(id uuid primary key);
+await db.exec(`create role anon; create role authenticated; create role service_role; create schema auth;
+create table auth.users(id uuid primary key,is_anonymous boolean not null default true,email_confirmed_at timestamptz);
 create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
 grant usage on schema public,auth to anon,authenticated;
-insert into auth.users values ('${A}'),('${B}'),('${ADMIN}');`);
+insert into auth.users(id) values ('${A}'),('${B}'),('${ADMIN}');`);
 // Minimal Storage metadata fixture; real bytes are tested through the API client.
 await db.exec(`create schema storage;
 create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
@@ -641,7 +641,7 @@ check('post deletion cascades to its cumulative count',(await db.query(`select c
 // Private activity uses verified identities and receipts for exact comment IDs.
 await db.exec('reset role');
 const C='55555555-5555-4555-8555-555555555555', D='66666666-6666-4666-8666-666666666666', E='77777777-7777-4777-8777-777777777777';
-await db.exec(`insert into auth.users values('${C}'),('${D}'),('${E}');`);
+await db.exec(`insert into auth.users(id) values('${C}'),('${D}'),('${E}');`);
 async function activityPost(actor, title) {
  return (await as('authenticated',actor,`insert into posts(nick,title,orbit,text) values('활동자','${title}','free','문자 50%_ 기록') returning id`)).rows[0].id;
 }
@@ -696,6 +696,71 @@ check('post deletion cascades to its replies and receipts',(await as('authentica
 await db.exec('reset role');
 await db.exec(`delete from auth.users where id='${C}'`);
 check('account deletion removes its private receipts',(await db.query(`select * from orbit_activity_private.read_comments where user_id='${C}'`)).rows.length===0);
+
+// Membership uses server-confirmed Auth identities and an immutable reward ledger.
+const M1='55555555-5555-4555-8555-555555555551',M2='55555555-5555-4555-8555-555555555552';
+await db.exec(`reset role; insert into auth.users(id,is_anonymous,email_confirmed_at) values('${M1}',false,now()),('${M2}',false,null);`);
+await denied('visitors cannot create a member profile','anon',null,`select member_save_profile('회원','2026-09-14-members')`);
+await denied('anonymous authenticated accounts cannot earn XP','authenticated',A,'select member_visit()');
+await denied('unverified email accounts cannot become members','authenticated',M2,`select member_save_profile('회원','2026-09-14-members')`);
+await denied('profile requires current policy consent','authenticated',M1,`select member_save_profile('회원','old')`);
+for(const name of ['x','<script>',' bad','1234567890123']) await denied('invalid member nickname '+name,'authenticated',M1,`select member_save_profile('${name}','2026-09-14-members')`);
+let member=(await as('authenticated',M1,`select member_save_profile('Member','2026-09-14-members') as p`)).rows[0].p;
+check('new members start at level one with no fabricated XP',member.level===1&&member.xp===0);
+await db.exec(`reset role; update auth.users set email_confirmed_at=now() where id='${M2}';`);
+await denied('registered nicknames are unique ignoring case','authenticated',M2,`select member_save_profile('member','2026-09-14-members')`);
+await as('authenticated',M2,`select member_save_profile('Second','2026-09-14-members')`);
+member=(await as('authenticated',M1,'select member_visit() as p')).rows[0].p;
+check('first visit awards 10 and reaches level two',member.xp===10&&member.level===2&&member.attendance_days===1&&member.today_claimed);
+for(let i=0;i<5;i++) await as('authenticated',M1,'select member_visit()');
+check('refresh and retry cannot duplicate attendance',(await as('authenticated',M1,'select member_profile() as p')).rows[0].p.xp===10);
+await db.exec('reset role');
+check('attendance key uses server Korean date',(await db.query(`select reward_key='visit:'||(now() at time zone 'Asia/Seoul')::date::text as valid from orbit_members_private.rewards where user_id='${M1}'`)).rows[0].valid);
+for(const [xp,expected] of [[0,1],[9,1],[10,2],[449,9],[450,10],[1899,19],[1900,20]]) check('level boundary '+xp,(await db.query(`select orbit_members_private.level_for(${xp}) as n`)).rows[0].n===expected);
+for(const statement of [`select * from orbit_members_private.profiles`,`select * from orbit_members_private.rewards`,`insert into orbit_members_private.rewards(user_id,reward_key,kind,amount) values('${M1}','forged','visit',100)`,`update orbit_members_private.rewards set amount=100`,`delete from orbit_members_private.rewards`,`truncate orbit_members_private.rewards`]) await denied('private member data and XP cannot be accessed directly: '+statement.split(' ')[0],'authenticated',M1,statement);
+await denied('unearned badges cannot be selected','authenticated',M1,`select member_select_badge('level-10')`);
+const mp=(await as('authenticated',M1,`insert into posts(nick,orbit,text,title) values('위조이름','free','첫 글 내용','첫 글') returning id,nick`)).rows[0];
+check('registered author nickname is bound on the server',mp.nick==='Member');
+member=(await as('authenticated',M1,'select member_visit() as p')).rows[0].p;
+check('first post gives a one-time 20 and unlocks a badge',member.xp===30&&member.badges.includes('first-post'));
+await as('authenticated',M1,`select member_select_badge('first-post')`);
+const publicCard=(await as('anon',null,`select member_cards(array['${M1}']::uuid[]) as p`)).rows[0].p[0];
+check('public member card exposes only approved display fields',Object.keys(publicCard).sort().join(',')==='badge,level,nickname,user_id'&&publicCard.badge==='first-post');
+check('another member sees only their own profile',(await as('authenticated',M2,'select member_profile() as p')).rows[0].p.nickname==='Second');
+await denied('public cards enforce a strict batch bound','anon',null,`select member_cards(array_fill('${M1}'::uuid,array[101]))`);
+await denied('members cannot access event management','authenticated',M1,'select member_admin_events()');
+await denied('members cannot create reward events','authenticated',M1,`select member_create_event('위조',100)`);
+await denied('admin cannot create out-of-range rewards','authenticated',ADMIN,`select member_create_event('잘못된 값',1000)`);
+const event=(await as('authenticated',ADMIN,`select member_create_event('관측 행사',50) as id`)).rows[0].id;
+await denied('members cannot award events','authenticated',M1,`select member_award_event('${event}','Member')`);
+check('admin can award an event once',(await as('authenticated',ADMIN,`select member_award_event('${event}','Member') as awarded`)).rows[0].awarded);
+check('repeat event rewards do not mint extra XP',!(await as('authenticated',ADMIN,`select member_award_event('${event}','Member') as awarded`)).rows[0].awarded);
+check('first-post reward also remains once after retries',(await as('authenticated',M1,'select member_visit() as p')).rows[0].p.xp===80);
+await as('authenticated',ADMIN,`select member_close_event('${event}')`);
+await denied('closed events cannot award further members','authenticated',ADMIN,`select member_award_event('${event}','Second')`);
+await denied('client cannot initiate deletion by guessing a UUID','authenticated',M1,`select member_begin_withdrawal('${M2}')`);
+await denied('client cannot finalize account deletion','authenticated',M1,`select member_finish_withdrawal('${M2}')`);
+await denied('withdrawal cannot lock out the operator','service_role',null,`select member_begin_withdrawal('${ADMIN}')`);
+await denied('service deletion requires prior initiation','service_role',null,`select member_finish_withdrawal('${M2}')`);
+await db.exec(`reset role; insert into storage.objects(bucket_id,name) values('board-images','${M1}/test/photo.jpg');`);
+await as('service_role',null,`select member_begin_withdrawal('${M1}')`);
+await denied('withdrawing accounts cannot change their profile','authenticated',M1,`select member_save_profile('탈퇴중','2026-09-14-members')`);
+await denied('withdrawing accounts cannot earn XP','authenticated',M1,'select member_visit()');
+await denied('withdrawing accounts cannot add posts','authenticated',M1,`insert into posts(nick,orbit,text,title) values('탈퇴중','free','삭제 중 새 글','제목')`);
+check('withdrawing profiles are hidden from public cards',(await as('anon',null,`select member_cards(array['${M1}']::uuid[]) as p`)).rows[0].p.length===0);
+const paths=(await as('service_role',null,`select member_withdrawal_files('${M1}') as p`)).rows[0].p;
+check('withdrawal returns only the authenticated account photo prefix',paths.length===1&&paths[0].startsWith(M1+'/'));
+await denied('finalization waits until physical Storage removal','service_role',null,`select member_finish_withdrawal('${M1}')`);
+// Simulate the Storage API's successful deletion in the metadata-only fixture.
+await db.exec(`reset role; delete from storage.objects where name='${M1}/test/photo.jpg';`);
+await as('service_role',null,`select member_finish_withdrawal('${M1}')`);
+await as('service_role',null,`select member_finish_withdrawal('${M1}')`);
+check('withdrawal removes authored public content',(await as('anon',null,`select id from posts where id='${mp.id}'`)).rows.length===0);
+await db.exec(`reset role; delete from auth.users where id='${M1}';`);
+check('Auth deletion cascades to profile and reward ledger',(await db.query(`select (select count(*) from orbit_members_private.profiles where user_id='${M1}')+(select count(*) from orbit_members_private.rewards where user_id='${M1}') as n`)).rows[0].n===0);
+check('another member survives withdrawal',(await as('authenticated',M2,'select member_profile() as p')).rows[0].p.nickname==='Second');
+await db.exec('reset role');
+check('new public RPCs have no definer privileges',(await db.query(`select count(*) as n from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname like 'member_%' and p.prosecdef`)).rows[0].n===0);
 
 await db.close();
 console.log(`Security: ${count} checks passed`);

@@ -198,6 +198,11 @@
       if (!user) user = checked(await sb.auth.signInAnonymously()).user;
       if (!user) throw new Error('작성 권한을 확인하지 못했어요.');
       userId = user.id;
+      if (window.ORBIT_CONFIG.membersEnabled && !user.is_anonymous) {
+        var profile = checked(await sb.rpc('member_profile'));
+        if (!profile) throw new Error('내 계정에서 프로필 설정을 먼저 마쳐주세요.');
+        localStorage.setItem('orbit_nickname', profile.nickname);
+      }
       return user.id;
     })();
     try {
@@ -385,7 +390,7 @@
               '">' +
               esc(p.title) +
               '</a><div class="row-meta"><span>' +
-              esc(p.nick) +
+              '<span data-member-id="' + esc(p.author_id || '') + '">' + esc(p.nick) + '</span>' +
               '</span><span aria-hidden="true">·</span><time datetime="' +
               esc(p.created_at) +
               '">' +
@@ -534,7 +539,7 @@
         '</div><h1 class="detail-title">' +
         esc(p.title) +
         '</h1><div class="detail-meta"><span>' +
-        esc(p.nick) +
+        '<span data-member-id="' + esc(p.author_id || '') + '">' + esc(p.nick) + '</span>' +
         '</span><span aria-hidden="true">·</span><time datetime="' +
         esc(p.created_at) +
         '">' +
@@ -641,7 +646,7 @@
             '<article class="comment-item" id="comment-' +
             esc(c.id) +
             '"><div class="comment-meta"><span class="comment-author">' +
-            esc(c.nick) +
+            '<span data-member-id="' + esc(c.author_id || '') + '">' + esc(c.nick) + '</span>' +
             '</span>' +
             (c.author_id && c.author_id === p.author_id
               ? '<span class="author-badge">글쓴이</span>'

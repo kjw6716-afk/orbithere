@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,follow" />
+    <meta name="referrer" content="no-referrer" />
+    <title>내 계정 · Orbit</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="orbit.css?v=20260912-brand" />
+    <link rel="stylesheet" href="account.css?v=20260914-members" />
+  </head>
+  <body>
+    <main class="account-main">
+      <a class="account-home" href="main.html#lounge">← 자유게시판으로</a>
+      <h1>내 계정</h1>
+      <p class="account-intro">
+        같은 닉네임으로, 다른 기기에서도.<br />함께한 날은 별빛으로 차곡차곡
+        쌓여요.
+      </p>
+      <p
+        id="accountStatus"
+        class="account-status"
+        role="status"
+        aria-live="polite"
+      >
+        계정을 확인하고 있어요.
+      </p>
+      <section id="authCard" class="account-card" hidden>
+        <div class="account-tabs" aria-label="계정 메뉴">
+          <button type="button" data-mode="login" aria-pressed="true">
+            로그인</button
+          ><button type="button" data-mode="signup" aria-pressed="false">
+            회원가입</button
+          ><button type="button" data-mode="reset" aria-pressed="false">
+            비밀번호 찾기
+          </button>
+        </div>
+        <h2 id="authTitle">다시 만나 반가워요</h2>
+        <p id="authHelp" class="account-help"></p>
+        <form id="authForm">
+          <label for="email">이메일</label
+          ><input
+            id="email"
+            type="email"
+            autocomplete="email"
+            maxlength="254"
+            required
+          />
+          <div id="passwordField">
+            <label for="password">비밀번호</label
+            ><input
+              id="password"
+              type="password"
+              autocomplete="current-password"
+              minlength="12"
+              maxlength="128"
+              required
+            />
+          </div>
+          <label id="signupConsent" class="account-consent" hidden
+            ><input id="consent" type="checkbox" /><span
+              >만 14세 이상이며
+              <a href="terms.html" target="_blank" rel="noopener">이용약관</a>
+              및
+              <a href="privacy.html#membership" target="_blank" rel="noopener"
+                >회원정보 수집·이용 안내</a
+              >를 읽고 동의합니다.</span
+            ></label
+          ><button id="authSubmit" type="submit">로그인</button>
+        </form>
+        <p class="account-help">
+          글 읽기는 가입 없이 할 수 있어요. 이메일은 게시판에 공개되지 않습니다.
+        </p>
+      </section>
+      <section id="setupCard" class="account-card" hidden>
+        <h2>프로필 설정</h2>
+        <p class="account-help">
+          게시판에는 닉네임과 레벨이 표시돼요. 닉네임은 2~12자로 정해주세요.
+        </p>
+        <form id="profileForm">
+          <label for="memberNickname">닉네임</label
+          ><input
+            id="memberNickname"
+            minlength="2"
+            maxlength="12"
+            autocomplete="nickname"
+            required
+          /><label class="account-consent"
+            ><input id="profileConsent" type="checkbox" required /><span
+              >만 14세 이상이며
+              <a href="terms.html" target="_blank" rel="noopener">이용약관</a>과
+              <a href="privacy.html#membership" target="_blank" rel="noopener"
+                >회원정보 수집·이용 안내</a
+              >에 동의합니다.</span
+            ></label
+          ><button type="submit">프로필 저장</button>
+        </form>
+      </section>
+      <section id="profileCard" class="account-card" hidden>
+        <p id="profileEmail" class="account-help"></p>
+        <h2 id="profileNickname"></h2>
+        <div id="profileLevel" class="account-level"></div>
+        <p id="levelProgressText" class="account-help"></p>
+        <progress
+          id="levelProgress"
+          class="account-progress"
+          aria-label="다음 레벨까지 별빛"
+        ></progress>
+        <div class="account-stats">
+          <div class="account-stat">
+            <strong id="totalXp"></strong><span>누적 별빛</span>
+          </div>
+          <div class="account-stat">
+            <strong id="totalDays"></strong><span>함께한 날</span>
+          </div>
+        </div>
+        <p id="attendanceStatus" class="account-help"></p>
+        <label for="selectedBadge">닉네임 옆 배지</label
+        ><select id="selectedBadge">
+          <option value="">표시하지 않음</option></select
+        ><button id="saveBadge" class="secondary" type="button">
+          배지 저장
+        </button>
+        <div class="account-row">
+          <a class="account-link" href="main.html#lounge">게시판 가기</a
+          ><button id="editProfile" class="secondary" type="button">
+            닉네임 수정
+          </button>
+        </div>
+        <h3>최근 별빛 기록</h3>
+        <ul id="rewardHistory" class="account-history"></ul>
+        <details>
+          <summary>별빛과 레벨 안내</summary>
+          <p>
+            한국 시간으로 하루 첫 접속 +10, 첫 글 +20(계정당 한 번). 이벤트 참여
+            보상은 운영자가 30~100을 지급해요. 글을 반복해서 써도 별빛이 계속
+            지급되지는 않아요.
+          </p>
+          <p>
+            Lv.2는 누적 10, Lv.10은 450, Lv.20은 1,900 별빛부터예요. 다음 레벨에
+            필요한 별빛은 조금씩 늘어나요. 1~9, 10~19, 20~29처럼 숫자로
+            표시합니다.
+          </p>
+          <p>
+            별빛은 활동 기록이며 구매·양도·현금 교환이 불가능합니다. 배지는 첫
+            글, 30일 출석, Lv.10 달성 시 얻어요.
+          </p>
+        </details>
+      </section>
+      <section id="passwordCard" class="account-card" hidden>
+        <h2 id="passwordTitle">비밀번호 설정</h2>
+        <p class="account-help">
+          이메일 인증을 마쳤어요. 다음 로그인에 쓸 비밀번호를 설정해주세요.
+        </p>
+        <form id="newPasswordForm">
+          <label for="newPassword">새 비밀번호 (12자 이상)</label
+          ><input
+            id="newPassword"
+            type="password"
+            autocomplete="new-password"
+            minlength="12"
+            maxlength="128"
+            required
+          /><label for="confirmPassword">새 비밀번호 확인</label
+          ><input
+            id="confirmPassword"
+            type="password"
+            autocomplete="new-password"
+            minlength="12"
+            maxlength="128"
+            required
+          /><button type="submit">비밀번호 저장</button>
+        </form>
+      </section>
+      <section id="sessionCard" class="account-card" hidden>
+        <div class="account-row">
+          <button id="signOut" class="secondary" type="button">로그아웃</button
+          ><button id="changePassword" class="secondary" type="button">
+            비밀번호 변경
+          </button>
+        </div>
+        <p class="account-help">로그아웃해도 글과 별빛은 계정에 남아요.</p>
+        <details id="withdrawDetails">
+          <summary>회원 탈퇴</summary>
+          <p>
+            이 계정의 글·댓글·첨부 사진·리액션·신고·별빛·배지를 삭제합니다. 내
+            글에 달린 다른 이용자의 댓글도 함께 삭제됩니다. 삭제를 시작하면
+            되돌릴 수 없습니다.
+          </p>
+          <p class="account-help">
+            공개 내용을 다른 사람이 저장한 사본은 회수할 수 없어요. 운영자
+            계정은 운영 권한을 이전한 뒤 탈퇴할 수 있습니다.
+          </p>
+          <form id="withdrawForm">
+            <label for="withdrawPassword">현재 비밀번호</label
+            ><input
+              id="withdrawPassword"
+              type="password"
+              autocomplete="current-password"
+              required
+            /><label class="account-consent"
+              ><input id="withdrawConsent" type="checkbox" required /><span
+                >삭제할 내용을 확인했으며 회원 탈퇴에 동의합니다.</span
+              ></label
+            ><button type="submit" class="danger">내 계정과 활동 삭제</button>
+          </form>
+        </details>
+      </section>
+      <p class="account-help">
+        <a href="privacy.html">개인정보처리방침</a> ·
+        <a href="about.html#contact">도움이 필요해요</a>
+      </p>
+    </main>
+    <script src="orbit-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
+    <script src="orbit-backend.js"></script>
+    <script src="members.js?v=20260914-members"></script>
+    <script src="account.js?v=20260914-members"></script>
+  </body>
+</html>

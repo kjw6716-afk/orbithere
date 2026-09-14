@@ -1,0 +1,251 @@
+.account-main {
+  width: min(720px, 100%);
+  margin: 0 auto;
+  padding: 36px 22px 64px;
+}
+.account-main h1 {
+  font-size: 30px;
+  letter-spacing: -1px;
+  margin: 10px 0;
+}
+.account-intro,
+.account-help {
+  color: #a8b7ca;
+  line-height: 1.8;
+}
+.account-home {
+  color: #ffb36b;
+  text-decoration: none;
+}
+.account-card {
+  margin-top: 24px;
+  padding: 26px;
+  background: #152033;
+  border: 1px solid #304058;
+  border-radius: 20px;
+}
+.account-card h2 {
+  font-size: 20px;
+  margin: 0 0 18px;
+}
+.account-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.account-card label {
+  display: block;
+  margin: 16px 0 8px;
+  font-size: 14px;
+  color: #d8e0ec;
+}
+.account-card input:not([type="checkbox"]),
+.account-card select {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid #516076;
+  border-radius: 10px;
+  background: #0e1726;
+  color: #f1f5f9;
+  padding: 13px;
+  font: inherit;
+}
+.account-card input:focus-visible,
+.account-card select:focus-visible {
+  outline: 2px solid #ffb36b;
+  outline-offset: 3px;
+}
+.account-card button,
+.account-link {
+  display: inline-block;
+  font: inherit;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 11px 16px;
+  cursor: pointer;
+  background: #ffad5e;
+  color: #101827;
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+.account-card button {
+  margin-top: 18px;
+}
+.account-card button.secondary,
+.account-link.secondary {
+  background: transparent;
+  border-color: #50617a;
+  color: #dbe4f0;
+}
+.account-card button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.account-tabs {
+  margin-bottom: 18px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.account-tabs button {
+  margin: 0;
+}
+.account-tabs button[aria-pressed="false"] {
+  background: transparent;
+  color: #c0cee0;
+  border-color: #50617a;
+}
+.account-status {
+  color: #ffd09f;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+.account-status:empty {
+  display: none;
+}
+.account-main [hidden] {
+  display: none !important;
+}
+.account-consent {
+  display: flex !important;
+  gap: 10px;
+  align-items: flex-start;
+  line-height: 1.7;
+}
+.account-consent input {
+  margin-top: 6px;
+}
+.account-consent a,
+.account-help a {
+  color: #ffb36b;
+}
+.account-progress {
+  width: 100%;
+  height: 12px;
+  accent-color: #ffad5e;
+}
+.account-level {
+  font-size: 34px;
+  color: #ffb36b;
+  letter-spacing: -1px;
+}
+.account-stats {
+  display: flex;
+  gap: 28px;
+  margin: 24px 0;
+}
+.account-stat strong {
+  display: block;
+  font-size: 23px;
+  margin-bottom: 6px;
+}
+.account-stat span {
+  font-size: 13px;
+  color: #a8b7ca;
+}
+.account-history {
+  list-style: none;
+  padding: 0;
+}
+.account-history li {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  border-top: 1px solid #304058;
+  padding: 14px 0;
+  line-height: 1.5;
+  font-size: 14px;
+}
+.account-history time {
+  display: block;
+  color: #a8b7ca;
+  font-size: 12px;
+}
+.account-history strong {
+  white-space: nowrap;
+  color: #ffb36b;
+}
+.member-level {
+  font-size: 0.86em;
+  font-weight: 600;
+  color: #ffbc7b;
+  white-space: nowrap;
+}
+.member-badge {
+  font-size: 11px;
+  color: #cfdded;
+  background: #27374c;
+  border-radius: 5px;
+  padding: 2px 6px;
+  margin-left: 7px;
+  white-space: nowrap;
+}
+.account-card .danger {
+  border-color: #ed9b9b;
+  color: #ffb7b7;
+  background: transparent;
+}
+.account-card details {
+  line-height: 1.8;
+}
+.account-card summary {
+  cursor: pointer;
+}
+.account-password {
+  margin-top: 20px;
+}
+.account-events {
+  display: grid;
+  gap: 12px;
+}
+.account-event {
+  padding: 14px;
+  border: 1px solid #3a4a60;
+  border-radius: 10px;
+}
+.account-event p {
+  margin: 0;
+}
+.account-event button {
+  margin-top: 8px;
+}
+.account-compact {
+  margin: 0;
+  padding: 0;
+}
+.account-compact .account-card {
+  background: transparent;
+}
+.account-compact .account-history {
+  max-height: 320px;
+  overflow: auto;
+}
+@media (max-width: 540px) {
+  .account-main {
+    padding: 24px 16px 40px;
+  }
+  .account-card {
+    padding: 20px;
+  }
+  .account-main h1 {
+    font-size: 27px;
+  }
+  .account-stats {
+    gap: 20px;
+  }
+  .account-card input:not([type="checkbox"]) {
+    font-size: 16px;
+  }
+}
+.account-main {
+  color: #f1f5f9;
+}
+body:has(.account-main) {
+  background: #0e1726;
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+[data-account-link][hidden] {
+  display: none !important;
+}
