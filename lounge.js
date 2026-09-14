@@ -79,7 +79,7 @@
     }
   }
   function activityHeading() {
-    $('boardTitle').textContent = activity ? '내 활동' : '별빛 게시판';
+    $('boardTitle').textContent = activity ? '내 활동' : '자유게시판';
     $('boardTitle').href = activityURL(activity || '');
     $('boardIntro').textContent = activity ? '내가 남긴 이야기와 이어지는 대화를 확인해요.' : '오늘 본 하늘부터, 아직 모르는 별까지.';
     $('activityPanel').hidden = !activity;
@@ -954,7 +954,6 @@
       title,
       text,
       $('orbitSelect').value,
-      $('postPinned').checked,
       observation,
       photos.map(function (p) {
         return p.url;
@@ -1016,7 +1015,7 @@
         p_orbit: $('orbitSelect').value,
         p_text: text,
         p_images: attempt.paths,
-        p_pinned: isAdmin && $('postPinned').checked,
+        p_pinned: false,
         ...(Object.keys(observation).length ? { p_observation: observation } : {}),
       };
       writeStatus('글을 등록하고 있어요…');
@@ -1085,7 +1084,7 @@
     ['list', 'detail', 'editor'].forEach(function (v) {
       $(v + 'View').hidden = v !== view;
     });
-    document.title = 'Orbit | 별빛 게시판';
+    document.title = 'Orbit | 자유게시판';
     activityHeading();
     if (activity && view === 'list') document.title = '내 활동 | Orbit';
     $('backToFeed').href = $('cancelWriteLink').href = url();
@@ -1093,7 +1092,6 @@
     OrbitBoardEmbed.scrollTo(0);
     if (view === 'editor') {
       syncWriter();
-      $('pinEditor').hidden = !isAdmin;
       if (!dirty()) $('orbitSelect').value = channel === 'all' ? 'free' : channel;
       $('postInput').focus({ preventScroll: true });
       return;

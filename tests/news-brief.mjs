@@ -184,23 +184,23 @@ try {
       return el.children[1].querySelector('.news-brief-meta').getBoundingClientRect().top;
     });
     await p.locator('.news-brief-list').evaluate(el=>el.getAnimations()[0].finish());
-    await p.waitForFunction(()=>document.querySelectorAll('.news-brief-item').length===2);
+    await p.waitForFunction(()=>document.querySelectorAll('.news-brief-item').length===4);
     const settledTop=await p.locator('.news-brief-meta').first().evaluate(el=>el.getBoundingClientRect().top);
     ok('slide settles on the next article without a vertical jump',await first(p)===titles[1] && Math.abs(settledTop-endTop)<1);
     for(let n=0;n<14;n++){
       await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();await settle(p);
     }
-    ok('the last item wraps smoothly and removes the temporary row',await first(p)===titles[1] && await p.locator('.news-brief-item').count()===2);
+    ok('the last item wraps smoothly and removes the temporary row',await first(p)===titles[1] && await p.locator('.news-brief-item').count()===4);
     const thirdTitle=await p.locator('.news-brief-title').nth(1).textContent();
     await p.getByRole('button',{name:'이전 뉴스',exact:true}).click();await settle(p);
     ok('previous reverses the slide direction and restores the first article',await first(p)===titles[0]);
     await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();
     await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();await settle(p);
-    ok('rapid manual navigation does not leave stale rows or callbacks',await first(p)===thirdTitle && await p.locator('.news-brief-item').count()===2);
+    ok('rapid manual navigation does not leave stale rows or callbacks',await first(p)===thirdTitle && await p.locator('.news-brief-item').count()===4);
     await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();
     await p.emulateMedia({reducedMotion:'reduce'});
     await p.waitForFunction(()=>document.querySelector('.news-brief-list').getAnimations().length===0);
-    ok('enabling reduced motion clears a slide and its temporary clip',await p.locator('.news-brief-item').count()===2 && await p.locator('.news-brief-viewport').evaluate(el=>!el.style.height && !el.classList.contains('is-moving')));
+    ok('enabling reduced motion clears a slide and its temporary clip',await p.locator('.news-brief-item').count()===4 && await p.locator('.news-brief-viewport').evaluate(el=>!el.style.height && !el.classList.contains('is-moving')));
     await p.emulateMedia({reducedMotion:'no-preference'});
     await p.goto(base+'/lounge.html');await p.locator('.news-brief-title').first().waitFor();
     await p.getByRole('button',{name:'다음 뉴스',exact:true}).click();
@@ -219,8 +219,8 @@ try {
       p = f.page;
     await ready(p);
     ok(
-      "sidebar shows two mixed headlines from a fourteen-item rotation",
-      (await p.locator(".news-brief-item").count()) === 2 &&
+      "sidebar shows four mixed headlines from a fourteen-item rotation",
+      (await p.locator(".news-brief-item").count()) === 4 &&
         /\/ 14/.test(await p.locator(".news-brief-count").textContent()),
     );
     const title = await first(p);
@@ -418,8 +418,8 @@ try {
       p = f.page;
     await ready(p, "/lounge.html");
     ok(
-      "standalone desktop board also shows a two-item sidebar",
-      (await p.locator(".news-brief-item").count()) === 2,
+      "standalone desktop board also shows a four-item sidebar",
+      (await p.locator(".news-brief-item").count()) === 4,
     );
     await p.goto(base + "/lounge.html?write=1");
     await p.locator("#editorView").waitFor();
@@ -443,7 +443,7 @@ try {
     await p.locator(".news-brief-title").first().waitFor();
     ok(
       "retry recovers without reloading the board",
-      (await p.locator(".news-brief-item").count()) === 2,
+      (await p.locator(".news-brief-item").count()) === 4,
     );
     await f.close();
   }
@@ -508,8 +508,13 @@ try {
     ok('mixed rotation covers all seven institution/company groups before repeats',new Set(result.groups).size===7 && result.unique===14);
     ok('Starlink and space-related Musk headlines share SpaceX without unrelated Musk coverage',result.starlink && result.musk && !result.unrelated && result.sources.includes('starlink'));
     ok('company topic never relabels a NASA source and lookalike domains are rejected',result.original==='NASA/JPL' && !result.invalid);
+    await p.setViewportSize({width:1366,height:900});
+    await p.waitForFunction(()=>document.querySelectorAll('.news-brief-item').length===3);
+    ok('900px desktop shows three rows with reachable controls',await p.locator('.news-brief').evaluate(el=>el.getBoundingClientRect().bottom<=innerHeight));
     await p.setViewportSize({width:1366,height:650});
     await p.waitForFunction(()=>document.querySelectorAll('.news-brief-item').length===1);
+    // Menu padding also transitions during a height change.
+    await p.waitForFunction(()=>document.querySelector('.news-brief').getBoundingClientRect().bottom<=innerHeight);
     ok('short desktop keeps one row and its footer inside the screen',await p.locator('.news-brief').evaluate(el=>el.getBoundingClientRect().bottom<=innerHeight));
     await p.goto(base+'/news.html#spacex');
     await p.locator('.news-article').first().waitFor();
