@@ -51,10 +51,6 @@
             font-family: 'Pretendard'; white-space: nowrap;
         }
         .profile-chip:hover { background: rgba(255,159,67,0.14); border-color: var(--accent); }
-        .profile-chip .pc-av {
-            width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
-            background: rgba(255,159,67,0.15); display: flex; align-items: center; justify-content: center; font-size: 13px;
-        }
 
         /* 닉네임 안내는 좁은 화면에서 대화상자 안에 표시합니다. */
         .topbar-right { display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -234,7 +230,7 @@
                         닉네임은 이 브라우저에 저장돼요.<br>다른 사람도 같은 이름을 쓸 수 있어요.
                     </span>
                     <button class="profile-chip" id="profileChip" type="button">
-                        <span class="pc-av">🦦</span><span id="profileChipText">궤도 진입하기</span>
+                        <span id="profileChipText">궤도 진입하기</span>
                     </button>
                 </div>
             </div>
@@ -321,7 +317,6 @@
             <!-- 진입 완료 -->
             <div id="joinDone" style="display:none;">
                 <div class="joined-badge">
-                    <span id="joinedAvatar">🌟</span>
                     <span id="joinedNickname">—</span>
                 </div>
                 <button class="btn-outline" id="btnRename" type="button" style="width:100%;">닉네임 바꾸기</button>
@@ -443,8 +438,6 @@
 
         // ===== 궤도 진입(닉네임) 대화상자 =====
         // 프로필 변경 대화상자. 첫 글의 닉네임은 게시판에서도 정할 수 있다.
-        var EMOJIS = ['🌟','⭐','🪐','🌙','☄️','🔭','🛸','💫','🌌','✨'];
-        function avatarOf(nick){ return EMOJIS[nick.charCodeAt(0) % EMOJIS.length]; }
 
         var back  = document.getElementById('joinBack');
         var input = document.getElementById('nicknameInput');
@@ -456,7 +449,6 @@
         function syncChip(){
             var n = nickname();
             document.getElementById('profileChipText').textContent = n || '궤도 진입하기';
-            document.querySelector('#profileChip .pc-av').textContent = n ? avatarOf(n) : '🦦';
         }
 
         function openJoin(){
@@ -471,7 +463,6 @@
                 : '닉네임만 정하면 바로 글을 남길 수 있어요. 이메일·비밀번호 없이 시작하며, 작성 권한은 이 브라우저에 저장돼요.';
             if(n){
                 document.getElementById('joinedNickname').textContent = n;
-                document.getElementById('joinedAvatar').textContent = avatarOf(n);
             } else {
                 input.value = '';
                 input.classList.remove('error');
