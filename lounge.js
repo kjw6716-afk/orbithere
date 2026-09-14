@@ -206,24 +206,20 @@
       writerPromise = null;
     }
   }
+  function canWrite() {
+    var state = window.OrbitMembers.state, user = state.user;
+    return !!(user && !user.is_anonymous && user.email_confirmed_at && state.profile && !state.error);
+  }
   async function ensureAuthor() {
+    await window.OrbitMembers.refresh();
+    if (!canWrite()) { join(); throw new Error('로그인하고 닉네임 설정을 마쳐주세요.'); }
     var id = await ensureWriter();
-    // Only new writing needs a public nickname; moderation and deletion remain available.
-    if (window.ORBIT_CONFIG.membersEnabled) {
-      var s = checked(await sb.auth.getSession()),
-        user = s.session && s.session.user;
-      if (user && !user.is_anonymous) {
-        var profile = checked(await sb.rpc('member_profile'));
-        if (!profile) throw new Error('내 계정에서 프로필 설정을 먼저 마쳐주세요.');
-        localStorage.setItem('orbit_nickname', profile.nickname);
-      }
-    }
+    var profile = checked(await sb.rpc('member_profile'));
+    if (!profile) throw new Error('내 계정에서 닉네임 설정을 먼저 마쳐주세요.');
+    localStorage.setItem('orbit_nickname', profile.nickname);
     return id;
   }
-  function join() {
-    if (embed && parent !== window) parent.postMessage({ orbit: 'join' }, location.origin);
-    else location.href = 'main.html#join';
-  }
+  function join() { window.OrbitAccount.open(); }
   function url(options) {
     var u = new URL('lounge.html', location.href);
     if (embed) u.searchParams.set('embed', '1');
@@ -236,36 +232,26 @@
   }
   function dirty() {
     return $('postTitle').value.trim() || $('postInput').value.trim() || photos.length ||
-      $('writerNickname').value.trim() || Object.keys(OrbitBoardWriting.collect($('postForm'))).length;
+      Object.keys(OrbitBoardWriting.collect($('postForm'))).length;
   }
   function syncWriter() {
-    var name = nick();
-    $('writerGate').hidden = !!name;
-    $('writerName').hidden = !name;
-    $('writerName').textContent = name ? name + ' 이름으로 남겨요.' : '';
-  }
-  function prepareNickname() {
-    if (nick()) return true;
-    var input = $('writerNickname'), value = input.value.trim();
-    if (value.length < 2 || value.length > 12 || /[<>"'\/\\]/.test(value)) {
-      writeStatus('닉네임을 2~12자로 정해주세요. < > 따옴표와 빗금은 사용할 수 없어요.', true);
-      input.focus();
-      return false;
+    var allowed = canWrite(), profile = window.OrbitMembers.state.profile;
+    $('memberWriteGate').hidden = allowed;
+    $('postForm').hidden = !allowed;
+    $('writerName').textContent = profile ? profile.nickname + ' 이름으로 남겨요.' : '';
+    $('writerName').hidden = !profile;
+    var comment = $('commentInput'), form = $('commentForm');
+    if (comment && form) {
+      comment.hidden = !allowed;
+      comment.disabled = !allowed || commentBusy;
+      var button = form.querySelector('button');
+      button.type = allowed ? 'submit' : 'button';
+      button.textContent = allowed ? '등록' : '로그인하고 댓글 쓰기';
+      if (allowed) delete button.dataset.accountOpen;
+      else button.dataset.accountOpen = 'login';
     }
-    try {
-      localStorage.setItem('orbit_nickname', value);
-      if (!localStorage.getItem('orbit_jointime')) {
-        localStorage.setItem('orbit_joindate', new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }));
-        localStorage.setItem('orbit_jointime', Date.now());
-      }
-    } catch (_) {
-      writeStatus('이 브라우저에 닉네임을 저장하지 못했어요. 사이트 저장소를 허용한 뒤 다시 시도해주세요.', true);
-      return false;
-    }
-    syncWriter();
-    if (embed && parent !== window) parent.postMessage({ orbit: 'profileChanged' }, location.origin);
-    return true;
   }
+  window.addEventListener('orbit:member', syncWriter);
   function canLeave() {
     if (busy || preparing || commentBusy) {
       status('진행 중인 저장을 마친 뒤 이동해주세요.', true);
@@ -596,6 +582,7 @@
         commentDrafts[p.id] = this.value;
       });
       $('commentForm').addEventListener('submit', submitComment);
+      syncWriter();
       $('moreComments').onclick = function () {
         loadComments(true);
       };
@@ -694,7 +681,7 @@
   async function submitComment(ev) {
     ev.preventDefault();
     if (commentBusy) return;
-    if (!nick()) {
+    if (!canWrite()) {
       join();
       return;
     }
@@ -963,7 +950,7 @@
       writeStatus('추가 정보는 항목마다 120자 이내로 적어주세요.', true);
       return;
     }
-    if (!prepareNickname()) return;
+    if (!canWrite()) { join(); return; }
     var fingerprint = JSON.stringify([
       title,
       text,
@@ -1105,8 +1092,11 @@
     $('writeTop').href = $('writeBottom').href = url({ write: true });
     OrbitBoardEmbed.scrollTo(0);
     if (view === 'editor') {
-      syncWriter();
       if (!dirty()) $('orbitSelect').value = channel === 'all' ? 'free' : channel;
+      syncWriter();
+      await window.OrbitMembers.refresh();
+      syncWriter();
+      if (!canWrite()) { join(); return; }
       $('postInput').focus({ preventScroll: true });
       return;
     }
@@ -1271,9 +1261,6 @@
     })
     .join('');
   $('postForm').addEventListener('submit', submitPost);
-  $('writerNickname').addEventListener('input', function () {
-    if (!busy) writeStatus('');
-  });
   $('postInput').addEventListener('input', function () {
     $('charCount').textContent = this.value.length.toLocaleString('ko-KR') + ' / 5,000';
   });
@@ -1372,9 +1359,7 @@
       ev.data.orbit !== 'profileChanged'
     )
       return;
-    if (view === 'editor') {
-      syncWriter();
-    }
+    window.OrbitMembers.refresh().then(syncWriter);
   });
   if (embed) parent.postMessage({ orbit: 'loungeReady' }, location.origin);
   (async function () {

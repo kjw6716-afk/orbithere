@@ -10,10 +10,9 @@
     <link rel="stylesheet" href="orbit.css?v=20260912-brand" />
     <link rel="stylesheet" href="account.css?v=20260914-members" />
   </head>
-  <body>
-    <main class="account-main">
-      <a class="account-home" href="main.html#lounge">← 자유게시판으로</a>
-      <h1>내 계정</h1>
+  <body class="account-callback">
+    <p class="account-return-status" role="status">로그인을 확인하고 있어요…</p>
+    <template id="accountTemplate"><div class="account-main">
       <p
         id="accountStatus"
         class="account-status"
@@ -28,11 +27,9 @@
             로그인</button
           ><button type="button" data-mode="signup" aria-pressed="false">
             회원가입</button
-          ><button type="button" data-mode="reset" aria-pressed="false">
-            비밀번호 찾기
-          </button>
+          >
         </div>
-        <h2 id="authTitle">다시 만나 반가워요</h2>
+        <h2 id="authTitle" class="sr-only">로그인</h2>
         <p id="authHelp" class="account-help"></p>
         <div id="googleAuth" hidden>
           <button id="googleSignIn" class="google-signin" type="button">
@@ -76,14 +73,10 @@
               >를 읽고 동의합니다.</span
             ></label
           ><button id="authSubmit" type="submit">로그인</button>
-        </form>
-        <p class="account-help">
-          가입 없이도 읽기·글쓰기·댓글이 가능해요. 회원은 다른 기기에서도 활동을
-          이어가고 별빛과 레벨을 쌓을 수 있어요. 이메일은 공개되지 않습니다.
-        </p>
+        <p class="account-reset"><button id="resetLink" type="button" data-mode="reset">비밀번호 찾기</button><button id="resetBack" type="button" data-mode="login" hidden>로그인으로 돌아가기</button></p></form>
       </section>
       <section id="setupCard" class="account-card" hidden>
-        <h2>프로필 설정</h2>
+        <h2>닉네임 정하기</h2>
         <p class="account-help">
           게시판에는 닉네임과 레벨이 표시돼요. 닉네임은 2~12자로 정해주세요.
         </p>
@@ -203,11 +196,11 @@
         <a href="privacy.html">개인정보처리방침</a> ·
         <a href="about.html#contact">도움이 필요해요</a>
       </p>
-    </main>
+    </div></template>
     <script src="orbit-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
     <script src="orbit-backend.js"></script>
-    <script src="members.js?v=20260914-members"></script>
-    <script src="account.js?v=20260914-members"></script>
+    <script src="members.js?v=20260914-popover"></script>
+    <script src="account-return.js?v=20260914-popover"></script>
   </body>
 </html>

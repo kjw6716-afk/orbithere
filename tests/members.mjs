@@ -325,6 +325,7 @@ try {
   await oauthFixture.page.locator("#profileForm button").click();
   await oauthFixture.page.locator("#profileCard").waitFor();
   await oauthFixture.page.reload();
+  await oauthFixture.page.locator('#profileChip').click();
   await oauthFixture.page.locator("#profileCard").waitFor();
   ok(
     "returning Google member opens the mini profile and external password management",
@@ -452,7 +453,7 @@ try {
     "reading the account page never creates an anonymous account",
     !f.state.calls.some((c) => c.path.includes("signup")),
   );
-  await f.page.getByRole("button", { name: "회원가입", exact: true }).click();
+  await f.page.locator('.account-dialog').getByRole("button", { name: "회원가입", exact: true }).click();
   await f.page.locator("#email").fill("new@example.test");
   await f.page.locator("#password").fill("only-a-fixture-password");
   await f.page.locator("#consent").check();
@@ -483,7 +484,7 @@ try {
     f.state.calls.some((c) => c.path === "/auth/v1/recover"),
   );
   await f.page
-    .getByRole("button", { name: "로그인", exact: true })
+    .getByRole("button", { name: "로그인으로 돌아가기", exact: true })
     .first()
     .click();
   await f.page.locator("#password").fill("oldpass");
@@ -510,7 +511,7 @@ try {
   f = await fixture({ auth: session(true), p: null });
   await f.page.goto(base + "/account.html?mode=signup");
   await f.page
-    .getByRole("heading", { name: "지금의 활동을 계정에 연결하기" })
+    .getByRole("heading", { name: "회원가입", exact: true })
     .waitFor();
   ok(
     "anonymous upgrade does not request a password before email verification",
@@ -633,8 +634,8 @@ try {
     .getByRole("button", { name: "밤하늘 · Lv.12", exact: false })
     .waitFor();
   await f.page.locator("#profileChip").click();
-  await f.page.waitForURL("**/account.html");
-  ok("home profile chip opens the signed-in account");
+  await f.page.locator('.account-dialog #profileCard').waitFor();
+  ok("home profile chip opens a small account dialog without navigation", new URL(f.page.url()).pathname === '/main.html');
   await f.close();
   f = await fixture({ auth: session() });
   await f.page.goto(base + "/lounge.html");
@@ -648,6 +649,41 @@ try {
     await f.page.locator("[data-account-link]").isVisible(),
   );
   ok("member-enabled board has no uncaught exceptions", f.errors.length === 0);
+  await f.close();
+  for (const width of [320,390,1440]) {
+    f = await fixture({auth:null,p:null,width});
+    await f.page.goto(base + '/main.html#sky');
+    await f.page.locator('#profileChip').hover();
+    ok('hover does not open an account dialog at '+width, await f.page.locator('.account-dialog[open]').count()===0);
+    await f.page.locator('#profileChip').click();
+    await f.page.locator('.account-dialog #authCard').waitFor();
+    ok('login opens on the current page at '+width,new URL(f.page.url()).hash==='#sky');
+    const box=await f.page.locator('.account-dialog').boundingBox();
+    ok('popup stays compact and within viewport at '+width,box.width<=380.1 && box.x>=0 && box.x+box.width<=width+1 && box.y>=0 && box.height<=868);
+    await f.page.locator('#email').fill('test@example.test');
+    await f.page.locator('#password').fill('temporary-unsent-password');
+    await f.page.keyboard.press('Escape');
+    await f.page.locator('.account-dialog').waitFor({state:'hidden'});
+    ok('Escape returns focus to the account trigger at '+width,await f.page.locator('#profileChip').evaluate(el=>el===document.activeElement));
+    await f.page.locator('#profileChip').click();
+    ok('closing a popup clears unsent passwords at '+width,await f.page.locator('#password').inputValue()==='');
+    await f.close();
+  }
+  f=await fixture({auth:null,p:null});
+  await f.page.goto(base+'/lounge.html?write=1');
+  await f.page.locator('.account-dialog #authCard').waitFor();
+  ok('visitor writing opens login over the board, without a nickname-only branch',new URL(f.page.url()).pathname==='/lounge.html'&&await f.page.locator('#postForm').isHidden()&&await f.page.locator('#writerNickname').count()===0);
+  ok('opening writing does not create an anonymous account or publish a post',!f.state.calls.some(c=>c.path==='/auth/v1/signup'||c.path.endsWith('/create_board_post')));
+  await f.close();
+  f=await fixture({auth:session()});
+  await f.page.goto(base+'/main.html#sky');
+  await f.page.locator('#profileChip').click();
+  await f.page.locator('.account-dialog #profileCard').waitFor();
+  await f.page.goto(base+'/account.html');
+  await f.page.locator('.account-dialog #profileCard').waitFor();
+  ok('OAuth callback returns to the original sky panel with the account dialog',new URL(f.page.url()).pathname==='/main.html'&&new URL(f.page.url()).hash==='#sky');
+  await f.page.reload();
+  ok('normal page refresh does not force the account popup open',await f.page.locator('.account-dialog[open]').count()===0);
   await f.close();
   console.log("Members: " + count + " checks passed");
 } finally {

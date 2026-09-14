@@ -74,7 +74,7 @@
 <!-- orbit-navigation:end -->
 <div class="orbit-page-content">
     <main class="board-shell" id="boardMain">
-      <a data-account-link hidden href="account.html" target="_top" style="display:block;text-align:right;padding:12px;color:#ffb36b">로그인 · 회원가입</a>
+      <a data-account-link hidden href="account.html" data-account-open="login" style="display:block;text-align:right;padding:12px;color:#ffb36b">로그인 · 회원가입</a>
       <div id="loungeStatus" class="board-status" role="status" aria-live="polite"></div>
       <section id="listView">
         <header class="board-heading">
@@ -151,6 +151,7 @@
         <a class="back-link" id="cancelWriteLink" href="lounge.html">← 목록</a>
         <h1>오늘 본 하늘을 들려주세요</h1>
         <p class="editor-intro">한 줄도 좋아요. 별 이름이나 장비를 몰라도 괜찮아요.</p>
+        <div id="memberWriteGate" class="member-write-gate" hidden><p>글을 남기려면 로그인해주세요.</p><button type="button" class="button primary" data-account-open="login">로그인 · 회원가입</button></div>
         <form id="postForm" novalidate>
           <label for="postTitle">제목 <span class="field-hint">선택 · 80자 이내</span></label
           ><input
@@ -219,11 +220,6 @@
               <div><label for="observedProcessing">사진 보정 프로그램</label><input id="observedProcessing" data-observation="processing" maxlength="120" placeholder="예: DSS"></div>
             </div>
           </details>
-          <div id="writerGate" class="writer-identity" hidden>
-            <label for="writerNickname">닉네임 <span class="field-hint">2~12자</span></label>
-            <input id="writerNickname" maxlength="12" minlength="2" autocomplete="nickname" placeholder="어떤 이름으로 이야기할까요?" aria-describedby="nicknameHelp">
-            <p class="field-hint" id="nicknameHelp">회원가입 없이 닉네임만 정해요. 이 기기에 저장되며, 다른 사람도 같은 이름을 쓸 수 있어요.</p>
-          </div>
           <p class="field-hint" id="writerName" hidden></p>
           <p class="field-hint">
             등록한 글과 사진은 누구나 볼 수 있습니다. 상세 주소나 연락처는 적지 마세요.
@@ -267,15 +263,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
     <script src="orbit-backend.js"></script>
-    <link rel="stylesheet" href="account.css?v=20260914-members">
-    <script src="members.js?v=20260914-members"></script>
+    <link rel="stylesheet" href="account.css?v=20260914-popover">
+    <script src="members.js?v=20260914-popover"></script>
+    <script src="account.js?v=20260914-popover"></script>
+    <script src="account-panel.js?v=20260914-popover"></script>
     <script src="board-media.js?v=20260912-board"></script>
     <script src="board-writing.js?v=20260913-writing"></script>
     <script src="board-glossary.js?v=20260914-community"></script>
     <script src="board-activity.js?v=20260914-activity"></script>
     <script src="board-embed.js?v=20260914-community"></script>
-    <script src="lounge.js?v=20260914-members"></script>
-    <script src="member-board.js?v=20260914-members"></script>
+    <script src="lounge.js?v=20260914-popover"></script>
+    <script src="member-board.js?v=20260914-popover"></script>
   </div></div>
 <script src="site-nav.js?v=20260914-community"></script>
 </body>

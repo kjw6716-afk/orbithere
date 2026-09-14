@@ -47,7 +47,8 @@ await db.exec(sql('migration_011_authenticated_ownership.sql'));
 // The migration must also be safe to rerun.
 await db.exec(sql('migration_011_authenticated_ownership.sql'));
 for (const name of readdirSync(new URL('../supabase/migrations/', import.meta.url))
-  .filter((n) => n.endsWith('.sql'))
+  // Build pre-membership activity first, then verify the upgrade boundary below.
+  .filter((n) => n.endsWith('.sql') && !n.endsWith('_member_only_writing.sql'))
   .sort()) {
   await db.exec(sql('migrations/' + name));
   await db.exec(sql('migrations/' + name));
@@ -762,5 +763,36 @@ check('another member survives withdrawal',(await as('authenticated',M2,'select 
 await db.exec('reset role');
 check('new public RPCs have no definer privileges',(await db.query(`select count(*) as n from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname like 'member_%' and p.prosecdef`)).rows[0].n===0);
 
+await db.exec('reset role');
+const writeMigration = readdirSync(new URL('../supabase/migrations/', import.meta.url)).find(n => n.endsWith('_member_only_writing.sql'));
+await db.exec(`insert into auth.users(id) values('${A}') on conflict do nothing`);
+const legacyForOwner = (await as('authenticated', B, `insert into posts(nick,orbit,text,title) values('이전작성자','free','가입 전 남긴 글','보존할 글') returning id`)).rows[0].id;
+const oldReservation = (await as('authenticated', A, `select reserve_board_images(gen_random_uuid(),1) as paths`)).rows[0].paths[0];
+await db.exec('reset role');
+await db.exec(sql('migrations/' + writeMigration));
+await db.exec(sql('migrations/' + writeMigration));
+check('existing public posts survive the membership upgrade', (await as('anon',null,`select id from posts where id='${legacyForOwner}'`)).rows.length===1);
+for (const [role,id,label] of [['anon',null,'visitor'],['authenticated',A,'anonymous auth']]) {
+  await denied(label+' cannot insert posts',role,id,`insert into posts(nick,orbit,text,title) values('방문자','free','차단할 글','제목')`);
+  await denied(label+' cannot insert comments',role,id,`insert into comments(post_id,nick,text) values('${legacyForOwner}','방문자','차단할 댓글')`);
+  await denied(label+' cannot reserve new photos',role,id,`select reserve_board_images(gen_random_uuid(),1)`);
+}
+await denied('old anonymous reservations cannot upload photos','authenticated',A,`insert into storage.objects(bucket_id,name) values('board-images','${oldReservation}')`);
+const U='66666666-6666-4666-8666-666666666668';
+await db.exec(`reset role; insert into auth.users(id,is_anonymous,email_confirmed_at) values('${U}',false,null);`);
+await denied('unverified permanent user cannot publish','authenticated',U,`insert into posts(nick,orbit,text,title) values('미인증','free','차단할 글','제목')`);
+await db.exec(`reset role; update auth.users set email_confirmed_at=now() where id='${U}'`);
+await denied('verified member must choose a nickname and consent before writing','authenticated',U,`insert into posts(nick,orbit,text,title) values('미설정','free','차단할 글','제목')`);
+await as('authenticated',U,`select member_save_profile('새회원','2026-09-14-members')`);
+const newMemberPost = (await as('authenticated',U,`insert into posts(nick,orbit,text,title) values('위조','free','회원 글','회원 제목') returning id,nick`)).rows[0];
+check('completed member can publish with their server nickname',newMemberPost.nick==='새회원');
+check('completed member can comment',(await as('authenticated',U,`insert into comments(post_id,nick,text) values('${legacyForOwner}','위조','회원 댓글') returning nick`)).rows[0].nick==='새회원');
+const memberPhoto=(await as('authenticated',U,'select reserve_board_images(gen_random_uuid(),1) as paths')).rows[0].paths[0];
+check('completed member can upload a reserved photograph',(await as('authenticated',U,`insert into storage.objects(bucket_id,name) values('board-images','${memberPhoto}') returning id`)).rows.length===1);
+check('old anonymous author retains deletion of their existing post',(await as('authenticated',B,`delete from posts where id='${legacyForOwner}' returning id`)).rows.length===1);
+await db.exec(`reset role; update auth.users set is_anonymous=false,email_confirmed_at=now() where id='${ADMIN}'`);
+await as('authenticated',ADMIN,'update posts set is_pinned=false where is_pinned');
+check('existing operator can publish notices without member onboarding',(await as('authenticated',ADMIN,`insert into posts(nick,orbit,text,title,is_pinned) values('운영자','free','공지 내용','공지 제목',true) returning is_pinned`)).rows[0].is_pinned);
+await denied('member-only helper is not a new public callable definer','authenticated',U,'select orbit_members_private.require_writer()');
 await db.close();
 console.log(`Security: ${count} checks passed`);

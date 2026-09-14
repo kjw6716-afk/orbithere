@@ -1,20 +1,21 @@
 (function () {
   "use strict";
+  window.mountOrbitAccount = function (root, initial) {
+  initial = initial || {};
   var member = window.OrbitMembers,
     sb = member.sb,
     $ = function (id) {
-      return document.getElementById(id);
+      return root.querySelector("#" + id);
     };
   var mode =
-      new URLSearchParams(location.search).get("mode") === "signup"
+      initial.mode === "signup"
         ? "signup"
         : "login",
     recovery =
-      location.hash.includes("type=recovery") ||
-      new URLSearchParams(location.search).get("flow") === "recovery",
+      initial.flow === "recovery",
     pending = false,
     editing = false;
-  var callback = location.origin + location.pathname;
+  var callback = location.origin + "/account.html";
   var policyVersion = "2026-09-14-members",
     googleReturnKey = "orbit_google_return";
   var googleWithdrawalUserId = null,
@@ -79,14 +80,14 @@
   async function run(work) {
     if (pending) return;
     pending = true;
-    document.querySelectorAll("button").forEach((b) => (b.disabled = true));
+    root.querySelectorAll("button").forEach((b) => (b.disabled = true));
     try {
       await work();
     } catch (error) {
       say(errorText(error));
     } finally {
       pending = false;
-      document.querySelectorAll("button").forEach((b) => (b.disabled = false));
+      root.querySelectorAll("button").forEach((b) => (b.disabled = false));
     }
   }
   function setMode(next) {
@@ -98,18 +99,22 @@
         b.setAttribute("aria-pressed", String(b.dataset.mode === mode)),
       );
     $("authTitle").textContent = {
-      login: "다시 만나 반가워요",
-      signup: anon ? "지금의 활동을 계정에 연결하기" : "오빗 회원가입",
+      login: "로그인",
+      signup: "회원가입",
       reset: "비밀번호 찾기",
     }[mode];
     $("authHelp").textContent =
       mode === "signup"
         ? anon
-          ? "이메일 또는 Google을 연결하면 이 브라우저에서 쓴 글의 작성 권한이 이어집니다. 이메일은 인증을 마친 뒤 비밀번호를 설정해요."
-          : "이메일 인증을 마치면 닉네임과 프로필을 정할 수 있어요."
+          ? "기존 글은 가입한 계정에 이어집니다."
+          : "이메일 인증 후 닉네임을 정해주세요."
         : mode === "login" && anon
-          ? "다른 기존 계정으로 로그인하면 현재 익명 활동은 합쳐지지 않아요. 지금 활동을 보관하려면 회원가입에서 이메일 또는 Google을 연결해주세요."
+          ? "기존 비회원 글을 이어가려면 회원가입을 선택해주세요."
           : "";
+    root.querySelector(".account-tabs").hidden = mode === "reset";
+    show('resetBack', mode === 'reset');
+    show('resetLink', mode !== 'reset');
+    $("accountPanelTitle").textContent = mode === "reset" ? "비밀번호 찾기" : "궤도 진입하기";
     var password = mode === "login" || (mode === "signup" && !anon);
     show("passwordField", password);
     $("password").required = password;
@@ -150,6 +155,7 @@
     );
     setMode(mode);
     if (!registered) return;
+    $("accountPanelTitle").textContent = "내 계정";
     var google = googleOnly(u);
     show("changePassword", !google);
     show("googleManage", google);
@@ -194,7 +200,7 @@
     if (!Number.isNaN(joined.getTime()))
       $("profileJoined").dateTime = p.joined_at;
   }
-  document.querySelectorAll("[data-mode]").forEach((b) =>
+  root.querySelectorAll("[data-mode]").forEach((b) =>
     b.addEventListener("click", () => {
       setMode(b.dataset.mode);
       say("");
@@ -318,7 +324,7 @@
       );
       $("newPasswordForm").reset();
       recovery = false;
-      history.replaceState(null, "", location.pathname);
+
       await member.refresh();
       say("비밀번호를 저장했어요.");
     });
@@ -400,7 +406,7 @@
   async function handleGoogleReturn() {
     if (
       googleReturnHandled ||
-      new URLSearchParams(location.search).get("flow") !== "google-withdraw"
+      initial.flow !== "google-withdraw"
     )
       return;
     googleReturnHandled = true;
@@ -409,7 +415,7 @@
       saved = JSON.parse(sessionStorage.getItem(googleReturnKey));
     } catch (_) {}
     sessionStorage.removeItem(googleReturnKey);
-    history.replaceState(null, "", location.pathname);
+
     var user = checked(await sb.auth.getUser()).user;
     if (
       !saved ||
@@ -440,7 +446,7 @@
     say(
       "회원 기능을 준비하고 있어요. 준비가 끝나면 이곳에서 가입할 수 있습니다.",
     );
-    return;
+    return {mode:function(){},isBusy:function(){return false;},clearSecrets:function(){}};
   }
   sb.auth.onAuthStateChange(function (event) {
     if (event === "PASSWORD_RECOVERY") {
@@ -451,12 +457,10 @@
   member.refresh().then(() => {
     if (!member.state.error) say("");
     render();
-    var oauthError =
-      new URLSearchParams(location.search).get("error") ||
-      new URLSearchParams(location.hash.slice(1)).get("error");
+    var oauthError = initial.flow === "oauth-error";
     if (oauthError) {
       clearGoogleReturn();
-      history.replaceState(null, "", location.pathname);
+
       say(
         "Google 로그인을 완료하지 못했어요. 취소했거나 연결에 문제가 생겼다면 다시 시도해주세요.",
       );
@@ -464,4 +468,16 @@
     }
     handleGoogleReturn().catch((error) => say(errorText(error)));
   });
+  return {
+    mode: function (next) { setMode(next === "signup" ? "signup" : "login"); say(""); },
+    isBusy: function () { return pending; },
+    clearSecrets: function () {
+      editing = false;
+      root.querySelectorAll('input[type="password"]').forEach(function (input) { input.value = ""; });
+      $("withdrawConsent").checked = false;
+      $("withdrawDetails").open = false;
+      render();
+    }
+  };
+  };
 })();
