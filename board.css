@@ -234,7 +234,8 @@ summary:focus-visible {
 .board-search {
   display: flex;
   gap: 8px;
-  margin: 0 0 20px;
+  margin: 22px auto 0;
+  max-width: 560px;
 }
 .board-filters,
 .board-filter-actions {
@@ -303,7 +304,7 @@ summary:focus-visible {
   display: flex;
   gap: 12px;
   align-items: center;
-  padding: 13px 0;
+  padding: 9px 0;
   text-decoration: none;
   font-size: 0.9375rem;
   font-weight: 600;
@@ -320,7 +321,9 @@ summary:focus-visible {
   white-space: nowrap;
 }
 .pinned-row .pin-title {
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   flex: 1;
 }
 .pin-arrow {
@@ -328,9 +331,9 @@ summary:focus-visible {
 }
 .board-row {
   display: flex;
-  gap: 18px;
+  gap: 12px;
   align-items: center;
-  padding: 22px 0;
+  padding: 6px 0;
   border-bottom: 1px solid var(--board-line);
 }
 .board-row:first-child {
@@ -339,18 +342,25 @@ summary:focus-visible {
 .row-main {
   min-width: 0;
   flex: 1;
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
 }
 .row-category {
   font-size: 0.75rem;
   font-weight: 650;
   color: var(--board-mint);
-  margin-bottom: 5px;
+  margin-bottom: 0;
 }
 .row-title {
   display: block;
-  font-size: 1.2rem;
-  font-weight: 680;
-  line-height: 1.55;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 32px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   letter-spacing: -0.025em;
   color: #f1f5f9;
   text-decoration: none;
@@ -366,22 +376,24 @@ summary:focus-visible {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
-  margin-top: 8px;
+  margin-top: 0;
   line-height: 1.6;
 }
+.row-meta > span:first-child { max-width: 90px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.row-category .reply-badge { margin: 3px 0 0; font-size: 10px; padding: 1px 4px; }
 .row-side {
   flex-shrink: 0;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  flex-direction: row;
+  align-items: center;
   gap: 8px;
   min-width: 30px;
 }
 .row-thumb-link {
   display: block;
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 36px;
+  height: 36px;
   overflow: hidden;
   background: #0c1524;
   border: 1px solid #3b4c65;
@@ -416,7 +428,7 @@ summary:focus-visible {
 }
 .board-pagination {
   text-align: center;
-  margin: 25px 0 0;
+  margin: 16px 0 0;
 }
 .board-pagination p {
   color: var(--board-muted);
@@ -942,7 +954,8 @@ summary:focus-visible {
   margin: 0 auto;
   border: 0;
   border-radius: 0;
-  max-width: 900px;
+  max-width: none;
+  padding: 24px;
 }
 .embed body {
   background: #0f172a;
@@ -961,7 +974,7 @@ summary:focus-visible {
     margin: 0;
     border: 0;
     border-radius: 0;
-    min-height: 70vh;
+    min-height: 420px;
   }
   .board-heading h1,
   #editorView h1 {
@@ -975,15 +988,15 @@ summary:focus-visible {
     padding: 8px 12px;
   }
   .board-row {
-    padding: 19px 0;
-    gap: 13px;
+    padding: 8px 0;
+    gap: 8px;
   }
   .row-title {
-    font-size: 1.125rem;
+    font-size: 1rem;
   }
   .row-thumb-link {
-    width: 56px;
-    height: 56px;
+    width: 32px;
+    height: 32px;
   }
   .board-search {
     gap: 6px;
@@ -1093,3 +1106,23 @@ summary:focus-visible {
 .news-topic-filters a { color: #94a3b8; border: 1px solid #283144; border-radius: 16px; padding: 7px 12px; font-size: 13px; text-decoration: none; }
 .news-topic-filters a[aria-current] { color: #ff9f43; border-color: #ff9f43; }
 .news-topic-filters a:focus-visible { outline: 2px solid #ff9f43; outline-offset: 3px; }
+
+/* Compact rows keep secondary information on one extra line at narrow widths. */
+@media (max-width: 980px) {
+  .row-main { grid-template-columns: auto minmax(0, 1fr); gap: 0 10px; }
+  .row-meta { grid-column: 1 / -1; font-size: 0.75rem; }
+  .row-category { font-size: 0.6875rem; }
+}
+@media (max-width: 600px) {
+  .embed .board-shell { padding: 18px 12px 28px; }
+  .row-side { gap: 6px; }
+  .comment-count { min-width: 30px; min-height: 40px; justify-content: center; }
+  .board-search { margin-top: 18px; }
+}
+
+.news-article .row-title { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.5; }
+
+.board-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.board-bottom .board-search { flex: 1; margin: 0; }
+.board-bottom .bottom-write { margin: 0 0 0 auto; }
+@media (max-width: 600px) { .board-bottom .board-search { flex-basis: 100%; max-width: 100%; } }

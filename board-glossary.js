@@ -47,6 +47,7 @@
       if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) dialog.close();
     });
     dialog.addEventListener('close', function () { dialog.remove(); if (trigger.isConnected) trigger.focus({ preventScroll: true }); });
+    if (window.OrbitBoardEmbed) OrbitBoardEmbed.prepareDialog(dialog);
     dialog.showModal();
   }
   function annotate(containers) {

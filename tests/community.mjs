@@ -397,6 +397,69 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
 try {
 
   {
+    const f=await fixture({signedIn:true}),{page,state}=f;
+    state.posts=Array.from({length:40},(_,i)=>({id:uid(2000+i),title:'관측 이야기 '+i+' — 밝은 별을 봤어요',text:'본문',nick:'관측자',orbit:'report',author_id:A,created_at:'2026-09-14T01:00:00Z',image_paths:[]}));
+    await page.goto(base+'/main.html#lounge');
+    const frame=page.frameLocator('#loungeFrame');
+    await frame.locator('.board-row').first().waitFor();
+    for(const width of [320,390,1440,1920,3440]) {
+      await page.setViewportSize({width,height:1000});
+      await page.waitForFunction(()=>{const f=document.querySelector('#loungeFrame');return f.contentDocument.documentElement.scrollHeight<=f.clientHeight+2;});
+      const layout=await frame.locator('#listView').evaluate(el=>{
+        const row=el.querySelector('.board-row').getBoundingClientRect();
+        return {rowHeight:row.height,rows:el.querySelectorAll('.board-row').length,searchAfter:el.querySelector('#feedSearch').getBoundingClientRect().top>=el.querySelector('#postList').getBoundingClientRect().bottom};
+      });
+      ok('compact twenty-post page and bottom search at '+width+'px',layout.rows===20&&layout.rowHeight<=(width<=860?76:66)&&layout.searchAfter);
+      ok('expanded board fits its frame at '+width+'px',await page.evaluate(()=>{const f=document.querySelector('#loungeFrame'),p=document.querySelector('.panel-wrap'),t=document.querySelector('.story-teaser');return document.documentElement.scrollWidth<=innerWidth+1&&Math.abs(f.getBoundingClientRect().right-t.getBoundingClientRect().right)<2;}));
+      if(process.env.ORBIT_QA_FONT&&[390,1440].includes(width)) await page.screenshot({path:'/tmp/orbit-compact-list-'+width+'.png',fullPage:true});
+    }
+    await page.setViewportSize({width:1440,height:1000});
+    await frame.locator('.board-row').nth(14).scrollIntoViewIfNeeded();
+    const oldScroll=await page.evaluate(()=>window.scrollY);
+    await frame.locator('.row-title').nth(14).click();
+    await frame.locator('.detail-title').waitFor();
+    await frame.locator('#backToFeed').click();
+    await page.waitForFunction(y=>Math.abs(window.scrollY-y)<8,oldScroll);
+    ok('detail back restores the outer page scroll position');
+    await frame.locator('#writeTop').click();
+    await frame.locator('#postInput').fill('광학 장비 없이 본 하늘');
+    for(const width of [390,1440]) {
+      await page.setViewportSize({width,height:844});
+      await frame.locator('#observationFields').evaluate(el=>el.open=true);
+      await frame.locator('#equipmentFields').evaluate(el=>el.open=true);
+      await page.waitForFunction(()=>{const f=document.querySelector('#loungeFrame');return f.contentDocument.documentElement.scrollHeight<=f.clientHeight+2;});
+      ok('expanded writing options have no nested frame scrollbar at '+width+'px',await frame.locator('#postInput').inputValue()==='광학 장비 없이 본 하늘'&&!await frame.getByText('5,000자 이내',{exact:true}).count());
+      await frame.locator('#observationFields').evaluate(el=>el.open=false);
+      await frame.locator('#equipmentFields').evaluate(el=>el.open=false);
+      await page.waitForFunction(()=>{const f=document.querySelector('#loungeFrame');return Math.abs(f.contentDocument.querySelector('#boardMain').getBoundingClientRect().height-f.clientHeight)<=2;});
+    }
+    await page.screenshot({path:'/tmp/orbit-writing-wide.png',fullPage:true});
+    await f.close();
+  }
+  {
+    const f=await fixture({signedIn:true}),{page,state}=f;
+    state.posts[0].author_id=A;state.posts[0].text='긴 관측 이야기입니다.\n'.repeat(150);
+    state.comments=[{id:uid(2999),post_id:P,nick:'다른별',text:'아직 화면 아래에 있는 답글',author_id:uid(99),created_at:now()}];
+    await page.goto(base+'/main.html#lounge');
+    const frame=page.frameLocator('#loungeFrame');
+    await frame.locator('.row-title').click();
+    await frame.locator('.comment-item').waitFor();
+    await page.waitForFunction(()=>{const f=document.querySelector('#loungeFrame');return f.clientHeight>2000;});
+    ok('full-height frame does not mark offscreen replies read',state.receipts.size===0);
+    await frame.locator('.comment-item').scrollIntoViewIfNeeded();
+    await page.waitForResponse(r=>r.url().endsWith('/rpc/mark_board_comments_read')&&r.status()===200);
+    ok('reply becomes read after scrolling the outer page into view',state.receipts.has(uid(2999)));
+    await frame.getByRole('button',{name:'신고·삭제 요청',exact:true}).last().click();
+    await frame.locator('dialog[open]').waitFor();
+    ok('embedded report dialog stays in the visible outer viewport',await page.evaluate(()=>{
+      const f=document.querySelector('#loungeFrame'),r=f.contentDocument.querySelector('dialog[open]').getBoundingClientRect(),top=f.getBoundingClientRect().top;
+      return top+r.top>=0&&top+r.bottom<=innerHeight+1;
+    }));
+    await frame.getByRole('button',{name:'취소',exact:true}).click();
+
+    await f.close();
+  }
+  {
     const f=await fixture({nickname:''}), {page,state}=f;
     await page.goto(base+'/lounge.html?activity=mine&embed=1');
     await page.getByRole('heading',{name:'이 브라우저에서 시작한 활동이 없어요'}).waitFor();
@@ -523,15 +586,16 @@ try {
     await page.getByRole('link', { name: '기존 관측 후기', exact: true }).waitFor();
     for (const width of [320, 390, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
+      await page.waitForFunction(()=>!!document.querySelector('.sidebar > .news-brief')===(innerWidth>860));
       const geometry = await page.evaluate(() => {
         const list = document.getElementById('postList').getBoundingClientRect();
         const news = document.querySelector('.news-brief--board').getBoundingClientRect();
         const write = document.getElementById('writeBottom').getBoundingClientRect();
-        return { list: { bottom: list.bottom, right: list.right }, news: { top: news.top, left: news.left }, write: write.bottom,
+        return { list: { bottom: list.bottom, right: list.right, left: list.left }, news: { top: news.top, left: news.left, right: news.right }, write: write.bottom,
           fits: document.documentElement.scrollWidth <= innerWidth + 1 };
       });
       ok('community comes before news without overflow at ' + width + 'px', geometry.fits &&
-        (width < 1280 ? geometry.news.top >= Math.max(geometry.list.bottom, geometry.write) : geometry.news.left >= geometry.list.right));
+        (width <= 860 ? geometry.news.top >= Math.max(geometry.list.bottom, geometry.write) : geometry.news.right <= geometry.list.left));
     }
     await f.close();
   }
@@ -651,6 +715,7 @@ try {
     ok('complete counter outage never shows a fabricated zero',await page.locator('#postViews').textContent()==='조회 —');
     for(const width of [320,390,1440]) {
       await page.setViewportSize({width,height:900});
+      await page.waitForFunction(()=>!!document.querySelector('.sidebar > .news-brief')===(innerWidth>860));
       ok('detail views fit '+width+'px',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
     }
     await f.close();
@@ -695,7 +760,7 @@ try {
     );
     await page.locator('#writeTop').click();
     await page.getByLabel('제목 선택 · 80자 이내').fill('서울에서 본 토성');
-    await page.getByLabel('이야기나 궁금한 점 5,000자 이내').fill('고리가 또렷하게 보였습니다.');
+    await page.getByLabel('이야기나 궁금한 점').fill('고리가 또렷하게 보였습니다.');
     state.postFail = true;
     await page.locator('#btnTrace').click();
     await page.locator('#writeStatus').filter({ hasText: '등록 여부' }).waitFor();
@@ -993,11 +1058,11 @@ try {
     await page.getByRole('link', { name: '사진을 올리는 관측 후기', exact: true }).waitFor();
     await page.screenshot({ path: '/tmp/orbit-board-list-mobile.png', fullPage: true });
     ok(
-      'mobile list uses readable 18px titles',
+      'compact mobile list keeps readable 16px titles',
       await page
         .locator('.row-title')
         .first()
-        .evaluate((n) => parseFloat(getComputedStyle(n).fontSize) >= 18),
+        .evaluate((n) => parseFloat(getComputedStyle(n).fontSize) >= 16),
     );
     await page.getByRole('link', { name: '사진을 올리는 관측 후기', exact: true }).click();
     await page.getByRole('button', { name: '글 삭제', exact: true }).click();

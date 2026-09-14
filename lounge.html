@@ -39,17 +39,17 @@
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css"
     />
     <link rel="stylesheet" href="/orbit.css?v=20260912-brand" />
-    <link rel="stylesheet" href="board.css?v=20260914-activity" />
+    <link rel="stylesheet" href="board.css?v=20260914-layout" />
     <script>
       if (new URLSearchParams(location.search).get('embed'))
         document.documentElement.classList.add('embed');
     </script>
     <script src="orbit-config.js"></script>
     <script src="visits.js" defer></script>
-    <link rel="stylesheet" href="news-brief.css?v=20260914-community">
+    <link rel="stylesheet" href="news-brief.css?v=20260914-layout">
     <script src="news-data.js?v=20260912-companies" defer></script>
-    <script src="news-brief.js?v=20260912-companies" defer></script>
-  <link rel="stylesheet" href="site-nav.css?v=20260912-navigation">
+    <script src="news-brief.js?v=20260914-layout" defer></script>
+  <link rel="stylesheet" href="site-nav.css?v=20260914-layout">
 </head>
   <body>
     <div class="bg-glow" aria-hidden="true"></div>
@@ -78,7 +78,7 @@
       <section id="listView">
         <header class="board-heading">
           <div>
-            <h1 id="boardTitle">별빛 게시판</h1>
+            <h1><a class="page-title-link" id="boardTitle" data-board-nav href="lounge.html#all">별빛 게시판</a></h1>
             <p id="boardIntro">오늘 본 하늘부터, 아직 모르는 별까지.</p>
           </div>
           <div class="board-heading-actions">
@@ -98,16 +98,6 @@
             <label class="question-filter" for="questionFilter"><input type="checkbox" id="questionFilter">질문만 보기</label>
           </div>
         </div>
-        <form class="board-search" id="feedSearch" role="search">
-          <label class="sr-only" for="searchInput">게시글 찾기</label
-          ><input
-            type="search"
-            id="searchInput"
-            maxlength="80"
-            placeholder="제목과 내용으로 검색"
-          /><button class="button" type="submit">검색</button
-          ><button class="button subtle" type="button" id="clearSearch" hidden>초기화</button>
-        </form>
         <section id="pinnedPosts" class="pinned-posts" aria-label="상단 고정 공지" hidden></section>
         <div class="list-toolbar">
           <p id="feedContext" aria-live="polite"></p>
@@ -118,9 +108,21 @@
           <button class="button" id="loadMore" type="button" hidden>이전 글 더 보기</button>
           <p id="pageStatus" role="status"></p>
         </div>
+        <div class="board-bottom">
+        <form class="board-search" id="feedSearch" role="search">
+          <label class="sr-only" for="searchInput">게시글 찾기</label
+          ><input
+            type="search"
+            id="searchInput"
+            maxlength="80"
+            placeholder="제목과 내용으로 검색"
+          /><button class="button" type="submit">검색</button
+          ><button class="button subtle" type="button" id="clearSearch" hidden>초기화</button>
+        </form>
         <a class="button primary bottom-write" id="writeBottom" href="lounge.html?write=1"
           >글쓰기</a
         >
+        </div>
         <aside class="news-brief news-brief--board" data-news-brief aria-labelledby="newsBriefHeading">
           <h2 class="news-brief-heading" id="newsBriefHeading">최신 우주 뉴스</h2>
           <ul class="news-brief-list" aria-label="최신 뉴스 미리보기" aria-live="off"></ul>
@@ -158,7 +160,7 @@
             placeholder="예: 집 앞에서 본 밝은 점, 별일까요?"
           />
           <p class="field-hint" id="titleHelp">비워두면 이야기의 첫 문장을 제목으로 써요.</p>
-          <label for="postInput">이야기나 궁금한 점 <span class="field-hint">5,000자 이내</span></label
+          <label for="postInput">이야기나 궁금한 점</label
           ><textarea
             id="postInput"
             name="text"
@@ -269,10 +271,11 @@
     <script src="orbit-backend.js"></script>
     <script src="board-media.js?v=20260912-board"></script>
     <script src="board-writing.js?v=20260913-writing"></script>
-    <script src="board-glossary.js?v=20260913-writing"></script>
+    <script src="board-glossary.js?v=20260914-layout"></script>
     <script src="board-activity.js?v=20260914-activity"></script>
-    <script src="lounge.js?v=20260914-activity"></script>
+    <script src="board-embed.js?v=20260914-layout"></script>
+    <script src="lounge.js?v=20260914-layout"></script>
   </div></div>
-<script src="site-nav.js?v=20260912-navigation"></script>
+<script src="site-nav.js?v=20260914-layout"></script>
 </body>
 </html>

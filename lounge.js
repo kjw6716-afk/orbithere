@@ -80,6 +80,7 @@
   }
   function activityHeading() {
     $('boardTitle').textContent = activity ? '내 활동' : '별빛 게시판';
+    $('boardTitle').href = activityURL(activity || '');
     $('boardIntro').textContent = activity ? '내가 남긴 이야기와 이어지는 대화를 확인해요.' : '오늘 본 하늘부터, 아직 모르는 별까지.';
     $('activityPanel').hidden = !activity;
     document.querySelector('.board-filters').hidden = !!activity;
@@ -276,7 +277,7 @@
         posts: posts.slice(),
         more: more,
         pins: activity || $('pinnedPosts').hidden ? '' : $('pinnedPosts').innerHTML,
-        scroll: window.scrollY,
+        scroll: OrbitBoardEmbed.scrollY(),
       };
     history[replace ? 'replaceState' : 'pushState'](null, '', href);
     showRoute();
@@ -880,6 +881,7 @@
         pending = false;
       }
     };
+    if (window.OrbitBoardEmbed) OrbitBoardEmbed.prepareDialog(dialog);
     dialog.showModal();
   }
   function renderPreviews() {
@@ -1088,7 +1090,7 @@
     if (activity && view === 'list') document.title = '내 활동 | Orbit';
     $('backToFeed').href = $('cancelWriteLink').href = url();
     $('writeTop').href = $('writeBottom').href = url({ write: true });
-    window.scrollTo(0, 0);
+    OrbitBoardEmbed.scrollTo(0);
     if (view === 'editor') {
       syncWriter();
       $('pinEditor').hidden = !isAdmin;
@@ -1115,7 +1117,7 @@
       $('pinnedPosts').innerHTML = cache.pins;
       $('pinnedPosts').hidden = !cache.pins;
       renderPosts();
-      window.scrollTo(0, cache.scroll);
+      OrbitBoardEmbed.scrollTo(cache.scroll);
     } else {
       posts = [];
       more = false;
