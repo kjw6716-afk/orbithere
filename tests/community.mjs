@@ -180,7 +180,19 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
       return state.observationVersion ? json(1) : json({ code: 'PGRST202', message: 'Not installed' }, 404);
     if (url.pathname.endsWith('/rpc/community_version')) return json(2);
     if (url.pathname.endsWith('/rpc/is_admin')) return json(admin);
-    if (url.pathname.endsWith('/rpc/member_profile') || url.pathname.endsWith('/rpc/member_visit')) return json(state.profile);
+    if (url.pathname.endsWith('/rpc/admin_delivery_alerts')) {
+      if (state.deliveryGate) await state.deliveryGate;
+      return state.deliveryFail ? json({message:'offline'},503) : json(state.deliveries || {unread:0,events:[]});
+    }
+    if (url.pathname.endsWith('/rpc/acknowledge_delivery_event')) {
+      state.deliveries.events.forEach(e => {if(e.event_id===req.postDataJSON().p_event_id)e.acknowledged_at=now();});
+      state.deliveries.unread=0; return json(null);
+    }
+    if (url.pathname.endsWith('/rpc/member_visit')) {
+      if (state.memberVisitGate) await state.memberVisitGate;
+      return json(state.profile);
+    }
+    if (url.pathname.endsWith('/rpc/member_profile')) return json(state.profile);
     if (url.pathname.endsWith('/rpc/member_save_profile')) {state.profile.nickname=req.postDataJSON().p_nickname; return json(state.profile);}
     if (url.pathname.endsWith('/rpc/member_cards')) return json([]);
     if (url.pathname.endsWith('/rpc/visit_stats')) return json([{day:'2026-09-13',count:19,total:46}]);
@@ -405,9 +417,49 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
 }
 try {
   {
+    const f = await fixture(), {page, state} = f;
+    await page.goto(base + '/lounge.html');
+    await page.getByRole('link', {name:'기존 관측 후기', exact:true}).waitFor();
+    let release;
+    state.memberVisitGate = new Promise(resolve => { release = resolve; });
+    const checking = page.waitForRequest(r => r.url().endsWith('/rpc/member_visit'));
+    await page.locator('#writeTop').click();
+    await checking;
+    await page.getByLabel('제목 선택 · 80자 이내').fill('서울에서 본 토성');
+    const response = page.waitForResponse(r => r.url().endsWith('/rpc/member_visit'));
+    release();
+    await response;
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    ok('late member refresh never steals focus from an active title field', await page.locator('#postTitle').evaluate(e => e === document.activeElement));
+    state.memberVisitGate = null;
+    await page.getByLabel('이야기나 궁금한 점').fill('고리가 또렷하게 보였습니다.');
+    state.postFail = true;
+    await page.locator('#btnTrace').click();
+    await page.locator('#writeStatus').filter({hasText:'등록 여부'}).waitFor();
+    ok('delayed identity check and failed save retain literal title and body',
+      await page.locator('#postTitle').inputValue() === '서울에서 본 토성' &&
+      await page.locator('#postInput').inputValue() === '고리가 또렷하게 보였습니다.');
+    await f.close();
+  }
+  {
     const f = await fixture({admin:true}), {page,state} = f;
+    state.deliveries={unread:1,events:[{event_id:'test-delivery',email_id:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',recipient:'naver-user@example.test',event_type:'email.suppressed',reason:'OnAccountSuppressionList',occurred_at:now(),acknowledged_at:null}]};
+    await page.route('**/data/news.json',route=>route.fulfill({json:{checkedAt:new Date(Date.now()-5*3600000).toISOString(),sources:[{status:'ok',lastSuccessfulAt:new Date(Date.now()-5*3600000).toISOString()}]}}));
     await page.goto(base+'/admin.html');
     await page.locator('#noticePanel').waitFor();
+    await page.locator('[data-mail-status]').filter({hasText:'미확인 1건'}).waitFor();
+    await page.locator('[data-news-status]').filter({hasText:'갱신 지연'}).waitFor();
+    ok('operator sees suppressed recipients and stale public news',await page.locator('[data-mail-list]').innerText().then(t=>t.includes('발송 차단')&&t.includes('naver-user@example.test')));
+    await page.getByRole('button',{name:'확인했어요',exact:true}).click();
+    await page.locator('[data-mail-status]').filter({hasText:'미확인 0건'}).waitFor();
+    ok('acknowledgment clears unread count but preserves incident history',await page.locator('[data-mail-list]').innerText().then(t=>t.includes('확인됨')));
+    state.deliveryFail=true;
+    await page.getByRole('button',{name:'운영 상태 새로고침'}).click();
+    await page.locator('[data-mail-status]').filter({hasText:'불러오지 못했어요'}).waitFor();
+    ok('mail loading failure is not displayed as zero failures',await page.locator('[data-mail-status]').getAttribute('data-warning')==='true');
+    state.deliveryFail=false;
+    await page.getByRole('button',{name:'운영 상태 새로고침'}).click();
+    await page.locator('[data-mail-status]').filter({hasText:'미확인 0건'}).waitFor();
     await page.locator('.vs-bar').first().waitFor({state:'attached'});
     ok('visit chart includes fourteen calendar days, with zero-visit days preserved',await page.locator('.vs-bar').count()===14&&await page.locator('.vs-bar').evaluateAll(rows=>rows.filter(r=>r.style.height==='0%').length>=12));
     await page.locator('#noticeTitle').fill('처음 오신 분께');
@@ -431,7 +483,7 @@ try {
     ok('unpin keeps the published post',state.posts.length===2&&!state.posts[0].is_pinned);
     await page.locator('#btnOut').click();
     await page.locator('#loginView').waitFor();
-    ok('logout closes notice and private operations',await page.locator('#noticePanel').isHidden()&&await page.locator('#reportPanel').isHidden());
+    ok('logout closes notice and private operations',await page.locator('#noticePanel').isHidden()&&await page.locator('#reportPanel').isHidden()&&await page.locator('#operationsPanel').isHidden()&&await page.locator('[data-mail-list]').innerText()==='');
     await f.close();
   }
   for(const registered of [false,true]) {
@@ -439,7 +491,7 @@ try {
     await page.goto(base+'/admin.html');
     await page.locator(registered?'#whoRole':'#loginView').waitFor();
     if(registered) await page.locator('#whoRole').filter({hasText:'권한 없음'}).waitFor();
-    ok('non-admin cannot see notice controls, registered='+registered,await page.locator('#noticePanel').isHidden());
+    ok('non-admin cannot see notice or delivery controls, registered='+registered,await page.locator('#noticePanel').isHidden()&&await page.locator('#operationsPanel').isHidden());
     await page.goto(base+'/lounge.html?write=1');
     await page.locator(registered ? '#postInput' : '#memberWriteGate').waitFor();
     ok('ordinary writer has no notice toggle',await page.locator('#postPinned').count()===0);

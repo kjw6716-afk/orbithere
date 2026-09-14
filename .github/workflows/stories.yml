@@ -2,19 +2,19 @@ name: 우주 이야기 발행
 on:
   schedule:
     # 08:43 KST. GitHub may delay scheduled runs; the KST ledger prevents duplicates.
-    - cron: '43 23 * * *'
+    - cron: "43 23 * * *"
   push:
     branches: [main]
     paths:
-      - '_editorial/articles/**'
-      - 'scripts/stories.py'
-      - 'scripts/site_navigation.py'
-      - '.github/workflows/stories.yml'
+      - "_editorial/articles/**"
+      - "scripts/stories.py"
+      - "scripts/site_navigation.py"
+      - ".github/workflows/stories.yml"
   workflow_dispatch:
 
 permissions:
   contents: write
-  pages: write
+  actions: write
 concurrency:
   # The news publisher uses this group too: both update main without force-pushing.
   group: official-news
@@ -30,10 +30,10 @@ jobs:
           ref: main
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
       - name: 승인 대기열과 중복 발행 검사
         run: python -m unittest discover -s tests -p 'test_stories.py'
       - name: 한국 날짜 기준 한 편 발행
@@ -56,9 +56,9 @@ jobs:
           # If main changed concurrently, fail visibly. Never overwrite newer work.
           git push origin HEAD:main
           echo 'changed=true' >> "$GITHUB_OUTPUT"
-      - name: GitHub Pages 발행 반영
-        # Also retry a previously failed Pages request when a run is repeated.
+      - name: 검사 통과 후 발행 반영
+        # Also retry a previously failed dispatch when this workflow is repeated.
         if: success()
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"
+        run: gh workflow run checks.yml --ref main

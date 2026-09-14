@@ -1094,10 +1094,15 @@
     if (view === 'editor') {
       if (!dirty()) $('orbitSelect').value = channel === 'all' ? 'free' : channel;
       syncWriter();
+      var focusBeforeRefresh = document.activeElement;
       await window.OrbitMembers.refresh();
+      if (token !== route || view !== 'editor') return;
       syncWriter();
       if (!canWrite()) { join(); return; }
-      $('postInput').focus({ preventScroll: true });
+      // A slow identity check must not redirect keystrokes from a field the
+      // writer has already selected, or focus an editor after navigating away.
+      if (document.activeElement === focusBeforeRefresh && !$('postForm').contains(document.activeElement))
+        $('postInput').focus({ preventScroll: true });
       return;
     }
     if (view === 'detail') {

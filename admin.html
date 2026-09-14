@@ -22,6 +22,12 @@
         .notice-row .btn-line { width: auto; flex-shrink: 0; margin: 0; }
         #noticeForm { margin-top: 22px; }
         .field textarea { min-height: 180px; resize: vertical; }
+        #operationsPanel { padding: 24px; border: 1px solid rgba(255,159,67,.2); border-radius: 20px; background: var(--card-bg); font-size: 13px; line-height: 1.7; }
+        #operationsPanel [data-warning="true"] { color: #FCA5A5; font-weight: 700; }
+        [data-mail-list] { padding: 0; list-style: none; max-height: 480px; overflow-y: auto; }
+        [data-mail-list] li { padding: 14px 0; border-top: 1px solid rgba(255,255,255,.1); overflow-wrap: anywhere; }
+        [data-mail-list] p { margin: 3px 0; }
+        [data-mail-list] a { color: var(--accent); }
 
         .panel {
             background: var(--card-bg);
@@ -259,6 +265,16 @@
             <div class="note" id="note"></div>
         </div>
 
+        <section class="log-panel" id="operationsPanel" hidden>
+            <h2>운영 상태</h2>
+            <p data-news-status role="status"></p>
+            <p data-mail-status role="status"></p>
+            <p class="notice-help">1분마다 확인합니다. 뉴스가 4시간 넘게 갱신되지 않으면 지연으로 표시합니다. 인증메일 반송·차단·실패·지연 알림은 최근 30일, 최대 100건을 표시합니다.</p>
+            <button class="btn-line" type="button" data-operations-refresh>운영 상태 새로고침</button>
+            <ul data-mail-list></ul>
+            <p class="notice-help">‘확인했어요’는 읽음 표시입니다. 차단 해제나 메일 재발송은 발송 기록에서 원인을 확인한 뒤 별도로 진행해주세요.</p>
+        </section>
+
         <section class="log-panel" id="noticePanel" hidden>
             <h2>공지 관리</h2>
             <p class="notice-help">공지는 자유게시판 상단에 최대 3개까지 표시돼요. 고정을 해제해도 글은 게시판에 남습니다.</p>
@@ -372,11 +388,14 @@
     <link rel="stylesheet" href="account.css?v=20260914-members">
     <script src="admin-notices.js?v=20260914-community"></script>
     <script src="admin-members.js?v=20260914-members"></script>
+    <script src="news-health.js?v=20260914-ops"></script>
+    <script src="admin-operations.js?v=20260914-ops"></script>
     <script>
     (function(){
         var sb = window.createOrbitBackend();
         var notices = sb ? window.createOrbitNotices(sb) : null;
         var memberEvents = sb ? window.createOrbitMemberAdmin(sb) : null;
+        var operations = sb ? window.createOrbitOperations(sb) : null;
         var sessionGeneration = 0;
 
         var note = document.getElementById('note');
@@ -397,6 +416,7 @@
         // (숨김이 접근 제어는 아니지만, 관제실 콘텐츠를 로그인 전에 보일 이유가 없다)
         function showLog(on){
             if(memberEvents) memberEvents.setAuthorized(on);
+            if(operations) operations.setAuthorized(on);
             document.getElementById('logPanel').style.display = on ? '' : 'none';
             document.getElementById('reportPanel').style.display = on ? '' : 'none';
             document.getElementById('visitPanel').style.display = on ? '' : 'none';
