@@ -112,7 +112,10 @@
       "setupCard",
       registered && !needsPassword && (!s.profile || editing) && !s.error,
     );
-    show("profileCard", registered && !needsPassword && !!s.profile);
+    show(
+      "profileCard",
+      registered && !needsPassword && !!s.profile && !editing,
+    );
     setMode(mode);
     if (!registered) return;
     if (s.error) {
@@ -124,45 +127,23 @@
       return;
     }
     var p = s.profile;
-    $("profileEmail").textContent = u.email;
     $("profileNickname").textContent = p.nickname;
     $("profileLevel").textContent = "Lv." + p.level;
-    $("totalXp").textContent = p.xp.toLocaleString("ko-KR");
-    $("totalDays").textContent = p.attendance_days + "일";
     $("levelProgress").max = p.next_level - p.level_start;
     $("levelProgress").value = p.xp - p.level_start;
     $("levelProgressText").textContent =
       "다음 레벨까지 " + (p.next_level - p.xp) + " 별빛";
-    $("attendanceStatus").textContent = p.today_claimed
-      ? "오늘 출석 완료 · 별빛 10을 받았어요."
-      : "오늘의 출석을 확인하고 있어요.";
-    $("selectedBadge").replaceChildren(new Option("표시하지 않음", ""));
-    p.badges.forEach((b) => {
-      if (member.badges[b])
-        $("selectedBadge").add(new Option(member.badges[b], b));
-    });
-    $("selectedBadge").value = p.selected_badge || "";
-    $("rewardHistory").replaceChildren();
-    p.history.forEach((r) => {
-      var row = document.createElement("li"),
-        desc = document.createElement("span"),
-        time = document.createElement("time"),
-        amount = document.createElement("strong");
-      desc.textContent =
-        r.kind === "visit"
-          ? "하루 첫 접속"
-          : r.kind === "first-post"
-            ? "첫 글"
-            : r.title || "이벤트";
-      time.dateTime = r.created_at;
-      time.textContent = new Date(r.created_at).toLocaleDateString("ko-KR", {
-        timeZone: "Asia/Seoul",
-      });
-      desc.append(time);
-      amount.textContent = "+" + r.amount;
-      row.append(desc, amount);
-      $("rewardHistory").append(row);
-    });
+    var joined = new Date(p.joined_at);
+    $("profileJoined").textContent = Number.isNaN(joined.getTime())
+      ? "—"
+      : joined.toLocaleDateString("ko-KR", {
+          timeZone: "Asia/Seoul",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+    if (!Number.isNaN(joined.getTime()))
+      $("profileJoined").dateTime = p.joined_at;
   }
   document.querySelectorAll("[data-mode]").forEach((b) =>
     b.addEventListener("click", () => {
@@ -237,21 +218,12 @@
   $("editProfile").addEventListener("click", () => {
     editing = true;
     render();
-    $("memberNickname").value = member.state.profile.nickname;
+    $("memberNickname").value = member.state.profile
+      ? member.state.profile.nickname
+      : localStorage.getItem("orbit_nickname") || "";
     $("profileConsent").checked = true;
     $("memberNickname").focus();
   });
-  $("saveBadge").addEventListener("click", () =>
-    run(async () => {
-      checked(
-        await sb.rpc("member_select_badge", {
-          p_badge: $("selectedBadge").value || null,
-        }),
-      );
-      await member.refresh();
-      say("배지를 저장했어요.");
-    }),
-  );
   $("newPasswordForm").addEventListener("submit", function (e) {
     e.preventDefault();
     run(async () => {

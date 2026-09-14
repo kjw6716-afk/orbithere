@@ -77,6 +77,7 @@ function session(anonymous = false, metadata = {}) {
 function profile() {
   return {
     nickname: "밤하늘",
+    joined_at: "2026-09-14T00:00:00Z",
     level: 12,
     xp: 700,
     level_start: 660,
@@ -223,7 +224,22 @@ async function fixture({
     if (rpc === "visit_stats" || rpc === "report_queue") return json([]);
     if (rpc === "community_version") return json(2);
     if (rpc === "board_version") return json(1);
-    if (rpc === "board_posts") return json([{id:'44444444-4444-4444-8444-444444444444',author_id:A,title:'회원의 관측',text:'관측 내용',nick:'옛별칭',orbit:'free',created_at:new Date().toISOString(),image_paths:[],is_pinned:false,comment_count:0,view_count:0}]);
+    if (rpc === "board_posts")
+      return json([
+        {
+          id: "44444444-4444-4444-8444-444444444444",
+          author_id: A,
+          title: "회원의 관측",
+          text: "관측 내용",
+          nick: "옛별칭",
+          orbit: "free",
+          created_at: new Date().toISOString(),
+          image_paths: [],
+          is_pinned: false,
+          comment_count: 0,
+          view_count: 0,
+        },
+      ]);
     if (rpc === "record_visit") return json(null);
     return json([], 200);
   });
@@ -292,17 +308,6 @@ try {
     "existing short passwords can still log in",
     f.state.calls.some(
       (c) => c.path === "/auth/v1/token" && c.body.password === "oldpass",
-    ),
-  );
-  await f.page.locator("#selectedBadge").selectOption("attendance-30");
-  await f.page.locator("#saveBadge").click();
-  await f.page.getByText("배지를 저장했어요.").waitFor();
-  ok(
-    "badge selection is persisted by the guarded RPC",
-    f.state.calls.some(
-      (c) =>
-        c.path.endsWith("/member_select_badge") &&
-        c.body.p_badge === "attendance-30",
     ),
   );
   await f.page.locator("#signOut").click();
@@ -386,6 +391,7 @@ try {
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     );
+    await f.page.setViewportSize({width,height:500});
     await f.page.screenshot({
       path: root + "/../member-" + width + ".png",
       fullPage: true,
@@ -436,15 +442,28 @@ try {
     ) === '{"confirmation":"DELETE_MY_ACCOUNT"}',
   );
   await f.close();
-  f=await fixture({auth:session()});await f.page.goto(base+'/main.html#planets');
-  await f.page.getByRole('button',{name:'밤하늘 · Lv.12',exact:false}).waitFor();
-  await f.page.locator('#profileChip').click();await f.page.waitForURL('**/account.html');
-  ok('home profile chip opens the signed-in account');await f.close();
-  f=await fixture({auth:session()});await f.page.goto(base+'/lounge.html');
-  await f.page.locator('#postList .member-level').waitFor();
-  ok('board list loads member cards after rows render',await f.page.locator('#postList .member-level').textContent()==='Lv.12');
-  ok('board provides a direct account entry',await f.page.locator('[data-account-link]').isVisible());
-  ok('member-enabled board has no uncaught exceptions',f.errors.length===0);await f.close();
+  f = await fixture({ auth: session() });
+  await f.page.goto(base + "/main.html#planets");
+  await f.page
+    .getByRole("button", { name: "밤하늘 · Lv.12", exact: false })
+    .waitFor();
+  await f.page.locator("#profileChip").click();
+  await f.page.waitForURL("**/account.html");
+  ok("home profile chip opens the signed-in account");
+  await f.close();
+  f = await fixture({ auth: session() });
+  await f.page.goto(base + "/lounge.html");
+  await f.page.locator("#postList .member-level").waitFor();
+  ok(
+    "board list loads member cards after rows render",
+    (await f.page.locator("#postList .member-level").textContent()) === "Lv.12",
+  );
+  ok(
+    "board provides a direct account entry",
+    await f.page.locator("[data-account-link]").isVisible(),
+  );
+  ok("member-enabled board has no uncaught exceptions", f.errors.length === 0);
+  await f.close();
   console.log("Members: " + count + " checks passed");
 } finally {
   await browser.close();

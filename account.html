@@ -14,10 +14,6 @@
     <main class="account-main">
       <a class="account-home" href="main.html#lounge">← 자유게시판으로</a>
       <h1>내 계정</h1>
-      <p class="account-intro">
-        같은 닉네임으로, 다른 기기에서도.<br />함께한 날은 별빛으로 차곡차곡
-        쌓여요.
-      </p>
       <p
         id="accountStatus"
         class="account-status"
@@ -97,56 +93,21 @@
           ><button type="submit">프로필 저장</button>
         </form>
       </section>
-      <section id="profileCard" class="account-card" hidden>
-        <p id="profileEmail" class="account-help"></p>
-        <h2 id="profileNickname"></h2>
-        <div id="profileLevel" class="account-level"></div>
-        <p id="levelProgressText" class="account-help"></p>
+      <section id="profileCard" class="account-card account-profile" hidden>
+        <div class="account-profile-heading">
+          <h2 id="profileNickname"></h2>
+          <span id="profileLevel" class="account-level"></span>
+        </div>
         <progress
           id="levelProgress"
           class="account-progress"
           aria-label="다음 레벨까지 별빛"
         ></progress>
-        <div class="account-stats">
-          <div class="account-stat">
-            <strong id="totalXp"></strong><span>누적 별빛</span>
-          </div>
-          <div class="account-stat">
-            <strong id="totalDays"></strong><span>함께한 날</span>
-          </div>
-        </div>
-        <p id="attendanceStatus" class="account-help"></p>
-        <label for="selectedBadge">닉네임 옆 배지</label
-        ><select id="selectedBadge">
-          <option value="">표시하지 않음</option></select
-        ><button id="saveBadge" class="secondary" type="button">
-          배지 저장
-        </button>
-        <div class="account-row">
-          <a class="account-link" href="main.html#lounge">게시판 가기</a
-          ><button id="editProfile" class="secondary" type="button">
-            닉네임 수정
-          </button>
-        </div>
-        <h3>최근 별빛 기록</h3>
-        <ul id="rewardHistory" class="account-history"></ul>
-        <details>
-          <summary>별빛과 레벨 안내</summary>
-          <p>
-            한국 시간으로 하루 첫 접속 +10, 첫 글 +20(계정당 한 번). 이벤트 참여
-            보상은 운영자가 30~100을 지급해요. 글을 반복해서 써도 별빛이 계속
-            지급되지는 않아요.
-          </p>
-          <p>
-            Lv.2는 누적 10, Lv.10은 450, Lv.20은 1,900 별빛부터예요. 다음 레벨에
-            필요한 별빛은 조금씩 늘어나요. 1~9, 10~19, 20~29처럼 숫자로
-            표시합니다.
-          </p>
-          <p>
-            별빛은 활동 기록이며 구매·양도·현금 교환이 불가능합니다. 배지는 첫
-            글, 30일 출석, Lv.10 달성 시 얻어요.
-          </p>
-        </details>
+        <p
+          id="levelProgressText"
+          class="account-help account-progress-label"
+        ></p>
+        <p class="account-joined">가입일 <time id="profileJoined"></time></p>
       </section>
       <section id="passwordCard" class="account-card" hidden>
         <h2 id="passwordTitle">비밀번호 설정</h2>
@@ -173,14 +134,16 @@
           /><button type="submit">비밀번호 저장</button>
         </form>
       </section>
-      <section id="sessionCard" class="account-card" hidden>
+      <section id="sessionCard" class="account-card account-settings" hidden>
         <div class="account-row">
+          <button id="editProfile" class="secondary" type="button">
+            닉네임 수정
+          </button>
           <button id="signOut" class="secondary" type="button">로그아웃</button
           ><button id="changePassword" class="secondary" type="button">
             비밀번호 변경
           </button>
         </div>
-        <p class="account-help">로그아웃해도 글과 별빛은 계정에 남아요.</p>
         <details id="withdrawDetails">
           <summary>회원 탈퇴</summary>
           <p>
