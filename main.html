@@ -61,15 +61,12 @@
             background: rgba(255,159,67,0.15); display: flex; align-items: center; justify-content: center; font-size: 13px;
         }
 
-        /* 칩 옆 베타 안내 — 닉네임을 정하는 바로 그 버튼 옆에 둔다.
-           색은 사이트에서 베타 표시에 쓰는 보라(광장의 β 배지)와 맞췄다.
-           좁은 화면에서는 칩만 남기고 접는다 — 상단바가 두 줄로 밀리는 걸 막는다. */
+        /* 닉네임 안내는 좁은 화면에서 대화상자 안에 표시합니다. */
         .topbar-right { display: flex; align-items: center; gap: 10px; min-width: 0; }
-        .beta-hint {
+        .nickname-hint {
             font-size: 12px; line-height: 1.45; color: #A8B7CA;
             text-align: right; white-space: nowrap;
         }
-        .beta-hint b { color: #9F7AEA; font-weight: 700; }
 
         .panel-wrap { padding: 30px 32px 60px; flex: 1; }
 
@@ -185,9 +182,8 @@
             .topbar { padding: 16px 18px; }
             .panel-wrap { padding: 20px 18px 50px; }
             .lounge-frame { height: calc(100vh - 132px); }
-            /* 베타 안내는 칩 옆에 두면 상단바가 두 줄로 밀린다 — 좁은 화면에서는 접는다.
-               (같은 내용을 진입 대화상자 안에서 다시 보여주므로 정보가 사라지진 않는다) */
-            .beta-hint { display: none; }
+            /* 같은 안내를 닉네임 대화상자에서도 제공합니다. */
+            .nickname-hint { display: none; }
         }
 
 
@@ -240,8 +236,8 @@
             <div class="topbar">
                 <h1 class="panel-title" id="panelTitle">밤하늘 <span>달력</span></h1>
                 <div class="topbar-right">
-                    <span class="beta-hint">
-                        <b>β 베타</b> — 닉네임은 이 기기에만<br>저장돼요. 선점되지 않습니다.
+                    <span class="nickname-hint">
+                        닉네임은 이 브라우저에 저장돼요.<br>다른 사람도 같은 이름을 쓸 수 있어요.
                     </span>
                     <button class="profile-chip" id="profileChip" type="button">
                         <span class="pc-av">🦦</span><span id="profileChipText">궤도 진입하기</span>
@@ -339,9 +335,9 @@
             </div>
 
             <p class="join-note">
-                <b>β 베타</b> — 닉네임은 아직 먼저 쓴 사람이 임자가 되는 방식이 아니에요.
-                같은 이름을 다른 분이 쓸 수도 있습니다.
-                대신 내가 남긴 궤적과 답은 <b>이 기기에서만</b> 지울 수 있어요.
+                닉네임은 이 브라우저에 저장되며, 다른 사람도 같은 이름을 쓸 수 있어요.
+                내 글·댓글의 삭제 권한과 내 활동은 <b>이 브라우저의 인증 세션</b>으로 확인해요.
+                브라우저 데이터를 지우면 이전 활동을 이어서 확인하거나 직접 삭제할 수 없어요.
             </p>
             <button class="btn-outline" id="joinClose" type="button" style="width:100%;margin-top:12px;">닫기</button>
         </div>
