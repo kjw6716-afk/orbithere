@@ -42,6 +42,9 @@ jobs:
       - name: 데이터베이스 권한 검증
         run: node tests/security.mjs
 
+      - name: 회원·인증·탈퇴 검증
+        run: npm run test:members
+
       - name: 게시판·회귀 검증
         run: node tests/community.mjs
 

@@ -206,6 +206,20 @@
       writerPromise = null;
     }
   }
+  async function ensureAuthor() {
+    var id = await ensureWriter();
+    // Only new writing needs a public nickname; moderation and deletion remain available.
+    if (window.ORBIT_CONFIG.membersEnabled) {
+      var s = checked(await sb.auth.getSession()),
+        user = s.session && s.session.user;
+      if (user && !user.is_anonymous) {
+        var profile = checked(await sb.rpc('member_profile'));
+        if (!profile) throw new Error('내 계정에서 프로필 설정을 먼저 마쳐주세요.');
+        localStorage.setItem('orbit_nickname', profile.nickname);
+      }
+    }
+    return id;
+  }
   function join() {
     if (embed && parent !== window) parent.postMessage({ orbit: 'join' }, location.origin);
     else location.href = 'main.html#join';
@@ -385,7 +399,7 @@
               '">' +
               esc(p.title) +
               '</a><div class="row-meta"><span>' +
-              esc(p.nick) +
+              '<span data-member-id="' + esc(p.author_id || '') + '">' + esc(p.nick) + '</span>' +
               '</span><span aria-hidden="true">·</span><time datetime="' +
               esc(p.created_at) +
               '">' +
@@ -534,7 +548,7 @@
         '</div><h1 class="detail-title">' +
         esc(p.title) +
         '</h1><div class="detail-meta"><span>' +
-        esc(p.nick) +
+        '<span data-member-id="' + esc(p.author_id || '') + '">' + esc(p.nick) + '</span>' +
         '</span><span aria-hidden="true">·</span><time datetime="' +
         esc(p.created_at) +
         '">' +
@@ -641,7 +655,7 @@
             '<article class="comment-item" id="comment-' +
             esc(c.id) +
             '"><div class="comment-meta"><span class="comment-author">' +
-            esc(c.nick) +
+            '<span data-member-id="' + esc(c.author_id || '') + '">' + esc(c.nick) + '</span>' +
             '</span>' +
             (c.author_id && c.author_id === p.author_id
               ? '<span class="author-badge">글쓴이</span>'
@@ -694,7 +708,7 @@
     button.disabled = true;
     input.disabled = true;
     try {
-      await ensureWriter();
+      await ensureAuthor();
       var pending = commentAttempts[p.id],
         alreadySaved = false;
       if (pending && pending.text === text) {
@@ -963,7 +977,7 @@
     lockEditor(true);
     writeStatus('등록을 준비하고 있어요…');
     try {
-      await ensureWriter();
+      await ensureAuthor();
       if (Object.keys(observation).length) {
         var readiness = await sb.rpc('board_observation_version');
         if (readiness.error || readiness.data !== 1)

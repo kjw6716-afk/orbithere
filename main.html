@@ -323,6 +323,7 @@
                 <button class="btn-leave" id="btnLeave" type="button" style="width:100%;">이 기기에서 닉네임 지우기</button>
             </div>
 
+            <p class="join-note" id="memberJoinLinks" hidden><a href="account.html?mode=signup" style="color:#ffb36b">이메일로 활동 보관하기</a> · <a href="account.html" style="color:#ffb36b">로그인</a></p>
             <p class="join-note">
                 닉네임은 이 브라우저에 저장되며, 다른 사람도 같은 이름을 쓸 수 있어요.
                 내 글·댓글의 삭제 권한과 내 활동은 <b>이 브라우저의 인증 세션</b>으로 확인해요.
@@ -332,6 +333,10 @@
         </div>
     </div>
 
+    <link rel="stylesheet" href="account.css?v=20260914-members">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
+    <script src="orbit-backend.js"></script>
+    <script src="members.js?v=20260914-members"></script>
     <script src="site-nav.js?v=20260914-community"></script>
     <script>
     // ===== 패널 전환 =====
@@ -447,11 +452,18 @@
 
         // 상단바 칩 — 진입 여부를 그대로 보여준다
         function syncChip(){
-            var n = nickname();
+            var profile = window.OrbitMembers && window.OrbitMembers.state.profile;
+            var n = profile ? profile.nickname + ' · Lv.' + profile.level : nickname();
+            if(window.ORBIT_CONFIG.membersEnabled){
+                document.getElementById('memberJoinLinks').hidden=false;
+                document.querySelector('.nickname-hint').textContent=profile?'별빛과 배지는 내 계정에서 확인해요.':'이메일로 가입하면 다른 기기에서도 활동이 이어져요.';
+            }
             document.getElementById('profileChipText').textContent = n || '궤도 진입하기';
         }
 
+        window.addEventListener('orbit:member',syncChip);
         function openJoin(){
+            if(window.ORBIT_CONFIG.membersEnabled && window.OrbitMembers && window.OrbitMembers.state.user && !window.OrbitMembers.state.user.is_anonymous){ location.href='account.html'; return; }
             if (back.style.display === 'none') joinReturnFocus = document.activeElement;
             var n = nickname();
             document.getElementById('joinNew').style.display  = n ? 'none' : '';

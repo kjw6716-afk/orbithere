@@ -74,6 +74,7 @@
 <!-- orbit-navigation:end -->
 <div class="orbit-page-content">
     <main class="board-shell" id="boardMain">
+      <a data-account-link hidden href="account.html" target="_top" style="display:block;text-align:right;padding:12px;color:#ffb36b">로그인 · 회원가입</a>
       <div id="loungeStatus" class="board-status" role="status" aria-live="polite"></div>
       <section id="listView">
         <header class="board-heading">
@@ -266,12 +267,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
     <script src="orbit-backend.js"></script>
+    <link rel="stylesheet" href="account.css?v=20260914-members">
+    <script src="members.js?v=20260914-members"></script>
     <script src="board-media.js?v=20260912-board"></script>
     <script src="board-writing.js?v=20260913-writing"></script>
     <script src="board-glossary.js?v=20260914-community"></script>
     <script src="board-activity.js?v=20260914-activity"></script>
     <script src="board-embed.js?v=20260914-community"></script>
-    <script src="lounge.js?v=20260914-community"></script>
+    <script src="lounge.js?v=20260914-members"></script>
+    <script src="member-board.js?v=20260914-members"></script>
   </div></div>
 <script src="site-nav.js?v=20260914-community"></script>
 </body>
