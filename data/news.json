@@ -90,7 +90,10 @@
       "title": "Webb reveals stunning panorama of star formation",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Webb/Webb_reveals_stunning_panorama_of_star_formation",
       "publishedAt": "2026-09-15T14:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "Webb는 스타 형성의 놀라운 전망을 보여줍니다",
+      "titleKoDraftOriginal": "Webb reveals stunning panorama of star formation",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "0717cb78f1678f1b",
