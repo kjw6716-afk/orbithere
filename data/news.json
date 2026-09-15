@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-09-15T17:01:08Z",
+  "checkedAt": "2026-09-15T21:23:08Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-09-15T17:01:08Z",
+      "lastCheckedAt": "2026-09-15T21:23:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
+      "lastSuccessfulAt": "2026-09-15T21:23:08Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-09-15T17:01:08Z",
+      "lastCheckedAt": "2026-09-15T21:23:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
+      "lastSuccessfulAt": "2026-09-15T21:23:08Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-09-15T17:01:08Z",
+      "lastCheckedAt": "2026-09-15T21:23:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
+      "lastSuccessfulAt": "2026-09-15T21:23:08Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-09-15T17:01:08Z",
+      "lastCheckedAt": "2026-09-15T21:23:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
+      "lastSuccessfulAt": "2026-09-15T21:23:08Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-09-15T17:01:08Z",
+      "lastCheckedAt": "2026-09-15T21:23:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
+      "lastSuccessfulAt": "2026-09-15T21:23:08Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-09-15T17:01:08Z",
+      "lastCheckedAt": "2026-09-15T21:23:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
+      "lastSuccessfulAt": "2026-09-15T21:23:08Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-09-15T17:01:08Z",
+      "lastCheckedAt": "2026-09-15T21:23:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
+      "lastSuccessfulAt": "2026-09-15T21:23:08Z"
     },
     {
       "id": "firefly",
@@ -78,9 +78,9 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-09-15T17:01:08Z",
+      "lastCheckedAt": "2026-09-15T21:23:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
+      "lastSuccessfulAt": "2026-09-15T21:23:08Z"
     }
   ],
   "items": [
@@ -102,6 +102,14 @@
       "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32456",
       "publishedAt": "2026-09-15T00:00:00Z",
       "language": "ko"
+    },
+    {
+      "id": "810b29d157fa3ef5",
+      "source": "spacex",
+      "title": "Starship to Orbit",
+      "url": "https://www.spacex.com/updates#orbital-starship",
+      "publishedAt": "2026-09-15T00:00:00Z",
+      "language": "en"
     },
     {
       "id": "91339ef5e9a488e7",
@@ -635,17 +643,6 @@
       "language": "en",
       "titleKo": "스타링크 다이렉트 투 셀의 미래",
       "titleKoOriginal": "THE FUTURE OF STARLINK DIRECT TO CELL",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "555c7fcbba4e3088",
-      "source": "spacex",
-      "title": "FLIGHT 9 AND SHIP 36 REPORT",
-      "url": "https://www.spacex.com/updates#flight-9-report",
-      "publishedAt": "2025-08-15T00:00:00Z",
-      "language": "en",
-      "titleKo": "스타십 9차 비행·36호 기체 보고서",
-      "titleKoOriginal": "FLIGHT 9 AND SHIP 36 REPORT",
       "titleKoMethod": "reviewed"
     },
     {
