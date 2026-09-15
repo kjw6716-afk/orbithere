@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-09-15T11:46:35Z",
+  "checkedAt": "2026-09-15T17:01:08Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-09-15T11:46:35Z",
+      "lastCheckedAt": "2026-09-15T17:01:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T11:46:35Z"
+      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-09-15T11:46:35Z",
+      "lastCheckedAt": "2026-09-15T17:01:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T11:46:35Z"
+      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-09-15T11:46:35Z",
+      "lastCheckedAt": "2026-09-15T17:01:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T11:46:35Z"
+      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-09-15T11:46:35Z",
+      "lastCheckedAt": "2026-09-15T17:01:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T11:46:35Z"
+      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-09-15T11:46:35Z",
+      "lastCheckedAt": "2026-09-15T17:01:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T11:46:35Z"
+      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-09-15T11:46:35Z",
+      "lastCheckedAt": "2026-09-15T17:01:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T11:46:35Z"
+      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-09-15T11:46:35Z",
+      "lastCheckedAt": "2026-09-15T17:01:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T11:46:35Z"
+      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,20 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-09-15T11:46:35Z",
+      "lastCheckedAt": "2026-09-15T17:01:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-15T11:46:35Z"
+      "lastSuccessfulAt": "2026-09-15T17:01:08Z"
     }
   ],
   "items": [
+    {
+      "id": "3df2eabd436d73bc",
+      "source": "esa",
+      "title": "Webb reveals stunning panorama of star formation",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Webb/Webb_reveals_stunning_panorama_of_star_formation",
+      "publishedAt": "2026-09-15T14:00:00Z",
+      "language": "en"
+    },
     {
       "id": "0717cb78f1678f1b",
       "source": "kasi",
@@ -257,17 +265,6 @@
       "language": "en",
       "titleKo": "팟캐스트 시리즈 「Expedition Sound」",
       "titleKoOriginal": "Expedition Sound podcast series",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "e7a16a750d4f01ff",
-      "source": "esa",
-      "title": "Watch live: BepiColombo begins its arrival at Mercury",
-      "url": "https://www.esa.int/Enabling_Support/Operations/Watch_live_BepiColombo_begins_its_arrival_at_Mercury",
-      "publishedAt": "2026-08-27T05:17:00Z",
-      "language": "en",
-      "titleKo": "생중계: 베피콜롬보, 수성 도착 절차 시작",
-      "titleKoOriginal": "Watch live: BepiColombo begins its arrival at Mercury",
       "titleKoMethod": "reviewed"
     },
     {
