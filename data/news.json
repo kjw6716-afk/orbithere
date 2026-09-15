@@ -109,7 +109,10 @@
       "title": "Starship to Orbit",
       "url": "https://www.spacex.com/updates#orbital-starship",
       "publishedAt": "2026-09-15T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "궤도를 향한 별자리",
+      "titleKoDraftOriginal": "Starship to Orbit",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "91339ef5e9a488e7",
