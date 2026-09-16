@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-09-16T13:31:51Z",
+  "checkedAt": "2026-09-16T18:12:43Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-09-16T13:31:51Z",
+      "lastCheckedAt": "2026-09-16T18:12:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-16T13:31:51Z"
+      "lastSuccessfulAt": "2026-09-16T18:12:43Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-09-16T13:31:51Z",
+      "lastCheckedAt": "2026-09-16T18:12:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-16T13:31:51Z"
+      "lastSuccessfulAt": "2026-09-16T18:12:43Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-09-16T13:31:51Z",
+      "lastCheckedAt": "2026-09-16T18:12:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-16T13:31:51Z"
+      "lastSuccessfulAt": "2026-09-16T18:12:43Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-09-16T13:31:51Z",
+      "lastCheckedAt": "2026-09-16T18:12:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-16T13:31:51Z"
+      "lastSuccessfulAt": "2026-09-16T18:12:43Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-09-16T13:31:51Z",
+      "lastCheckedAt": "2026-09-16T18:12:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-16T13:31:51Z"
+      "lastSuccessfulAt": "2026-09-16T18:12:43Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-09-16T13:31:51Z",
+      "lastCheckedAt": "2026-09-16T18:12:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-16T13:31:51Z"
+      "lastSuccessfulAt": "2026-09-16T18:12:43Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-09-16T13:31:51Z",
+      "lastCheckedAt": "2026-09-16T18:12:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-16T13:31:51Z"
+      "lastSuccessfulAt": "2026-09-16T18:12:43Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,20 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-09-16T13:31:51Z",
+      "lastCheckedAt": "2026-09-16T18:12:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-16T13:31:51Z"
+      "lastSuccessfulAt": "2026-09-16T18:12:43Z"
     }
   ],
   "items": [
+    {
+      "id": "99f40581eed35fd5",
+      "source": "nasa",
+      "title": "NASA Watches Earth’s Weight, Finds Center of Mass",
+      "url": "https://www.nasa.gov/science-research/earth-science/nasa-watches-earths-weight-finds-center-of-mass/",
+      "publishedAt": "2026-09-16T16:08:00Z",
+      "language": "en"
+    },
     {
       "id": "58b1e077a564609b",
       "source": "esa",
@@ -496,17 +504,6 @@
       "language": "en",
       "titleKo": "NASA, 달 기지 화물 착륙선과 기술 실증의 진행 상황 공개",
       "titleKoOriginal": "NASA Provides Updates on Moon Base Cargo Landers, Tech Demonstrations",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "d459877455309203",
-      "source": "nasa",
-      "title": "NASA’s Roman Telescope to Carry 1.35 Million Names to Deep Space",
-      "url": "https://www.nasa.gov/image-article/nasas-roman-telescope-to-carry-1-35-million-names-to-deep-space/",
-      "publishedAt": "2026-07-31T14:11:34Z",
-      "language": "en",
-      "titleKo": "NASA 로먼 우주망원경, 135만 명의 이름을 싣고 심우주로 향한다",
-      "titleKoOriginal": "NASA’s Roman Telescope to Carry 1.35 Million Names to Deep Space",
       "titleKoMethod": "reviewed"
     },
     {
