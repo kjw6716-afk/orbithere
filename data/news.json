@@ -90,7 +90,10 @@
       "title": "Purple swirls on the Red Planet",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Purple_swirls_on_the_Red_Planet",
       "publishedAt": "2026-09-16T09:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "붉은 행성에 푸른 둥지",
+      "titleKoDraftOriginal": "Purple swirls on the Red Planet",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "3df2eabd436d73bc",
