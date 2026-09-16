@@ -90,7 +90,10 @@
       "title": "NASA Watches Earth’s Weight, Finds Center of Mass",
       "url": "https://www.nasa.gov/science-research/earth-science/nasa-watches-earths-weight-finds-center-of-mass/",
       "publishedAt": "2026-09-16T16:08:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "NASA는 지구의 무게를 검사하고, 질량 센터를 찾습니다.",
+      "titleKoDraftOriginal": "NASA Watches Earth’s Weight, Finds Center of Mass",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "58b1e077a564609b",
