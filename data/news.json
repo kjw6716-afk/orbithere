@@ -90,7 +90,10 @@
       "title": "A galaxy spinning out of sync",
       "url": "https://www.esa.int/ESA_Multimedia/Images/2026/09/A_galaxy_spinning_out_of_sync",
       "publishedAt": "2026-09-18T08:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "갤럭시가 동기화에서 벗어나는",
+      "titleKoDraftOriginal": "A galaxy spinning out of sync",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "99f40581eed35fd5",
