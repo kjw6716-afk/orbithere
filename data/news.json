@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-09-18T07:25:23Z",
+  "checkedAt": "2026-09-18T11:50:56Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-09-18T07:25:23Z",
+      "lastCheckedAt": "2026-09-18T11:50:56Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-18T07:25:23Z"
+      "lastSuccessfulAt": "2026-09-18T11:50:56Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-09-18T07:25:23Z",
+      "lastCheckedAt": "2026-09-18T11:50:56Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-18T07:25:23Z"
+      "lastSuccessfulAt": "2026-09-18T11:50:56Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-09-18T07:25:23Z",
+      "lastCheckedAt": "2026-09-18T11:50:56Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-18T07:25:23Z"
+      "lastSuccessfulAt": "2026-09-18T11:50:56Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-09-18T07:25:23Z",
+      "lastCheckedAt": "2026-09-18T11:50:56Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-18T07:25:23Z"
+      "lastSuccessfulAt": "2026-09-18T11:50:56Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-09-18T07:25:23Z",
+      "lastCheckedAt": "2026-09-18T11:50:56Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-18T07:25:23Z"
+      "lastSuccessfulAt": "2026-09-18T11:50:56Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-09-18T07:25:23Z",
+      "lastCheckedAt": "2026-09-18T11:50:56Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-18T07:25:23Z"
+      "lastSuccessfulAt": "2026-09-18T11:50:56Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-09-18T07:25:23Z",
+      "lastCheckedAt": "2026-09-18T11:50:56Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-18T07:25:23Z"
+      "lastSuccessfulAt": "2026-09-18T11:50:56Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,20 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-09-18T07:25:23Z",
+      "lastCheckedAt": "2026-09-18T11:50:56Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-18T07:25:23Z"
+      "lastSuccessfulAt": "2026-09-18T11:50:56Z"
     }
   ],
   "items": [
+    {
+      "id": "a7121263bf60a3eb",
+      "source": "esa",
+      "title": "A galaxy spinning out of sync",
+      "url": "https://www.esa.int/ESA_Multimedia/Images/2026/09/A_galaxy_spinning_out_of_sync",
+      "publishedAt": "2026-09-18T08:00:00Z",
+      "language": "en"
+    },
     {
       "id": "99f40581eed35fd5",
       "source": "nasa",
@@ -268,17 +276,6 @@
       "language": "en",
       "titleKo": "언론 브리핑: 수성을 향한 베피콜롬보의 다음 주요 단계",
       "titleKoOriginal": "Media briefing: BepiColombo's next milestone towards Mercury",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "6587a20db72c2bce",
-      "source": "esa",
-      "title": "Roman lifts off on a mission to survey the infrared sky",
-      "url": "https://www.esa.int/ESA_Multimedia/Images/2026/08/Roman_lifts_off_on_a_mission_to_survey_the_infrared_sky",
-      "publishedAt": "2026-08-31T07:00:00Z",
-      "language": "en",
-      "titleKo": "로먼 우주망원경, 적외선으로 하늘을 탐사하기 위해 발사",
-      "titleKoOriginal": "Roman lifts off on a mission to survey the infrared sky",
       "titleKoMethod": "reviewed"
     },
     {
