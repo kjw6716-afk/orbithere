@@ -90,7 +90,10 @@
       "title": "MISSION SUCCESS: Rocket Lab Launches 96th Electron Mission",
       "url": "https://rocketlabcorp.com/updates/mission-success-rocket-lab-launches-96th-electron-mission/",
       "publishedAt": "2026-09-19T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "미션 성공 : 로켓 실험실은 96번째 전자 임무를 시작합니다.",
+      "titleKoDraftOriginal": "MISSION SUCCESS: Rocket Lab Launches 96th Electron Mission",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "a7121263bf60a3eb",
