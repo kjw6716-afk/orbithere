@@ -2,6 +2,105 @@
   "version": 1,
   "items": [
     {
+      "id": "71143b4ee12d6ffe",
+      "source": "rocketlab",
+      "url": "https://rocketlabcorp.com/updates/mission-success-rocket-lab-launches-96th-electron-mission/",
+      "publishedAt": "2026-09-19T00:00:00Z",
+      "titleOriginal": "MISSION SUCCESS: Rocket Lab Launches 96th Electron Mission",
+      "titleKo": "로켓랩, 일렉트론 96번째 임무 발사 성공",
+      "summaryKo": [
+        "로켓랩은 2026년 9월 19일 뉴질랜드 발사장 1에서 일렉트론을 발사해 신스펙티브의 12번째 StriX 합성개구레이더 지구관측 위성을 고도 572km 저궤도에 배치했다고 발표했습니다.",
+        "이번 임무는 일렉트론의 96번째 비행이자 2026년 17번째 발사이며, 회사는 신스펙티브 위성망 완성을 위해 2030년 말까지 전용 임무 15회를 추가로 계획하고 있습니다."
+      ],
+      "checkedAt": "2026-09-19",
+      "method": "source-checked"
+    },
+    {
+      "id": "a7121263bf60a3eb",
+      "source": "esa",
+      "url": "https://www.esa.int/ESA_Multimedia/Images/2026/09/A_galaxy_spinning_out_of_sync",
+      "publishedAt": "2026-09-18T08:00:00Z",
+      "titleOriginal": "A galaxy spinning out of sync",
+      "titleKo": "엇박자로 회전하는 나선은하 NGC 4698",
+      "summaryKo": [
+        "허블 우주망원경이 약 5,500만 광년 떨어진 처녀자리 나선은하 NGC 4698을 촬영했으며, 중심 팽대부가 원반과 거의 직각으로 뻗고 중심부의 별과 가스도 원반과 수직 방향으로 회전합니다.",
+        "천문학자들은 외부에서 유입된 가스가 기울어진 중심 원반을 만들었을 가능성을 제시하며, 한쪽으로 뻗은 수소 꼬리는 과거 작은 은하 병합의 흔적일 수 있다고 봅니다."
+      ],
+      "checkedAt": "2026-09-19",
+      "method": "source-checked"
+    },
+    {
+      "id": "99f40581eed35fd5",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/science-research/earth-science/nasa-watches-earths-weight-finds-center-of-mass/",
+      "publishedAt": "2026-09-16T16:08:00Z",
+      "titleOriginal": "NASA Watches Earth’s Weight, Finds Center of Mass",
+      "titleKo": "NASA, 계절마다 움직이는 지구 질량중심을 더 정밀하게 추적",
+      "summaryKo": [
+        "NASA 제트추진연구소 연구진이 계절에 따라 물·얼음·공기가 재분배되면서 지구의 질량중심이 기하학적 중심 주위를 수 밀리미터씩 움직이는 현상을 분석했습니다.",
+        "새 기법은 위성 레이저 거리측정에 GPS와 저궤도 위성 자료, 물과 얼음 하중에 따른 지각 변형을 함께 반영해 기준점의 불확실성을 줄이며 정밀 지도와 항법 개선에 활용될 수 있습니다.",
+        "연구진은 3월 북반구 적설이 질량중심을 북극 쪽으로 약 3mm, 4월 아마존 유역의 물이 남아메리카 쪽으로 약 2.2mm 옮기는 것으로 추정했습니다."
+      ],
+      "checkedAt": "2026-09-19",
+      "method": "source-checked"
+    },
+    {
+      "id": "58b1e077a564609b",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Purple_swirls_on_the_Red_Planet",
+      "publishedAt": "2026-09-16T09:00:00Z",
+      "titleOriginal": "Purple swirls on the Red Planet",
+      "titleKo": "붉은 행성에 나타난 보랏빛 소용돌이",
+      "summaryKo": [
+        "ESA 마스 익스프레스가 화성 남극 부근의 얼음 절벽 틸레스 루페스를 촬영했으며, 장밋빛 아침 햇빛과 공중의 먼지·서리·얼음이 섞여 보랏빛으로 나타났습니다.",
+        "짙은 부분은 감람석과 휘석이 풍부한 화산 물질, 옅고 푸른 부분은 이산화탄소 서리이며, 일부 절벽은 높이 1km를 넘어 화성 내부가 식고 수축하던 고대 지각 변형의 흔적으로 해석됩니다."
+      ],
+      "checkedAt": "2026-09-19",
+      "method": "source-checked"
+    },
+    {
+      "id": "3df2eabd436d73bc",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Webb/Webb_reveals_stunning_panorama_of_star_formation",
+      "publishedAt": "2026-09-15T14:00:00Z",
+      "titleOriginal": "Webb reveals stunning panorama of star formation",
+      "titleKo": "웹, 별 탄생 지역 IC 348의 거대한 파노라마 공개",
+      "summaryKo": [
+        "제임스 웹 우주망원경이 약 1,000광년 떨어진 페르세우스자리의 별 탄생 지역 IC 348을 관측해 목성 질량의 두 배에 불과한 갈색왜성을 발견했습니다.",
+        "이는 알려진 갈색왜성 가운데 가장 가벼운 수준으로 별 형성 모형에 도전하며, 그중 하나에서는 원반 징후도 보여 행성이 만들어질 가능성을 시사합니다."
+      ],
+      "checkedAt": "2026-09-19",
+      "method": "source-checked"
+    },
+    {
+      "id": "0717cb78f1678f1b",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32456",
+      "publishedAt": "2026-09-15T00:00:00Z",
+      "titleOriginal": "은하 사이를 떠도는 희미한 별빛으로 암흑물질의 정체를 묻다",
+      "titleKo": "은하 사이를 떠도는 희미한 별빛으로 암흑물질의 정체를 묻다",
+      "summaryKo": [
+        "한국천문연구원 연구진이 같은 초기 조건에서 차가운 암흑물질과 자기상호작용 암흑물질을 각각 적용한 ‘쌍둥이 우주’ 시뮬레이션으로 은하단 두 개의 약 130억 년 진화를 비교했습니다.",
+        "그 결과 은하 사이를 떠도는 희미한 별빛인 은하단내광이 가스·별·은하보다 암흑물질 분포를 더 잘 따라가며, 두 분포의 유사도가 암흑물질 모형을 구분하는 독립적인 관측 단서가 될 수 있음을 확인했습니다."
+      ],
+      "checkedAt": "2026-09-19",
+      "method": "source-checked"
+    },
+    {
+      "id": "810b29d157fa3ef5",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#orbital-starship",
+      "publishedAt": "2026-09-15T00:00:00Z",
+      "titleOriginal": "Starship to Orbit",
+      "titleKo": "스페이스X, 스타십 14차 시험부터 궤도 임무로 전환 계획",
+      "summaryKo": [
+        "스페이스X는 스타십 14차 시험부터 스타링크 V3 위성과 다른 탑재체를 운반하고 첫 궤도상 추진제 이송 등을 시험할 수 있는 궤도 임무 단계로 전환할 계획이라고 밝혔습니다.",
+        "초기 임무는 먼저 인도양으로 향하는 안전한 준궤도 궤적에 진입한 뒤 기체 상태가 정상일 때만 해수면용 랩터 엔진 한 기로 원형화 점화를 수행하도록 설계됐으며, 이는 아직 궤도 비행 성공 발표가 아닙니다."
+      ],
+      "checkedAt": "2026-09-19",
+      "method": "source-checked"
+    },
+    {
       "id": "91339ef5e9a488e7",
       "source": "rocketlab",
       "url": "https://rocketlabcorp.com/updates/mission-success/",
