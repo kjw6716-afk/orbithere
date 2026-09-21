@@ -2,6 +2,21 @@
   "version": 1,
   "items": [
     {
+      "id": "89cffd08a80b28f1",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Juice_to_fly_past_Earth_for_third_gravity_assist",
+      "publishedAt": "2026-09-21T14:00:00Z",
+      "titleOriginal": "Juice to fly past Earth for third gravity assist",
+      "titleKo": "주스 탐사선, 세 번째 중력도움 위해 지구 근접비행 예정",
+      "summaryKo": [
+        "ESA의 목성 얼음위성 탐사선 주스가 2026년 9월 28일 지구에서 8,640km까지 접근해 세 번째 중력도움을 받을 예정입니다.",
+        "이번 근접비행은 궤적을 약 20도 꺾고 속도를 초속 약 3.5km 높여, 2029년 1월 마지막 지구 근접비행과 2031년 7월 목성 도착 경로로 이어지게 합니다.",
+        "최접근은 인도양 상공에서 11:45 UTC로 계획됐으며, ESA는 9월 23일부터 10월 3일까지 지구와 달을 관측해 과학장비를 교정할 예정이라고 밝혔습니다."
+      ],
+      "checkedAt": "2026-09-22",
+      "method": "source-checked"
+    },
+    {
       "id": "71143b4ee12d6ffe",
       "source": "rocketlab",
       "url": "https://rocketlabcorp.com/updates/mission-success-rocket-lab-launches-96th-electron-mission/",
