@@ -90,7 +90,10 @@
       "title": "Juice to fly past Earth for third gravity assist",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Juice_to_fly_past_Earth_for_third_gravity_assist",
       "publishedAt": "2026-09-21T14:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "세 번째 중력 지원을 위해 지구를 통과하는 주스",
+      "titleKoDraftOriginal": "Juice to fly past Earth for third gravity assist",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "71143b4ee12d6ffe",
