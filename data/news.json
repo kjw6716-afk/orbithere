@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-09-22T11:41:04Z",
+  "checkedAt": "2026-09-22T16:58:58Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-09-22T11:41:04Z",
+      "lastCheckedAt": "2026-09-22T16:58:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-22T11:41:04Z"
+      "lastSuccessfulAt": "2026-09-22T16:58:58Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-09-22T11:41:04Z",
+      "lastCheckedAt": "2026-09-22T16:58:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-22T11:41:04Z"
+      "lastSuccessfulAt": "2026-09-22T16:58:58Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-09-22T11:41:04Z",
+      "lastCheckedAt": "2026-09-22T16:58:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-22T11:41:04Z"
+      "lastSuccessfulAt": "2026-09-22T16:58:58Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-09-22T11:41:04Z",
+      "lastCheckedAt": "2026-09-22T16:58:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-22T11:41:04Z"
+      "lastSuccessfulAt": "2026-09-22T16:58:58Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-09-22T11:41:04Z",
+      "lastCheckedAt": "2026-09-22T16:58:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-22T11:41:04Z"
+      "lastSuccessfulAt": "2026-09-22T16:58:58Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-09-22T11:41:04Z",
+      "lastCheckedAt": "2026-09-22T16:58:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-22T11:41:04Z"
+      "lastSuccessfulAt": "2026-09-22T16:58:58Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-09-22T11:41:04Z",
+      "lastCheckedAt": "2026-09-22T16:58:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-22T11:41:04Z"
+      "lastSuccessfulAt": "2026-09-22T16:58:58Z"
     },
     {
       "id": "firefly",
@@ -78,9 +78,9 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-09-22T11:41:04Z",
+      "lastCheckedAt": "2026-09-22T16:58:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-22T11:41:04Z"
+      "lastSuccessfulAt": "2026-09-22T16:58:58Z"
     }
   ],
   "items": [
@@ -91,6 +91,14 @@
       "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32461",
       "publishedAt": "2026-09-22T00:00:00Z",
       "language": "ko"
+    },
+    {
+      "id": "edde16df71748f22",
+      "source": "firefly",
+      "title": "Firefly Aerospace Completes New Cleanroom to Accelerate Spacecraft Production",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-completes-new-cleanroom-to-accelerate-spacecraft-production/",
+      "publishedAt": "2026-09-22T00:00:00Z",
+      "language": "en"
     },
     {
       "id": "89cffd08a80b28f1",
@@ -553,17 +561,6 @@
       "language": "en",
       "titleKo": "파이어플라이, 화성 스카이폴 임무 에어로셸 제작에 NASA JPL의 1,300만 달러 하도급 수주",
       "titleKoOriginal": "Firefly Aerospace Receives $13 Million NASA JPL Subcontract to Build Aeroshell for SkyFall Mars Mission",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "281c66bdaca972d5",
-      "source": "firefly",
-      "title": "Firefly Aerospace Awarded $144 Million NASA CLPS Contract for Accelerated Blue Ghost Lunar Mission",
-      "url": "https://fireflyspace.com/news/firefly-aerospace-awarded-144-million-nasa-clps-contract-for-accelerated-blue-ghost-lunar-mission/",
-      "publishedAt": "2026-06-30T00:00:00Z",
-      "language": "en",
-      "titleKo": "파이어플라이, 블루 고스트 달 탐사 앞당길 NASA CLPS 계약 1억 4,400만 달러 수주",
-      "titleKoOriginal": "Firefly Aerospace Awarded $144 Million NASA CLPS Contract for Accelerated Blue Ghost Lunar Mission",
       "titleKoMethod": "reviewed"
     },
     {
