@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-09-21T23:18:23Z",
+  "checkedAt": "2026-09-22T04:59:08Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-09-21T23:18:23Z",
+      "lastCheckedAt": "2026-09-22T04:59:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-21T23:18:23Z"
+      "lastSuccessfulAt": "2026-09-22T04:59:08Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-09-21T23:18:23Z",
+      "lastCheckedAt": "2026-09-22T04:59:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-21T23:18:23Z"
+      "lastSuccessfulAt": "2026-09-22T04:59:08Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-09-21T23:18:23Z",
+      "lastCheckedAt": "2026-09-22T04:59:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-21T23:18:23Z"
+      "lastSuccessfulAt": "2026-09-22T04:59:08Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-09-21T23:18:23Z",
+      "lastCheckedAt": "2026-09-22T04:59:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-21T23:18:23Z"
+      "lastSuccessfulAt": "2026-09-22T04:59:08Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-09-21T23:18:23Z",
+      "lastCheckedAt": "2026-09-22T04:59:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-21T23:18:23Z"
+      "lastSuccessfulAt": "2026-09-22T04:59:08Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-09-21T23:18:23Z",
+      "lastCheckedAt": "2026-09-22T04:59:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-21T23:18:23Z"
+      "lastSuccessfulAt": "2026-09-22T04:59:08Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-09-21T23:18:23Z",
+      "lastCheckedAt": "2026-09-22T04:59:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-21T23:18:23Z"
+      "lastSuccessfulAt": "2026-09-22T04:59:08Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,20 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-09-21T23:18:23Z",
+      "lastCheckedAt": "2026-09-22T04:59:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-21T23:18:23Z"
+      "lastSuccessfulAt": "2026-09-22T04:59:08Z"
     }
   ],
   "items": [
+    {
+      "id": "b2a1884d37063254",
+      "source": "kasi",
+      "title": "한가위 보름달 9월 25일 오후 5시 34분에 뜬다",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32461",
+      "publishedAt": "2026-09-22T00:00:00Z",
+      "language": "ko"
+    },
     {
       "id": "89cffd08a80b28f1",
       "source": "esa",
@@ -534,14 +542,6 @@
       "title": "천문연-연세대 항공우주전략연구원, 우주감시 및 우주안보 분야 협력 위한 업무협약 체결",
       "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32390",
       "publishedAt": "2026-07-10T00:00:00Z",
-      "language": "ko"
-    },
-    {
-      "id": "da9093a581278078",
-      "source": "kasi",
-      "title": "2026년 여름 천문연수 실시",
-      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32383",
-      "publishedAt": "2026-07-07T00:00:00Z",
       "language": "ko"
     },
     {
