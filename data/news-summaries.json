@@ -2,6 +2,20 @@
   "version": 1,
   "items": [
     {
+      "id": "b2a1884d37063254",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32461",
+      "publishedAt": "2026-09-22T00:00:00Z",
+      "titleOriginal": "한가위 보름달 9월 25일 오후 5시 34분에 뜬다",
+      "titleKo": "한가위 보름달 9월 25일 오후 5시 34분에 뜬다",
+      "summaryKo": [
+        "한국천문연구원은 2026년 한가위인 9월 25일 보름달이 서울 기준 오후 5시 34분에 뜨고, 같은 날 오후 11시 31분에 가장 높이 오른다고 안내했습니다.",
+        "달이 태양 정반대에 놓여 완전히 둥근 망이 되는 시각은 9월 27일 오전 1시 49분이어서, 추석날 밤의 달은 왼쪽이 조금 덜 찬 모습으로 보일 전망입니다."
+      ],
+      "checkedAt": "2026-09-22",
+      "method": "source-checked"
+    },
+    {
       "id": "89cffd08a80b28f1",
       "source": "esa",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Juice_to_fly_past_Earth_for_third_gravity_assist",
