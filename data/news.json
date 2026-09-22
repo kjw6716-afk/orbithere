@@ -98,7 +98,10 @@
       "title": "Firefly Aerospace Completes New Cleanroom to Accelerate Spacecraft Production",
       "url": "https://fireflyspace.com/news/firefly-aerospace-completes-new-cleanroom-to-accelerate-spacecraft-production/",
       "publishedAt": "2026-09-22T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "Firefly Aerospace는 우주선 생산을 가속화하기 위해 새로운 청소실을 완성합니다.",
+      "titleKoDraftOriginal": "Firefly Aerospace Completes New Cleanroom to Accelerate Spacecraft Production",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "89cffd08a80b28f1",
