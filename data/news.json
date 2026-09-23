@@ -90,7 +90,10 @@
       "title": "NASA Selects Far-Infrared Telescope as First in New Mission Class",
       "url": "https://www.nasa.gov/news-release/nasa-selects-far-infrared-telescope-as-first-in-new-mission-class/",
       "publishedAt": "2026-09-23T20:09:42Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "NASA는 새로운 임무 클래스에서 첫 번째로 멀리 인프라 망원경을 선택했습니다.",
+      "titleKoDraftOriginal": "NASA Selects Far-Infrared Telescope as First in New Mission Class",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "b2a1884d37063254",
