@@ -2,6 +2,20 @@
   "version": 1,
   "items": [
     {
+      "id": "edde16df71748f22",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-completes-new-cleanroom-to-accelerate-spacecraft-production/",
+      "publishedAt": "2026-09-22T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Completes New Cleanroom to Accelerate Spacecraft Production",
+      "titleKo": "파이어플라이, 우주선 생산 확대 위한 새 클린룸 완공",
+      "summaryKo": [
+        "파이어플라이는 텍사스 시더파크의 14만 4천 제곱피트 캠퍼스에 기존 클린룸보다 네 배 큰 ISO 8 등급의 새 클린룸을 완공했다고 발표했습니다.",
+        "두 클린룸을 합치면 달 착륙선과 궤도선을 동시에 최대 12대 조립·통합·시험할 수 있으며, 회사는 블루 고스트 1호 이후 계약된 달 임무 5건과 미 국방혁신단 우주선 계약 2건을 수행할 생산 기반이라고 설명했습니다."
+      ],
+      "checkedAt": "2026-09-23",
+      "method": "source-checked"
+    },
+    {
       "id": "b2a1884d37063254",
       "source": "kasi",
       "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32461",
