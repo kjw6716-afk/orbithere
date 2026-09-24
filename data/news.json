@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-09-24T11:48:36Z",
+  "checkedAt": "2026-09-24T17:13:31Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-09-24T11:48:36Z",
+      "lastCheckedAt": "2026-09-24T17:13:31Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T11:48:36Z"
+      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-09-24T11:48:36Z",
+      "lastCheckedAt": "2026-09-24T17:13:31Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T11:48:36Z"
+      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-09-24T11:48:36Z",
+      "lastCheckedAt": "2026-09-24T17:13:31Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T11:48:36Z"
+      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-09-24T11:48:36Z",
+      "lastCheckedAt": "2026-09-24T17:13:31Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T11:48:36Z"
+      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-09-24T11:48:36Z",
+      "lastCheckedAt": "2026-09-24T17:13:31Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T11:48:36Z"
+      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-09-24T11:48:36Z",
+      "lastCheckedAt": "2026-09-24T17:13:31Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T11:48:36Z"
+      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-09-24T11:48:36Z",
+      "lastCheckedAt": "2026-09-24T17:13:31Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T11:48:36Z"
+      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,28 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-09-24T11:48:36Z",
+      "lastCheckedAt": "2026-09-24T17:13:31Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T11:48:36Z"
+      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
     }
   ],
   "items": [
+    {
+      "id": "0040b4ad2fba9cc6",
+      "source": "nasa",
+      "title": "US-India Satellite Captures Time-lapse Video of Volcanic Eruption",
+      "url": "https://www.nasa.gov/missions/nisar/us-india-satellite-captures-time-lapse-video-of-volcanic-eruption/",
+      "publishedAt": "2026-09-24T15:47:17Z",
+      "language": "en"
+    },
+    {
+      "id": "c90de238e618819e",
+      "source": "esa",
+      "title": "Win a trip to ESA to witness BepiColombo arrive at Mercury",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo/Win_a_trip_to_ESA_to_witness_BepiColombo_arrive_at_Mercury",
+      "publishedAt": "2026-09-24T13:00:00Z",
+      "language": "en"
+    },
     {
       "id": "3086f8aba320482b",
       "source": "nasa",
@@ -301,17 +317,6 @@
       "titleKoMethod": "reviewed"
     },
     {
-      "id": "28563e1cf6650be9",
-      "source": "esa",
-      "title": "Hubble tracks new decagon encircling Saturn’s south pole",
-      "url": "https://www.esa.int/Science_Exploration/Space_Science/Hubble_tracks_new_decagon_encircling_Saturn_s_south_pole",
-      "publishedAt": "2026-09-02T18:00:00Z",
-      "language": "en",
-      "titleKo": "허블, 토성 남극을 둘러싼 새로운 십각형 구조를 추적하다",
-      "titleKoOriginal": "Hubble tracks new decagon encircling Saturn’s south pole",
-      "titleKoMethod": "reviewed"
-    },
-    {
       "id": "b0d5075eb5247564",
       "source": "rocketlab",
       "title": "MISSION SUCCESS: Rocket Lab Launches 94th Electron Mission",
@@ -504,17 +509,6 @@
       "language": "en",
       "titleKo": "텍사스에서 테라팹 건설 시작",
       "titleKoOriginal": "Breaking Ground on Terafab in Texas",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "9dc0d3c774c9802b",
-      "source": "nasa",
-      "title": "NASA’s Perseverance Rover Watches Earth Vanish Behind Martian Moon",
-      "url": "https://www.nasa.gov/solar-system/planets/mars/nasas-perseverance-rover-watches-earth-vanish-behind-martian-moon/",
-      "publishedAt": "2026-08-05T15:25:27Z",
-      "language": "en",
-      "titleKo": "NASA 퍼서비어런스 탐사차, 화성의 위성 뒤로 사라지는 지구 관측",
-      "titleKoOriginal": "NASA’s Perseverance Rover Watches Earth Vanish Behind Martian Moon",
       "titleKoMethod": "reviewed"
     },
     {
