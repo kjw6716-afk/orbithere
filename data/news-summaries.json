@@ -2,6 +2,20 @@
   "version": 1,
   "items": [
     {
+      "id": "3086f8aba320482b",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/news-release/nasa-selects-far-infrared-telescope-as-first-in-new-mission-class/",
+      "publishedAt": "2026-09-23T20:09:42Z",
+      "titleOriginal": "NASA Selects Far-Infrared Telescope as First in New Mission Class",
+      "titleKo": "NASA, 새 임무급 첫 원적외선 망원경 PRIMA 선정",
+      "summaryKo": [
+        "NASA는 우주의 역사와 진화를 연구할 원적외선 우주망원경 PRIMA를 새 '프로브 익스플로러' 임무급의 첫 임무로 선정하고, 예비설계와 기술개발을 진행하는 단계인 Phase B로 진입시켰습니다.",
+        "다만 실제 제작 단계로 넘어가려면 확인 심사를 통과해야 하며, 승인될 경우 발사비 등 비사업 비용을 제외한 사업비 상한은 12억 달러이고 2033년 발사해 5년간 관측하는 것이 목표입니다."
+      ],
+      "checkedAt": "2026-09-24",
+      "method": "source-checked"
+    },
+    {
       "id": "edde16df71748f22",
       "source": "firefly",
       "url": "https://fireflyspace.com/news/firefly-aerospace-completes-new-cleanroom-to-accelerate-spacecraft-production/",
