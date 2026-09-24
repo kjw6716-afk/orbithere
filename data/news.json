@@ -90,7 +90,10 @@
       "title": "US-India Satellite Captures Time-lapse Video of Volcanic Eruption",
       "url": "https://www.nasa.gov/missions/nisar/us-india-satellite-captures-time-lapse-video-of-volcanic-eruption/",
       "publishedAt": "2026-09-24T15:47:17Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "미국-인도 위성, 화산 폭발 비디오 촬영",
+      "titleKoDraftOriginal": "US-India Satellite Captures Time-lapse Video of Volcanic Eruption",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "c90de238e618819e",
@@ -98,7 +101,10 @@
       "title": "Win a trip to ESA to witness BepiColombo arrive at Mercury",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo/Win_a_trip_to_ESA_to_witness_BepiColombo_arrive_at_Mercury",
       "publishedAt": "2026-09-24T13:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "ESA 여행을 승리하여 BepiColombo가 Mercury에 도착하는 것을 목격합니다.",
+      "titleKoDraftOriginal": "Win a trip to ESA to witness BepiColombo arrive at Mercury",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "3086f8aba320482b",
