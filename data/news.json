@@ -112,7 +112,10 @@
       "title": "Beyond Low Earth Orbit: The Rocket Lab Technology Powering Missions to the Moon and Mars",
       "url": "https://rocketlabcorp.com/updates/beyond-low-earth-orbit-the-rocket-lab-technology-powering-missions-to-the-moon-and-mars/",
       "publishedAt": "2026-09-24T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "낮은 지구 궤도를 넘어 : 로켓 실험실 기술은 달과 화성에 미션을 강요합니다.",
+      "titleKoDraftOriginal": "Beyond Low Earth Orbit: The Rocket Lab Technology Powering Missions to the Moon and Mars",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "3086f8aba320482b",
