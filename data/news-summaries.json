@@ -31,6 +31,21 @@
       "method": "source-checked"
     },
     {
+      "id": "baa6969633fb10bf",
+      "source": "rocketlab",
+      "url": "https://rocketlabcorp.com/updates/beyond-low-earth-orbit-the-rocket-lab-technology-powering-missions-to-the-moon-and-mars/",
+      "publishedAt": "2026-09-24T00:00:00Z",
+      "titleOriginal": "Beyond Low Earth Orbit: The Rocket Lab Technology Powering Missions to the Moon and Mars",
+      "titleKo": "로켓랩, 달·화성 탐사에 쓰인 기술과 장비 소개",
+      "summaryKo": [
+        "로켓랩은 일렉트론·루나 포톤으로 2022년 NASA CAPSTONE을 달 전이궤도에 보낸 사례부터, ESCAPADE 쌍둥이 탐사선과 아르테미스 오리온용 태양전지·큐브샛 분리장치까지 자사 기술이 달·화성 임무에 쓰인 사례를 정리했습니다.",
+        "회사는 2026년 인수한 Motiv Space Systems가 퍼서비어런스의 2m·5관절 로봇팔과 Mastcam-Z 광학장치를 제작했고, 2022년 인수한 SolAero의 태양전지가 인제뉴어티·인사이트·Mars 2020 순항단에 공급됐다고 밝혔습니다.",
+        "또 블루 고스트 착륙선에는 비행·지상 소프트웨어와 태양전지를 제공했으며, 앞으로 달 표면 3D 열지도를 만들 EMILIA-3D PRISM용 단축 스캐닝 짐벌을 개발 중이라고 설명했습니다."
+      ],
+      "checkedAt": "2026-09-25",
+      "method": "source-checked"
+    },
+    {
       "id": "3086f8aba320482b",
       "source": "nasa",
       "url": "https://www.nasa.gov/news-release/nasa-selects-far-infrared-telescope-as-first-in-new-mission-class/",
