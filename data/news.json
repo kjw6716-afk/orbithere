@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-09-24T17:13:31Z",
+  "checkedAt": "2026-09-24T21:32:43Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-09-24T17:13:31Z",
+      "lastCheckedAt": "2026-09-24T21:32:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
+      "lastSuccessfulAt": "2026-09-24T21:32:43Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-09-24T17:13:31Z",
+      "lastCheckedAt": "2026-09-24T21:32:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
+      "lastSuccessfulAt": "2026-09-24T21:32:43Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-09-24T17:13:31Z",
+      "lastCheckedAt": "2026-09-24T21:32:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
+      "lastSuccessfulAt": "2026-09-24T21:32:43Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-09-24T17:13:31Z",
+      "lastCheckedAt": "2026-09-24T21:32:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
+      "lastSuccessfulAt": "2026-09-24T21:32:43Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-09-24T17:13:31Z",
+      "lastCheckedAt": "2026-09-24T21:32:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
+      "lastSuccessfulAt": "2026-09-24T21:32:43Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-09-24T17:13:31Z",
+      "lastCheckedAt": "2026-09-24T21:32:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
+      "lastSuccessfulAt": "2026-09-24T21:32:43Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-09-24T17:13:31Z",
+      "lastCheckedAt": "2026-09-24T21:32:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
+      "lastSuccessfulAt": "2026-09-24T21:32:43Z"
     },
     {
       "id": "firefly",
@@ -78,9 +78,9 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-09-24T17:13:31Z",
+      "lastCheckedAt": "2026-09-24T21:32:43Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-24T17:13:31Z"
+      "lastSuccessfulAt": "2026-09-24T21:32:43Z"
     }
   ],
   "items": [
@@ -105,6 +105,14 @@
       "titleKoDraft": "ESA 여행을 승리하여 BepiColombo가 Mercury에 도착하는 것을 목격합니다.",
       "titleKoDraftOriginal": "Win a trip to ESA to witness BepiColombo arrive at Mercury",
       "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
+    },
+    {
+      "id": "baa6969633fb10bf",
+      "source": "rocketlab",
+      "title": "Beyond Low Earth Orbit: The Rocket Lab Technology Powering Missions to the Moon and Mars",
+      "url": "https://rocketlabcorp.com/updates/beyond-low-earth-orbit-the-rocket-lab-technology-powering-missions-to-the-moon-and-mars/",
+      "publishedAt": "2026-09-24T00:00:00Z",
+      "language": "en"
     },
     {
       "id": "3086f8aba320482b",
@@ -427,17 +435,6 @@
       "language": "en",
       "titleKo": "NASA 임무, 에티오피아 상공의 대기 오염 연구",
       "titleKoOriginal": "NASA Mission Studies Air Pollution Over Ethiopia",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "d950057d9c6c0db4",
-      "source": "rocketlab",
-      "title": "Viasat Selects Rocket Lab to Build GEO Satellite for U.S. Space Force’s Protected Tactical SATCOM-Global Program",
-      "url": "https://rocketlabcorp.com/updates/viasat-selects-rocket-lab-to-build-geo-satellite-for-u-s-space-forces-protected-tactical-satcom-global-program-2/",
-      "publishedAt": "2026-08-17T00:00:00Z",
-      "language": "en",
-      "titleKo": "비아샛, 미 우주군 보호 전술 위성통신 사업의 정지궤도 위성 제작사로 로켓랩 선정",
-      "titleKoOriginal": "Viasat Selects Rocket Lab to Build GEO Satellite for U.S. Space Force’s Protected Tactical SATCOM-Global Program",
       "titleKoMethod": "reviewed"
     },
     {
