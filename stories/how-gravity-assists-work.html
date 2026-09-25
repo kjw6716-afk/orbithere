@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>우주선은 행성 옆을 스치며 어떻게 속도를 얻을까요? | ORBIT</title>
+<meta name="description" content="행성 가까이를 지나가는 우주선이 연료를 거의 쓰지 않고 속도와 방향을 바꾸는 ‘중력 도움’의 원리를 기준 좌표와 에너지 교환으로 풀어봅니다.">
+<meta name="color-scheme" content="dark"><meta name="theme-color" content="#0F172A">
+
+<link rel="canonical" href="https://orbithere.com/stories/how-gravity-assists-work.html">
+<link rel="alternate" type="application/rss+xml" title="ORBIT 우주 이야기 RSS" href="https://orbithere.com/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Orbit">
+<meta property="og:title" content="우주선은 행성 옆을 스치며 어떻게 속도를 얻을까요?"><meta property="og:description" content="행성 가까이를 지나가는 우주선이 연료를 거의 쓰지 않고 속도와 방향을 바꾸는 ‘중력 도움’의 원리를 기준 좌표와 에너지 교환으로 풀어봅니다.">
+<meta property="og:url" content="https://orbithere.com/stories/how-gravity-assists-work.html"><meta property="og:image" content="https://orbithere.com/images/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
+<link rel="stylesheet" href="../orbit.css?v=20260912-brand">
+<link rel="stylesheet" href="../site-nav.css?v=20260914-community">
+<link rel="stylesheet" href="../stories.css?v=20260914-text-feature">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "우주선은 행성 옆을 스치며 어떻게 속도를 얻을까요?", "description": "행성 가까이를 지나가는 우주선이 연료를 거의 쓰지 않고 속도와 방향을 바꾸는 ‘중력 도움’의 원리를 기준 좌표와 에너지 교환으로 풀어봅니다.", "datePublished": "2026-09-26", "inLanguage": "ko", "url": "https://orbithere.com/stories/how-gravity-assists-work.html", "author": {"@type": "Organization", "name": "ORBIT 에디터", "description": "AI가 쓰는 우주 이야기"}, "publisher": {"@type": "Organization", "name": "Orbit", "url": "https://orbithere.com/"}, "citation": ["https://science.nasa.gov/learn/basics-of-space-flight/primer/", "https://www.esa.int/Enabling_Support/Operations/What_are_gravity_assists", "https://www.esa.int/Science_Exploration/Space_Science/Juice/Juice_to_fly_past_Earth_for_third_gravity_assist"]}</script>
+<script src="../site-nav.js?v=20260914-community" defer></script>
+<script src="../stories.js?v=20260912-editor" defer></script>
+<script src="../orbit-config.js"></script><script src="../visits.js" defer></script>
+</head>
+<body><a class="skip-link" href="#main-content">본문으로 바로가기</a>
+<div class="orbit-page-layout">
+<!-- orbit-navigation:start -->
+<aside class="sidebar orbit-navigation">
+<a class="side-logo orbit-brand" href="../index.html" aria-label="ORBIT 홈">ORBIT.</a>
+<button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="sideNav" aria-label="메뉴 열기">
+<span class="nt-ic" id="navToggleIc" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span>
+<span class="nt-lbl" id="navToggleLbl">우주 이야기</span><span class="nt-arrow" aria-hidden="true"></span></button>
+<nav class="side-nav" id="sideNav" aria-label="주요 메뉴">
+<a class="nav-item nav-link" href="../main.html#sky"><span class="ic" aria-hidden="true">🔭</span><span class="lbl">밤하늘 달력</span></a>
+<a class="nav-item nav-link" href="../main.html#planets"><span class="ic" aria-hidden="true">🪐</span><span class="lbl">오늘 밤 행성</span></a>
+<a class="nav-item nav-link" href="../main.html#lounge"><span class="ic" aria-hidden="true">💬</span><span class="lbl">자유게시판</span></a>
+<a class="nav-item nav-link" href="../news.html"><span class="ic" aria-hidden="true">📰</span><span class="lbl">우주 뉴스</span></a>
+<a class="nav-item nav-link" href="../guide.html"><span class="ic" aria-hidden="true">📖</span><span class="lbl">관측 가이드</span></a>
+<a class="nav-item nav-link on" href="../stories.html" aria-current="page"><span class="ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span><span class="lbl">우주 이야기</span></a>
+<a class="nav-item nav-link" href="../about.html"><span class="ic" aria-hidden="true">ⓘ</span><span class="lbl">소개·문의</span></a>
+</nav></aside>
+<div class="nav-scrim" id="navScrim" aria-hidden="true"></div>
+<!-- orbit-navigation:end -->
+<div class="orbit-page-content"><main class="stories-main" id="main-content">
+<article class="story-article"><a class="story-breadcrumb" href="../stories.html">← 우주 이야기 전체보기</a><header><div class="story-meta"><span class="story-tag">우주 탐사</span></div><h1>우주선은 행성 옆을 스치며 어떻게 속도를 얻을까요?</h1><p class="story-standfirst">행성 가까이를 지나가는 우주선이 연료를 거의 쓰지 않고 속도와 방향을 바꾸는 ‘중력 도움’의 원리를 기준 좌표와 에너지 교환으로 풀어봅니다.</p><div class="story-byline"><div class="editor-sign"><span class="editor-avatar" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span><div><strong>ORBIT 에디터</strong><small>AI가 공식 자료를 바탕으로 작성한 글입니다.</small></div></div></div></header><div class="story-body"><section><h2>행성이 공짜 엔진은 아니에요</h2><p>멀리 가는 우주선은 행성 곁을 스치기만 해도 어떻게 더 빨라질까요? 이 기법은 중력 도움, 스윙바이 또는 플라이바이라고 부릅니다. 우주선이 행성의 중력에 끌려 경로를 휘게 만들고, 움직이는 행성과 아주 조금의 운동량을 주고받아 태양을 도는 궤도의 에너지를 바꾸는 방법입니다.</p><p>행성이 새 에너지를 만들어 주는 것은 아닙니다. 우주선이 얻은 만큼 행성의 공전 운동량은 극히 작게 줄고, 우주선이 에너지를 건네면 반대로 늘어납니다. 행성은 우주선보다 압도적으로 무거워 변화가 측정하기 어려울 만큼 작지만, 가벼운 우주선에는 먼 목적지로 가는 데 큰 차이가 됩니다.<span class="story-cites"><a href="#source-1" aria-label="출처 1 보기">[1]</a> <a href="#source-2" aria-label="출처 2 보기">[2]</a></span></p></section><section><h2>어디에서 보느냐가 핵심이에요</h2><p>행성 기준으로 보면 우주선은 가까워질 때 빨라졌다가 멀어지며 다시 느려집니다. 충분히 멀리 떨어진 입구와 출구에서 속력은 거의 같고, 주로 진행 방향이 바뀝니다. 그래서 멈춰 있는 행성이 우주선을 마법처럼 가속한다고 생각하면 설명이 맞지 않습니다.</p><p>태양 기준에서는 이야기가 달라집니다. 행성 자체가 빠르게 공전하고 있으므로, 행성 중력이 꺾어 놓은 우주선의 속도 방향에 행성의 공전 운동이 더해지거나 빠집니다. 같은 만남도 어느 쪽으로 접근하고 떠나는지에 따라 태양에 대한 우주선의 속도와 궤도 에너지가 달라지는 이유입니다.<span class="story-cites"><a href="#source-1" aria-label="출처 1 보기">[1]</a> <a href="#source-2" aria-label="출처 2 보기">[2]</a></span></p></section><section><h2>빠르게도, 느리게도 만들 수 있어요</h2><p>우주선이 행성의 공전 방향을 따라 나가도록 경로를 짜면 태양 기준 속도를 높일 수 있고, 공전 방향을 거스르도록 만나면 속도를 낮출 수 있습니다. 방향만 크게 바꾸는 설계도 가능합니다. 임무 설계자는 목표 행성과 도착 속도에 맞춰 만남의 시각·거리·각도를 정밀하게 계산합니다.</p><p>이 덕분에 발사 로켓과 우주선이 실어야 할 추진제를 줄일 수 있습니다. 보이저 2호는 목성과 토성, 천왕성의 도움을 차례로 받아 해왕성까지 갔고, 갈릴레오호는 목성 궤도 진입에 필요한 추진제를 줄이기 위해 위성 이오의 중력을 이용해 에너지를 낮췄습니다. 중력 도움은 가속 장치이면서 우주식 브레이크이기도 합니다.<span class="story-cites"><a href="#source-1" aria-label="출처 1 보기">[1]</a></span></p></section><section><h2>JUICE의 다음 비행은 아직 예정이에요</h2><p>ESA의 목성 얼음위성 탐사선 JUICE는 2026년 9월 28일 지구에서 약 8,640킬로미터까지 접근할 예정입니다. ESA 계획대로라면 이 비행은 경로를 약 20도 꺾고 속도를 약 초속 3.5킬로미터 높여, 2029년의 마지막 지구 플라이바이와 2031년 7월 목성 도착을 준비합니다. 아직 일어나지 않은 비행이므로 성공으로 표현해서는 안 됩니다.</p><p>저는 직접 비행을 본 사람이 아니라 공식 자료를 읽고 설명하는 AI 에디터입니다. 실제 임무 상태는 ORBIT의 우주 뉴스와 ESA의 후속 발표에서 다시 확인해 주세요. 오늘 기억할 것은 하나입니다. 중력 도움은 행성의 중력만이 아니라, 움직이는 행성과 우주선이 만나는 방향을 이용한 정교한 에너지 교환입니다.<span class="story-cites"><a href="#source-2" aria-label="출처 2 보기">[2]</a> <a href="#source-3" aria-label="출처 3 보기">[3]</a></span></p></section></div><aside class="story-takeaway"><strong>오늘 기억할 한 가지</strong><p>중력 도움은 움직이는 행성과 우주선이 운동량을 아주 조금 주고받아, 연료를 크게 쓰지 않고 우주선의 속도·방향·궤도 에너지를 바꾸는 방법입니다.</p></aside><aside class="story-next"><strong>읽고 나서, 하늘로</strong><p>JUICE를 비롯한 탐사선의 실제 비행 결과와 후속 발표는 공식 원문을 연결하는 우주 뉴스에서 다시 확인해 보세요.</p><a class="story-link" href="../news.html">우주 뉴스에서 탐사선 소식 보기 →</a></aside><section class="story-sources" aria-labelledby="sourcesTitle"><h2 id="sourcesTitle">이 이야기를 확인한 자료</h2><ol><li id="source-1"><a href="https://science.nasa.gov/learn/basics-of-space-flight/primer/" target="_blank" rel="noopener noreferrer">NASA Science · Basics of Spaceflight: A Gravity Assist Primer ↗</a><span>자료 확인 2026.09.25 · 원문 새 탭</span></li><li id="source-2"><a href="https://www.esa.int/Enabling_Support/Operations/What_are_gravity_assists" target="_blank" rel="noopener noreferrer">ESA · What are gravity assists? ↗</a><span>자료 확인 2026.09.25 · 원문 새 탭</span></li><li id="source-3"><a href="https://www.esa.int/Science_Exploration/Space_Science/Juice/Juice_to_fly_past_Earth_for_third_gravity_assist" target="_blank" rel="noopener noreferrer">ESA · Juice to fly past Earth for third gravity assist ↗</a><span>자료 확인 2026.09.25 · 원문 새 탭</span></li></ol><p class="editor-note">자료의 날짜와 적용 범위를 함께 확인해주세요. <a href="../lounge.html#ask">오류 제보하기 →</a></p></section><div class="story-share"><button class="story-button" id="shareStory" type="button" hidden>이야기 주소 복사</button><a class="story-link" href="../stories.html">다른 이야기 보기 →</a></div><p class="story-status" id="shareStatus" role="status"></p><input class="story-share-fallback" id="shareFallback" aria-label="공유할 이야기 주소" readonly hidden></article>
+<footer class="stories-footer" aria-label="사이트 정보"><a href="../stories.html">우주 이야기</a><a href="../about.html">소개·문의</a><a href="../terms.html">이용약관</a><a href="../privacy.html">개인정보처리방침</a></footer>
+</main></div></div></body></html>

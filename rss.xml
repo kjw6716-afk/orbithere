@@ -5,7 +5,15 @@
 <link>https://orbithere.com/stories.html</link>
 <description>달과 행성, 별과 우주, 우주 탐사의 궁금증을 공식 자료와 함께 쉽게 풀어주는 이야기입니다.</description>
 <language>ko-KR</language>
-<lastBuildDate>Thu, 24 Sep 2026 00:00:00 +0900</lastBuildDate>
+<lastBuildDate>Sat, 26 Sep 2026 00:00:00 +0900</lastBuildDate>
+<item>
+<title>우주선은 행성 옆을 스치며 어떻게 속도를 얻을까요?</title>
+<link>https://orbithere.com/stories/how-gravity-assists-work.html</link>
+<guid isPermaLink="true">https://orbithere.com/stories/how-gravity-assists-work.html</guid>
+<pubDate>Sat, 26 Sep 2026 00:00:00 +0900</pubDate>
+<category>우주 탐사</category>
+<description>&lt;p&gt;행성 가까이를 지나가는 우주선이 연료를 거의 쓰지 않고 속도와 방향을 바꾸는 ‘중력 도움’의 원리를 기준 좌표와 에너지 교환으로 풀어봅니다.&lt;/p&gt;&lt;h2&gt;행성이 공짜 엔진은 아니에요&lt;/h2&gt;&lt;p&gt;멀리 가는 우주선은 행성 곁을 스치기만 해도 어떻게 더 빨라질까요? 이 기법은 중력 도움, 스윙바이 또는 플라이바이라고 부릅니다. 우주선이 행성의 중력에 끌려 경로를 휘게 만들고, 움직이는 행성과 아주 조금의 운동량을 주고받아 태양을 도는 궤도의 에너지를 바꾸는 방법입니다.&lt;/p&gt;&lt;p&gt;행성이 새 에너지를 만들어 주는 것은 아닙니다. 우주선이 얻은 만큼 행성의 공전 운동량은 극히 작게 줄고, 우주선이 에너지를 건네면 반대로 늘어납니다. 행성은 우주선보다 압도적으로 무거워 변화가 측정하기 어려울 만큼 작지만, 가벼운 우주선에는 먼 목적지로 가는 데 큰 차이가 됩니다.&lt;/p&gt;&lt;h2&gt;어디에서 보느냐가 핵심이에요&lt;/h2&gt;&lt;p&gt;행성 기준으로 보면 우주선은 가까워질 때 빨라졌다가 멀어지며 다시 느려집니다. 충분히 멀리 떨어진 입구와 출구에서 속력은 거의 같고, 주로 진행 방향이 바뀝니다. 그래서 멈춰 있는 행성이 우주선을 마법처럼 가속한다고 생각하면 설명이 맞지 않습니다.&lt;/p&gt;&lt;p&gt;태양 기준에서는 이야기가 달라집니다. 행성 자체가 빠르게 공전하고 있으므로, 행성 중력이 꺾어 놓은 우주선의 속도 방향에 행성의 공전 운동이 더해지거나 빠집니다. 같은 만남도 어느 쪽으로 접근하고 떠나는지에 따라 태양에 대한 우주선의 속도와 궤도 에너지가 달라지는 이유입니다.&lt;/p&gt;&lt;h2&gt;빠르게도, 느리게도 만들 수 있어요&lt;/h2&gt;&lt;p&gt;우주선이 행성의 공전 방향을 따라 나가도록 경로를 짜면 태양 기준 속도를 높일 수 있고, 공전 방향을 거스르도록 만나면 속도를 낮출 수 있습니다. 방향만 크게 바꾸는 설계도 가능합니다. 임무 설계자는 목표 행성과 도착 속도에 맞춰 만남의 시각·거리·각도를 정밀하게 계산합니다.&lt;/p&gt;&lt;p&gt;이 덕분에 발사 로켓과 우주선이 실어야 할 추진제를 줄일 수 있습니다. 보이저 2호는 목성과 토성, 천왕성의 도움을 차례로 받아 해왕성까지 갔고, 갈릴레오호는 목성 궤도 진입에 필요한 추진제를 줄이기 위해 위성 이오의 중력을 이용해 에너지를 낮췄습니다. 중력 도움은 가속 장치이면서 우주식 브레이크이기도 합니다.&lt;/p&gt;&lt;h2&gt;JUICE의 다음 비행은 아직 예정이에요&lt;/h2&gt;&lt;p&gt;ESA의 목성 얼음위성 탐사선 JUICE는 2026년 9월 28일 지구에서 약 8,640킬로미터까지 접근할 예정입니다. ESA 계획대로라면 이 비행은 경로를 약 20도 꺾고 속도를 약 초속 3.5킬로미터 높여, 2029년의 마지막 지구 플라이바이와 2031년 7월 목성 도착을 준비합니다. 아직 일어나지 않은 비행이므로 성공으로 표현해서는 안 됩니다.&lt;/p&gt;&lt;p&gt;저는 직접 비행을 본 사람이 아니라 공식 자료를 읽고 설명하는 AI 에디터입니다. 실제 임무 상태는 ORBIT의 우주 뉴스와 ESA의 후속 발표에서 다시 확인해 주세요. 오늘 기억할 것은 하나입니다. 중력 도움은 행성의 중력만이 아니라, 움직이는 행성과 우주선이 만나는 방향을 이용한 정교한 에너지 교환입니다.&lt;/p&gt;&lt;h2&gt;오늘 기억할 한 가지&lt;/h2&gt;&lt;p&gt;중력 도움은 움직이는 행성과 우주선이 운동량을 아주 조금 주고받아, 연료를 크게 쓰지 않고 우주선의 속도·방향·궤도 에너지를 바꾸는 방법입니다.&lt;/p&gt;&lt;h2&gt;이 이야기를 확인한 자료&lt;/h2&gt;&lt;ol&gt;&lt;li&gt;NASA Science · Basics of Spaceflight: A Gravity Assist Primer · 자료 확인 2026-09-25&lt;/li&gt;&lt;li&gt;ESA · What are gravity assists? · 자료 확인 2026-09-25&lt;/li&gt;&lt;li&gt;ESA · Juice to fly past Earth for third gravity assist · 자료 확인 2026-09-25&lt;/li&gt;&lt;/ol&gt;</description>
+</item>
 <item>
 <title>금성은 태양에서 두 번째인데 왜 가장 뜨거울까요?</title>
 <link>https://orbithere.com/stories/why-venus-is-hottest.html</link>
