@@ -2,6 +2,64 @@
   "version": 1,
   "items": [
     {
+      "id": "0040b4ad2fba9cc6",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/missions/nisar/us-india-satellite-captures-time-lapse-video-of-volcanic-eruption/",
+      "publishedAt": "2026-09-24T15:47:17Z",
+      "titleOriginal": "US-India Satellite Captures Time-lapse Video of Volcanic Eruption",
+      "titleKo": "NISAR 위성, 캄차카 화산의 용암 확산 과정을 포착",
+      "summaryKo": [
+        "미국 NASA와 인도 ISRO가 공동 개발한 NISAR 위성이 러시아 캄차카반도 크라셰닌니코프 화산을 2025년 12월부터 2026년 8월 중순까지 관측해, 용암이 안쪽 칼데라를 채우고 큰 분화구를 넘어 부채꼴로 퍼지는 과정을 시간 흐름 영상으로 보여줬습니다.",
+        "연구진은 고도 747km에서 12일마다 남·북 방향으로 각각 한 번씩 얻은 L밴드 레이더 영상 17장을 이어 붙였으며, NASA는 이 자료가 자연재해 진행을 과학 연구와 잠재적 긴급 대응에 활용될 가능성을 보여준다고 설명했습니다."
+      ],
+      "checkedAt": "2026-09-25",
+      "method": "source-checked"
+    },
+    {
+      "id": "c90de238e618819e",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo/Win_a_trip_to_ESA_to_witness_BepiColombo_arrive_at_Mercury",
+      "publishedAt": "2026-09-24T13:00:00Z",
+      "titleOriginal": "Win a trip to ESA to witness BepiColombo arrive at Mercury",
+      "titleKo": "ESA, 베피콜롬보 수성 도착 기념 공모전 개최",
+      "summaryKo": [
+        "ESA는 베피콜롬보의 수성 도착을 기념해 그림·노래·시 등 환영 메시지를 사진 또는 영상으로 제출하는 공모전을 열고, ESA 회원·협력·준회원국 거주자 가운데 18세 이상에게 2026년 10월 25일 자정(CET)까지 참가 기회를 제공합니다.",
+        "대상 1명은 12월 9일 독일 다름슈타트의 ESA 우주운영센터 행사에 초대되지만 여행·숙박은 먼저 직접 예약한 뒤 영수증 기준 최대 1,000유로를 환급받으며, ESA는 우주활동 일정이 마지막 순간에도 바뀔 수 있어 유연한 예약을 권고했습니다.",
+        "두 탐사선의 12월 9~10일 분리가 공식 수성 도착을 알리며, Mio는 이때 과학 궤도에 들어가고 MPO의 최종 과학 궤도 진입은 2027년 3월 19일로 예정돼 있습니다."
+      ],
+      "checkedAt": "2026-09-25",
+      "method": "source-checked"
+    },
+    {
+      "id": "baa6969633fb10bf",
+      "source": "rocketlab",
+      "url": "https://rocketlabcorp.com/updates/beyond-low-earth-orbit-the-rocket-lab-technology-powering-missions-to-the-moon-and-mars/",
+      "publishedAt": "2026-09-24T00:00:00Z",
+      "titleOriginal": "Beyond Low Earth Orbit: The Rocket Lab Technology Powering Missions to the Moon and Mars",
+      "titleKo": "로켓랩, 달·화성 탐사에 쓰인 기술과 장비 소개",
+      "summaryKo": [
+        "로켓랩은 일렉트론·루나 포톤으로 2022년 NASA CAPSTONE을 달 전이궤도에 보낸 사례부터, ESCAPADE 쌍둥이 탐사선과 아르테미스 오리온용 태양전지·큐브샛 분리장치까지 자사 기술이 달·화성 임무에 쓰인 사례를 정리했습니다.",
+        "회사는 2026년 인수한 Motiv Space Systems가 퍼서비어런스의 2m·5관절 로봇팔과 Mastcam-Z 광학장치를 제작했고, 2022년 인수한 SolAero의 태양전지가 인제뉴어티·인사이트·Mars 2020 순항단에 공급됐다고 밝혔습니다.",
+        "또 블루 고스트 착륙선에는 비행·지상 소프트웨어와 태양전지를 제공했으며, 앞으로 달 표면 3D 열지도를 만들 EMILIA-3D PRISM용 단축 스캐닝 짐벌을 개발 중이라고 설명했습니다."
+      ],
+      "checkedAt": "2026-09-25",
+      "method": "source-checked"
+    },
+    {
+      "id": "3086f8aba320482b",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/news-release/nasa-selects-far-infrared-telescope-as-first-in-new-mission-class/",
+      "publishedAt": "2026-09-23T20:09:42Z",
+      "titleOriginal": "NASA Selects Far-Infrared Telescope as First in New Mission Class",
+      "titleKo": "NASA, 새 임무급 첫 원적외선 망원경 PRIMA 선정",
+      "summaryKo": [
+        "NASA는 우주의 역사와 진화를 연구할 원적외선 우주망원경 PRIMA를 새 '프로브 익스플로러' 임무급의 첫 임무로 선정하고, 예비설계와 기술개발을 진행하는 단계인 Phase B로 진입시켰습니다.",
+        "다만 실제 제작 단계로 넘어가려면 확인 심사를 통과해야 하며, 승인될 경우 발사비 등 비사업 비용을 제외한 사업비 상한은 12억 달러이고 2033년 발사해 5년간 관측하는 것이 목표입니다."
+      ],
+      "checkedAt": "2026-09-24",
+      "method": "source-checked"
+    },
+    {
       "id": "edde16df71748f22",
       "source": "firefly",
       "url": "https://fireflyspace.com/news/firefly-aerospace-completes-new-cleanroom-to-accelerate-spacecraft-production/",
