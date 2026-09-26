@@ -50,8 +50,9 @@
     <script src="news-data.js?v=20260914-ast" defer></script>
     <script src="news-brief.js?v=20260914-community" defer></script>
   <link rel="stylesheet" href="site-nav.css?v=20260914-community">
+  <link rel="stylesheet" href="lounge-design.css?v=20260926-board">
 </head>
-  <body>
+  <body class="lounge-page">
     <div class="bg-glow" aria-hidden="true"></div>
     <a class="board-skip" href="#boardMain">본문으로 바로가기</a>
     <div class="orbit-page-layout">
@@ -74,17 +75,22 @@
 <!-- orbit-navigation:end -->
 <div class="orbit-page-content">
     <main class="board-shell" id="boardMain">
-      <a data-account-link hidden href="account.html" data-account-open="login" style="display:block;text-align:right;padding:12px;color:#ffb36b">로그인 · 회원가입</a>
+      <a class="board-account-link" data-account-link hidden href="account.html" data-account-open="login">로그인 · 회원가입</a>
       <div id="loungeStatus" class="board-status" role="status" aria-live="polite"></div>
       <section id="listView">
-        <header class="board-heading">
-          <div>
+        <header class="board-heading board-hero">
+          <picture class="board-hero-sky" aria-hidden="true">
+            <source type="image/avif" srcset="images/nebula-landing-1200.avif 1200w, images/nebula-landing-1600.avif 1600w, images/nebula-landing-2000.avif 2000w, images/nebula-landing-2430.avif 2430w" sizes="(min-width: 1680px) 1372px, 100vw">
+            <img src="images/nebula-landing-1600.webp" srcset="images/nebula-landing-1200.webp 1200w, images/nebula-landing-1600.webp 1600w, images/nebula-landing-2000.webp 2000w, images/nebula-landing-2430.webp 2430w" sizes="(min-width: 1680px) 1372px, 100vw" width="2430" height="1457" alt="" decoding="async">
+          </picture>
+          <div class="board-hero-copy">
+            <span class="board-eyebrow">SAME SKY, OUR STORIES</span>
             <h1><a class="page-title-link" id="boardTitle" data-board-nav href="lounge.html#all">자유게시판</a></h1>
             <p id="boardIntro">오늘 본 하늘부터, 아직 모르는 별까지.</p>
           </div>
           <div class="board-heading-actions">
             <a class="button subtle" id="activityLink" data-board-nav href="lounge.html?activity=mine">내 활동 <span class="activity-badge" id="activityBadge" hidden></span></a>
-            <a class="button primary" id="writeTop" href="lounge.html?write=1">글쓰기</a>
+            <a class="button primary" id="writeTop" href="lounge.html?write=1"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5 4 4M4 20l4-1L20 7a2.8 2.8 0 0 0-4-4L4 15v5Z"/></svg>글쓰기</a>
           </div>
         </header>
         <div class="activity-status" id="activityStatus" role="status" hidden>새 답글을 확인하지 못했어요. <button class="text-button" id="activityRetry" type="button">다시 확인</button></div>
@@ -92,14 +98,22 @@
           <nav class="activity-tabs" aria-label="내 활동 분류" id="activityTabs"></nav>
           <p class="activity-note">이 브라우저에서 남긴 글과 댓글을 모았어요. 브라우저 데이터를 지우거나 다른 기기로 옮기면 이전 활동을 이어서 확인할 수 없어요.</p>
         </div>
-        <div class="board-filters" role="group" aria-label="게시글 필터">
+        <section id="pinnedPosts" class="pinned-posts" aria-label="상단 고정 공지" hidden></section>
+        <div class="board-controls">
+          <div class="board-filters" role="group" aria-label="게시글 필터">
           <p class="board-filter-label" id="activeChannel">모든 이야기</p>
           <div class="board-filter-actions">
             <a class="text-button" id="clearChannel" data-board-nav href="lounge.html#all" hidden>전체 글 보기</a>
             <label class="question-filter" for="questionFilter"><input type="checkbox" id="questionFilter">질문만 보기</label>
           </div>
+          </div>
+          <form class="board-search" id="feedSearch" role="search">
+            <label class="sr-only" for="searchInput">게시글 찾기</label>
+            <input type="search" id="searchInput" maxlength="80" placeholder="제목과 내용으로 검색">
+            <button class="button" type="submit">검색</button>
+            <button class="button subtle" type="button" id="clearSearch" hidden>초기화</button>
+          </form>
         </div>
-        <section id="pinnedPosts" class="pinned-posts" aria-label="상단 고정 공지" hidden></section>
         <div class="list-toolbar">
           <p id="feedContext" aria-live="polite"></p>
           <button class="text-button btn-refresh" id="refreshList" type="button">새로고침</button>
@@ -110,16 +124,6 @@
           <p id="pageStatus" role="status"></p>
         </div>
         <div class="board-bottom">
-        <form class="board-search" id="feedSearch" role="search">
-          <label class="sr-only" for="searchInput">게시글 찾기</label
-          ><input
-            type="search"
-            id="searchInput"
-            maxlength="80"
-            placeholder="제목과 내용으로 검색"
-          /><button class="button" type="submit">검색</button
-          ><button class="button subtle" type="button" id="clearSearch" hidden>초기화</button>
-        </form>
         <a class="button primary bottom-write" id="writeBottom" href="lounge.html?write=1"
           >글쓰기</a
         >
@@ -272,7 +276,7 @@
     <script src="board-glossary.js?v=20260914-community"></script>
     <script src="board-activity.js?v=20260914-activity"></script>
     <script src="board-embed.js?v=20260914-community"></script>
-    <script src="lounge.js?v=20260914-focus"></script>
+    <script src="lounge.js?v=20260926-board"></script>
     <script src="member-board.js?v=20260914-popover"></script>
   </div></div>
 <script src="site-nav.js?v=20260914-community"></script>
