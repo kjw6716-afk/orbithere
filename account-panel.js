@@ -16,7 +16,7 @@
     if (dialog && dialog.open) dialog.close();
   }
   async function prepare(initial) {
-    var response = await fetch('account.html?v=20260914-codes');
+    var response = await fetch('account.html?v=20260926-separated');
     if (!response.ok) throw new Error('account_unavailable');
     var parsed = new DOMParser().parseFromString(await response.text(), 'text/html');
     var template = parsed.getElementById('accountTemplate');
@@ -24,7 +24,7 @@
     dialog = document.createElement('dialog');
     dialog.className = 'account-dialog';
     dialog.setAttribute('aria-labelledby', 'accountPanelTitle');
-    dialog.innerHTML = '<header class="account-panel-heading"><h2 id="accountPanelTitle">궤도 진입하기</h2><button type="button" class="account-close" aria-label="계정 창 닫기"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></header>';
+    dialog.innerHTML = '<header class="account-panel-heading"><h2 id="accountPanelTitle">로그인</h2><button type="button" class="account-close" aria-label="계정 창 닫기"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></header>';
     dialog.append(document.importNode(template.content, true));
     document.body.append(dialog);
     controller = window.mountOrbitAccount(dialog, initial);
@@ -48,18 +48,22 @@
       parent.postMessage({orbit:'openAccount', mode: options.mode === 'signup' ? 'signup' : 'login'}, location.origin);
       return;
     }
+    var loungeFrame = document.getElementById('loungeFrame');
+    if (loungeFrame && loungeFrame.closest('.panel.on') && loungeFrame.contentWindow)
+      loungeFrame.contentWindow.postMessage({orbit:'accountOpening'}, location.origin);
     anchor = options.anchor || document.getElementById('profileChip');
     returnFocus = document.activeElement;
     // Keep only a same-origin, public page route. Authentication tokens never enter this record.
     var route = new URL(location.href); route.searchParams.delete('account');
-    if (['/main.html','/lounge.html','/index.html'].includes(route.pathname))
-      sessionStorage.setItem('orbit_account_return', JSON.stringify({path:route.pathname + route.search + route.hash, at:Date.now()}));
+    if (['/main.html','/lounge.html','/index.html'].includes(route.pathname)) {
+      try { sessionStorage.setItem('orbit_account_return', JSON.stringify({path:route.pathname + route.search + route.hash, at:Date.now()})); } catch (_) { /* Email login can continue without a saved return route. */ }
+    }
     try {
       if (!loading) loading = prepare(options).catch(function (error) { loading = null; throw error; });
       await loading;
       var staleError = document.getElementById('accountLoadError');
       if (staleError) staleError.remove();
-      if (options.mode) controller.mode(options.mode);
+      controller.mode(options.mode || 'login');
       if (!dialog.open) dialog.showModal();
       if (anchor) anchor.setAttribute('aria-expanded', 'true');
       position();

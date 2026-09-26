@@ -310,9 +310,9 @@ try {
     ok('resend uses signup endpoint and restarts the expiry',f.state.calls.some(c=>c.path==='/auth/v1/resend'&&c.body.type==='signup')&&!(await f.page.locator('#verifySubmit').isDisabled()));
     await f.page.locator('#emailCode').fill('123456');
     await f.page.locator('.account-close').click();
-    await f.page.locator('#profileChip').click();
+    await f.page.locator('#headerSignup').click();
     await f.page.locator('#verifyCard').waitFor();
-    ok('closing clears the code while reopening resumes verification',await f.page.locator('#emailCode').inputValue()==='');
+    ok('closing clears the code while the signup entry resumes verification',await f.page.locator('#emailCode').inputValue()==='');
     f.state.otpFail=false; f.state.otpPartial=true;
     await f.page.locator('#emailCode').fill('123456');
     await f.page.locator('#verifySubmit').click();
@@ -529,7 +529,8 @@ try {
     "reading the account page never creates an anonymous account",
     !f.state.calls.some((c) => c.path.includes("signup")),
   );
-  await f.page.locator('.account-dialog').getByRole("button", { name: "회원가입", exact: true }).click();
+  await f.page.locator('.account-close').click();
+  await f.page.locator('#headerSignup').click();
   await f.page.locator("#email").fill("new@example.test");
   await f.page.locator("#password").fill("only-a-fixture-password");
   await f.page.locator("#consent").check();
@@ -548,10 +549,16 @@ try {
     "signup clears the password after submission",
     (await f.page.locator("#password").inputValue()) === "",
   );
-  await f.page.locator("#verifyBack").click();
+  await f.page.locator('.account-close').click();
+  await f.page.locator('#profileChip').click();
+  await f.page.getByRole('dialog', {name:'로그인', exact:true}).waitFor();
+  ok('login entry leaves pending signup verification and opens the login form',
+    await f.page.locator('#authCard').isVisible() && await f.page.locator('#verifyCard').isHidden() &&
+    await f.page.locator('#signupConsent').isHidden() && await f.page.locator('#emailCode').inputValue()==='');
   await f.page
     .getByRole("button", { name: "비밀번호 찾기", exact: true })
     .click();
+  await f.page.locator('#email').fill('new@example.test');
   await f.page.locator("#authSubmit").click();
   await f.page
     .getByText("재설정 메일을 요청했어요.", { exact: false })
@@ -587,9 +594,7 @@ try {
   await f.close();
   f = await fixture({ auth: session(true), p: null });
   await f.page.goto(base + "/account.html?mode=signup");
-  await f.page
-    .getByRole("heading", { name: "회원가입", exact: true })
-    .waitFor();
+  await f.page.getByRole('dialog', {name:'회원가입', exact:true}).waitFor();
   ok(
     "anonymous upgrade does not request a password before email verification",
     await f.page.locator("#passwordField").isHidden(),
@@ -735,11 +740,19 @@ try {
   for (const width of [320,390,1440]) {
     f = await fixture({auth:null,p:null,width});
     await f.page.goto(base + '/main.html#sky');
+    ok('outside entries clearly distinguish login and signup at '+width,
+      await f.page.locator('#profileChip').innerText()==='로그인' && await f.page.locator('#headerSignup').innerText()==='회원가입');
     await f.page.locator('#profileChip').hover();
     ok('hover does not open an account dialog at '+width, await f.page.locator('.account-dialog[open]').count()===0);
     await f.page.locator('#profileChip').click();
     await f.page.locator('.account-dialog #authCard').waitFor();
     ok('login opens on the current page at '+width,new URL(f.page.url()).hash==='#sky');
+    ok('login popup contains the login form without signup tabs at '+width,
+      await f.page.getByRole('dialog',{name:'로그인',exact:true}).isVisible() &&
+      await f.page.locator('#signupConsent').isHidden() &&
+      await f.page.locator('#password').getAttribute('autocomplete')==='current-password' &&
+      await f.page.locator('#authSubmit').innerText()==='로그인' &&
+      await f.page.locator('.account-dialog .account-tabs, .account-dialog [role="tablist"], .account-dialog [data-mode="signup"]').count()===0);
     const box=await f.page.locator('.account-dialog').boundingBox();
     ok('popup stays compact and within viewport at '+width,box.width<=380.1 && box.x>=0 && box.x+box.width<=width+1 && box.y>=0 && box.height<=868);
     await f.page.locator('#email').fill('test@example.test');
@@ -749,13 +762,56 @@ try {
     ok('Escape returns focus to the account trigger at '+width,await f.page.locator('#profileChip').evaluate(el=>el===document.activeElement));
     await f.page.locator('#profileChip').click();
     ok('closing a popup clears unsent passwords at '+width,await f.page.locator('#password').inputValue()==='');
+    await f.page.locator('.account-close').click();
+    await f.page.locator('#headerSignup').click();
+    await f.page.getByRole('dialog',{name:'회원가입',exact:true}).waitFor();
+    ok('signup entry opens only the signup form at '+width,
+      await f.page.locator('#signupConsent').isVisible() &&
+      await f.page.locator('#password').getAttribute('autocomplete')==='new-password' &&
+      await f.page.locator('#authSubmit').innerText()==='인증번호 받기' &&
+      await f.page.locator('.account-dialog .account-tabs, .account-dialog [role="tablist"], .account-dialog [data-mode="signup"]').count()===0);
+    const signupBox=await f.page.locator('.account-dialog').boundingBox();
+    ok('signup popup stays inside the viewport at '+width,
+      signupBox.x>=0&&signupBox.x+signupBox.width<=width+1&&signupBox.y>=0&&signupBox.y+signupBox.height<=901);
+    await f.page.locator('#password').fill('unsent-signup-password');
+    await f.page.locator('.account-close').click();
+    await f.page.locator('#profileChip').click();
+    await f.page.getByRole('dialog',{name:'로그인',exact:true}).waitFor();
+    ok('login entry resets signup mode and clears its password at '+width,
+      await f.page.locator('#signupConsent').isHidden() && await f.page.locator('#password').inputValue()==='' &&
+      await f.page.locator('#password').getAttribute('autocomplete')==='current-password' &&
+      new URL(f.page.url()).hash==='#sky');
+    await f.close();
+  }
+  {
+    f=await fixture({auth:null,p:null,width:390});
+    await f.page.goto(base+'/lounge.html');
+    await f.page.locator('#postList .board-row').waitFor();
+    const login=f.page.locator('[data-account-open="login"]:visible'), signup=f.page.locator('[data-account-open="signup"]:visible');
+    ok('standalone board has separate public login and signup entries',await login.innerText()==='로그인'&&await signup.innerText()==='회원가입');
+    await signup.click();
+    await f.page.getByRole('dialog',{name:'회원가입',exact:true}).waitFor();
+    await f.page.locator('.account-close').click();
+    await login.click();
+    await f.page.getByRole('dialog',{name:'로그인',exact:true}).waitFor();
+    ok('standalone login entry restores login after signup without navigation',
+      new URL(f.page.url()).pathname==='/lounge.html'&&await f.page.locator('#signupConsent').isHidden()&&
+      await f.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+    ok('switching public entry points has no browser errors',f.errors.length===0);
     await f.close();
   }
   f=await fixture({auth:null,p:null});
   await f.page.goto(base+'/lounge.html?write=1');
-  await f.page.locator('.account-dialog #authCard').waitFor();
-  ok('visitor writing opens login over the board, without a nickname-only branch',new URL(f.page.url()).pathname==='/lounge.html'&&await f.page.locator('#postForm').isHidden()&&await f.page.locator('#writerNickname').count()===0);
+  await f.page.locator('#postForm').waitFor();
+  ok('visitor writing opens an editable form before login, without a nickname-only branch',
+    new URL(f.page.url()).pathname==='/lounge.html'&&await f.page.locator('.account-dialog[open]').count()===0&&await f.page.locator('#writerNickname').count()===0);
   ok('opening writing does not create an anonymous account or publish a post',!f.state.calls.some(c=>c.path==='/auth/v1/signup'||c.path.endsWith('/create_board_post')));
+  await f.page.locator('#postInput').fill('로그인 전에 적어 둔 별 이야기');
+  await f.page.locator('#btnTrace').click();
+  await f.page.getByRole('dialog',{name:'로그인',exact:true}).waitFor();
+  ok('publishing asks for login while preserving the visitor draft',
+    await f.page.locator('#postInput').inputValue()==='로그인 전에 적어 둔 별 이야기'&&
+    !f.state.calls.some(c=>c.path==='/auth/v1/signup'||c.path.endsWith('/create_board_post')||c.path.endsWith('/create_observation_post')));
   await f.close();
   f=await fixture({auth:session()});
   await f.page.goto(base+'/main.html#sky');
@@ -772,4 +828,3 @@ try {
   await browser.close();
   await new Promise((r) => server.close(r));
 }
-

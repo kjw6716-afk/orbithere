@@ -45,12 +45,13 @@
         .panel-title span { color: var(--accent); }
         .profile-chip {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
-            padding: 8px 12px; min-height: 36px; border-radius: 8px; text-align: center;
-            background: rgba(255,159,67,0.08); border: 1px solid rgba(255,159,67,0.2);
-            color: var(--accent); font-size: 13px; font-weight: 600; transition: all 0.15s;
+            padding: 8px 12px; min-height: 44px; border-radius: 8px; text-align: center;
+            background: #153038; border: 1px solid #33575e;
+            color: #9ae8dd; font-size: 13px; font-weight: 600; transition: background 0.15s, border-color 0.15s;
             font-family: 'Pretendard', sans-serif; line-height: 1.4; white-space: nowrap;
         }
-        .profile-chip:hover { background: rgba(255,159,67,0.14); border-color: var(--accent); }
+        .profile-chip:hover { background: #1b3d44; border-color: #69dfcf; }
+        .profile-chip:focus-visible { outline: 2px solid #69dfcf; outline-offset: 3px; }
 
         /* 닉네임 안내는 좁은 화면에서 대화상자 안에 표시합니다. */
         .topbar-right { display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -195,9 +196,9 @@
     <link rel="stylesheet" href="news-brief.css?v=20260914-community">
     <script src="news-data.js?v=20260914-ast" defer></script>
     <script src="news-brief.js?v=20260914-community" defer></script>
-<link rel="stylesheet" href="site-nav.css?v=20260914-community">
+<link rel="stylesheet" href="site-nav.css?v=20260926-mint">
 <link rel="stylesheet" href="story-teaser.css?v=20260914-codes">
-<link rel="stylesheet" href="lounge-design.css?v=20260926-board">
+<link rel="stylesheet" href="lounge-design.css?v=20260926-nav-board">
 </head>
 <body>
     <div class="bg-glow"></div>
@@ -227,10 +228,10 @@
             <div class="topbar">
                 <h1 class="panel-title" id="panelTitle"><a class="page-title-link" id="panelTitleLink" href="planets.html">오늘 밤 <span>행성</span></a></h1>
                 <div class="topbar-right">
-                    <button class="account-signup-link" id="headerSignup" data-account-open="signup" type="button">회원가입</button>
                     <button class="profile-chip" id="profileChip" type="button" aria-haspopup="dialog" aria-expanded="false">
-                        <span id="profileChipText">궤도 진입하기</span>
+                        <span id="profileChipText">로그인</span>
                     </button>
+                    <button class="account-signup-link" id="headerSignup" data-account-open="signup" type="button" aria-haspopup="dialog" aria-expanded="false">회원가입</button>
                 </div>
             </div>
 
@@ -257,7 +258,7 @@
 
                 <!-- 글 남기기 -->
                 <section class="panel" id="panel-lounge">
-                    <iframe class="lounge-frame" id="loungeFrame" title="자유게시판" data-src="lounge.html?embed=1&v=20260926-board"></iframe>
+                    <iframe class="lounge-frame" id="loungeFrame" title="자유게시판" data-src="lounge.html?embed=1&v=20260926-drafts"></iframe>
                 </section>
                 <aside class="news-brief news-brief--rail" data-news-brief aria-labelledby="newsBriefHeading">
                   <h2 class="news-brief-heading" id="newsBriefHeading">최신 우주 뉴스</h2>
@@ -298,12 +299,12 @@
         </div>
     </div>
 
-    <link rel="stylesheet" href="account.css?v=20260914-codes">
+    <link rel="stylesheet" href="account.css?v=20260926-separated">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
     <script src="orbit-backend.js"></script>
-    <script src="members.js?v=20260914-popover"></script>
-    <script src="account.js?v=20260914-codes"></script>
-    <script src="account-panel.js?v=20260914-codes"></script>
+    <script src="members.js?v=20260926-storage"></script>
+    <script src="account.js?v=20260926-separated"></script>
+    <script src="account-panel.js?v=20260926-separated"></script>
     <script src="site-nav.js?v=20260914-community"></script>
     <script>
     // ===== 패널 전환 =====
@@ -347,7 +348,9 @@
             // 처음 열 때만 iframe 로드 (지연 로딩)
             if(name === 'lounge' && !loungeLoaded){
                 var fr = document.getElementById('loungeFrame');
-                fr.src = fr.getAttribute('data-src');
+                var boardURL = new URL(fr.getAttribute('data-src'), location.href);
+                if (new URLSearchParams(location.search).has('write')) boardURL.searchParams.set('write', '1');
+                fr.src = boardURL.pathname + boardURL.search;
                 loungeLoaded = true;
             }
             if(name === 'sky' && !skyLoaded){
@@ -391,6 +394,12 @@
             if(ev.data && ev.data.orbit === 'loungeReady'){
                 ev.source.postMessage({ orbit:'panelActive', active: activePanel === 'lounge' }, location.origin);
             }
+            if(ev.data && ev.data.orbit === 'writingState' && typeof ev.data.writing === 'boolean' && ev.source === document.getElementById('loungeFrame').contentWindow){
+                var boardRoute = new URL(location.href);
+                if(ev.data.writing) boardRoute.searchParams.set('write', '1');
+                else boardRoute.searchParams.delete('write');
+                history.replaceState(null, '', boardRoute.pathname + boardRoute.search + boardRoute.hash);
+            }
             if(ev.data && ev.data.orbit === 'profileChanged' && ev.source === document.getElementById('loungeFrame').contentWindow){
                 syncChip();
             }
@@ -420,7 +429,7 @@
             var state = window.OrbitMembers.state, profile = state.profile;
             var registered = state.user && !state.user.is_anonymous && state.user.email_confirmed_at;
             document.getElementById('profileChipText').textContent = profile
-                ? profile.nickname + ' · Lv.' + profile.level : registered ? '내 계정' : '궤도 진입하기';
+                ? profile.nickname + ' · Lv.' + profile.level : registered ? '내 계정' : '로그인';
             document.getElementById('headerSignup').hidden = !!registered;
             if(loungeLoaded) document.getElementById('loungeFrame').contentWindow.postMessage({orbit:'profileChanged'},location.origin);
         }

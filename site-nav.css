@@ -4,8 +4,8 @@
             position: sticky; top: 0; height: 100vh;
             display: flex; flex-direction: column;
             padding: 22px 16px;
-            border-right: 1px solid rgba(255,159,67,0.1);
-            background: rgba(15,23,42,0.55); backdrop-filter: blur(12px);
+            border-right: 1px solid #213044;
+            background: #0d1729; backdrop-filter: blur(12px);
         }
         .side-logo { padding: 6px 12px 20px; }
         .side-nav { display: flex; flex-direction: column; gap: 4px; }
@@ -13,13 +13,20 @@
             display: flex; align-items: center; gap: 12px; width: 100%;
             padding: 12px 14px; border-radius: 12px; border: none; background: transparent;
             color: #94A3B8; font-family: 'Pretendard'; font-size: 14px; font-weight: 600;
-            cursor: pointer; transition: all 0.15s; text-align: left;
+            cursor: pointer; transition: background-color 0.15s, color 0.15s, box-shadow 0.15s; text-align: left;
         }
         .nav-link { text-decoration: none; }
         .nav-item .ic svg { display:block; }
         .nav-item .ic { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
-        .nav-item:hover { background: rgba(255,159,67,0.07); color: var(--text-main); }
-        .nav-item.on { background: rgba(255,159,67,0.13); color: var(--accent); }
+        .nav-item:hover { background: #182d41; color: #e2e8f0; }
+        .nav-item.on, .nav-item[aria-current='page'] {
+            color: #9ae8dd;
+            background: linear-gradient(100deg, #183e48, #14273c);
+            box-shadow: inset 2px 0 #69dfcf, inset 0 0 0 1px #2b4d5a;
+        }
+        .nav-item.on:hover, .nav-item[aria-current='page']:hover {
+            background: linear-gradient(100deg, #1d4952, #1a3046);
+        }
 
         /* 모바일 메뉴 버튼 / 스크림 — 데스크톱에서는 숨김 */
         .nav-toggle { display: none; }
@@ -38,12 +45,13 @@
             .nav-toggle {
                 display: inline-flex; align-items: center; gap: 8px;
                 padding: 9px 12px 9px 14px; border-radius: 99px;
-                border: 1px solid rgba(255,159,67,0.22); background: rgba(255,159,67,0.09);
-                color: var(--accent); font-family: 'Pretendard'; font-size: 13.5px; font-weight: 700;
+                border: 1px solid #33575e; background: #153038;
+                color: #9ae8dd; font-family: 'Pretendard'; font-size: 13.5px; font-weight: 700;
                 cursor: pointer; transition: background 0.15s, border-color 0.15s;
                 max-width: 62vw;
             }
-            .nav-toggle:active { background: rgba(255,159,67,0.16); }
+            .nav-toggle:hover { background: #1b3a42; border-color: #49766f; }
+            .nav-toggle:active { background: #21474e; }
             .nav-toggle .nt-ic { font-size: 15px; flex-shrink: 0; }
             .nav-toggle .nt-lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
             .nav-toggle .nt-arrow {
@@ -52,7 +60,7 @@
                 transform: rotate(45deg) translate(-2px, -2px);
                 transition: transform 0.25s ease;
             }
-            .sidebar.open .nav-toggle { background: rgba(255,159,67,0.16); border-color: var(--accent); }
+            .sidebar.open .nav-toggle { background: #1b3a42; border-color: #69dfcf; }
             .sidebar.open .nav-toggle .nt-arrow { transform: rotate(-135deg) translate(-2px, -2px); }
 
             /* 펼쳐지는 탭 목록 */
@@ -61,8 +69,8 @@
                 flex-direction: column; gap: 4px; padding: 8px;
                 max-height: calc(100vh - 80px); max-height: calc(100dvh - 80px); overflow-y: auto; overscroll-behavior: contain;
                 border-radius: 18px;
-                background: #151E36; backdrop-filter: blur(14px);
-                border: 1px solid rgba(255,159,67,0.18);
+                background: #0d1729; backdrop-filter: blur(14px);
+                border: 1px solid #2b4d5a;
                 box-shadow: 0 18px 40px rgba(0,0,0,0.45);
                 opacity: 0; visibility: hidden; pointer-events: none;
                 transform: translateY(-10px) scale(0.98); transform-origin: top right;
@@ -98,7 +106,7 @@
 }
         @media (prefers-reduced-motion: reduce) {
             .sidebar.open .nav-item { animation: none; }
-            .sidebar.enhanced .side-nav, .nav-scrim, .nav-toggle .nt-arrow { transition-duration: 0.01ms; }
+            .sidebar.enhanced .side-nav, .nav-scrim, .nav-toggle, .nav-toggle .nt-arrow, .nav-item { transition-duration: 0.01ms; }
         }
 
 /* Shared shell: direct pages retain navigation; embedded tools keep one parent menu. */
@@ -108,7 +116,11 @@
 .orbit-page-content > .board-shell { margin-top: 32px; }
 .orbit-page-content > .site-footer { margin-left: auto; margin-right: auto; }
 @media (min-width: 861px) { .sidebar { overflow-y: auto; } }
-.nav-item:focus-visible, .nav-toggle:focus-visible, .side-logo:focus-visible { outline: 2px solid #4FD1C5; outline-offset: 3px; }
+.nav-item:focus-visible, .nav-toggle:focus-visible, .side-logo:focus-visible { outline: 2px solid #69dfcf; outline-offset: 3px; }
+@media (forced-colors: active) {
+  .nav-item.on, .nav-item[aria-current='page'] { border-inline-start: 2px solid Highlight; }
+  .nav-item:focus-visible, .nav-toggle:focus-visible, .side-logo:focus-visible { outline-color: Highlight; }
+}
 .embed .orbit-page-layout, .embed .orbit-page-content { display: contents; }
 .embed .orbit-navigation, .embed .nav-scrim { display: none; }
 .embed .orbit-page-content > .container { margin-top: 0; }
