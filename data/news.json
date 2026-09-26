@@ -123,7 +123,10 @@
       "title": "Reorganization of Mynaric’s Executive Management and Strengthening of the Supervisory Board with Additional Proven Industry Expertise",
       "url": "https://rocketlabcorp.com/updates/new-blog-post-43/",
       "publishedAt": "2026-09-24T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "Mynaric의 경영 및 감독위원회의 강화에 대한 재구성 추가 입증 산업 전문 지식",
+      "titleKoDraftOriginal": "Reorganization of Mynaric’s Executive Management and Strengthening of the Supervisory Board with Additional Proven Industry Expertise",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "b003594c2fec9c9c",
@@ -131,7 +134,10 @@
       "title": "Neuaufstellung der Unternehmensführung von Mynaric und Stärkung des Aufsichtsrats mit zusätzlicher ausgewiesener Industrieexpertise",
       "url": "https://rocketlabcorp.com/updates/neuaufstellung-der-unternehmensfuehrung-von-mynaric-und-staerkung-des-aufsichtsrats-mit-zusaetzlicher-ausgewiesener-industrieexpertise/",
       "publishedAt": "2026-09-24T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "Neuaufstellung der Unternehmensführung von Mynaric und Stärkung des Aufsichtsrats mit zusätzlicher ausgewiesener 산업 전문",
+      "titleKoDraftOriginal": "Neuaufstellung der Unternehmensführung von Mynaric und Stärkung des Aufsichtsrats mit zusätzlicher ausgewiesener Industrieexpertise",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "baa6969633fb10bf",
