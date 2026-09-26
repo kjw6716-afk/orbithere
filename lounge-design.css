@@ -113,7 +113,7 @@
 .lounge-page .board-search .button { padding-inline: 14px; background: #1a2b3e; }
 .lounge-page .list-toolbar { margin: 16px 2px 8px; }
 .lounge-page #postList { background: #101d2f; border: 1px solid #263b50; border-radius: 14px; }
-.lounge-page .board-row { min-height: 72px; padding: 13px 20px; border-color: #24364a; }
+.lounge-page .board-row { min-height: 52px; padding: 3px 20px; border-color: #24364a; }
 .lounge-page .board-row:first-child { border-top: 0; }
 .lounge-page .board-row:last-child { border-bottom: 0; }
 .lounge-page .board-row:hover { background: #15263b; }
@@ -167,7 +167,7 @@
   .lounge-page .pinned-row { gap: 8px; font-size: 13px; }
   .lounge-page .pinned-row .view-count { font-size: 11px; }
   .board-controls { margin-top: 16px; }
-  .lounge-page .board-row { padding: 14px; align-items: center; gap: 8px; }
+  .lounge-page .board-row { padding: 8px 14px; align-items: center; gap: 8px; }
   .lounge-page .row-main { grid-template-columns: minmax(0, 1fr); gap: 3px; }
   .lounge-page .row-category { font-size: 11px; }
   .lounge-page .row-title { white-space: normal; line-height: 1.55; font-size: 16px; }
