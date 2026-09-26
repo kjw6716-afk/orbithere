@@ -49,8 +49,8 @@
     <link rel="stylesheet" href="news-brief.css?v=20260914-community">
     <script src="news-data.js?v=20260914-ast" defer></script>
     <script src="news-brief.js?v=20260914-community" defer></script>
-  <link rel="stylesheet" href="site-nav.css?v=20260914-community">
-  <link rel="stylesheet" href="lounge-design.css?v=20260926-board">
+  <link rel="stylesheet" href="site-nav.css?v=20260926-mint">
+  <link rel="stylesheet" href="lounge-design.css?v=20260926-nav-board">
 </head>
   <body class="lounge-page">
     <div class="bg-glow" aria-hidden="true"></div>
@@ -75,7 +75,10 @@
 <!-- orbit-navigation:end -->
 <div class="orbit-page-content">
     <main class="board-shell" id="boardMain">
-      <a class="board-account-link" data-account-link hidden href="account.html" data-account-open="login">로그인 · 회원가입</a>
+      <div class="board-account-actions">
+        <a class="account-entry-button" data-account-link hidden href="main.html?account=login#lounge" data-account-open="login" aria-haspopup="dialog" aria-expanded="false">로그인</a>
+        <a class="account-signup-link" data-account-signup hidden href="main.html?account=signup#lounge" data-account-open="signup" aria-haspopup="dialog" aria-expanded="false">회원가입</a>
+      </div>
       <div id="loungeStatus" class="board-status" role="status" aria-live="polite"></div>
       <section id="listView">
         <header class="board-heading board-hero">
@@ -155,7 +158,10 @@
         <a class="back-link" id="cancelWriteLink" href="lounge.html">← 목록</a>
         <h1>오늘 본 하늘을 들려주세요</h1>
         <p class="editor-intro">한 줄도 좋아요. 별 이름이나 장비를 몰라도 괜찮아요.</p>
-        <div id="memberWriteGate" class="member-write-gate" hidden><p>글을 남기려면 로그인해주세요.</p><button type="button" class="button primary" data-account-open="login">로그인 · 회원가입</button></div>
+        <div id="memberWriteGate" class="member-write-gate" hidden><p>먼저 적어보세요. 등록할 때 로그인하면 돼요.</p><button type="button" class="text-button" data-account-open="login">로그인</button> <button type="button" class="text-button" data-account-open="signup">회원가입</button></div>
+        <p class="field-hint">작성 중인 글은 이 기기에 7일간 임시 저장돼요.</p>
+        <div class="board-filter-actions"><p class="field-hint" id="draftStatus" role="status"></p><button class="text-button" id="clearDraft" type="button" hidden>임시저장 지우기</button></div>
+        <p class="field-hint" id="draftPhotoNotice" hidden>사진 파일은 임시저장되지 않아요. 새로고침하거나 Google 인증으로 화면을 이동하면 사진을 다시 첨부해주세요.</p>
         <form id="postForm" novalidate>
           <label for="postTitle">제목 <span class="field-hint">선택 · 80자 이내</span></label
           ><input
@@ -267,17 +273,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
     <script src="orbit-backend.js"></script>
-    <link rel="stylesheet" href="account.css?v=20260914-codes">
-    <script src="members.js?v=20260914-popover"></script>
-    <script src="account.js?v=20260914-codes"></script>
-    <script src="account-panel.js?v=20260914-codes"></script>
+    <link rel="stylesheet" href="account.css?v=20260926-separated">
+    <script src="members.js?v=20260926-storage"></script>
+    <script src="account.js?v=20260926-separated"></script>
+    <script src="account-panel.js?v=20260926-separated"></script>
     <script src="board-media.js?v=20260912-board"></script>
-    <script src="board-writing.js?v=20260913-writing"></script>
+    <script src="board-writing.js?v=20260926-drafts"></script>
     <script src="board-glossary.js?v=20260914-community"></script>
     <script src="board-activity.js?v=20260914-activity"></script>
     <script src="board-embed.js?v=20260914-community"></script>
-    <script src="lounge.js?v=20260926-board"></script>
-    <script src="member-board.js?v=20260914-popover"></script>
+    <script src="lounge.js?v=20260926-drafts"></script>
+    <script src="member-board.js?v=20260926-separated"></script>
   </div></div>
 <script src="site-nav.js?v=20260914-community"></script>
 </body>

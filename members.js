@@ -16,7 +16,7 @@
   function clearNickname() {
     ["orbit_nickname", "orbit_joindate", "orbit_jointime"].forEach(
       function (k) {
-        localStorage.removeItem(k);
+        try { localStorage.removeItem(k); } catch (_) { /* The active account stays in memory. */ }
       },
     );
   }
@@ -38,8 +38,9 @@
         if (token !== sequence) return state;
         if (visit.error) throw visit.error;
         state.profile = visit.data;
-        if (visit.data)
-          localStorage.setItem("orbit_nickname", visit.data.nickname);
+        if (visit.data) {
+          try { localStorage.setItem("orbit_nickname", visit.data.nickname); } catch (_) { /* Storage may be full or blocked. */ }
+        }
       }
     } catch (error) {
       if (token === sequence) {

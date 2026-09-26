@@ -24,14 +24,20 @@
     if (el) observer.observe(el, { childList: true, subtree: true });
   });
   window.OrbitMembers.decorate(document);
-  window.addEventListener("orbit:member", function () {
+  function syncAccountLinks() {
     var state = window.OrbitMembers.state,
-      profile = state.profile;
+      profile = state.profile,
+      registered = state.user && !state.user.is_anonymous && state.user.email_confirmed_at;
     document.querySelectorAll("[data-account-link]").forEach(function (el) {
       el.hidden = false;
       el.textContent = profile
         ? profile.nickname + " · Lv." + profile.level
-        : "로그인 · 회원가입";
+        : registered ? "내 계정" : "로그인";
     });
-  });
+    document.querySelectorAll("[data-account-signup]").forEach(function (el) {
+      el.hidden = !!registered;
+    });
+  }
+  window.addEventListener("orbit:member", syncAccountLinks);
+  syncAccountLinks();
 })();

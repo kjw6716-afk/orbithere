@@ -130,11 +130,6 @@
   function setMode(next) {
     mode = next;
     var anon = member.state.user && member.state.user.is_anonymous;
-    root
-      .querySelectorAll("[data-mode]")
-      .forEach((b) =>
-        b.setAttribute("aria-pressed", String(b.dataset.mode === mode)),
-      );
     $("authTitle").textContent = {
       login: "로그인",
       signup: "회원가입",
@@ -146,12 +141,12 @@
           ? "기존 글은 가입한 계정에 이어집니다."
           : "이메일 인증 후 닉네임을 정해주세요."
         : mode === "login" && anon
-          ? "기존 비회원 글을 이어가려면 회원가입을 선택해주세요."
+          ? "기존 비회원 글을 이어가려면 창을 닫고 상단 회원가입을 이용해주세요."
           : "";
-    root.querySelector(".account-tabs").hidden = mode === "reset";
     show('resetBack', mode === 'reset');
-    show('resetLink', mode !== 'reset');
-    $("accountPanelTitle").textContent = mode === "reset" ? "비밀번호 찾기" : "궤도 진입하기";
+    show('resetLink', mode === 'login');
+    $("accountPanelTitle").textContent = $("authTitle").textContent;
+    $("googleSignIn").querySelector("span").textContent = mode === "signup" ? "Google로 회원가입" : "Google로 로그인";
     var password = mode === "login" || (mode === "signup" && !anon);
     show("passwordField", password);
     $("password").required = password;
@@ -176,8 +171,9 @@
       registered = u && !u.is_anonymous && u.email_confirmed_at;
     if (!u || googleWithdrawalUserId !== u.id) googleWithdrawalUserId = null;
     if (registered) verification = null;
-    show("authCard", !registered && !verification);
-    show("verifyCard", !registered && !!verification);
+    var verifying = mode === "signup" && !!verification;
+    show("authCard", !registered && !verifying);
+    show("verifyCard", !registered && verifying);
     show("sessionCard", registered);
     var needsPassword =
       registered &&
@@ -194,7 +190,7 @@
     );
     setMode(mode);
     updateControls();
-    if (verification) $("accountPanelTitle").textContent = "이메일 인증";
+    if (verifying) $("accountPanelTitle").textContent = "이메일 인증";
     if (!registered) return;
     $("accountPanelTitle").textContent = "내 계정";
     var google = googleOnly(u);
@@ -546,7 +542,12 @@
     handleGoogleReturn().catch((error) => say(errorText(error)));
   });
   return {
-    mode: function (next) { setMode(next === "signup" ? "signup" : "login"); say(""); },
+    mode: function (next) {
+      if (pending) return;
+      mode = next === "signup" ? "signup" : "login";
+      render();
+      say("");
+    },
     isBusy: function () { return pending; },
     clearSecrets: function () {
       editing = false;

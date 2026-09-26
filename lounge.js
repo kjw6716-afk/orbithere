@@ -44,6 +44,19 @@
     activeURL = location.href;
   var activityScopes = [['mine', '내 글'], ['joined', '참여한 글'], ['unread', '새 답글']],
     summarySeq = 0, summaryTime = 0, unreadThreads = 0, commentsLoaded = false;
+  var draftStore = OrbitBoardWriting.createDraftStore(), draftOwner = null, draftUser = null,
+    draftBuffers = new Map(), draftTimer = null, draftStorageOK = true,
+    draftSessionOK = true, draftMissingPhotos = false, draftResumeQueued = false;
+  var draftSession = (function () {
+    try {
+      var saved = JSON.parse(sessionStorage.getItem('orbit_board_draft_session'));
+      if (saved && validId(saved.id)) return saved;
+    } catch (_) { draftSessionOK = false; }
+    var fresh = { id: crypto.randomUUID() };
+    try { sessionStorage.setItem('orbit_board_draft_session', JSON.stringify(fresh)); draftSessionOK = true; }
+    catch (_) { draftSessionOK = false; }
+    return fresh;
+  })();
   var activityReader = OrbitBoardActivity.createReader({
     client: sb,
     user: function () { return userId; },
@@ -100,6 +113,8 @@
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || '');
   }
   function nick() {
+    var profile = window.OrbitMembers.state.profile;
+    if (profile) return profile.nickname;
     try {
       return localStorage.getItem('orbit_nickname') || '';
     } catch (e) {
@@ -216,7 +231,7 @@
     var id = await ensureWriter();
     var profile = checked(await sb.rpc('member_profile'));
     if (!profile) throw new Error('내 계정에서 닉네임 설정을 먼저 마쳐주세요.');
-    localStorage.setItem('orbit_nickname', profile.nickname);
+    try { localStorage.setItem('orbit_nickname', profile.nickname); } catch (_) {}
     return id;
   }
   function join() { window.OrbitAccount.open(); }
@@ -234,10 +249,164 @@
     return $('postTitle').value.trim() || $('postInput').value.trim() || photos.length ||
       Object.keys(OrbitBoardWriting.collect($('postForm'))).length;
   }
+  function saveDraftSession() {
+    try { sessionStorage.setItem('orbit_board_draft_session', JSON.stringify(draftSession)); draftSessionOK = true; }
+    catch (_) { draftSessionOK = false; }
+  }
+  function validHandoff() {
+    var handoff = draftSession.handoff;
+    return handoff && typeof handoff.owner === 'string' &&
+      handoff.owner.startsWith('guest:' + draftSession.id + ':') &&
+      Number.isFinite(handoff.at) && handoff.at <= Date.now() && Date.now() - handoff.at < 30 * 60000;
+  }
+  function memberOwner() {
+    return draftUser && !draftUser.is_anonymous && draftUser.email_confirmed_at ? 'member:' + draftUser.id : null;
+  }
+  function nextDraftOwner() {
+    var member = memberOwner(), continuation = draftSession.continuation;
+    if (member && continuation && typeof continuation.owner === 'string' &&
+        continuation.owner.startsWith(member + ':continue:') &&
+        validId(continuation.owner.slice((member + ':continue:').length)) &&
+        Number.isFinite(continuation.at) && continuation.at <= Date.now() && Date.now() - continuation.at < 7 * 86400000 &&
+        readDraft(continuation.owner)) return continuation.owner;
+    if (member && (!draftOwner || !draftOwner.startsWith(member))) {
+      var latest = draftStore.latestContinuation(member);
+      if (!latest.ok) draftStorageOK = false;
+      if (latest.value) {
+        draftSession.continuation = { owner: latest.value.owner, at: latest.value.updatedAt };
+        saveDraftSession();
+        return latest.value.owner;
+      }
+    }
+    return member || 'guest:' + draftSession.id + ':' + (draftUser && draftUser.is_anonymous ? draftUser.id : 'visitor');
+  }
+  function draftContent() {
+    var row = { owner: draftOwner, updatedAt: Date.now(), title: $('postTitle').value,
+      text: $('postInput').value, orbit: $('orbitSelect').value,
+      observation: OrbitBoardWriting.collect($('postForm')), hasPhotos: !!photos.length || draftMissingPhotos };
+    if (attempt && attempt.uncertain && attempt.payload)
+      row.pending = { id: attempt.id, nick: attempt.payload.p_nick, images: attempt.payload.p_images.slice() };
+    return row;
+  }
+  function hasDraft(row) {
+    return !!row && (row.title.trim() || row.text.trim() || Object.keys(row.observation).length || row.hasPhotos || row.pending);
+  }
+  function draftNotice(message) {
+    $('clearDraft').hidden = !dirty() && !draftMissingPhotos;
+    $('clearDraft').disabled = busy || preparing || !!(attempt && attempt.uncertain);
+    $('draftPhotoNotice').hidden = !photos.length && !draftMissingPhotos;
+    if (message !== undefined) $('draftStatus').textContent = message;
+  }
+  function persistDraft() {
+    clearTimeout(draftTimer);
+    if (!draftOwner) return true;
+    var row = draftContent();
+    draftBuffers.set(draftOwner, { row: row, photos: photos, attempt: attempt });
+    draftStorageOK = hasDraft(row) ? draftStore.write(row) : draftStore.remove(draftOwner);
+    if (draftOwner.startsWith('guest:') && !draftSessionOK) draftStorageOK = false;
+    draftNotice(draftStorageOK ? (hasDraft(row) ? '이 브라우저에 임시저장했어요.' : '') :
+      '임시저장할 수 없어요. 입력은 유지되지만 이 화면을 닫으면 사라질 수 있어요.');
+    return draftStorageOK;
+  }
+  function readDraft(owner) {
+    if (draftBuffers.has(owner)) return draftBuffers.get(owner);
+    var result = draftStore.read(owner);
+    if (!result.ok) draftStorageOK = false;
+    return result.value ? { row: result.value, photos: [], attempt: null } : null;
+  }
+  function fingerprint() {
+    return JSON.stringify([OrbitBoardWriting.title($('postInput').value.trim(), $('postTitle').value),
+      $('postInput').value.trim(), $('orbitSelect').value, OrbitBoardWriting.collect($('postForm')),
+      photos.map(function (photo) { return photo.url; })]);
+  }
+  function restoreDraft(buffer) {
+    $('postForm').reset();
+    $('observationFields').open = $('equipmentFields').open = false;
+    photos = buffer ? buffer.photos : [];
+    attempt = buffer ? buffer.attempt : null;
+    draftMissingPhotos = !!(buffer && buffer.row.hasPhotos && !photos.length);
+    if (buffer) {
+      var row = buffer.row;
+      $('postTitle').value = row.title;
+      $('postInput').value = row.text;
+      $('orbitSelect').value = row.orbit;
+      $('postForm').querySelectorAll('[data-observation]').forEach(function (input) {
+        input.value = row.observation[input.dataset.observation] || '';
+      });
+      [$('observationFields'), $('equipmentFields')].forEach(function (section) {
+        section.open = Array.from(section.querySelectorAll('[data-observation]')).some(function (input) { return !!input.value; });
+      });
+      if (!attempt && row.pending) {
+        var payload = { p_id: row.pending.id, p_nick: row.pending.nick,
+          p_title: OrbitBoardWriting.title(row.text.trim(), row.title), p_text: row.text.trim(),
+          p_orbit: row.orbit, p_images: row.pending.images.slice(), p_pinned: false };
+        if (Object.keys(row.observation).length) payload.p_observation = row.observation;
+        attempt = { id: payload.p_id, fingerprint: fingerprint(), paths: payload.p_images.slice(),
+          uploaded: new Set(), uncertain: true, payload: payload };
+        // These files were uploaded before the interrupted publication; retry reuses them.
+        draftMissingPhotos = false;
+      }
+    } else $('orbitSelect').value = channel === 'all' ? 'free' : channel;
+    renderPreviews();
+    $('charCount').textContent = $('postInput').value.length.toLocaleString('ko-KR') + ' / 5,000';
+    lockEditor(!!(attempt && attempt.uncertain));
+    draftNotice(!draftStorageOK ? '임시저장을 사용할 수 없어요. 이 화면에서는 계속 작성할 수 있어요.' :
+      attempt && attempt.uncertain ? '등록 결과를 확인할 글이 있어요. 글 남기기를 눌러 같은 등록을 확인해주세요.' :
+      buffer ? '저장된 초안을 불러왔어요.' : '');
+  }
+  function syncDraftOwner() {
+    if (busy || preparing || (!draftOwner && view !== 'editor' && !validHandoff())) return;
+    var next = nextDraftOwner(), handoff = validHandoff() && memberOwner() ? draftSession.handoff : null;
+    if (next === draftOwner && !handoff) return;
+    var typedBeforeReady = !draftOwner && dirty() ? { row: draftContent(), photos: photos, attempt: attempt } : null;
+    if (draftOwner) persistDraft();
+    var buffer = typedBeforeReady, resumed = false;
+    if (handoff) {
+      buffer = buffer || readDraft(handoff.owner);
+      if (buffer && hasDraft(buffer.row)) {
+        var existing = readDraft(memberOwner());
+        next = memberOwner();
+        if (existing && hasDraft(existing.row)) {
+          next += ':continue:' + crypto.randomUUID();
+          draftSession.continuation = { owner: next, at: Date.now() };
+        }
+        buffer.row.owner = next;
+        draftBuffers.set(next, buffer);
+        if (draftStore.write(buffer.row)) draftStore.remove(handoff.owner);
+        draftBuffers.delete(handoff.owner);
+        resumed = true;
+      }
+      delete draftSession.handoff;
+      saveDraftSession();
+    }
+    draftOwner = next;
+    if (buffer) buffer.row.owner = next;
+    restoreDraft(buffer || readDraft(next));
+    if (resumed) {
+      draftNotice('로그인 전 작성한 초안을 이어왔어요. 내용을 확인하고 글 남기기를 눌러주세요.');
+      if (view !== 'editor' && !draftResumeQueued) {
+        draftResumeQueued = true;
+        setTimeout(function () {
+          draftResumeQueued = false;
+          history.replaceState(null, '', url({ write: true }));
+          showRoute();
+        }, 0);
+      }
+    }
+  }
+  function beginDraftLogin() {
+    persistDraft();
+    if (draftOwner && draftOwner.startsWith('guest:')) {
+      draftSession.handoff = { owner: draftOwner, at: Date.now() };
+      saveDraftSession();
+    }
+    writeStatus('작성한 글은 그대로 있어요. 로그인하고 닉네임 설정을 마친 뒤 글 남기기를 다시 눌러주세요.');
+  }
   function syncWriter() {
+    syncDraftOwner();
     var allowed = canWrite(), profile = window.OrbitMembers.state.profile;
     $('memberWriteGate').hidden = allowed;
-    $('postForm').hidden = !allowed;
+    $('postForm').hidden = false;
     $('writerName').textContent = profile ? profile.nickname + ' 이름으로 남겨요.' : '';
     $('writerName').hidden = !profile;
     var comment = $('commentInput'), form = $('commentForm');
@@ -251,7 +420,7 @@
       else button.dataset.accountOpen = 'login';
     }
   }
-  window.addEventListener('orbit:member', syncWriter);
+  window.addEventListener('orbit:member', function () { draftUser = window.OrbitMembers.state.user; syncWriter(); });
   function canLeave() {
     if (busy || preparing || commentBusy) {
       status('진행 중인 저장을 마친 뒤 이동해주세요.', true);
@@ -914,6 +1083,7 @@
       });
     $('btnTrace').disabled = busy || preparing;
     $('cancelWrite').disabled = busy || preparing || !!(attempt && attempt.uncertain);
+    $('clearDraft').disabled = busy || preparing || !!(attempt && attempt.uncertain);
   }
   async function clearAttempt() {
     if (!attempt) return;
@@ -949,31 +1119,26 @@
       writeStatus('추가 정보는 항목마다 120자 이내로 적어주세요.', true);
       return;
     }
-    if (!canWrite()) { join(); return; }
-    var fingerprint = JSON.stringify([
-      title,
-      text,
-      $('orbitSelect').value,
-      observation,
-      photos.map(function (p) {
-        return p.url;
-      }),
-    ]);
+    if (!canWrite()) { beginDraftLogin(); join(); return; }
+    var postFingerprint = fingerprint(), postingOwner = draftOwner;
     busy = true;
     lockEditor(true);
     writeStatus('등록을 준비하고 있어요…');
     try {
       await ensureAuthor();
+      if (memberOwner() !== 'member:' + userId || !postingOwner ||
+          !postingOwner.startsWith('member:' + userId) || draftOwner !== postingOwner)
+        throw new Error('계정이 바뀌었어요. 현재 계정의 초안을 확인한 뒤 다시 등록해주세요.');
       if (Object.keys(observation).length) {
         var readiness = await sb.rpc('board_observation_version');
         if (readiness.error || readiness.data !== 1)
           throw new Error('추가 정보를 아직 저장할 수 없어요. 입력한 내용을 그대로 두고 잠시 후 다시 시도해주세요.');
       }
-      if (attempt && attempt.fingerprint !== fingerprint) await clearAttempt();
+      if (attempt && attempt.fingerprint !== postFingerprint) await clearAttempt();
       if (!attempt)
         attempt = {
           id: crypto.randomUUID(),
-          fingerprint: fingerprint,
+          fingerprint: postFingerprint,
           paths: [],
           uploaded: new Set(),
           uncertain: false,
@@ -1020,6 +1185,7 @@
       };
       writeStatus('글을 등록하고 있어요…');
       attempt.uncertain = true;
+      persistDraft();
       var saved = await sb.rpc(attempt.payload.p_observation ? 'create_observation_post' : 'create_board_post', attempt.payload);
       if (saved.error) {
         // Constraint/auth failures roll back; network/5xx errors can be a lost
@@ -1030,10 +1196,18 @@
       }
       var id = checked(saved);
       attempt = null;
+      draftStore.remove(postingOwner);
+      draftBuffers.delete(postingOwner);
+      if (draftSession.continuation && draftSession.continuation.owner === postingOwner) {
+        delete draftSession.continuation;
+        saveDraftSession();
+      }
+      draftOwner = null;
+      draftMissingPhotos = false;
+      clearTimeout(draftTimer);
       cache = null;
       $('postForm').reset();
       $('observationFields').open = $('equipmentFields').open = false;
-      syncWriter();
       photos.forEach(function (p) {
         URL.revokeObjectURL(p.url);
       });
@@ -1056,6 +1230,8 @@
     } finally {
       busy = false;
       lockEditor(!!(attempt && attempt.uncertain));
+      if (draftOwner) persistDraft();
+      syncWriter();
     }
   }
   async function showRoute() {
@@ -1081,6 +1257,7 @@
     query = (params.get('q') || '').trim().slice(0, 80);
     var id = params.get('post');
     view = id ? 'detail' : params.has('write') ? 'editor' : 'list';
+    if (embed) parent.postMessage({ orbit: 'writingState', writing: view === 'editor' }, location.origin);
     ['list', 'detail', 'editor'].forEach(function (v) {
       $(v + 'View').hidden = v !== view;
     });
@@ -1091,13 +1268,12 @@
     $('writeTop').href = $('writeBottom').href = url({ write: true });
     OrbitBoardEmbed.scrollTo(0);
     if (view === 'editor') {
-      if (!dirty()) $('orbitSelect').value = channel === 'all' ? 'free' : channel;
       syncWriter();
+      if (!dirty()) $('orbitSelect').value = channel === 'all' ? 'free' : channel;
       var focusBeforeRefresh = document.activeElement;
       await window.OrbitMembers.refresh();
       if (token !== route || view !== 'editor') return;
       syncWriter();
-      if (!canWrite()) { join(); return; }
       // A slow identity check must not redirect keystrokes from a field the
       // writer has already selected, or focus an editor after navigating away.
       if (document.activeElement === focusBeforeRefresh && !$('postForm').contains(document.activeElement))
@@ -1159,6 +1335,7 @@
       URL.revokeObjectURL(photos[Number(b.dataset.removePhoto)].url);
       photos.splice(Number(b.dataset.removePhoto), 1);
       renderPreviews();
+      persistDraft();
       return;
     }
     if (b.dataset.deleteComment) {
@@ -1265,6 +1442,40 @@
     })
     .join('');
   $('postForm').addEventListener('submit', submitPost);
+  $('postForm').addEventListener('input', function () {
+    if (busy || preparing || (attempt && attempt.uncertain)) return;
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(persistDraft, 250);
+    draftNotice();
+  });
+  $('postForm').addEventListener('change', function () { if (!busy && !preparing) persistDraft(); });
+  document.addEventListener('click', function (event) {
+    if (view === 'editor' && event.target.closest('[data-account-open]')) beginDraftLogin();
+  }, true);
+  $('clearDraft').onclick = async function () {
+    if (busy || preparing || (attempt && attempt.uncertain)) return;
+    if (!confirm('이 브라우저의 현재 초안과 첨부한 사진 선택을 지울까요?')) return;
+    busy = true;
+    lockEditor(true);
+    await clearAttempt();
+    clearTimeout(draftTimer);
+    var oldOwner = draftOwner, removed = draftStore.remove(oldOwner), previousDraft = null;
+    draftBuffers.delete(oldOwner);
+    photos.forEach(function (photo) { URL.revokeObjectURL(photo.url); });
+    if (draftSession.continuation && draftSession.continuation.owner === oldOwner) {
+      delete draftSession.continuation;
+      saveDraftSession();
+      draftOwner = nextDraftOwner();
+      previousDraft = readDraft(draftOwner);
+      restoreDraft(previousDraft);
+    } else restoreDraft(null);
+    busy = false;
+    lockEditor(!!(attempt && attempt.uncertain));
+    syncWriter();
+    draftNotice(removed ? (previousDraft ? '현재 임시저장을 지우고 이전 초안을 불러왔어요.' : '현재 임시저장을 지웠어요.') :
+      '화면은 비웠지만 저장된 초안을 지우지 못했어요. 브라우저의 사이트 데이터를 지워주세요.');
+    writeStatus('');
+  };
   $('postInput').addEventListener('input', function () {
     $('charCount').textContent = this.value.length.toLocaleString('ko-KR') + ' / 5,000';
   });
@@ -1283,6 +1494,7 @@
       await clearAttempt();
       for (var file of files) {
         photos.push(await OrbitBoardMedia.prepare(file));
+        draftMissingPhotos = false;
         renderPreviews();
       }
       writeStatus('사진 준비가 끝났어요. ‘글 남기기’를 누르면 함께 올라갑니다.');
@@ -1291,6 +1503,8 @@
     } finally {
       preparing = false;
       lockEditor(false);
+      persistDraft();
+      syncWriter();
     }
   });
   $('cancelWrite').onclick = function () {
@@ -1338,8 +1552,10 @@
     if (view === 'list' && location.hash.slice(1) !== channel) showRoute();
   });
   window.addEventListener('beforeunload', function (ev) {
+    persistDraft();
     if (
-      dirty() ||
+      (dirty() && (!draftStorageOK || !!photos.length)) ||
+      (attempt && attempt.uncertain) ||
       busy ||
       commentBusy ||
       Object.values(commentDrafts).some(function (s) {
@@ -1350,12 +1566,18 @@
       ev.returnValue = '';
     }
   });
+  window.addEventListener('pagehide', persistDraft);
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) { activityReader.reset(); return; }
     if (Date.now() - summaryTime > 60000) refreshActivity();
     if (view === 'detail' && detail && commentsLoaded) activityReader.observe($('commentList'), detail.id, comments);
   });
   window.addEventListener('message', function (ev) {
+    if (ev.origin === location.origin && ev.source === parent && ev.data &&
+        ev.data.orbit === 'accountOpening' && view === 'editor') {
+      beginDraftLogin();
+      return;
+    }
     if (
       ev.origin !== location.origin ||
       ev.source !== parent ||
@@ -1370,6 +1592,7 @@
     try {
       if (sb) {
         var s = checked(await sb.auth.getSession());
+        draftUser = s.session && s.session.user || null;
         if (s.session) {
           userId = s.session.user.id;
           isAdmin = checked(await sb.rpc('is_admin')) === true;
@@ -1381,6 +1604,12 @@
     if (!sb) {
       status('서버 연결을 준비하지 못했어요. 새로고침해주세요.', true);
       return;
+    }
+    // OAuth returns to the parent board panel, whose iframe normally opens its list.
+    // Only this tab's explicit login handoff can reopen its writing screen.
+    if (validHandoff() && memberOwner()) {
+      var returningDraft = readDraft(draftSession.handoff.owner);
+      if (returningDraft && hasDraft(returningDraft.row)) history.replaceState(null, '', url({ write: true }));
     }
     await showRoute();
     sb.auth.onAuthStateChange(function (event, session) {

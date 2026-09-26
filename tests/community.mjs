@@ -116,6 +116,8 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
     loseCommit: false,
     version,
     signups: 0,
+    logins: 0,
+    postIds: [],
     inserts: 0,
     selects: [],
     delays: {},
@@ -173,6 +175,10 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
       state.signups++;
       if (state.authFail) return json({ message: 'signup unavailable' }, 503);
       return json(session());
+    }
+    if (url.pathname === '/auth/v1/token') {
+      state.logins++;
+      return json(session(false));
     }
     if (url.pathname.endsWith('/rpc/board_version'))
       return version ? json(version) : json({ code: 'PGRST202', message: 'Not installed' }, 404);
@@ -258,6 +264,7 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
     if (/\/rpc\/(create_board_post|create_observation_post)$/.test(url.pathname)) {
       state.inserts++;
       const b = req.postDataJSON();
+      state.postIds.push(b.p_id);
       if (state.postFail) return json({ message: 'fixture write outage' }, 503);
       if (!state.posts.some((p) => p.id === b.p_id))
         state.posts.unshift({
@@ -493,7 +500,7 @@ try {
     if(registered) await page.locator('#whoRole').filter({hasText:'권한 없음'}).waitFor();
     ok('non-admin cannot see notice or delivery controls, registered='+registered,await page.locator('#noticePanel').isHidden()&&await page.locator('#operationsPanel').isHidden());
     await page.goto(base+'/lounge.html?write=1');
-    await page.locator(registered ? '#postInput' : '#memberWriteGate').waitFor();
+    await page.locator('#postInput').waitFor();
     ok('ordinary writer has no notice toggle',await page.locator('#postPinned').count()===0);
     await f.close();
   }
@@ -717,6 +724,134 @@ try {
     await f.close();
   }
   {
+    const f=await fixture({nickname:'',signedIn:false,registered:false}),{page,state}=f;
+    const draftKey='orbit_board_drafts_v1', title='로그인 전에 쓴 달 관측 기록', text='오늘 달이 구름 사이로 잠깐 보였어요.';
+    await page.goto(base+'/lounge.html?write=1');
+    await page.locator('#postInput').waitFor();
+    ok('visitor can draft before login without creating an account or public post',
+      await page.locator('#postForm').isVisible()&&await page.locator('.account-dialog[open]').count()===0&&state.signups===0&&state.inserts===0);
+    await page.locator('#postTitle').fill(title);
+    await page.locator('#postInput').fill(text);
+    await page.locator('#orbitSelect').selectOption('report');
+    await page.locator('#observationFields summary').click();
+    await page.locator('#observedLocation').fill('집 앞 공원');
+    await page.waitForFunction(key=>(localStorage.getItem(key)||'').includes('집 앞 공원'),draftKey);
+    ok('draft is stored on this device without sending its text to the service',
+      state.inserts===0&&state.signups===0&&state.logins===0&&
+      await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).drafts.some(d=>d.observation.location==='집 앞 공원'&&d.orbit==='report'),draftKey));
+    await page.reload();
+    await page.locator('#postInput').waitFor();
+    await page.waitForFunction(title=>document.querySelector('#postTitle').value===title,title);
+    ok('refresh restores literal title, body, category and observation details',
+      await page.locator('#postTitle').inputValue()===title&&await page.locator('#postInput').inputValue()===text&&
+      await page.locator('#orbitSelect').inputValue()==='report'&&await page.locator('#observedLocation').inputValue()==='집 앞 공원');
+    const otherTab=await f.context.newPage();
+    await otherTab.goto(base+'/lounge.html?write=1');
+    await otherTab.locator('#postInput').waitFor();
+    ok('another visitor tab does not reveal the saved draft',await otherTab.locator('#postTitle').inputValue()===''&&await otherTab.locator('#postInput').inputValue()==='');
+    await otherTab.close();
+    await page.locator('#btnTrace').click();
+    await page.getByRole('dialog',{name:'로그인',exact:true}).waitFor();
+    ok('publication asks for login and keeps the saved draft without creating an anonymous account',
+      (await page.locator('#writeStatus').textContent()).includes('로그인')&&
+      await page.locator('#postInput').inputValue()===text&&state.signups===0&&state.inserts===0);
+    state.profile={nickname:'돌아온별',level:1,xp:0,level_start:0,next_level:10,joined_at:now()};
+    await page.locator('#email').fill('draft-member@example.test');
+    await page.locator('#password').fill('mock-login-password');
+    await page.locator('#authSubmit').click();
+    await page.locator('#profileCard').waitFor();
+    ok('login preserves the editor and never publishes the draft automatically',
+      state.logins===1&&state.inserts===0&&await page.locator('#postTitle').inputValue()===title&&await page.locator('#postInput').inputValue()===text);
+    await page.locator('.account-close').click();
+    await page.locator('#btnTrace').click();
+    await page.locator('.detail-title').filter({hasText:title}).waitFor();
+    ok('explicit publication uses the saved content once and removes its local copy',
+      state.posts.filter(p=>p.title===title&&p.text===text&&p.observation.location==='집 앞 공원').length===1&&
+      await page.evaluate(({key,title})=>!(localStorage.getItem(key)||'').includes(title),{key:draftKey,title}));
+    await page.goto(base+'/lounge.html?write=1');
+    await page.locator('#postInput').waitFor();
+    ok('a new editor stays empty after successful publication',await page.locator('#postTitle').inputValue()===''&&await page.locator('#postInput').inputValue()==='');
+    await page.locator('#postInput').fill('직접 지우려는 임시 글');
+    await page.waitForFunction(key=>(localStorage.getItem(key)||'').includes('직접 지우려는 임시 글'),draftKey);
+    await page.locator('#clearDraft').click();
+    await page.reload();
+    await page.locator('#postInput').waitFor();
+    ok('explicitly clearing a draft keeps it removed after refresh',await page.locator('#postInput').inputValue()===''&&
+      await page.evaluate(key=>!(localStorage.getItem(key)||'').includes('직접 지우려는 임시 글'),draftKey));
+    await f.close();
+  }
+  {
+    const f=await fixture({nickname:'',signedIn:false,registered:false}),{page,state}=f;
+    await page.goto(base+'/main.html#lounge');
+    const frame=page.frameLocator('#loungeFrame');
+    await frame.locator('#writeTop').click();
+    await frame.locator('#postTitle').fill('상단 로그인으로 이어 쓰는 글');
+    await frame.locator('#postInput').fill('로그인 창을 열어도 이 문장은 남아 있어야 해요.');
+    await page.waitForURL(url=>url.searchParams.get('write')==='1');
+    await page.waitForFunction(()=>(localStorage.getItem('orbit_board_drafts_v1')||'').includes('로그인 창을 열어도 이 문장은 남아 있어야 해요.'));
+    await page.reload();
+    await frame.locator('#postForm').waitFor();
+    await page.waitForFunction(()=>document.querySelector('#loungeFrame').contentDocument.querySelector('#postInput').value==='로그인 창을 열어도 이 문장은 남아 있어야 해요.');
+    ok('refreshing the whole main page reopens the embedded editor with its draft',
+      await frame.locator('#postTitle').inputValue()==='상단 로그인으로 이어 쓰는 글'&&
+      await frame.locator('#postForm').isVisible()&&new URL(page.url()).hash==='#lounge');
+    await page.locator('#profileChip').click();
+    await page.getByRole('dialog',{name:'로그인',exact:true}).waitFor();
+    state.profile={nickname:'상단로그인별',level:1,xp:0,level_start:0,next_level:10,joined_at:now()};
+    await page.locator('#email').fill('header-login@example.test');
+    await page.locator('#password').fill('mock-header-password');
+    await page.locator('#authSubmit').click();
+    await page.locator('#profileCard').waitFor();
+    await page.waitForFunction(()=>document.querySelector('#loungeFrame').contentWindow.OrbitMembers.state.profile?.nickname==='상단로그인별');
+    await page.locator('.account-close').click();
+    ok('parent header login keeps the embedded visitor draft without publishing it',
+      await frame.locator('#postTitle').inputValue()==='상단 로그인으로 이어 쓰는 글'&&
+      await frame.locator('#postInput').inputValue()==='로그인 창을 열어도 이 문장은 남아 있어야 해요.'&&
+      state.inserts===0&&state.signups===0&&state.logins===1);
+    await f.close();
+  }
+  {
+    const f=await fixture(),{page}=f;
+    await f.context.addInitScript(({owner,otherOwner})=>{
+      const row={updatedAt:Date.now(),title:'다른 계정의 비공개 초안',text:'다른 계정의 내용',orbit:'free',observation:{},hasPhotos:false};
+      localStorage.setItem('orbit_board_drafts_v1',JSON.stringify({version:1,drafts:[
+        {...row,owner:otherOwner},
+        {...row,owner,title:'기한이 지난 내 초안',updatedAt:Date.now()-8*86400000},
+      ]}));
+    },{owner:'member:'+A,otherOwner:'member:'+uid(999)});
+    await page.goto(base+'/lounge.html?write=1');
+    await page.locator('#postInput').waitFor();
+    await page.waitForFunction(()=>!(localStorage.getItem('orbit_board_drafts_v1')||'').includes('기한이 지난 내 초안'));
+    ok('expired drafts are removed and another account draft never fills the editor',
+      await page.locator('#postTitle').inputValue()===''&&await page.locator('#postInput').inputValue()===''&&
+      await page.evaluate(()=>!(localStorage.getItem('orbit_board_drafts_v1')||'').includes('기한이 지난 내 초안')));
+    await f.close();
+  }
+  {
+    const f=await fixture(),{page,state}=f;
+    await page.goto(base+'/lounge.html?write=1');
+    await page.locator('#postInput').waitFor();
+    await page.evaluate(async()=>{
+      const original=Storage.prototype.setItem;
+      Storage.prototype.setItem=function(key,value){
+        if(key==='orbit_board_drafts_v1'||key==='orbit_nickname')throw new DOMException('Test storage quota','QuotaExceededError');
+        return original.call(this,key,value);
+      };
+      await window.OrbitMembers.refresh();
+    });
+    await page.locator('#postTitle').fill('저장 공간이 부족해도 남기는 이야기');
+    await page.locator('#postInput').fill('이 화면에 입력한 내용은 유지되어야 해요.');
+    await page.waitForFunction(()=>/저장.*(못|없)|저장 실패/.test(document.querySelector('#draftStatus').textContent));
+    ok('storage failure keeps current input and does not turn a member into an authentication error',
+      await page.locator('#postTitle').inputValue()==='저장 공간이 부족해도 남기는 이야기'&&
+      await page.locator('#postInput').inputValue()==='이 화면에 입력한 내용은 유지되어야 해요.'&&
+      await page.evaluate(()=>window.OrbitMembers.state.error===null)&&state.inserts===0);
+    await page.locator('#btnTrace').click();
+    await page.locator('.detail-title').filter({hasText:'저장 공간이 부족해도 남기는 이야기'}).waitFor();
+    ok('blocked local draft storage does not prevent an authenticated publication',state.posts.some(p=>p.title==='저장 공간이 부족해도 남기는 이야기'));
+    await f.close();
+  }
+  {
     const f = await fixture({ nickname: '처음본별' }), { page, state } = f;
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(base + '/lounge.html?write=1');
@@ -888,12 +1023,19 @@ try {
     state.loseCommit = true;
     await page.locator('#btnTrace').click();
     await page.locator('#writeStatus').filter({ hasText: '등록 여부' }).waitFor();
+    const uncertainPostId=state.posts.find(p=>p.title==='서울에서 본 토성').id;
+    await page.reload();
+    await page.locator('#postTitle:disabled').waitFor();
+    ok('an uncertain publication restores its locked payload after refresh',
+      await page.locator('#postTitle').inputValue()==='서울에서 본 토성'&&
+      await page.locator('#postInput').inputValue()==='고리가 또렷하게 보였습니다.'&&await page.locator('#clearDraft').isDisabled());
     await page.locator('#btnTrace:enabled').waitFor();
     await page.locator('#btnTrace').click();
     await page.getByRole('heading', { name: '서울에서 본 토성', exact: true }).waitFor();
     ok(
-      'lost commit response retry publishes exactly once',
-      state.posts.filter((p) => p.title === '서울에서 본 토성').length === 1 && state.signups === 0,
+      'lost commit response retry after refresh keeps the same post ID and publishes exactly once',
+      state.posts.filter((p) => p.title === '서울에서 본 토성').length === 1 && state.signups === 0&&
+        state.postIds.every(id=>id===uncertainPostId),
     );
     ok(
       'success opens a permanent detail URL',
@@ -1196,9 +1338,13 @@ try {
   {
     const f = await fixture({ signedIn: true, registered: true, profileReady:false }), { page, state } = f;
     await page.goto(base + '/lounge.html?write=1');
+    await page.locator('#postInput').fill('프로필을 완성하기 전에 적어 둔 이야기');
+    ok('incomplete member profile can prepare a draft without opening setup',await page.locator('.account-dialog[open]').count()===0);
+    await page.locator('#btnTrace').click();
     await page.locator('.account-dialog #setupCard').waitFor();
-    ok('profile setup opens over the board without navigation',new URL(page.url()).pathname==='/lounge.html' && await page.locator('#postForm').isHidden());
-    ok('registered author must finish the profile before new writing', state.inserts === 0);
+    ok('profile setup opens at submission without losing the draft',new URL(page.url()).pathname==='/lounge.html' &&
+      await page.locator('#postInput').inputValue()==='프로필을 완성하기 전에 적어 둔 이야기');
+    ok('registered author must finish the profile before publication', state.inserts === 0);
     await f.close();
   }
   {

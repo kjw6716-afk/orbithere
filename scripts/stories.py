@@ -236,7 +236,7 @@ def shell(title, description, path, body, prefix='', schema=None, noindex=False,
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
 <link rel="stylesheet" href="{prefix}orbit.css?v=20260912-brand">
-<link rel="stylesheet" href="{prefix}site-nav.css?v=20260914-community">
+<link rel="stylesheet" href="{prefix}site-nav.css?v=20260926-mint">
 <link rel="stylesheet" href="{prefix}stories.css?v=20260914-text-feature">
 {f'<script type="application/ld+json">{json_script(schema)}</script>' if schema else ''}
 <script src="{prefix}site-nav.js?v=20260914-community" defer></script>

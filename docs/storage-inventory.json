@@ -1,4 +1,12 @@
 {
+  "orbit_board_drafts_v1": {
+    "section": "storage-board-draft",
+    "purpose": "게시글 제목·본문·분류·관측 정보 및 등록 결과 확인용 게시 ID·고정 제출 내용·업로드한 사진 경로 임시 저장 (localStorage, 계정/비회원 탭 구분, 마지막 저장 후 7일이 지난 다음 접근·등록 완료·직접 삭제 시 정리, 사진 파일 제외)"
+  },
+  "orbit_board_draft_session": {
+    "section": "storage-board-draft",
+    "purpose": "비회원 초안의 탭 식별과 편집기에서 시작한 로그인 연결 의도 (sessionStorage, 탭 종료 시 삭제)"
+  },
   "orbit_observation_draft": {
     "section": "storage-note",
     "purpose": "종료된 관측 노트의 잔여 저장본 확인·내보내기·삭제 (새 저장 없음)"
