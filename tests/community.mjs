@@ -960,6 +960,76 @@ try {
     await f.close();
   }
   {
+    const f = await fixture(), { page, state } = f;
+    const cases = [
+      ['https://example.test/observe?q=moon&target=M13#chart', 'https://example.test/observe?q=moon&target=M13#chart.'],
+      ['https://example.test/관측?q=달#사진', 'https://example.test/관측?q=달#사진'],
+      ['http://example.test/wiki/Orbit_(astronomy)', '(http://example.test/wiki/Orbit_(astronomy)).'],
+      ['https://example.test/square/[1]', '[https://example.test/square/[1]]'],
+      ['https://example.test/punctuation', 'https://example.test/punctuation,!?:;'],
+      ['https://example.test/double', '"https://example.test/double"'],
+      ['https://example.test/single', "'https://example.test/single'"],
+      ['https://example.test/code', '`https://example.test/code`'],
+      ['https://example.test/quote', '“https://example.test/quote”'],
+      ['https://example.test/book', '「https://example.test/book」'],
+      ['https://example.test/angle', '<https://example.test/angle>'],
+    ];
+    const longURL = 'https://example.test/long?q=' + 'a'.repeat(1200),
+      localURL = base + '/lounge.html?post=' + uid(998),
+      source = [
+        '공백 두 칸도  그대로 남겨요.',
+        ...cases.map(([, sentence]) => sentence),
+        '',
+        'M13 관측 기록을 함께 읽어요.',
+        '<img src=x onerror="window.__postMarkupExecuted=true">',
+        '<script>window.__postMarkupExecuted=true</script>',
+        'javascript:alert(1) data:text/html,<svg onload="window.__postMarkupExecuted=true">',
+        longURL,
+        localURL,
+      ].join('\n');
+    state.posts[0].text = source;
+    state.posts.push({ ...state.posts[0], id: uid(998), title: '링크로 연 게시글', text: '새 탭의 글입니다.' });
+    await page.goto(base + '/lounge.html?post=' + P);
+    const body = page.locator('.detail-body');
+    await body.waitFor();
+    await page.getByRole('button', { name: 'M13 뜻 보기', exact: true }).waitFor();
+    const links = await body.locator('a').evaluateAll(nodes => nodes.map(a => ({
+      href: a.getAttribute('href'), text: a.textContent, target: a.target, rel: a.rel.split(/\s+/),
+    })));
+    const expected = [...cases.map(([url]) => url), longURL, localURL];
+    ok('body links preserve queries, fragments and balanced brackets while excluding enclosing punctuation',
+      JSON.stringify(links.map(a => a.href)) === JSON.stringify(expected.map(url => new URL(url).href)) &&
+      JSON.stringify(links.map(a => a.text)) === JSON.stringify(expected));
+    ok('all detected body URLs use an isolated new tab and user-content link attributes',
+      links.every(a => a.target === '_blank' && ['noopener', 'noreferrer', 'ugc'].every(rel => a.rel.includes(rel))));
+    ok('linkification preserves the complete original text, spacing and line breaks',
+      await body.textContent() === source && await body.innerText() === source);
+    ok('HTML and non-web URL schemes remain inert text in the post body',
+      await body.locator('img, script, svg, iframe, [onerror], [onload], a[href^="javascript:"], a[href^="data:"]').count() === 0 &&
+      await page.evaluate(() => window.__postMarkupExecuted !== true));
+    ok('glossary annotation skips URL contents and still explains the first normal M13 mention',
+      await body.locator('a .glossary-term').count() === 0 &&
+      await body.locator('.glossary-term').count() === 1 &&
+      await body.locator('a').first().textContent() === expected[0]);
+    await page.setViewportSize({ width: 320, height: 900 });
+    ok('a long linked URL wraps without horizontal overflow at 320px',
+      await body.evaluate(el => el.scrollWidth <= el.clientWidth + 1) &&
+      await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+    const originalURL = page.url();
+    const [popup] = await Promise.all([
+      f.context.waitForEvent('page'),
+      body.getByRole('link', { name: localURL, exact: true }).click(),
+    ]);
+    await popup.getByRole('heading', { name: '링크로 연 게시글', exact: true }).waitFor();
+    ok('an internal body link opens its real destination in a new tab without an opener',
+      popup.url() === localURL && await popup.evaluate(() => window.opener === null));
+    ok('opening the linked post leaves the original article and its URL intact',
+      page.url() === originalURL && await body.textContent() === source &&
+      await page.locator('.detail-title').textContent() === '기존 관측 후기');
+    await popup.close();
+    await f.close();
+  }
+  {
     const f=await fixture(),{page,state}=f;
     state.posts[0].view_count=1234;
     await page.goto(base+'/lounge.html');

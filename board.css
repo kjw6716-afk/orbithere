@@ -522,6 +522,7 @@ summary:focus-visible {
 }
 .detail-body a {
   color: var(--board-mint);
+  text-decoration: underline;
   text-underline-offset: 4px;
 }
 .detail-images {

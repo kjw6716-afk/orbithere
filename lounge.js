@@ -112,6 +112,36 @@
   function validId(id) {
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || '');
   }
+  function renderPostText(container, value) {
+    var text = String(value == null ? '' : value),
+      pattern = /https?:\/\/[^\s<>"'`\u2018\u2019\u201c\u201d\u3008-\u300f]+/gi,
+      closing = { ')': '(', ']': '[', '}': '{' },
+      fragment = document.createDocumentFragment(), previous = 0, match;
+    while ((match = pattern.exec(text))) {
+      var address = match[0];
+      // Keep balanced URL brackets, but leave surrounding prose punctuation outside.
+      while (address) {
+        var last = address.slice(-1), opening = closing[last];
+        if (/[.,!?;:，。！？、]/.test(last) ||
+            (opening && address.split(last).length > address.split(opening).length)) {
+          address = address.slice(0, -1);
+        } else break;
+      }
+      var destination;
+      try { destination = new URL(address); } catch (_) { continue; }
+      if (!/^https?:$/.test(destination.protocol) || !destination.hostname) continue;
+      var link = document.createElement('a');
+      link.href = destination.href;
+      link.textContent = address;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer ugc';
+      link.title = '새 탭에서 열기';
+      fragment.append(document.createTextNode(text.slice(previous, match.index)), link);
+      previous = match.index + address.length;
+    }
+    fragment.appendChild(document.createTextNode(text.slice(previous)));
+    container.replaceChildren(fragment);
+  }
   function nick() {
     var profile = window.OrbitMembers.state.profile;
     if (profile) return profile.nickname;
@@ -736,7 +766,7 @@
           : '') +
         (!own ? reportButton('post', p.id) : '') +
         '</div><section class="comments-section" aria-label="댓글"><div class="comments-heading"><h2>댓글</h2><button class="text-button" type="button" data-action="refresh-comments">새로고침</button></div><div id="commentList"></div><p class="comment-message" id="commentMessage" role="status"></p><button class="button subtle" type="button" id="moreComments" hidden>이전 댓글 더 보기</button><form class="comment-form" id="commentForm"><label class="sr-only" for="commentInput">댓글 내용</label><textarea id="commentInput" maxlength="300" rows="2" required placeholder="경험을 나누거나 궁금한 점을 더 물어보세요. (300자 이내)"></textarea><button class="button primary" type="submit">등록</button></form></section>';
-      $('postDetail').querySelector('.detail-body').textContent = p.text;
+      renderPostText($('postDetail').querySelector('.detail-body'), p.text);
       OrbitBoardWriting.render($('observationRecord'), p.observation);
       if (window.OrbitBoardGlossary) {
         var termCount = OrbitBoardGlossary.annotate([
