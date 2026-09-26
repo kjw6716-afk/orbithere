@@ -182,6 +182,14 @@
   margin-left: 7px;
   white-space: nowrap;
 }
+.member-role,
+.account-level.is-operator {
+  color: #70dfd5;
+  font-size: 0.86em;
+  font-weight: 600;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
 .account-card .danger {
   border-color: #ed9b9b;
   color: #ffb7b7;

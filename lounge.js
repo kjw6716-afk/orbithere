@@ -961,13 +961,7 @@
       });
     try {
       await ensureWriter();
-      checked(
-        on
-          ? await sb
-              .from('reactions')
-              .insert({ post_id: p.id, emoji: emoji, device_id: userId, author_id: userId })
-          : await sb.rpc('delete_reaction', { p_post_id: p.id, p_emoji: emoji, p_device: userId }),
-      );
+      checked(await sb.rpc('set_reaction', { p_post_id: p.id, p_emoji: emoji, p_selected: on }));
       await loadReactions(p, token);
     } catch (e) {
       if (token === route) {

@@ -92,6 +92,8 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
     comments: [],
     commentFail: false,
     reactionFail: false,
+    reactionWriteFail: false,
+    reactionCalls: [],
     reactions: [],
     reportBodies: [],
     queries: [],
@@ -285,14 +287,36 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
       }
       return json(b.p_id);
     }
-    if (url.pathname.endsWith('/rpc/reaction_summary'))
-      return state.reactionFail ? json({ message: 'reaction outage' }, 503) : json(state.reactions);
+    if (url.pathname.endsWith('/rpc/reaction_summary')) {
+      if (state.reactionFail) return json({ message: 'reaction outage' }, 503);
+      const ids=req.postDataJSON().p_post_ids, grouped=new Map();
+      for (const r of state.reactions.filter(r=>ids.includes(r.post_id))) {
+        const key=r.post_id+'|'+r.emoji, row=grouped.get(key)||{post_id:r.post_id,emoji:r.emoji,n:0,mine:false};
+        row.n++; row.mine ||= r.author_id===A; grouped.set(key,row);
+      }
+      return json([...grouped.values()]);
+    }
+    if (url.pathname.endsWith('/rpc/set_reaction')) {
+      const b=req.postDataJSON(); state.reactionCalls.push(b);
+      if(state.reactionWriteFail) return json({message:'reaction write outage'},503);
+      const current=state.reactions.find(r=>r.post_id===b.p_post_id&&r.author_id===A);
+      if(b.p_selected) {
+        if(current) current.emoji=b.p_emoji;
+        else state.reactions.push({post_id:b.p_post_id,author_id:A,emoji:b.p_emoji});
+      } else if(current&&current.emoji===b.p_emoji) state.reactions.splice(state.reactions.indexOf(current),1);
+      if(state.reactionLoseCommit) {state.reactionLoseCommit=false;return json({message:'lost response'},503);}
+      return json(state.reactions.find(r=>r.post_id===b.p_post_id&&r.author_id===A)?.emoji||null);
+    }
     if (url.pathname.endsWith('/rpc/delete_reaction')) {
-      state.reactions = [];
+      const b=req.postDataJSON();
+      state.reactions=state.reactions.filter(r=>r.post_id!==b.p_post_id||r.author_id!==A||r.emoji!==b.p_emoji);
       return json(null);
     }
     if (url.pathname === '/rest/v1/reactions') {
-      state.reactions = [{ emoji: req.postDataJSON().emoji, n: 1, mine: true }];
+      const b=req.postDataJSON();
+      if(b.author_id&&b.author_id!==A)return json({message:'wrong owner'},403);
+      if(state.reactions.some(r=>r.post_id===b.post_id&&r.author_id===A))return json({code:'23505',message:'duplicate reaction'},409);
+      state.reactions.push({post_id:b.post_id,emoji:b.emoji,author_id:A});
       return json(null, 201);
     }
     if (url.pathname === '/rest/v1/reports' && req.method() === 'POST') {
@@ -1228,7 +1252,31 @@ try {
     );
     await page.locator('[data-emoji="⭐"]').click();
     await page.locator('[data-emoji="⭐"][aria-pressed=true]').waitFor();
-    ok('reactions preserve authenticated ownership');
+    ok('reaction RPC sends desired state without a caller-controlled author',state.reactionCalls.length===1&&state.reactionCalls[0].p_selected===true&&!('p_author_id' in state.reactionCalls[0]));
+    await page.locator('[data-emoji="🔥"]').click();
+    await page.locator('[data-emoji="🔥"][aria-pressed=true]').waitFor();
+    ok('selecting another emoji replaces my selection',await page.locator('[data-emoji][aria-pressed=true]').count()===1&&state.reactions.length===1&&state.reactions[0].emoji==='🔥');
+    state.reactionWriteFail=true;
+    await page.locator('[data-emoji="❤️"]').click();
+    await page.locator('#loungeStatus').filter({hasText:'공감 저장 실패'}).waitFor();
+    await page.locator('[data-emoji="🔥"][aria-pressed=true]:enabled').waitFor();
+    ok('reaction write failure preserves the confirmed selection',state.reactions.length===1&&state.reactions[0].emoji==='🔥');
+    state.reactionWriteFail=false;
+    await page.locator('[data-emoji="🔥"]').click();
+    await page.locator('[data-emoji="🔥"][aria-pressed=false]:enabled').waitFor();
+    ok('clicking the selected emoji sends cancellation',state.reactions.length===0&&state.reactionCalls.at(-1).p_selected===false);
+    state.reactionLoseCommit=true;
+    await page.locator('[data-emoji="⭐"]').click();
+    await page.locator('[data-emoji="⭐"][aria-pressed=true]:enabled').waitFor();
+    ok('lost write response reloads the stored choice without duplicating it',state.reactions.length===1&&state.reactions[0].emoji==='⭐');
+    state.reactions.push({post_id:P,author_id:'22222222-2222-4222-8222-222222222222',emoji:'❤️'});
+    const callsBefore=state.reactionCalls.length;
+    await page.evaluate(()=>{document.querySelector('[data-emoji="❤️"]').click();document.querySelector('[data-emoji="👏"]').click();});
+    await page.locator('[data-emoji="❤️"][aria-pressed=true]:enabled').waitFor();
+    ok('rapid local clicks make one pending request and keep other users reactions',state.reactionCalls.length===callsBefore+1&&state.reactions.length===2&&state.reactions.every(r=>r.emoji==='❤️')&&await page.locator('[data-emoji="❤️"]').textContent()==='❤️ 2');
+    await page.locator('[data-emoji="❤️"]').click();
+    await page.locator('[data-emoji="❤️"][aria-pressed=false]:enabled').waitFor();
+    ok('cancelling my reaction leaves another user count intact',state.reactions.length===1&&await page.locator('[data-emoji="❤️"]').textContent()==='❤️ 1');
     state.reactionFail = true;
     await page.reload();
     await page.getByRole('button', { name: '공감 다시 불러오기' }).waitFor();
@@ -1237,6 +1285,14 @@ try {
       (await page.locator('.detail-body').isVisible()) &&
         (await page.locator('[data-emoji]').count()) === 0,
     );
+    await f.close();
+  }
+  {
+    const f=await fixture({registered:false}),{page,state}=f;
+    await page.goto(base+'/lounge.html?post='+P);
+    await page.locator('[data-emoji="⭐"]').click();
+    await page.locator('[data-emoji="⭐"][aria-pressed=true]').waitFor();
+    ok('anonymous Auth keeps its existing reaction eligibility',state.reactions.length===1&&state.signups===0&&await page.locator('.account-dialog[open]').count()===0);
     await f.close();
   }
   {

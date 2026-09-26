@@ -223,7 +223,10 @@
     }
     var p = s.profile;
     $("profileNickname").textContent = p.nickname;
-    $("profileLevel").textContent = "Lv." + p.level;
+    $("profileLevel").textContent = member.roleLabel(p);
+    $("profileLevel").classList.toggle("is-operator", p.is_admin === true);
+    show("levelProgress", p.is_admin !== true);
+    show("levelProgressText", p.is_admin !== true);
     $("levelProgress").max = p.next_level - p.level_start;
     $("levelProgress").value = p.xp - p.level_start;
     $("levelProgressText").textContent =
