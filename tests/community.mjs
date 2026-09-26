@@ -35,7 +35,8 @@ await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}`,
   browser = await chromium.launch();
 const A = '11111111-1111-4111-8111-111111111111',
-  P = '44444444-4444-4444-8444-444444444444';
+  P = '44444444-4444-4444-8444-444444444444',
+  B = '22222222-2222-4222-8222-222222222222';
 const now = () => new Date().toISOString(),
   uid = (n) => 'aaaaaaaa-aaaa-4aaa-8aaa-' + n.toString(16).padStart(12, '0');
 let checks = 0;
@@ -44,21 +45,21 @@ function ok(name, condition = true) {
   checks++;
   console.log('✓ ' + name);
 }
-function session(anonymous = true) {
+function session(anonymous = true, actor = A) {
   const exp = Math.floor(Date.now() / 1000) + 3600,
     encode = (v) => Buffer.from(JSON.stringify(v)).toString('base64url');
   return {
     access_token:
       encode({ alg: 'HS256', typ: 'JWT' }) +
       '.' +
-      encode({ sub: A, exp, role: 'authenticated', is_anonymous: anonymous }) +
+      encode({ sub: actor, exp, role: 'authenticated', is_anonymous: anonymous }) +
       '.test-signature',
     token_type: 'bearer',
     expires_in: 3600,
     expires_at: exp,
     refresh_token: 'test-refresh-token',
     user: {
-      id: A,
+      id: actor,
       aud: 'authenticated',
       role: 'authenticated',
       is_anonymous: anonymous,
@@ -84,6 +85,8 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
   const context = await browser.newContext({ viewport: { width: 1200, height: 900 } });
   const state = {
     profile: registered && profileReady ? {nickname:nickname || '관측자',level:2,xp:10,level_start:10,next_level:30,joined_at:now()} : null,
+    auth: admin || signedIn ? session(!(admin || registered)) : null, loginUserId: A,
+    gates: [], requestLog: [],
     receipts: new Set(), readCalls: [], activityCalls: [], activityFail: false, readFail: false,
     viewCalls: [],
     viewed: new Set(),
@@ -130,19 +133,22 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
   const errors = [];
   await context.addInitScript(
     ({ nickname, auth }) => {
-      if (nickname) localStorage.setItem('orbit_nickname', nickname);
-      if (auth) localStorage.setItem('sb-unwxpuvfqyjhgrcrmuhu-auth-token', JSON.stringify(auth));
+      if (!sessionStorage.getItem('orbit_fixture_initialized')) {
+        if (nickname) localStorage.setItem('orbit_nickname', nickname);
+        if (auth) localStorage.setItem('sb-unwxpuvfqyjhgrcrmuhu-auth-token', JSON.stringify(auth));
+        sessionStorage.setItem('orbit_fixture_initialized', '1');
+      }
     },
     { nickname, auth: admin || signedIn ? session(!(admin || registered)) : null },
   );
-  function unreadRows(p) {
-    return state.comments.filter(c => c.post_id === p.id && c.author_id !== A && !state.receipts.has(c.id) &&
-      (p.author_id === A || state.comments.some(own => own.post_id === p.id && own.author_id === A &&
+  function unreadRows(p, actor = A) {
+    return state.comments.filter(c => c.post_id === p.id && c.author_id !== actor && !state.receipts.has(c.id) &&
+      (p.author_id === actor || state.comments.some(own => own.post_id === p.id && own.author_id === actor &&
         (own.created_at < c.created_at || own.created_at === c.created_at && own.id < c.id))));
   }
-  function activityRows(scope) {
-    return state.posts.filter(p => scope === 'mine' ? p.author_id === A : scope === 'joined' ?
-      p.author_id !== A && state.comments.some(c => c.post_id === p.id && c.author_id === A) : unreadRows(p).length > 0);
+  function activityRows(scope, actor = A) {
+    return state.posts.filter(p => scope === 'mine' ? p.author_id === actor : scope === 'joined' ?
+      p.author_id !== actor && state.comments.some(c => c.post_id === p.id && c.author_id === actor) : unreadRows(p, actor).length > 0);
   }
   await context.route('**/*', async (route) => {
     const req = route.request(),
@@ -171,23 +177,37 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
         path: join(root, 'node_modules/@supabase/supabase-js/dist/umd/supabase.js'),
       });
     if (url.hostname !== 'unwxpuvfqyjhgrcrmuhu.supabase.co') return route.abort();
-    const json = (body, status = 200) =>
-      route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
+    let actor = null;
+    try { actor = JSON.parse(Buffer.from((req.headers().authorization || '').split('.')[1], 'base64url')).sub; } catch {}
+    state.requestLog.push({ path: url.pathname, method: req.method(), actor });
+    const gate = state.gates.find(g => g.matches(req, actor));
+    if (gate) { state.gates.splice(state.gates.indexOf(gate), 1); gate.enter(); }
+    const json = async (body, status = 200) => {
+      const snapshot = JSON.stringify(body);
+      if (gate) await gate.wait;
+      try { return await route.fulfill({ status, contentType: 'application/json', body: snapshot }); }
+      finally { if (gate) gate.finish(); }
+    };
+    if (url.pathname === '/auth/v1/authorize')
+      return route.fulfill({contentType:'text/html',body:'<p>Isolated OAuth provider</p>'});
+    if (url.pathname === '/auth/v1/user') return json(state.auth?.user || null);
     if (url.pathname === '/auth/v1/signup') {
       state.signups++;
       if (state.authFail) return json({ message: 'signup unavailable' }, 503);
-      return json(session());
+      state.auth = session(true, state.anonymousUserId || uid(99999));
+      return json(state.auth);
     }
     if (url.pathname === '/auth/v1/token') {
       state.logins++;
-      return json(session(false));
+      state.auth = session(false, state.loginUserId);
+      return json(state.auth);
     }
     if (url.pathname.endsWith('/rpc/board_version'))
       return version ? json(version) : json({ code: 'PGRST202', message: 'Not installed' }, 404);
     if (url.pathname.endsWith('/rpc/board_observation_version'))
       return state.observationVersion ? json(1) : json({ code: 'PGRST202', message: 'Not installed' }, 404);
     if (url.pathname.endsWith('/rpc/community_version')) return json(2);
-    if (url.pathname.endsWith('/rpc/is_admin')) return json(admin);
+    if (url.pathname.endsWith('/rpc/is_admin')) return json(admin && actor === A);
     if (url.pathname.endsWith('/rpc/admin_delivery_alerts')) {
       if (state.deliveryGate) await state.deliveryGate;
       return state.deliveryFail ? json({message:'offline'},503) : json(state.deliveries || {unread:0,events:[]});
@@ -205,21 +225,21 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
     if (url.pathname.endsWith('/rpc/member_cards')) return json([]);
     if (url.pathname.endsWith('/rpc/visit_stats')) return json([{day:'2026-09-13',count:19,total:46}]);
     if (url.pathname.endsWith('/rpc/report_queue')) return json([]);
-    if (url.pathname === '/auth/v1/logout') return json({});
+    if (url.pathname === '/auth/v1/logout') { state.auth = null; return json({}); }
     if (url.pathname.endsWith('/rpc/board_activity_summary'))
-      return state.activityFail ? json({message:'activity unavailable'},503) : json(activityRows('unread').length);
+      return state.activityFail ? json({message:'activity unavailable'},503) : json(activityRows('unread', actor).length);
     if (url.pathname.endsWith('/rpc/board_activity_posts')) {
       const b = req.postDataJSON(); state.activityCalls.push(b);
       if (state.activityFail) return json({message:'activity unavailable'},503);
-      const rows = activityRows(b.p_scope).filter(p => !b.p_query || (p.title+' '+p.text).includes(b.p_query));
+      const rows = activityRows(b.p_scope, actor).filter(p => !b.p_query || (p.title+' '+p.text).includes(b.p_query));
       return json(cursor(ordered(rows),b.p_before,b.p_before_id).slice(0,b.p_limit).map(p => ({...p,
-        comment_count:state.comments.filter(c=>c.post_id===p.id).length,unread_count:unreadRows(p).length})));
+        comment_count:state.comments.filter(c=>c.post_id===p.id).length,unread_count:unreadRows(p, actor).length})));
     }
     if (url.pathname.endsWith('/rpc/mark_board_comments_read')) {
       const b = req.postDataJSON(); state.readCalls.push(b);
       if (state.readFail) return json({message:'receipt unavailable'},503);
       const p=state.posts.find(p=>p.id===b.p_post_id);
-      const ids=p?unreadRows(p).filter(c=>b.p_comment_ids.includes(c.id)).map(c=>c.id):[];
+      const ids=p?unreadRows(p, actor).filter(c=>b.p_comment_ids.includes(c.id)).map(c=>c.id):[];
       ids.forEach(id=>state.receipts.add(id));
       return json(ids.length);
     }
@@ -260,7 +280,7 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
     if (url.pathname.endsWith('/rpc/reserve_board_images')) {
       const b = req.postDataJSON();
       return json(
-        Array.from({ length: b.p_count }, (_, i) => A + '/' + b.p_post_id + '/' + uid(i) + '.jpg'),
+        Array.from({ length: b.p_count }, (_, i) => actor + '/' + b.p_post_id + '/' + uid(i) + '.jpg'),
       );
     }
     if (/\/rpc\/(create_board_post|create_observation_post)$/.test(url.pathname)) {
@@ -278,7 +298,7 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
           orbit: b.p_orbit,
           image_paths: b.p_images,
           is_pinned: b.p_pinned,
-          author_id: A,
+          author_id: actor,
           created_at: now(),
         });
       if (state.loseCommit) {
@@ -292,31 +312,31 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
       const ids=req.postDataJSON().p_post_ids, grouped=new Map();
       for (const r of state.reactions.filter(r=>ids.includes(r.post_id))) {
         const key=r.post_id+'|'+r.emoji, row=grouped.get(key)||{post_id:r.post_id,emoji:r.emoji,n:0,mine:false};
-        row.n++; row.mine ||= r.author_id===A; grouped.set(key,row);
+        row.n++; row.mine ||= r.author_id===actor; grouped.set(key,row);
       }
       return json([...grouped.values()]);
     }
     if (url.pathname.endsWith('/rpc/set_reaction')) {
       const b=req.postDataJSON(); state.reactionCalls.push(b);
       if(state.reactionWriteFail) return json({message:'reaction write outage'},503);
-      const current=state.reactions.find(r=>r.post_id===b.p_post_id&&r.author_id===A);
+      const current=state.reactions.find(r=>r.post_id===b.p_post_id&&r.author_id===actor);
       if(b.p_selected) {
         if(current) current.emoji=b.p_emoji;
-        else state.reactions.push({post_id:b.p_post_id,author_id:A,emoji:b.p_emoji});
+        else state.reactions.push({post_id:b.p_post_id,author_id:actor,emoji:b.p_emoji});
       } else if(current&&current.emoji===b.p_emoji) state.reactions.splice(state.reactions.indexOf(current),1);
       if(state.reactionLoseCommit) {state.reactionLoseCommit=false;return json({message:'lost response'},503);}
-      return json(state.reactions.find(r=>r.post_id===b.p_post_id&&r.author_id===A)?.emoji||null);
+      return json(state.reactions.find(r=>r.post_id===b.p_post_id&&r.author_id===actor)?.emoji||null);
     }
     if (url.pathname.endsWith('/rpc/delete_reaction')) {
       const b=req.postDataJSON();
-      state.reactions=state.reactions.filter(r=>r.post_id!==b.p_post_id||r.author_id!==A||r.emoji!==b.p_emoji);
+      state.reactions=state.reactions.filter(r=>r.post_id!==b.p_post_id||r.author_id!==actor||r.emoji!==b.p_emoji);
       return json(null);
     }
     if (url.pathname === '/rest/v1/reactions') {
       const b=req.postDataJSON();
-      if(b.author_id&&b.author_id!==A)return json({message:'wrong owner'},403);
-      if(state.reactions.some(r=>r.post_id===b.post_id&&r.author_id===A))return json({code:'23505',message:'duplicate reaction'},409);
-      state.reactions.push({post_id:b.post_id,emoji:b.emoji,author_id:A});
+      if(b.author_id&&b.author_id!==actor)return json({message:'wrong owner'},403);
+      if(state.reactions.some(r=>r.post_id===b.post_id&&r.author_id===actor))return json({code:'23505',message:'duplicate reaction'},409);
+      state.reactions.push({post_id:b.post_id,emoji:b.emoji,author_id:actor});
       return json(null, 201);
     }
     if (url.pathname === '/rest/v1/reports' && req.method() === 'POST') {
@@ -440,13 +460,363 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
     page,
     state,
     errors,
+    defer(matches) {
+      let enter, release, finish;
+      const finished = new Promise(resolve => { finish = resolve; });
+      const entered = new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error('Expected isolated request did not reach its response gate')), 8000);
+        timeout.unref();
+        enter = () => { clearTimeout(timeout); resolve(); };
+      }), wait = new Promise(resolve => { release = resolve; });
+      state.gates.push({matches, enter, wait, finish});
+      return {entered, release, finished};
+    },
     close: async () => {
       ok('no browser exceptions: ' + errors.join(', '), errors.length === 0);
       await context.close();
     },
   };
 }
+async function identityRegressions() {
+  const draftKey = 'orbit_board_drafts_v1';
+  async function openBoard(f, embedded, query = '') {
+    await f.page.goto(base + (embedded ? '/main.html' + query + '#lounge' : '/lounge.html' + query));
+    if (embedded) {
+      await f.page.frameLocator('#loungeFrame').locator('#loungeStatus').waitFor({state:'attached'});
+      const frame = f.page.frames().find(frame => new URL(frame.url()).pathname === '/lounge.html');
+      const params = new URLSearchParams(query);
+      // main only forwards write=1; reach detail/activity through its actual iframe links.
+      if (params.has('post')) await frame.locator('a.row-title').filter({hasText:'기존 관측 후기'}).click();
+      if (params.has('activity')) await frame.locator('#activityLink').click();
+      return frame;
+    }
+    return f.page;
+  }
+  async function openAccount(f, embedded) {
+    await f.page.locator(embedded ? '#profileChip' : '[data-account-link]').click();
+    await f.page.locator('.account-dialog[open]').waitFor();
+  }
+  async function login(f, embedded, actor, alreadyOpen = false) {
+    if (!alreadyOpen) await openAccount(f, embedded);
+    f.state.loginUserId = actor;
+    await f.page.locator('#email').fill(actor === A ? 'account-a@example.test' : 'account-b@example.test');
+    await f.page.locator('#password').fill('isolated-fixture-password');
+    await f.page.locator('#authSubmit').click();
+    await f.page.locator('#profileCard').waitFor().catch(async error => {
+      console.error('Account transition did not complete', {expected:actor, requests:f.state.requestLog.slice(-20),
+        current:await f.page.evaluate(()=>({id:OrbitMembers.state.user?.id,anonymous:OrbitMembers.state.user?.is_anonymous,profile:!!OrbitMembers.state.profile}))});
+      throw error;
+    });
+    const board = embedded ? f.page.frames().find(frame => new URL(frame.url()).pathname === '/lounge.html') : f.page;
+    await board.waitForFunction(actor => window.OrbitMembers.state.user?.id === actor && window.OrbitMembers.state.profile, actor);
+    await f.page.locator('.account-close').click();
+  }
+  async function switchAccount(f, embedded, actor) {
+    await openAccount(f, embedded);
+    await f.page.locator('#signOut').click();
+    await f.page.locator('#authCard').waitFor();
+    await login(f, embedded, actor, true);
+  }
+  const settle = board => board.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  for (const embedded of [false, true]) {
+    const mode = embedded ? 'iframe' : 'direct';
+    {
+      const f = await fixture({nickname:'', signedIn:false, registered:false}), {page,state} = f;
+      let board = await openBoard(f, embedded, '?write=1');
+      await board.locator('#postTitle').fill('익명 열람 전의 제목');
+      await board.locator('#postInput').fill('열람하고 돌아와도 이어 쓰는 내용');
+      await page.waitForFunction(key => (localStorage.getItem(key)||'').includes('열람하고 돌아와도 이어 쓰는 내용'), draftKey);
+      const original = await page.evaluate(key => JSON.parse(localStorage.getItem(key)).drafts[0], draftKey);
+      await board.locator('#cancelWrite').click();
+      await board.getByRole('link',{name:'기존 관측 후기',exact:true}).click();
+      await board.locator('#postViews').filter({hasText:'조회 1'}).waitFor();
+      ok(mode + ': first detail view creates only anonymous Auth and retains the stored visitor row', state.signups === 1 && state.inserts === 0 &&
+        await page.evaluate(({key,owner}) => JSON.parse(localStorage.getItem(key)).drafts.some(row => row.owner===owner && row.text==='열람하고 돌아와도 이어 쓰는 내용'), {key:draftKey,owner:original.owner}));
+      await board.locator('#backToFeed').click();
+      await board.locator('#writeTop').click();
+      await board.locator('#postInput').waitFor();
+      ok(mode + ': browsing and anonymous Auth never hide the original guest draft', await board.locator('#postTitle').inputValue()==='익명 열람 전의 제목' && await board.locator('#postInput').inputValue()==='열람하고 돌아와도 이어 쓰는 내용');
+      await page.reload();
+      if (embedded) { await page.frameLocator('#loungeFrame').locator('#postInput').waitFor(); board = page.frames().find(frame => new URL(frame.url()).pathname==='/lounge.html'); }
+      await board.locator('#postInput').waitFor();
+      await board.waitForFunction(()=>document.querySelector('#postInput').value==='열람하고 돌아와도 이어 쓰는 내용');
+      await board.locator('#cancelWrite').click();
+      await page.goBack();
+      await board.locator('#postInput').waitFor();
+      ok(mode + ': refresh and browser back preserve the same anonymous visitor draft', await board.locator('#postInput').inputValue()==='열람하고 돌아와도 이어 쓰는 내용');
+      await board.locator('#cancelWrite').click();
+      await board.getByRole('link',{name:'기존 관측 후기',exact:true}).click();
+      await board.locator('.detail-title').waitFor();
+      state.profile={nickname:'이어쓰는별',level:1,xp:0,level_start:0,next_level:10,joined_at:now()};
+      await login(f,embedded,A);
+      await board.locator('#postInput').waitFor();
+      await board.waitForFunction(()=>document.querySelector('#postInput').value==='열람하고 돌아와도 이어 쓰는 내용');
+      ok(mode + ': email login from another post resumes the saved guest draft without automatic publication',await board.locator('#postTitle').inputValue()==='익명 열람 전의 제목'&&state.inserts===0);
+      await f.close();
+    }
+    {
+      const f=await fixture({nickname:'',signedIn:false,registered:false}),{page,state}=f;
+      const board=await openBoard(f,embedded,'?write=1');
+      await board.locator('#postTitle').fill('지연된 익명 응답과 로그인');
+      await board.locator('#postInput').fill('로그인이 끝나면 내 회원 초안으로 남아야 해요.');
+      await board.locator('#cancelWrite').click();
+      const anonymous=f.defer(req=>new URL(req.url()).pathname==='/auth/v1/signup');
+      await board.getByRole('link',{name:'기존 관측 후기',exact:true}).click();
+      await anonymous.entered;
+      state.profile={nickname:'전환한별',level:1,xp:0,level_start:0,next_level:10,joined_at:now()};
+      await login(f,embedded,B);
+      await board.locator('#postInput').waitFor();
+      anonymous.release(); await anonymous.finished; await settle(board);
+      ok(mode + ': a late first-visit anonymous response cannot replace completed member login or its draft',
+        await page.evaluate(id=>window.OrbitMembers.state.user?.id===id&&!window.OrbitMembers.state.user?.is_anonymous,B)&&
+        await board.evaluate(id=>window.OrbitMembers.state.user?.id===id&&!window.OrbitMembers.state.user?.is_anonymous,B)&&
+        await board.locator('#postInput').inputValue()==='로그인이 끝나면 내 회원 초안으로 남아야 해요.'&&state.inserts===0);
+      await f.close();
+    }
+    for (const conflict of [false, true]) {
+      const f = await fixture({nickname:'',signedIn:false,registered:false}), {page,state}=f;
+      let board = await openBoard(f, embedded, '?write=1');
+      await board.locator('#postTitle').fill('Google 왕복 전 제목');
+      await board.locator('#postInput').fill('Google 로그인 뒤에도 내가 눌러야 게시돼요.');
+      await page.waitForFunction(key => (localStorage.getItem(key)||'').includes('Google 왕복 전 제목'), draftKey);
+      if (conflict) await page.evaluate(({key,owner}) => {
+        const data=JSON.parse(localStorage.getItem(key));
+        data.drafts.push({owner,updatedAt:Date.now(),title:'이미 있던 회원 초안',text:'회원의 원본 내용',orbit:'free',observation:{},hasPhotos:false});
+        localStorage.setItem(key,JSON.stringify(data));
+      },{key:draftKey,owner:'member:'+A});
+      await board.locator('#btnTrace').click();
+      await page.locator('#googleSignIn').click();
+      await page.waitForURL(url=>url.pathname==='/auth/v1/authorize');
+      const callback = new URL(page.url()).searchParams.get('redirect_to');
+      ok(mode + ': Google authorization saves a same-tab return path before navigation', !!callback && new URL(callback).origin===base);
+      state.profile={nickname:'왕복한별',level:1,xp:0,level_start:0,next_level:10,joined_at:now()};
+      state.auth=session(false);
+      state.auth.user.app_metadata={provider:'google',providers:['google']};
+      await page.goto(callback+'#'+new URLSearchParams({access_token:state.auth.access_token,refresh_token:state.auth.refresh_token,token_type:'bearer',expires_in:'3600',type:'signup'}));
+      await page.waitForURL(url=>url.pathname===(embedded?'/main.html':'/lounge.html'));
+      await page.locator('#profileCard').waitFor();
+      await page.locator('.account-close').click();
+      if(embedded) { await page.frameLocator('#loungeFrame').locator('#postInput').waitFor(); board=page.frames().find(frame=>new URL(frame.url()).pathname==='/lounge.html'); }
+      await board.waitForFunction(()=>document.querySelector('#postInput').value==='Google 로그인 뒤에도 내가 눌러야 게시돼요.');
+      ok(mode + ': real SDK OAuth callback restores the visitor draft without publishing, member conflict='+conflict,
+        await board.locator('#postTitle').inputValue()==='Google 왕복 전 제목' && state.inserts===0);
+      if(conflict) {
+        ok(mode + ': guest handoff preserves both the member original and separate continuation', await page.evaluate(({key,owner})=>{
+          const rows=JSON.parse(localStorage.getItem(key)).drafts;
+          return rows.some(r=>r.owner===owner&&r.text==='회원의 원본 내용')&&rows.some(r=>r.owner.startsWith(owner+':continue:')&&r.text==='Google 로그인 뒤에도 내가 눌러야 게시돼요.');
+        },{key:draftKey,owner:'member:'+A}));
+      }
+      await board.locator('#btnTrace').click();
+      await board.locator('.detail-title').filter({hasText:'Google 왕복 전 제목'}).waitFor();
+      ok(mode + ': OAuth handoff publishes exactly once only after explicit submission',state.posts.filter(p=>p.title==='Google 왕복 전 제목'&&p.author_id===A).length===1);
+      if(conflict) {
+        await board.locator('#backToFeed').click();
+        await board.locator('#writeTop').click();
+        await board.waitForFunction(()=>document.querySelector('#postInput').value==='회원의 원본 내용');
+        ok(mode + ': publishing the continuation returns to the untouched original member draft', await board.locator('#postTitle').inputValue()==='이미 있던 회원 초안');
+      }
+      await f.close();
+    }
+    {
+      const f=await fixture({admin:true}),{state}=f;
+      state.posts[0].author_id=A;
+      state.comments=[{id:uid(9901),post_id:P,nick:'A',text:'A의 등록된 댓글',author_id:A,created_at:now()}];
+      state.reactions=[{post_id:P,author_id:A,emoji:'⭐'},{post_id:P,author_id:B,emoji:'❤️'}];
+      const board=await openBoard(f,embedded,'?post='+P);
+      await board.locator('[data-emoji="⭐"][aria-pressed=true]').waitFor();
+      await board.locator('[data-delete-comment]').waitFor();
+      await board.locator('#commentInput').fill('A의 미등록 비공개 댓글');
+      await switchAccount(f,embedded,B);
+      await board.locator('#commentInput:enabled').waitFor();
+      await settle(board);
+      ok(mode + ': A logout and B login never expose A comment text', await board.locator('#commentInput').inputValue()==='');
+      await board.locator('[data-emoji="❤️"][aria-pressed=true]').waitFor();
+      ok(mode + ': account change recalculates post/comment ownership, admin controls and reaction selection', await board.locator('[data-action=delete-post],[data-action=pin],[data-delete-comment]').count()===0 && await board.locator('[data-emoji][aria-pressed=true]').count()===1);
+      await board.locator('#commentInput').fill('B의 미등록 비공개 댓글');
+      await switchAccount(f,embedded,A);
+      await board.waitForFunction(()=>document.querySelector('#commentInput')?.value==='A의 미등록 비공개 댓글');
+      await board.locator('[data-action=pin]').waitFor();
+      ok(mode + ': A → B → A restores only A comment draft and admin ownership', await board.locator('#commentInput').inputValue()==='A의 미등록 비공개 댓글' && await board.locator('[data-action=delete-post]').count()===1);
+      await switchAccount(f,embedded,B);
+      await board.waitForFunction(()=>document.querySelector('#commentInput')?.value==='B의 미등록 비공개 댓글');
+      ok(mode + ': B own draft also survives switching back, without copying A input', await board.locator('#commentInput').inputValue()==='B의 미등록 비공개 댓글');
+      await switchAccount(f,embedded,A);
+      const list=f.defer((req,actor)=>actor===A&&req.method()==='GET'&&new URL(req.url()).pathname==='/rest/v1/comments'&&!new URL(req.url()).searchParams.has('id'));
+      await board.locator('[data-action=refresh-comments]').click(); await list.entered;
+      state.comments.push({id:uid(9902),post_id:P,nick:'B',text:'계정 전환 뒤의 새 댓글',author_id:B,created_at:now()});
+      await switchAccount(f,embedded,B);
+      await board.locator('.comment-body').filter({hasText:'계정 전환 뒤의 새 댓글'}).waitFor();
+      const listDone=f.page.waitForResponse(r=>new URL(r.url()).pathname==='/rest/v1/comments'&&!new URL(r.url()).searchParams.has('id'));
+      list.release(); await listDone; await settle(board);
+      ok(mode + ': late A comment list cannot remove B new replies or reinstate A delete controls',
+        await board.locator('.comment-body').filter({hasText:'계정 전환 뒤의 새 댓글'}).count()===1&&await board.locator('[data-delete-comment]').count()===1&&await board.locator('[data-delete-comment]').getAttribute('data-delete-comment')===uid(9902));
+      await f.close();
+    }
+    {
+      const f=await fixture(),{state,page}=f;
+      const board=await openBoard(f,embedded,'?post='+P);
+      await board.locator('#commentInput:enabled').waitFor();
+      await board.locator('#commentInput').fill('A가 재시도할 댓글');
+      state.commentFail=true;
+      await board.locator('#commentForm button').click();
+      await board.locator('#loungeStatus').filter({hasText:'댓글 등록 실패'}).waitFor();
+      state.commentFail=false;
+      const retry=f.defer((req,actor)=>actor===A&&req.method()==='GET'&&new URL(req.url()).pathname==='/rest/v1/comments'&&new URL(req.url()).searchParams.has('id'));
+      await board.locator('#commentForm button').click();
+      await retry.entered;
+      await switchAccount(f,embedded,B);
+      await board.locator('#commentInput:enabled').waitFor();
+      await board.locator('#commentInput').fill('B가 계속 작성할 댓글');
+      const retryDone=page.waitForResponse(r=>new URL(r.url()).pathname==='/rest/v1/comments'&&new URL(r.url()).searchParams.has('id'));
+      retry.release();
+      await retryDone;
+      await settle(board);
+      ok(mode + ': late A retry lookup cannot insert A text as B or reset B input', state.comments.every(c=>c.text!=='A가 재시도할 댓글')&&await board.locator('#commentInput').inputValue()==='B가 계속 작성할 댓글');
+      await board.locator('#commentForm button').click();
+      await board.locator('.comment-body').filter({hasText:'B가 계속 작성할 댓글'}).waitFor();
+      ok(mode + ': B submission uses B identity and its own retry payload', state.comments.filter(c=>c.text==='B가 계속 작성할 댓글'&&c.author_id===B).length===1);
+      await switchAccount(f,embedded,A);
+      await board.waitForFunction(()=>document.querySelector('#commentInput')?.value==='A가 재시도할 댓글');
+      state.loseComment=true;
+      await board.locator('#commentForm button').click();
+      await board.locator('#loungeStatus').filter({hasText:'댓글 등록 실패'}).waitFor();
+      await board.locator('#commentForm button').click();
+      await board.locator('.comment-body').filter({hasText:'A가 재시도할 댓글'}).waitFor();
+      ok(mode + ': returning A retries its own ID after a lost response with no duplicate comment',state.comments.filter(c=>c.text==='A가 재시도할 댓글'&&c.author_id===A).length===1);
+      await f.close();
+    }
+    {
+      const f=await fixture(),{page,state}=f;
+      const board=await openBoard(f,embedded,'?post='+P);
+      await board.locator('#commentInput:enabled').waitFor();
+      await board.locator('#commentInput').fill('늦게 완료되는 A의 댓글');
+      const insert=f.defer((req,actor)=>actor===A&&req.method()==='POST'&&new URL(req.url()).pathname==='/rest/v1/comments');
+      await board.locator('#commentForm button').click(); await insert.entered;
+      const firstID=state.comments.find(c=>c.text==='늦게 완료되는 A의 댓글').id;
+      await switchAccount(f,embedded,B); await switchAccount(f,embedded,A);
+      await board.locator('#commentInput:enabled').waitFor();
+      const inserted=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname==='/rest/v1/comments');
+      insert.release(); await inserted; await settle(board);
+      if(await board.locator('#commentInput').inputValue()) {
+        await board.locator('#commentForm button').click();
+        await board.waitForFunction(()=>document.querySelector('#commentInput').value==='');
+      }
+      ok(mode + ': delayed A insert after A → B → A keeps the same idempotency key and never duplicates',
+        state.comments.filter(c=>c.text==='늦게 완료되는 A의 댓글').length===1&&state.comments.find(c=>c.text==='늦게 완료되는 A의 댓글').id===firstID);
+      await f.close();
+    }
+    {
+      const f=await fixture(),{page,state}=f;
+      state.posts[0].author_id=A;
+      state.posts.push({id:uid(9910),title:'B 계정의 활동',text:'B 본문',nick:'B',orbit:'free',created_at:now(),author_id:B,image_paths:[],is_pinned:false});
+      const board=await openBoard(f,embedded,'?activity=mine');
+      await board.getByRole('link',{name:'기존 관측 후기',exact:true}).waitFor();
+      const activity=f.defer((req,actor)=>actor===A&&req.url().endsWith('/rpc/board_activity_posts'));
+      await board.locator('#refreshList').click(); await activity.entered;
+      await switchAccount(f,embedded,B);
+      await board.getByRole('link',{name:'B 계정의 활동',exact:true}).waitFor();
+      const done=page.waitForResponse(r=>r.url().endsWith('/rpc/board_activity_posts'));
+      activity.release(); await done; await settle(board);
+      ok(mode + ': A activity response cannot replace B account-scoped activity list',
+        await board.getByRole('link',{name:'기존 관측 후기',exact:true}).count()===0&&await board.getByRole('link',{name:'B 계정의 활동',exact:true}).count()===1);
+      await f.close();
+    }
+    {
+      const f=await fixture(),{page,state}=f;
+      state.posts[0].author_id=A;
+      state.comments=[{id:uid(9920),post_id:P,nick:'B',text:'A에게만 새 답글',author_id:B,created_at:now()}];
+      state.readFail=true;
+      const receipt=f.defer((req,actor)=>actor===A&&req.url().endsWith('/rpc/mark_board_comments_read'));
+      const board=await openBoard(f,embedded,'?post='+P);
+      await board.locator('.comment-item').scrollIntoViewIfNeeded(); await receipt.entered;
+      await switchAccount(f,embedded,B);
+      await board.locator('#commentInput:enabled').waitFor();
+      const done=page.waitForResponse(r=>r.url().endsWith('/rpc/mark_board_comments_read'));
+      receipt.release(); await done; await settle(board);
+      ok(mode + ': late A read-receipt failure cannot mark B unread UI or show A retry status',
+        await board.locator('#readSyncStatus').isHidden()&&await board.locator('#activityBadge').isHidden()&&!state.requestLog.some(r=>r.path.endsWith('/mark_board_comments_read')&&r.actor===B));
+      await f.close();
+    }
+    {
+      const f=await fixture(),{page,state}=f;
+      const board=await openBoard(f,embedded,'?post='+P);
+      await board.locator('#commentInput:enabled').waitFor();
+      await board.locator('#postViews').filter({hasText:'조회 1'}).waitFor();
+      // Reject an accidental anonymous request so this regression diagnoses the
+      // request itself instead of nondeterministically replacing the next login.
+      state.authFail=true;
+      await openAccount(f,embedded);
+      await page.locator('#signOut').click();
+      await page.locator('#authCard').waitFor();
+      await board.locator('.detail-title').waitFor();
+      await board.locator('#postViews').filter({hasText:'조회 1'}).waitFor();
+      await login(f,embedded,B,true);
+      await board.locator('#commentInput:enabled').waitFor();
+      await settle(board);
+      ok(mode + ': logout detail refresh never starts anonymous Auth that could overwrite the next account',state.signups===0&&await page.evaluate(id=>window.OrbitMembers.state.user?.id===id&&!window.OrbitMembers.state.user?.is_anonymous,B)&&await board.evaluate(id=>window.OrbitMembers.state.user?.id===id,B));
+      await f.close();
+    }
+    {
+      const f=await fixture({registered:false}),{state}=f;
+      state.posts[0].author_id=A;
+      const board=await openBoard(f,embedded,'?post='+P);
+      await board.locator('#commentInput').waitFor({state:'attached'});
+      state.profile={nickname:'같은아이디회원',level:1,xp:0,level_start:0,next_level:10,joined_at:now()};
+      await login(f,embedded,A);
+      await board.locator('#commentInput:enabled').waitFor();
+      ok(mode + ': anonymous-to-member upgrade with the same UUID refreshes member writing controls',await board.locator('#commentInput').isVisible()&&await board.locator('#commentForm button').textContent()==='등록');
+      await f.close();
+    }
+    {
+      const f=await fixture(),{page,state}=f;
+      const board=await openBoard(f,embedded,'?post='+P);
+      await board.locator('[data-emoji="⭐"]:enabled').waitFor();
+      const reactionA=f.defer((req,actor)=>actor===A&&req.url().endsWith('/rpc/set_reaction'));
+      await board.locator('[data-emoji="⭐"]').click();
+      await reactionA.entered;
+      await switchAccount(f,embedded,B);
+      await board.locator('[data-emoji="❤️"]:enabled').waitFor();
+      const reactionB=f.defer((req,actor)=>actor===B&&req.url().endsWith('/rpc/set_reaction'));
+      await board.locator('[data-emoji="❤️"]').click();
+      await reactionB.entered;
+      const aDone=page.waitForResponse(r=>r.url().endsWith('/rpc/set_reaction'));
+      reactionA.release(); await aDone; await settle(board);
+      ok(mode + ': late A reaction cannot unlock B pending controls',await board.locator('[data-emoji="❤️"]').isDisabled());
+      reactionB.release();
+      await board.locator('[data-emoji="❤️"][aria-pressed=true]:enabled').waitFor();
+      ok(mode + ': delayed A reaction never overrides B selection or duplicates either account reaction',await board.locator('[data-emoji="⭐"]').getAttribute('aria-pressed')==='false'&&state.reactions.length===2&&state.reactions.some(r=>r.author_id===A&&r.emoji==='⭐')&&state.reactions.some(r=>r.author_id===B&&r.emoji==='❤️'));
+      await f.close();
+    }
+    {
+      const f=await fixture(),{page,state}=f;
+      const board=await openBoard(f,embedded,'?write=1');
+      await board.locator('#postTitle').fill('A의 사진 글');
+      await board.locator('#postInput').fill('다른 계정으로 등록되면 안 되는 A의 글');
+      const png=await board.evaluate(()=>{const canvas=document.createElement('canvas');canvas.width=32;canvas.height=32;return canvas.toDataURL('image/png').split(',')[1];});
+      await board.locator('#photoInput').setInputFiles({name:'isolated-photo.png',mimeType:'image/png',buffer:Buffer.from(png,'base64')});
+      await board.locator('#writeStatus').filter({hasText:'사진 준비가 끝났어요'}).waitFor();
+      const upload=f.defer((req,actor)=>actor===A&&req.method()==='POST'&&new URL(req.url()).pathname.startsWith('/storage/v1/object/'));
+      await board.locator('#btnTrace').click();
+      await upload.entered;
+      await switchAccount(f,embedded,B);
+      await board.locator('#postInput:enabled').waitFor();
+      await board.locator('#postTitle').fill('B의 새 초안');
+      await board.locator('#postInput').fill('B가 작성한 본문은 그대로 남아야 해요');
+      const uploadDone=page.waitForResponse(r=>new URL(r.url()).pathname.startsWith('/storage/v1/object/'));
+      upload.release(); await uploadDone; await settle(board);
+      assert.deepEqual({posts:state.inserts,uploads:state.uploads.length,title:await board.locator('#postTitle').inputValue(),text:await board.locator('#postInput').inputValue(),photos:await board.locator('.photo-preview').count()},
+        {posts:0,uploads:1,title:'B의 새 초안',text:'B가 작성한 본문은 그대로 남아야 해요',photos:0},mode + ': late photo response retains B editor');
+      ok(mode + ': late A photo upload cannot publish A payload under B or reset B editor');
+      await switchAccount(f,embedded,A);
+      await board.waitForFunction(()=>document.querySelector('#postInput').value==='다른 계정으로 등록되면 안 되는 A의 글');
+      ok(mode + ': interrupted upload preserves A draft for its owner', await board.locator('#postTitle').inputValue()==='A의 사진 글');
+      await f.close();
+    }
+  }
+}
+
 try {
+  await identityRegressions();
   {
     const f = await fixture(), {page, state} = f;
     await page.goto(base + '/lounge.html');

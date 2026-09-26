@@ -99,7 +99,7 @@
         <div class="activity-status" id="activityStatus" role="status" hidden>새 답글을 확인하지 못했어요. <button class="text-button" id="activityRetry" type="button">다시 확인</button></div>
         <div class="activity-panel" id="activityPanel" hidden>
           <nav class="activity-tabs" aria-label="내 활동 분류" id="activityTabs"></nav>
-          <p class="activity-note">이 브라우저에서 남긴 글과 댓글을 모았어요. 브라우저 데이터를 지우거나 다른 기기로 옮기면 이전 활동을 이어서 확인할 수 없어요.</p>
+          <p class="activity-note">로그인한 계정으로 남긴 글과 댓글을 모았어요. 다른 기기에서도 같은 계정으로 로그인하면 이어서 확인할 수 있어요. 예전 비회원 활동은 작성한 브라우저의 인증 상태가 유지되어야 확인할 수 있어요.</p>
         </div>
         <section id="pinnedPosts" class="pinned-posts" aria-label="상단 고정 공지" hidden></section>
         <div class="board-controls">
@@ -272,17 +272,17 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
-    <script src="orbit-backend.js"></script>
+    <script src="orbit-backend.js?v=20260926-identity"></script>
     <link rel="stylesheet" href="account.css?v=20260926-operator">
-    <script src="members.js?v=20260926-operator"></script>
+    <script src="members.js?v=20260926-identity"></script>
     <script src="account.js?v=20260926-operator"></script>
-    <script src="account-panel.js?v=20260926-separated"></script>
+    <script src="account-panel.js?v=20260926-identity"></script>
     <script src="board-media.js?v=20260912-board"></script>
-    <script src="board-writing.js?v=20260926-drafts"></script>
+    <script src="board-writing.js?v=20260926-identity"></script>
     <script src="board-glossary.js?v=20260914-community"></script>
     <script src="board-activity.js?v=20260914-activity"></script>
     <script src="board-embed.js?v=20260914-community"></script>
-    <script src="lounge.js?v=20260926-post-links"></script>
+    <script src="lounge.js?v=20260926-identity"></script>
     <script src="member-board.js?v=20260926-operator"></script>
   </div></div>
 <script src="site-nav.js?v=20260914-community"></script>
