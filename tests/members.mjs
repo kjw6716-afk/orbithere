@@ -43,7 +43,7 @@ function ok(name, value = true) {
   console.log("✓ " + name);
   count++;
 }
-function session(anonymous = false, metadata = {}) {
+function session(anonymous = false, metadata = {}, actor = A) {
   const exp = Math.floor(Date.now() / 1000) + 3600;
   return {
     access_token:
@@ -51,7 +51,7 @@ function session(anonymous = false, metadata = {}) {
       "." +
       Buffer.from(
         JSON.stringify({
-          sub: A,
+          sub: actor,
           exp,
           role: "authenticated",
           is_anonymous: anonymous,
@@ -63,7 +63,7 @@ function session(anonymous = false, metadata = {}) {
     expires_in: 3600,
     expires_at: exp,
     user: {
-      id: A,
+      id: actor,
       email: anonymous ? "" : "member@example.test",
       email_confirmed_at: anonymous ? null : new Date().toISOString(),
       is_anonymous: anonymous,
@@ -177,7 +177,7 @@ async function fixture({
         url: "https://unwxpuvfqyjhgrcrmuhu.supabase.co/auth/v1/authorize?provider=google&linked=true",
       });
     if (url.pathname === "/auth/v1/token") {
-      state.auth = session();
+      state.auth = session(false, {}, state.loginUserId || A);
       return json(state.auth);
     }
     if (url.pathname === "/auth/v1/verify") {
@@ -227,6 +227,12 @@ async function fixture({
     }
     const rpc = url.pathname.split("/").pop();
     if (rpc === "member_visit" || rpc === "member_profile") {
+      const gate = rpc === "member_visit" && state.memberVisitGates?.shift();
+      if (gate) {
+        const captured = structuredClone(state.profile);
+        gate.enter(); await gate.wait;
+        return json(captured);
+      }
       if (state.fail)
         return json({ code: "42501", message: "withdrawal_in_progress" }, 403);
       return json(state.profile);
@@ -858,6 +864,31 @@ try {
   ok('OAuth callback returns to the original sky panel with the account dialog',new URL(f.page.url()).pathname==='/main.html'&&new URL(f.page.url()).hash==='#sky');
   await f.page.reload();
   ok('normal page refresh does not force the account popup open',await f.page.locator('.account-dialog[open]').count()===0);
+  await f.close();
+  f=await fixture({auth:session()});
+  await f.page.goto(base+'/main.html#sky');
+  await f.page.waitForFunction(()=>window.OrbitMembers.state.profile?.nickname==='밤하늘');
+  const deferredVisit=()=>{
+    let enter,release;
+    const entered=new Promise(r=>{enter=r;}),wait=new Promise(r=>{release=r;});
+    return {enter,release,entered,wait};
+  };
+  const oldVisit=deferredVisit(),newVisit=deferredVisit();
+  f.state.memberVisitGates=[oldVisit];
+  await f.page.evaluate(()=>{ window.pendingOldProfile = window.OrbitMembers.refresh(); });
+  await oldVisit.entered;
+  const nextMember='22222222-2222-4222-8222-222222222222';
+  f.state.loginUserId=nextMember;
+  f.state.profile={...profile(),nickname:'새 계정'};
+  f.state.memberVisitGates=[newVisit];
+  await f.page.evaluate(async()=>{await window.OrbitMembers.sb.auth.signInWithPassword({email:'b@example.test',password:'isolated-password'});});
+  await newVisit.entered;
+  ok('account event clears A profile immediately while B member_visit is pending',await f.page.evaluate(id=>window.OrbitMembers.state.user?.id===id&&window.OrbitMembers.state.profile===null,nextMember));
+  newVisit.release();
+  await f.page.waitForFunction(()=>window.OrbitMembers.state.profile?.nickname==='새 계정');
+  oldVisit.release();
+  await f.page.evaluate(()=>window.pendingOldProfile);
+  ok('late A member_visit cannot republish A nickname or profile on B',await f.page.evaluate(id=>window.OrbitMembers.state.user?.id===id&&window.OrbitMembers.state.profile?.nickname==='새 계정',nextMember));
   await f.close();
   console.log("Members: " + count + " checks passed");
 } finally {

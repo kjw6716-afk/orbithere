@@ -59,6 +59,8 @@
       try { sessionStorage.setItem('orbit_account_return', JSON.stringify({path:route.pathname + route.search + route.hash, at:Date.now()})); } catch (_) { /* Email login can continue without a saved return route. */ }
     }
     try {
+      var board = window.OrbitBoardAuth || (loungeFrame && loungeFrame.contentWindow && loungeFrame.contentWindow.OrbitBoardAuth);
+      if (board) await board.prepareAccount();
       if (!loading) loading = prepare(options).catch(function (error) { loading = null; throw error; });
       await loading;
       var staleError = document.getElementById('accountLoadError');

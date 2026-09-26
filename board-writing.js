@@ -116,6 +116,14 @@
           return { ok: true, value: rows[0] || null };
         } catch (_) { return { ok: false, value: null }; }
       },
+      latestGuest: function (tabId) {
+        if (!idPattern.test(tabId || '')) return { ok: true, value: null };
+        try {
+          var rows = load().filter(function (row) { return row.owner.startsWith('guest:' + tabId + ':'); });
+          rows.sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+          return { ok: true, value: rows[0] || null };
+        } catch (_) { return { ok: false, value: null }; }
+      },
       write: function (row) {
         try {
           var value = clean(row);

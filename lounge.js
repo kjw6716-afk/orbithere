@@ -15,7 +15,13 @@
   var emojis = ['⭐', '🔥', '😂', '🥰', '👏', '❤️'],
     userId = null,
     isAdmin = false,
-    writerPromise = null;
+    writerPromise = null,
+    anonymousPromise = null,
+    actorSeq = 0,
+    actorIdentity = '',
+    identityReady = false,
+    identityTimer = null,
+    anonymousViewsAllowed = true;
   var embed = document.documentElement.classList.contains('embed'),
     route = 0,
     commentSeq = 0,
@@ -192,12 +198,23 @@
       show(counts ? counts.view_count : 0);
     } catch (_) { /* An unavailable counter must never prevent reading. */ }
     if (token !== route || detail !== p) return;
+    // Logging out must not silently start a new Auth operation behind login.
+    if (!userId && !anonymousViewsAllowed) return;
     try {
-      await ensureWriter();
+      await ensureWriter(true);
       if (token !== route || detail !== p) return;
       var count = checked(await sb.rpc('record_post_view', { p_post_id: p.id }));
       if (count != null) show(count);
     } catch (_) { /* Keep the last known count if authentication/counting fails. */ }
+  }
+  // A late iframe read must not redirect keystrokes from the parent's login form.
+  function canFocusBoard() {
+    if (document.querySelector('.account-dialog[open]')) return false;
+    if (embed) {
+      try { if (parent.document.querySelector('.account-dialog[open]')) return false; }
+      catch (_) { return false; }
+    }
+    return true;
   }
   function status(message, error) {
     $('loungeStatus').textContent = message || '';
@@ -228,38 +245,52 @@
     if (result.error) throw result.error;
     return result.data;
   }
-  async function ensureWriter() {
+  async function ensureWriter(passive) {
     if (writerPromise) return writerPromise;
-    writerPromise = (async function () {
+    var token = actorSeq, actor = userId;
+    var pending = (async function () {
       if (!sb) throw new Error('서버 연결을 준비하지 못했어요. 새로고침해주세요.');
       if (!boardReady) {
         var v = checked(await sb.rpc('board_version'));
-        if (v !== 1)
-          throw new Error('게시판 업데이트를 준비하고 있어요. 잠시 후 다시 시도해주세요.');
+        assertActor(token, actor);
+        if (v !== 1) throw new Error('게시판 업데이트를 준비하고 있어요. 잠시 후 다시 시도해주세요.');
         boardReady = true;
       }
-      var s = checked(await sb.auth.getSession()),
-        user = s.session && s.session.user;
-      if (!user) user = checked(await sb.auth.signInAnonymously()).user;
+      var s = checked(await sb.auth.getSession());
+      assertActor(token, actor);
+      var user = s.session && s.session.user;
+      if (!user) {
+        if (passive && !anonymousViewsAllowed) throw actorChanged();
+        var signing = sb.auth.signInAnonymously();
+        anonymousPromise = signing;
+        try { user = checked(await signing).user; }
+        finally { if (anonymousPromise === signing) anonymousPromise = null; }
+        // Our own first anonymous session is the sole allowed identity transition.
+        if (!user || !user.is_anonymous || userId !== user.id) throw actorChanged();
+      } else {
+        assertActor(token, actor);
+        if (user.id !== actor) throw actorChanged();
+      }
       if (!user) throw new Error('작성 권한을 확인하지 못했어요.');
-      userId = user.id;
       return user.id;
     })();
-    try {
-      return await writerPromise;
-    } finally {
-      writerPromise = null;
-    }
+    writerPromise = pending;
+    try { return await pending; }
+    finally { if (writerPromise === pending) writerPromise = null; }
   }
   function canWrite() {
     var state = window.OrbitMembers.state, user = state.user;
-    return !!(user && !user.is_anonymous && user.email_confirmed_at && state.profile && !state.error);
+    return !!(user && user.id === userId && !user.is_anonymous && user.email_confirmed_at && state.profile && !state.error);
   }
   async function ensureAuthor() {
+    var token = actorSeq, actor = userId;
     await window.OrbitMembers.refresh();
+    assertActor(token, actor);
     if (!canWrite()) { join(); throw new Error('로그인하고 닉네임 설정을 마쳐주세요.'); }
     var id = await ensureWriter();
+    assertActor(token, actor);
     var profile = checked(await sb.rpc('member_profile'));
+    assertActor(token, actor);
     if (!profile) throw new Error('내 계정에서 닉네임 설정을 먼저 마쳐주세요.');
     try { localStorage.setItem('orbit_nickname', profile.nickname); } catch (_) {}
     return id;
@@ -289,6 +320,26 @@
       handoff.owner.startsWith('guest:' + draftSession.id + ':') &&
       Number.isFinite(handoff.at) && handoff.at <= Date.now() && Date.now() - handoff.at < 30 * 60000;
   }
+  function guestOwner() {
+    var prefix = 'guest:' + draftSession.id + ':', saved = draftSession.guestOwner;
+    if (typeof saved === 'string' && saved.startsWith(prefix) &&
+        (saved === prefix + 'visitor' || validId(saved.slice(prefix.length)))) return saved;
+    // Keep a tab's old anonymous-owned draft reachable after this upgrade. Never
+    // copy over another row, and never re-key a guest just because Auth appears.
+    var visitor = prefix + 'visitor', legacy = draftStore.latestGuest(draftSession.id);
+    if (!legacy.ok) draftStorageOK = false;
+    draftSession.guestOwner = readDraft(visitor) ? visitor : legacy.value ? legacy.value.owner : visitor;
+    saveDraftSession();
+    return draftSession.guestOwner;
+  }
+  function commentOwner() {
+    return draftUser && !draftUser.is_anonymous ? 'member:' + draftUser.id : guestOwner();
+  }
+  function commentKey(id) { return commentOwner() + '|' + id; }
+  function identityKey(user) { return user ? user.id + '|' + !!user.is_anonymous + '|' + !!user.email_confirmed_at : ''; }
+  function sameActor(token, actor) { return token === actorSeq && actor === userId; }
+  function actorChanged() { return new Error('계정이 바뀌었어요. 현재 계정에서 다시 시도해주세요.'); }
+  function assertActor(token, actor) { if (!sameActor(token, actor)) throw actorChanged(); }
   function memberOwner() {
     return draftUser && !draftUser.is_anonymous && draftUser.email_confirmed_at ? 'member:' + draftUser.id : null;
   }
@@ -308,7 +359,7 @@
         return latest.value.owner;
       }
     }
-    return member || 'guest:' + draftSession.id + ':' + (draftUser && draftUser.is_anonymous ? draftUser.id : 'visitor');
+    return member || guestOwner();
   }
   function draftContent() {
     var row = { owner: draftOwner, updatedAt: Date.now(), title: $('postTitle').value,
@@ -387,33 +438,43 @@
   function syncDraftOwner() {
     if (busy || preparing || (!draftOwner && view !== 'editor' && !validHandoff())) return;
     var next = nextDraftOwner(), handoff = validHandoff() && memberOwner() ? draftSession.handoff : null;
+    if (handoff && typeof handoff.target === 'string' && handoff.target !== memberOwner() &&
+        !handoff.target.startsWith(memberOwner() + ':continue:')) handoff = null;
     if (next === draftOwner && !handoff) return;
     var typedBeforeReady = !draftOwner && dirty() ? { row: draftContent(), photos: photos, attempt: attempt } : null;
     if (draftOwner) persistDraft();
     var buffer = typedBeforeReady, resumed = false;
     if (handoff) {
-      buffer = buffer || readDraft(handoff.owner);
+      var target = handoff.target;
+      if (typeof target !== 'string' ||
+          !(target === memberOwner() || (target.startsWith(memberOwner() + ':continue:') &&
+            validId(target.slice((memberOwner() + ':continue:').length))))) target = null;
+      buffer = target && readDraft(target) || buffer || readDraft(handoff.owner);
       if (buffer && hasDraft(buffer.row)) {
         var existing = readDraft(memberOwner());
-        next = memberOwner();
-        if (existing && hasDraft(existing.row)) {
-          next += ':continue:' + crypto.randomUUID();
-          draftSession.continuation = { owner: next, at: Date.now() };
-        }
-        buffer.row.owner = next;
+        next = target || memberOwner();
+        if (!target && existing && hasDraft(existing.row)) next += ':continue:' + crypto.randomUUID();
+        if (next !== memberOwner()) draftSession.continuation = { owner: next, at: Date.now() };
+        handoff.target = next;
+        // Do not alias/mutate the source row: a quota failure must leave the
+        // original guest draft and its explicit handoff available after reload.
+        buffer = { row: Object.assign({}, buffer.row, { owner: next }), photos: buffer.photos, attempt: buffer.attempt };
         draftBuffers.set(next, buffer);
-        if (draftStore.write(buffer.row)) draftStore.remove(handoff.owner);
-        draftBuffers.delete(handoff.owner);
+        if (draftStore.write(buffer.row)) {
+          draftStore.remove(handoff.owner);
+          draftBuffers.delete(handoff.owner);
+          delete draftSession.handoff;
+        } else draftStorageOK = false;
         resumed = true;
-      }
-      delete draftSession.handoff;
+      } else delete draftSession.handoff;
       saveDraftSession();
     }
     draftOwner = next;
     if (buffer) buffer.row.owner = next;
     restoreDraft(buffer || readDraft(next));
     if (resumed) {
-      draftNotice('로그인 전 작성한 초안을 이어왔어요. 내용을 확인하고 글 남기기를 눌러주세요.');
+      draftNotice(draftStorageOK ? '로그인 전 작성한 초안을 이어왔어요. 내용을 확인하고 글 남기기를 눌러주세요.' :
+        '로그인 전 초안은 이 화면에 있어요. 임시저장할 수 없으니 화면을 닫지 말고 내용을 복사해두세요.');
       if (view !== 'editor' && !draftResumeQueued) {
         draftResumeQueued = true;
         setTimeout(function () {
@@ -425,16 +486,30 @@
     }
   }
   function beginDraftLogin() {
+    anonymousViewsAllowed = false;
+    if (window.cancelOrbitAnonymousAuth) window.cancelOrbitAnonymousAuth();
     persistDraft();
-    if (draftOwner && draftOwner.startsWith('guest:')) {
-      draftSession.handoff = { owner: draftOwner, at: Date.now() };
+    // Opening login is the user's explicit handoff intent even after browsing
+    // away from the editor. Only this tab's nonempty guest draft is eligible.
+    var owner = !memberOwner() && guestOwner(), buffer = owner && readDraft(owner);
+    if (buffer && hasDraft(buffer.row)) {
+      draftSession.handoff = { owner: owner, at: Date.now() };
       saveDraftSession();
     }
-    writeStatus('작성한 글은 그대로 있어요. 로그인하고 닉네임 설정을 마친 뒤 글 남기기를 다시 눌러주세요.');
+    if (view === 'editor') writeStatus('작성한 글은 그대로 있어요. 로그인하고 닉네임 설정을 마친 뒤 글 남기기를 다시 눌러주세요.');
   }
+  window.OrbitBoardAuth = {
+    prepareAccount: async function () {
+      // Wait for the SDK itself, not only fetch: a response already consumed
+      // just before cancellation may still be saving/notifying its old session.
+      beginDraftLogin();
+      var pending = [writerPromise, anonymousPromise].filter(Boolean);
+      await Promise.all(pending.map(function (request) { return request.catch(function () {}); }));
+    },
+  };
   function syncWriter() {
     syncDraftOwner();
-    var allowed = canWrite(), profile = window.OrbitMembers.state.profile;
+    var allowed = canWrite(), profile = allowed ? window.OrbitMembers.state.profile : null;
     $('memberWriteGate').hidden = allowed;
     $('postForm').hidden = false;
     $('writerName').textContent = profile ? profile.nickname + ' 이름으로 남겨요.' : '';
@@ -450,7 +525,15 @@
       else button.dataset.accountOpen = 'login';
     }
   }
-  window.addEventListener('orbit:member', function () { draftUser = window.OrbitMembers.state.user; syncWriter(); });
+  window.addEventListener('orbit:member', function () {
+    var user = window.OrbitMembers.state.user;
+    // In an iframe, the parent's profileChanged refresh can observe the new
+    // session before the SDK broadcast arrives. Reconcile both event paths.
+    // Members invalidates old refreshes synchronously on an Auth transition.
+    if (identityKey(user) !== actorIdentity) { syncIdentity(user); return; }
+    draftUser = user;
+    syncWriter();
+  });
   function canLeave() {
     if (busy || preparing || commentBusy) {
       status('진행 중인 저장을 마친 뒤 이동해주세요.', true);
@@ -775,9 +858,10 @@
         ]);
         $('glossaryHelp').hidden = termCount === 0;
       }
-      $('commentInput').value = commentDrafts[p.id] || '';
+      var draftKey = commentKey(p.id);
+      $('commentInput').value = commentDrafts[draftKey] || '';
       $('commentInput').addEventListener('input', function () {
-        commentDrafts[p.id] = this.value;
+        commentDrafts[draftKey] = this.value;
       });
       $('commentForm').addEventListener('submit', submitComment);
       syncWriter();
@@ -790,7 +874,7 @@
       loadComments(false);
       loadReactions(p, token);
       loadPostViews(p, token);
-      $('postDetail').focus({ preventScroll: true });
+      if (canFocusBoard()) $('postDetail').focus({ preventScroll: true });
     } catch (e) {
       if (token !== route) return;
       status('글을 불러오지 못했어요. ' + hint(e), true);
@@ -879,66 +963,46 @@
   async function submitComment(ev) {
     ev.preventDefault();
     if (commentBusy) return;
-    if (!canWrite()) {
-      join();
-      return;
-    }
-    var input = $('commentInput'),
-      text = input.value.trim(),
-      p = detail,
-      token = route;
+    if (!canWrite()) { join(); return; }
+    var input = $('commentInput'), text = input.value.trim(), p = detail,
+      token = route, identity = actorSeq, actor = userId, key = commentKey(p.id);
     if (!text) return;
     commentBusy = true;
     var button = $('commentForm').querySelector('button');
-    button.disabled = true;
-    input.disabled = true;
+    button.disabled = input.disabled = true;
     try {
       await ensureAuthor();
-      var pending = commentAttempts[p.id],
-        alreadySaved = false;
+      assertActor(identity, actor);
+      var pending = commentAttempts[key], alreadySaved = false;
       if (pending && pending.text === text) {
-        var existing = checked(
-          await sb
-            .from('comments')
-            .select('id,post_id,text,author_id')
-            .eq('id', pending.id)
-            .maybeSingle(),
-        );
-        alreadySaved = !!(
-          existing &&
-          existing.post_id === p.id &&
-          existing.author_id === userId &&
-          existing.text === text
-        );
-      } else pending = commentAttempts[p.id] = { id: crypto.randomUUID(), text: text };
-      if (!alreadySaved)
-        checked(
-          await sb
-            .from('comments')
-            .insert({
-              id: pending.id,
-              post_id: p.id,
-              nick: nick(),
-              text: text,
-              author_id: userId,
-              author_device: userId,
-            }),
-        );
-      delete commentAttempts[p.id];
-      delete commentDrafts[p.id];
+        var existing = checked(await sb.from('comments').select('id,post_id,text,author_id')
+          .eq('id', pending.id).maybeSingle());
+        assertActor(identity, actor);
+        alreadySaved = !!(existing && existing.post_id === p.id && existing.author_id === actor && existing.text === text);
+      } else pending = commentAttempts[key] = { id: crypto.randomUUID(), text: text };
+      assertActor(identity, actor);
+      if (!alreadySaved) checked(await sb.from('comments').insert({
+        id: pending.id, post_id: p.id, nick: nick(), text: text,
+        author_id: actor, author_device: actor,
+      }));
+      // A late success retains its UUID/text until that account explicitly
+      // retries. Clearing it while a restored textarea survives would make the
+      // next click allocate a new UUID and duplicate the already saved comment.
+      if (token !== route || !sameActor(identity, actor)) return;
+      if (commentAttempts[key] === pending) delete commentAttempts[key];
+      if (commentDrafts[key] && commentDrafts[key].trim() === text) delete commentDrafts[key];
       cache = null;
-      if (token !== route) return;
       input.value = '';
       status('댓글을 등록했어요.');
       refreshActivity();
       await loadComments(false);
     } catch (e) {
-      if (token === route) status('댓글 등록 실패 — ' + hint(e), true);
+      if (token === route && sameActor(identity, actor)) status('댓글 등록 실패 — ' + hint(e), true);
     } finally {
-      commentBusy = false;
-      if (button.isConnected) {
-        button.disabled = false;
-        input.disabled = false;
+      if (sameActor(identity, actor)) {
+        commentBusy = false;
+        if (button.isConnected) { button.disabled = false; input.disabled = !canWrite(); }
+        syncWriter();
       }
     }
   }
@@ -981,7 +1045,7 @@
     if (reactionBusy || !detail) return;
     reactionBusy = true;
     var p = detail,
-      token = route,
+      token = route, identity = actorSeq, actor = userId,
       emoji = button.dataset.emoji,
       on = button.getAttribute('aria-pressed') !== 'true';
     $('reactionRow')
@@ -991,19 +1055,22 @@
       });
     try {
       await ensureWriter();
+      // Anonymous creation may rebuild the reading view; require a fresh click.
+      assertActor(identity, actor);
       checked(await sb.rpc('set_reaction', { p_post_id: p.id, p_emoji: emoji, p_selected: on }));
-      await loadReactions(p, token);
+      if (sameActor(identity, actor) && detail && detail.id === p.id) await loadReactions(detail, route);
     } catch (e) {
-      if (token === route) {
+      if (token === route && sameActor(identity, actor)) {
         status('공감 저장 실패 — ' + hint(e), true);
         await loadReactions(p, token);
       }
     } finally {
-      reactionBusy = false;
+      if (sameActor(identity, actor)) reactionBusy = false;
     }
   }
   function openReport(type, id, button) {
-    if (reported.has(type + id)) return;
+    var identity = actorSeq, actor = userId, reportKey = commentOwner() + '|' + type + id;
+    if (reported.has(reportKey)) return;
     var dialog = document.createElement('dialog');
     dialog.className = 'board-dialog';
     dialog.setAttribute('aria-labelledby', 'reportTitle');
@@ -1051,6 +1118,7 @@
       send.disabled = cancel.disabled = true;
       try {
         await ensureWriter();
+        assertActor(identity, actor);
         var result = await sb
           .from('reports')
           .insert({
@@ -1058,16 +1126,18 @@
             target_id: id,
             reason: dialog.querySelector('[name=reason]:checked').value,
             detail: dialog.querySelector('textarea').value.trim() || null,
-            reporter_device: userId,
-            author_id: userId,
+            reporter_device: actor,
+            author_id: actor,
           });
         if (result.error && result.error.code !== '23505') throw result.error;
-        reported.add(type + id);
+        reported.add(reportKey);
+        if (!sameActor(identity, actor) || !dialog.isConnected) return;
         button.textContent = '접수됨';
         button.disabled = true;
         dialog.close();
         status('요청을 접수했어요. 운영자가 확인합니다.');
       } catch (e) {
+        if (!sameActor(identity, actor) || !dialog.isConnected) return;
         dialog.querySelector('.report-status').textContent = '접수 실패 — ' + hint(e);
         send.disabled = cancel.disabled = false;
       } finally {
@@ -1144,97 +1214,92 @@
       return;
     }
     if (!canWrite()) { beginDraftLogin(); join(); return; }
-    var postFingerprint = fingerprint(), postingOwner = draftOwner;
+    var postFingerprint = fingerprint(), postingOwner = draftOwner,
+      identity = actorSeq, actor = userId, postingPhotos = photos, postingAttempt = attempt,
+      postOrbit = $('orbitSelect').value;
     busy = true;
     lockEditor(true);
     writeStatus('등록을 준비하고 있어요…');
     try {
       await ensureAuthor();
-      if (memberOwner() !== 'member:' + userId || !postingOwner ||
-          !postingOwner.startsWith('member:' + userId) || draftOwner !== postingOwner)
-        throw new Error('계정이 바뀌었어요. 현재 계정의 초안을 확인한 뒤 다시 등록해주세요.');
+      assertActor(identity, actor);
+      if (memberOwner() !== 'member:' + actor || !postingOwner ||
+          !postingOwner.startsWith('member:' + actor) || draftOwner !== postingOwner) throw actorChanged();
       if (Object.keys(observation).length) {
         var readiness = await sb.rpc('board_observation_version');
+        assertActor(identity, actor);
         if (readiness.error || readiness.data !== 1)
           throw new Error('추가 정보를 아직 저장할 수 없어요. 입력한 내용을 그대로 두고 잠시 후 다시 시도해주세요.');
       }
-      if (attempt && attempt.fingerprint !== postFingerprint) await clearAttempt();
-      if (!attempt)
-        attempt = {
-          id: crypto.randomUUID(),
-          fingerprint: postFingerprint,
-          paths: [],
-          uploaded: new Set(),
-          uncertain: false,
-          payload: null,
-        };
-      if (photos.length && !attempt.paths.length)
-        attempt.paths = checked(
-          await sb.rpc('reserve_board_images', { p_post_id: attempt.id, p_count: photos.length }),
-        );
-      for (var i = 0; i < photos.length; i++) {
-        writeStatus('사진 ' + (i + 1) + ' / ' + photos.length + '장을 올리고 있어요…');
+      if (postingAttempt && postingAttempt.fingerprint !== postFingerprint) {
+        await clearAttempt();
+        assertActor(identity, actor);
+        postingAttempt = null;
+      }
+      if (!postingAttempt) postingAttempt = attempt = {
+        id: crypto.randomUUID(), fingerprint: postFingerprint, paths: [],
+        uploaded: new Set(), uncertain: false, payload: null,
+      };
+      if (postingPhotos.length && !postingAttempt.paths.length) {
+        var paths = checked(await sb.rpc('reserve_board_images', { p_post_id: postingAttempt.id, p_count: postingPhotos.length }));
+        // Keep a completed reservation with A's retry buffer, even if B is now visible.
+        postingAttempt.paths = paths;
+        assertActor(identity, actor);
+      }
+      for (var i = 0; i < postingPhotos.length; i++) {
+        assertActor(identity, actor);
+        writeStatus('사진 ' + (i + 1) + ' / ' + postingPhotos.length + '장을 올리고 있어요…');
         for (var entry of [
-          [attempt.paths[i], photos[i].full],
-          [OrbitBoardMedia.thumbnail(attempt.paths[i]), photos[i].thumb],
+          [postingAttempt.paths[i], postingPhotos[i].full],
+          [OrbitBoardMedia.thumbnail(postingAttempt.paths[i]), postingPhotos[i].thumb],
         ]) {
-          if (attempt.uploaded.has(entry[0])) continue;
-          var result = await sb.storage
-            .from('board-images')
-            .upload(entry[0], entry[1], {
-              contentType: 'image/jpeg',
-              upsert: false,
-              cacheControl: '3600',
-            });
-          // A timed-out immutable upload can have succeeded. These random paths
-          // belong only to this reservation and the same in-memory photo bytes.
-          if (
-            result.error &&
-            String(result.error.statusCode) !== '409' &&
-            !/already exists|Duplicate/i.test(result.error.message || '')
-          )
-            throw result.error;
-          attempt.uploaded.add(entry[0]);
+          if (postingAttempt.uploaded.has(entry[0])) continue;
+          assertActor(identity, actor);
+          var result = await sb.storage.from('board-images').upload(entry[0], entry[1], {
+            contentType: 'image/jpeg', upsert: false, cacheControl: '3600',
+          });
+          if (result.error && String(result.error.statusCode) !== '409' &&
+              !/already exists|Duplicate/i.test(result.error.message || '')) throw result.error;
+          postingAttempt.uploaded.add(entry[0]);
+          assertActor(identity, actor);
         }
       }
-      attempt.payload = attempt.payload || {
-        p_id: attempt.id,
-        p_nick: nick(),
-        p_title: title,
-        p_orbit: $('orbitSelect').value,
-        p_text: text,
-        p_images: attempt.paths,
-        p_pinned: false,
+      assertActor(identity, actor);
+      postingAttempt.payload = postingAttempt.payload || {
+        p_id: postingAttempt.id, p_nick: nick(), p_title: title, p_orbit: postOrbit,
+        p_text: text, p_images: postingAttempt.paths, p_pinned: false,
         ...(Object.keys(observation).length ? { p_observation: observation } : {}),
       };
       writeStatus('글을 등록하고 있어요…');
-      attempt.uncertain = true;
+      postingAttempt.uncertain = true;
       persistDraft();
-      var saved = await sb.rpc(attempt.payload.p_observation ? 'create_observation_post' : 'create_board_post', attempt.payload);
+      var saved = await sb.rpc(postingAttempt.payload.p_observation ? 'create_observation_post' : 'create_board_post', postingAttempt.payload);
       if (saved.error) {
-        // Constraint/auth failures roll back; network/5xx errors can be a lost
-        // response after commit. Keep the UUID and frozen payload for retry.
-        if (saved.error.code && /^(22|23|42|P0001)/.test(saved.error.code))
-          attempt.uncertain = false;
+        // Keep the UUID/frozen payload for an uncertain commit, owned only by A.
+        if (saved.error.code && /^(22|23|42|P0001)/.test(saved.error.code)) postingAttempt.uncertain = false;
         throw saved.error;
       }
       var id = checked(saved);
-      attempt = null;
-      draftStore.remove(postingOwner);
-      draftBuffers.delete(postingOwner);
+      // Keep a stale success as the same uncertain UUID until its owner retries.
+      // Another account (or a restored A editor) must not lose its draft record.
+      if (!sameActor(identity, actor)) return;
+      var owned = draftBuffers.get(postingOwner);
+      if (owned && owned.attempt === postingAttempt) {
+        draftStore.remove(postingOwner);
+        draftBuffers.delete(postingOwner);
+      }
       if (draftSession.continuation && draftSession.continuation.owner === postingOwner) {
         delete draftSession.continuation;
         saveDraftSession();
       }
+      attempt = null;
       draftOwner = null;
       draftMissingPhotos = false;
       clearTimeout(draftTimer);
       cache = null;
       $('postForm').reset();
       $('observationFields').open = $('equipmentFields').open = false;
-      photos.forEach(function (p) {
-        URL.revokeObjectURL(p.url);
-      });
+      postingPhotos.forEach(function (p) { URL.revokeObjectURL(p.url); });
       photos = [];
       renderPreviews();
       $('charCount').textContent = '0 / 5,000';
@@ -1245,17 +1310,17 @@
       refreshActivity();
       navigate(url({ post: id }), true);
     } catch (e) {
-      writeStatus(
-        (attempt && attempt.uncertain
+      if (sameActor(identity, actor)) writeStatus(
+        (postingAttempt && postingAttempt.uncertain
           ? '등록 여부를 확인하지 못했어요. 같은 글이 중복되지 않도록 ‘글 남기기’를 다시 눌러 확인해주세요. '
-          : '등록 실패 — ') + hint(e),
-        true,
-      );
+          : '등록 실패 — ') + hint(e), true);
     } finally {
-      busy = false;
-      lockEditor(!!(attempt && attempt.uncertain));
-      if (draftOwner) persistDraft();
-      syncWriter();
+      if (sameActor(identity, actor)) {
+        busy = false;
+        lockEditor(!!(attempt && attempt.uncertain));
+        if (draftOwner) persistDraft();
+        syncWriter();
+      }
     }
   }
   async function showRoute() {
@@ -1281,7 +1346,12 @@
     query = (params.get('q') || '').trim().slice(0, 80);
     var id = params.get('post');
     view = id ? 'detail' : params.has('write') ? 'editor' : 'list';
-    if (embed) parent.postMessage({ orbit: 'writingState', writing: view === 'editor' }, location.origin);
+    if (embed) {
+      var routeSynced = false;
+      try { routeSynced = !!(parent.OrbitBoardRoute && parent.OrbitBoardRoute.syncWriting(window)); }
+      catch (_) { /* A cached parent can still receive the existing message. */ }
+      if (!routeSynced) parent.postMessage({ orbit: 'writingState', writing: view === 'editor' }, location.origin);
+    }
     ['list', 'detail', 'editor'].forEach(function (v) {
       $(v + 'View').hidden = v !== view;
     });
@@ -1300,7 +1370,7 @@
       syncWriter();
       // A slow identity check must not redirect keystrokes from a field the
       // writer has already selected, or focus an editor after navigating away.
-      if (document.activeElement === focusBeforeRefresh && !$('postForm').contains(document.activeElement))
+      if (canFocusBoard() && document.activeElement === focusBeforeRefresh && !$('postForm').contains(document.activeElement))
         $('postInput').focus({ preventScroll: true });
       return;
     }
@@ -1345,6 +1415,7 @@
     }
     var b = ev.target.closest('button');
     if (!b) return;
+    var actionIdentity = actorSeq, actionActor = userId, actionRoute = route, actionOwner = draftOwner;
     if (b.dataset.report) {
       openReport(b.dataset.report, b.dataset.id, b);
       return;
@@ -1356,6 +1427,7 @@
     if (b.hasAttribute('data-remove-photo')) {
       if (busy || preparing || (attempt && attempt.uncertain)) return;
       await clearAttempt();
+      if (!sameActor(actionIdentity, actionActor) || draftOwner !== actionOwner) return;
       URL.revokeObjectURL(photos[Number(b.dataset.removePhoto)].url);
       photos.splice(Number(b.dataset.removePhoto), 1);
       renderPreviews();
@@ -1367,13 +1439,16 @@
       b.disabled = true;
       try {
         await ensureWriter();
+        assertActor(actionIdentity, actionActor);
         var deleted = checked(
           await sb.from('comments').delete().eq('id', b.dataset.deleteComment).select('id'),
         );
         if (!deleted.length) throw new Error('삭제 권한을 확인하지 못했어요.');
+        if (!sameActor(actionIdentity, actionActor) || actionRoute !== route) return;
         cache = null;
         await loadComments(false);
       } catch (e) {
+        if (!sameActor(actionIdentity, actionActor) || actionRoute !== route) return;
         status('삭제 실패 — ' + hint(e), true);
         b.disabled = false;
       }
@@ -1424,15 +1499,19 @@
       b.disabled = true;
       try {
         await ensureWriter();
+        assertActor(actionIdentity, actionActor);
         var updated = checked(
           await sb.from('posts').update({ is_pinned: !p.is_pinned }).eq('id', p.id).select('id'),
         );
         if (!updated.length) throw new Error('관리자 권한을 확인하지 못했어요.');
+        if (!sameActor(actionIdentity, actionActor) || actionRoute !== route) return;
         cache = null;
         p.is_pinned = !p.is_pinned;
         await showRoute();
+        if (!sameActor(actionIdentity, actionActor)) return;
         status(p.is_pinned ? '공지를 상단에 고정했어요.' : '공지 고정을 해제했어요.');
       } catch (e) {
+        if (!sameActor(actionIdentity, actionActor) || actionRoute !== route) return;
         status(hint(e), true);
         b.disabled = false;
       }
@@ -1443,17 +1522,22 @@
       b.disabled = true;
       try {
         await ensureWriter();
+        assertActor(actionIdentity, actionActor);
         var removed = checked(await sb.from('posts').delete().eq('id', p.id).select('id'));
         if (!removed.length) throw new Error('삭제 권한을 확인하지 못했어요.');
+        if (!sameActor(actionIdentity, actionActor) || actionRoute !== route) return;
         cache = null;
-        delete commentDrafts[p.id];
+        delete commentDrafts[commentKey(p.id)];
+        delete commentAttempts[commentKey(p.id)];
         var paths = (p.image_paths || []).flatMap(function (path) {
           return [path, OrbitBoardMedia.thumbnail(path)];
         });
         if (paths.length) await sb.storage.from('board-images').remove(paths);
+        if (!sameActor(actionIdentity, actionActor) || actionRoute !== route) return;
         status('글을 삭제했어요.');
         navigate(url(), true);
       } catch (e) {
+        if (!sameActor(actionIdentity, actionActor) || actionRoute !== route) return;
         status('삭제 실패 — ' + hint(e), true);
         b.disabled = false;
       }
@@ -1474,14 +1558,16 @@
   });
   $('postForm').addEventListener('change', function () { if (!busy && !preparing) persistDraft(); });
   document.addEventListener('click', function (event) {
-    if (view === 'editor' && event.target.closest('[data-account-open]')) beginDraftLogin();
+    if (event.target.closest('[data-account-open]')) beginDraftLogin();
   }, true);
   $('clearDraft').onclick = async function () {
     if (busy || preparing || (attempt && attempt.uncertain)) return;
     if (!confirm('이 브라우저의 현재 초안과 첨부한 사진 선택을 지울까요?')) return;
+    var identity = actorSeq, actor = userId, owner = draftOwner;
     busy = true;
     lockEditor(true);
     await clearAttempt();
+    if (!sameActor(identity, actor) || owner !== draftOwner) return;
     clearTimeout(draftTimer);
     var oldOwner = draftOwner, removed = draftStore.remove(oldOwner), previousDraft = null;
     draftBuffers.delete(oldOwner);
@@ -1507,28 +1593,35 @@
     var files = Array.from(this.files);
     this.value = '';
     if (busy || preparing || (attempt && attempt.uncertain)) return;
-    if (photos.length + files.length > 5) {
-      writeStatus('사진은 글당 5장까지 첨부할 수 있어요.', true);
-      return;
-    }
+    if (photos.length + files.length > 5) { writeStatus('사진은 글당 5장까지 첨부할 수 있어요.', true); return; }
+    var identity = actorSeq, actor = userId, owner = draftOwner, selectedPhotos = photos;
     preparing = true;
     lockEditor(true);
     writeStatus('사진을 준비하고 있어요…');
     try {
       await clearAttempt();
+      assertActor(identity, actor);
       for (var file of files) {
-        photos.push(await OrbitBoardMedia.prepare(file));
+        var photo = await OrbitBoardMedia.prepare(file);
+        if (!sameActor(identity, actor) || owner !== draftOwner) {
+          // The text draft and already selected photos remain with the old owner.
+          // A decode finishing after a switch must never become B's attachment.
+          URL.revokeObjectURL(photo.url);
+          return;
+        }
+        selectedPhotos.push(photo);
         draftMissingPhotos = false;
         renderPreviews();
       }
       writeStatus('사진 준비가 끝났어요. ‘글 남기기’를 누르면 함께 올라갑니다.');
-    } catch (e) {
-      writeStatus(hint(e), true);
-    } finally {
-      preparing = false;
-      lockEditor(false);
-      persistDraft();
-      syncWriter();
+    } catch (e) { if (sameActor(identity, actor)) writeStatus(hint(e), true); }
+    finally {
+      if (sameActor(identity, actor)) {
+        preparing = false;
+        lockEditor(false);
+        persistDraft();
+        syncWriter();
+      }
     }
   });
   $('cancelWrite').onclick = function () {
@@ -1582,8 +1675,8 @@
       (attempt && attempt.uncertain) ||
       busy ||
       commentBusy ||
-      Object.values(commentDrafts).some(function (s) {
-        return s.trim();
+      Object.keys(commentDrafts).some(function (key) {
+        return key.startsWith(commentOwner() + '|') && commentDrafts[key].trim();
       })
     ) {
       ev.preventDefault();
@@ -1598,7 +1691,7 @@
   });
   window.addEventListener('message', function (ev) {
     if (ev.origin === location.origin && ev.source === parent && ev.data &&
-        ev.data.orbit === 'accountOpening' && view === 'editor') {
+        ev.data.orbit === 'accountOpening') {
       beginDraftLogin();
       return;
     }
@@ -1611,24 +1704,74 @@
       return;
     window.OrbitMembers.refresh().then(syncWriter);
   });
-  if (embed) parent.postMessage({ orbit: 'loungeReady' }, location.origin);
-  (async function () {
-    try {
-      if (sb) {
-        var s = checked(await sb.auth.getSession());
-        draftUser = s.session && s.session.user || null;
-        if (s.session) {
-          userId = s.session.user.id;
-          isAdmin = checked(await sb.rpc('is_admin')) === true;
-        }
-      }
-    } catch (e) {
-      /* Reading remains available if admin detection fails. */
+  function syncIdentity(user) {
+    var next = user && user.id || null;
+    if (identityReady && identityKey(user) === actorIdentity) { draftUser = user; syncWriter(); return; }
+    if (draftOwner) persistDraft();
+    identityReady = true;
+    actorIdentity = identityKey(user);
+    if (user && !user.is_anonymous) {
+      anonymousViewsAllowed = false;
+      if (window.cancelOrbitAnonymousAuth) window.cancelOrbitAnonymousAuth();
     }
+    userId = next;
+    draftUser = user;
+    ++actorSeq;
+    writerPromise = null;
+    isAdmin = false;
+    cache = null;
+    busy = preparing = commentBusy = reactionBusy = false;
+    activityReader.reset();
+    ++summarySeq;
+    ++route;
+    ++commentSeq;
+    commentsLoaded = false;
+    unreadThreads = 0;
+    updateActivityLink();
+    $('activityStatus').hidden = $('readSyncStatus').hidden = true;
+    status('');
+    writeStatus('');
+    // Remove former-account text and privileged controls before awaiting any
+    // new network response, including a stalled is_admin/member request.
+    document.querySelectorAll('.board-dialog').forEach(function (dialog) { dialog.close(); });
+    detail = null;
+    comments = [];
+    revokeImages();
+    if (view === 'detail') $('postDetail').innerHTML = '<p class="empty-state">계정 정보를 확인하고 있어요…</p>';
+    if (activity && view === 'list') { posts = []; $('postList').replaceChildren(); }
+    syncWriter();
+    lockEditor(!!(attempt && attempt.uncertain));
+    clearTimeout(identityTimer);
+    var token = actorSeq, actor = userId;
+    identityTimer = setTimeout(async function () {
+      if (!sameActor(token, actor)) return;
+      // Public reading and profile readiness never wait for the role lookup.
+      if (view !== 'editor') showRoute();
+      window.OrbitMembers.refresh().then(function () { if (sameActor(token, actor)) syncWriter(); });
+      try { if (actor) {
+        var admin = checked(await sb.rpc('is_admin')) === true;
+        if (!sameActor(token, actor)) return;
+        if (isAdmin !== admin) {
+          isAdmin = admin;
+          if (view === 'detail' && detail) showRoute();
+        }
+      } } catch (_) { /* Failed role lookup cannot grant controls. */ }
+    }, 0);
+  }
+  if (embed) parent.postMessage({ orbit: 'loungeReady' }, location.origin);
+  if (sb) sb.auth.onAuthStateChange(function (event, session) {
+    syncIdentity(session && session.user || null);
+  });
+  (async function () {
     if (!sb) {
       status('서버 연결을 준비하지 못했어요. 새로고침해주세요.', true);
       return;
     }
+    var token = actorSeq;
+    try {
+      var s = checked(await sb.auth.getSession());
+      if (token === actorSeq) syncIdentity(s.session && s.session.user || null);
+    } catch (_) { if (!identityReady) syncIdentity(null); }
     // OAuth returns to the parent board panel, whose iframe normally opens its list.
     // Only this tab's explicit login handoff can reopen its writing screen.
     if (validHandoff() && memberOwner()) {
@@ -1636,24 +1779,5 @@
       if (returningDraft && hasDraft(returningDraft.row)) history.replaceState(null, '', url({ write: true }));
     }
     await showRoute();
-    sb.auth.onAuthStateChange(function (event, session) {
-      var next = session && session.user && session.user.id || null;
-      if (next === userId) return;
-      var previous = userId;
-      userId = next;
-      isAdmin = false;
-      if (previous || activity) cache = null;
-      activityReader.reset();
-      ++summarySeq;
-      unreadThreads = 0;
-      updateActivityLink();
-      if (previous) {
-        ++route;
-        ++commentSeq;
-        commentsLoaded = false;
-        if (activity && view === 'list') { posts = []; $('postList').replaceChildren(); }
-      }
-      if (view === 'list') setTimeout(showRoute, 0);
-    });
   })();
 })();
