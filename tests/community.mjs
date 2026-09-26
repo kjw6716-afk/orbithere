@@ -501,17 +501,32 @@ try {
   {
     const f=await fixture({signedIn:true}),{page,state}=f;
     state.posts=Array.from({length:40},(_,i)=>({id:uid(2000+i),title:'관측 이야기 '+i+' — 밝은 별을 봤어요',text:'본문',nick:'관측자',orbit:'report',author_id:A,created_at:'2026-09-14T01:00:00Z',image_paths:[]}));
+    state.posts.push({id:uid(2990),title:'함께 읽는 게시판 공지',text:'공지 내용',nick:'ORBIT',orbit:'free',author_id:A,created_at:'2026-09-14T02:00:00Z',image_paths:[],is_pinned:true});
     await page.goto(base+'/main.html#lounge');
     const frame=page.frameLocator('#loungeFrame');
     await frame.locator('.board-row').first().waitFor();
     for(const width of [320,390,1440,1920,3440]) {
-      await page.setViewportSize({width,height:1000});
+      await page.setViewportSize({width,height:900});
+      await page.evaluate(()=>window.scrollTo(0,0));
       await page.waitForFunction(()=>{const f=document.querySelector('#loungeFrame');return f.contentDocument.documentElement.scrollHeight<=f.clientHeight+2;});
       const layout=await frame.locator('#listView').evaluate(el=>{
         const row=el.querySelector('.board-row').getBoundingClientRect();
-        return {rowHeight:row.height,rows:el.querySelectorAll('.board-row').length,searchAfter:el.querySelector('#feedSearch').getBoundingClientRect().top>=el.querySelector('#postList').getBoundingClientRect().bottom};
+        const search=el.querySelector('#feedSearch').getBoundingClientRect();
+        return {
+          rowHeight:row.height,
+          rows:el.querySelectorAll('.board-row').length,
+          searchBefore:search.bottom<=el.querySelector('#postList').getBoundingClientRect().top,
+          noticeBefore:el.querySelector('#pinnedPosts').getBoundingClientRect().bottom<=search.top,
+          searchTarget:el.querySelector('#feedSearch button').getBoundingClientRect().height,
+          writeTarget:document.querySelector('#writeTop').getBoundingClientRect().height,
+        };
       });
-      ok('compact twenty-post page and bottom search at '+width+'px',layout.rows===20&&layout.rowHeight<=(width<=860?76:66)&&layout.searchAfter);
+      ok('twenty readable rows keep notices and search above the list at '+width+'px',layout.rows===20&&layout.rowHeight<=(width<=860?160:96)&&layout.noticeBefore&&layout.searchBefore);
+      ok('search and writing keep 44px targets at '+width+'px',layout.searchTarget>=44&&layout.writeTarget>=44);
+      if(width>=1440) ok('first post is visible without scrolling at '+width+'px',await page.evaluate(()=>{
+        const f=document.querySelector('#loungeFrame');
+        return f.getBoundingClientRect().top+f.contentDocument.querySelector('.board-row').getBoundingClientRect().bottom<=innerHeight;
+      }));
       ok('expanded board fits its frame at '+width+'px',await page.evaluate(()=>{const f=document.querySelector('#loungeFrame'),p=document.querySelector('.panel-wrap'),t=document.querySelector('.story-teaser');return document.documentElement.scrollWidth<=innerWidth+1&&Math.abs(f.getBoundingClientRect().right-t.getBoundingClientRect().right)<2;}));
       if(process.env.ORBIT_QA_FONT&&[390,1440].includes(width)) await page.screenshot({path:'/tmp/orbit-compact-list-'+width+'.png',fullPage:true});
     }

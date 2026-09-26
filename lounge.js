@@ -359,8 +359,7 @@
     }
     var all = new URL(url(), location.href);
     all.hash = 'all';
-    return '<div class="empty-state board-empty"><h2>' + title + '</h2><p>' + message + '</p>' +
-      (!activity && !query && channel === 'all' ? '<p class="empty-example">“오늘 퇴근길에 별을 봤어요.”</p>' : '') +
+    return '<div class="empty-state board-empty"><img class="board-empty-orbit" src="images/orbit-conversation.svg" width="120" height="76" alt="" aria-hidden="true"><h2>' + title + '</h2><p>' + message + '</p>' +
       '<div class="empty-actions"><a class="button primary" data-board-nav href="' + esc(href) + '">' + action + '</a>' +
       (channel !== 'all' ? '<a class="text-button" data-board-nav href="' + esc(all.pathname + all.search + all.hash) + '">' +
         (query ? '모든 글에서 검색' : '전체 글 보기') + '</a>' : '') + '</div></div>';
