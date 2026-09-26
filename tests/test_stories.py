@@ -164,6 +164,58 @@ class EditorialTests(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, 'Duplicate publication day'):
                         stories.load(root)
 
+    def test_only_the_approved_september_26_pair_may_share_that_day(self):
+        articles, original = stories.load()
+        day = '2026-09-26'
+        approved = {'how-gravity-assists-work', 'iss-visible-at-dawn-and-dusk'}
+        pair = [i for i in original['items'] if i['date'] == day]
+        self.assertEqual({i['id'] for i in pair}, approved)
+        self.assertEqual(stories.APPROVED_SAME_DAY_RELEASES[day], approved)
+        extra = dict(next(i for i in original['items'] if i['id'] == self.article['id']), date=day)
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder); dest = root / stories.ARTICLE_DIR; dest.mkdir(parents=True)
+            for article in articles.values():
+                (dest / (article['id'] + '.json')).write_text(json.dumps(article))
+            ledger_path = root / stories.LEDGER
+            ledger_path.write_text(json.dumps({'version': 1, 'items': pair}))
+            _, accepted = stories.load(root)
+            self.assertEqual(accepted['items'], pair)
+            cases = {
+                'extra article': pair + [extra],
+                'wrong pair': [pair[0], extra],
+                'wrong day': [dict(item, date='2026-09-27') for item in pair],
+            }
+            for label, items in cases.items():
+                with self.subTest(label=label):
+                    ledger_path.write_text(json.dumps({'version': 1, 'items': items}))
+                    with self.assertRaisesRegex(ValueError, 'Duplicate publication day'):
+                        stories.load(root)
+
+    def test_manual_release_exception_does_not_change_scheduled_publishing(self):
+        articles, ledger = stories.load()
+        today = '2026-09-26'
+        approved = {'how-gravity-assists-work', 'iss-visible-at-dawn-and-dusk'}
+        articles = {ident: article for ident, article in articles.items() if ident in approved}
+        ledger = {'version': 1, 'items': [i for i in ledger['items'] if i['id'] in approved]}
+        before_manual_release = copy.deepcopy(ledger)
+        before_manual_release['items'] = [i for i in before_manual_release['items']
+                                          if i['id'] != 'iss-visible-at-dawn-and-dusk']
+        before = copy.deepcopy(before_manual_release)
+        self.assertIsNone(stories.publish_next(articles, before_manual_release, today))
+        self.assertEqual(before_manual_release, before)
+        published = copy.deepcopy(ledger)
+        for _ in range(2):
+            self.assertIsNone(stories.publish_next(articles, ledger, today))
+        self.assertEqual(ledger, published)
+        future = copy.deepcopy(self.article)
+        future.update(id='future-reviewed-story', title='다음 날 검토를 마친 새로운 우주 이야기',
+                      publishAfter='2026-09-27')
+        articles[future['id']] = future
+        self.assertIsNone(stories.publish_next(articles, ledger, today))
+        self.assertEqual(stories.publish_next(articles, ledger, '2026-09-27'), future['id'])
+        self.assertIsNone(stories.publish_next(articles, ledger, '2026-09-27'))
+        self.assertEqual(sum(i['id'] == future['id'] for i in ledger['items']), 1)
+
     def test_publication_dates_are_not_displayed(self):
         day = '2026-09-12'
         for page in (stories.render_list([(self.article, day)]), stories.render_article(self.article, day),

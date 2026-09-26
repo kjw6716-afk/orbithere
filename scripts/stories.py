@@ -28,6 +28,11 @@ RELATED = {'sky.html', 'planets.html', 'guide.html', 'reading-sky.html', 'news.h
 # Operator-approved launch batch only; scheduled publishing remains one per KST day.
 INITIAL_RELEASE_DAY = '2026-09-12'
 INITIAL_RELEASE_IDS = {'moon-face-and-phases', 'seasonal-constellations-camping', 'cosmic-voids'}
+# Exact ledger exceptions approved by the operator; publish_next never uses this map.
+APPROVED_SAME_DAY_RELEASES = {
+    INITIAL_RELEASE_DAY: INITIAL_RELEASE_IDS,
+    '2026-09-26': {'how-gravity-assists-work', 'iss-visible-at-dawn-and-dusk'},
+}
 
 
 def text(value, low=1, high=500):
@@ -134,8 +139,8 @@ def load(root=ROOT):
         seen.add(ident)
         days.setdefault(day, set()).add(ident)
     for day, ids in days.items():
-        if len(ids) > 1 and not (day == INITIAL_RELEASE_DAY and ids == INITIAL_RELEASE_IDS):
-            raise ValueError('Duplicate publication day outside the approved initial release')
+        if len(ids) > 1 and ids != APPROVED_SAME_DAY_RELEASES.get(day):
+            raise ValueError('Duplicate publication day outside an explicitly approved release')
     return articles, ledger
 
 
