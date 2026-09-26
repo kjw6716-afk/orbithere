@@ -210,9 +210,9 @@
 <span class="nt-ic" id="navToggleIc" aria-hidden="true">🪐</span>
 <span class="nt-lbl" id="navToggleLbl">오늘 밤 행성</span><span class="nt-arrow" aria-hidden="true"></span></button>
 <nav class="side-nav" id="sideNav" aria-label="주요 메뉴">
-<button type="button" class="nav-item" data-panel="sky"><span class="ic" aria-hidden="true">🔭</span><span class="lbl">밤하늘 달력</span></button>
-<button type="button" class="nav-item on" data-panel="planets" aria-current="page"><span class="ic" aria-hidden="true">🪐</span><span class="lbl">오늘 밤 행성</span></button>
-<button type="button" class="nav-item" data-panel="lounge"><span class="ic" aria-hidden="true">💬</span><span class="lbl">자유게시판</span></button>
+<a class="nav-item nav-link" href="sky.html" data-panel="sky"><span class="ic" aria-hidden="true">🔭</span><span class="lbl">밤하늘 달력</span></a>
+<a class="nav-item nav-link on" href="planets.html" data-panel="planets" aria-current="page"><span class="ic" aria-hidden="true">🪐</span><span class="lbl">오늘 밤 행성</span></a>
+<a class="nav-item nav-link" href="lounge.html" data-panel="lounge"><span class="ic" aria-hidden="true">💬</span><span class="lbl">자유게시판</span></a>
 <a class="nav-item nav-link" href="news.html"><span class="ic" aria-hidden="true">📰</span><span class="lbl">우주 뉴스</span></a>
 <a class="nav-item nav-link" href="guide.html"><span class="ic" aria-hidden="true">📖</span><span class="lbl">관측 가이드</span></a>
 <a class="nav-item nav-link" href="stories.html"><span class="ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span><span class="lbl">우주 이야기</span></a>
@@ -356,9 +356,10 @@
             if (loungeLoaded) document.getElementById('loungeFrame').contentWindow.postMessage({ orbit: 'panelActive', active: name === 'lounge' }, location.origin);
         }
         document.getElementById('sideNav').addEventListener('click', function(e){
-            var btn = e.target.closest('.nav-item[data-panel]');
-            if(!btn) return;
-            switchPanel(btn.getAttribute('data-panel'), true);
+            var link = e.target.closest('.nav-item[data-panel]');
+            if(!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+            switchPanel(link.getAttribute('data-panel'), true);
         });
         window.addEventListener('hashchange', function(){
             // #join은 패널이 아니라 대화상자를 여는 신호다 (광장에서 단독 페이지로 넘어올 때)

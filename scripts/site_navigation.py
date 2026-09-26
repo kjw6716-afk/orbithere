@@ -37,7 +37,9 @@ def render(page, active, prefix=''):
         aria = ' aria-current="page"' if selected else ''
         content = f'<span class="ic" aria-hidden="true">{icon}</span><span class="lbl">{label}</span>'
         if page == 'main' and key in ('sky', 'planets', 'lounge'):
-            rows.append(f'<button type="button" class="nav-item{selected}" data-panel="{key}"{aria}>{content}</button>')
+            # A real destination works before JS loads and exposes each public page
+            # to crawlers. The main shell enhances ordinary clicks into panel changes.
+            rows.append(f'<a class="nav-item nav-link{selected}" href="{key}.html" data-panel="{key}"{aria}>{content}</a>')
         else:
             rows.append(f'<a class="nav-item nav-link{selected}" href="{prefix}{href}"{aria}>{content}</a>')
     return '\n'.join([
