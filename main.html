@@ -258,7 +258,7 @@
 
                 <!-- 글 남기기 -->
                 <section class="panel" id="panel-lounge">
-                    <iframe class="lounge-frame" id="loungeFrame" title="자유게시판" data-src="lounge.html?embed=1&v=20260926-post-links"></iframe>
+                    <iframe class="lounge-frame" id="loungeFrame" title="자유게시판" data-src="lounge.html?embed=1&v=20260926-identity-route"></iframe>
                 </section>
                 <aside class="news-brief news-brief--rail" data-news-brief aria-labelledby="newsBriefHeading">
                   <h2 class="news-brief-heading" id="newsBriefHeading">최신 우주 뉴스</h2>
@@ -301,10 +301,10 @@
 
     <link rel="stylesheet" href="account.css?v=20260926-operator">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
-    <script src="orbit-backend.js"></script>
-    <script src="members.js?v=20260926-operator"></script>
+    <script src="orbit-backend.js?v=20260926-identity"></script>
+    <script src="members.js?v=20260926-identity"></script>
     <script src="account.js?v=20260926-operator"></script>
-    <script src="account-panel.js?v=20260926-separated"></script>
+    <script src="account-panel.js?v=20260926-identity"></script>
     <script src="site-nav.js?v=20260914-community"></script>
     <script>
     // ===== 패널 전환 =====
@@ -317,6 +317,24 @@
         var DEFAULT_PANEL = 'planets';
         var activePanel = DEFAULT_PANEL;
         var loungeLoaded = false, skyLoaded = false, planetsLoaded = false;
+
+        // Publish the child route before its editor becomes visible. A queued
+        // postMessage alone can lose write=1 if the user immediately reloads.
+        window.OrbitBoardRoute = {
+            syncWriting: function(source){
+                var frame = document.getElementById('loungeFrame');
+                if (!source || source !== frame.contentWindow) return false;
+                var child;
+                try { child = new URL(source.location.href); } catch (_) { return false; }
+                if (child.origin !== location.origin || child.pathname !== '/lounge.html') return false;
+                var boardRoute = new URL(location.href);
+                var writing = child.searchParams.has('write') && !child.searchParams.get('post');
+                if(writing) boardRoute.searchParams.set('write', '1');
+                else boardRoute.searchParams.delete('write');
+                history.replaceState(null, '', boardRoute.pathname + boardRoute.search + boardRoute.hash);
+                return true;
+            }
+        };
 
         function setMenu(open) { window.OrbitNavigation.setOpen(open); }
 
@@ -395,10 +413,9 @@
                 ev.source.postMessage({ orbit:'panelActive', active: activePanel === 'lounge' }, location.origin);
             }
             if(ev.data && ev.data.orbit === 'writingState' && typeof ev.data.writing === 'boolean' && ev.source === document.getElementById('loungeFrame').contentWindow){
-                var boardRoute = new URL(location.href);
-                if(ev.data.writing) boardRoute.searchParams.set('write', '1');
-                else boardRoute.searchParams.delete('write');
-                history.replaceState(null, '', boardRoute.pathname + boardRoute.search + boardRoute.hash);
+                // Old/cached children still send messages; derive the current
+                // route so a delayed old boolean cannot overwrite newer state.
+                window.OrbitBoardRoute.syncWriting(ev.source);
             }
             if(ev.data && ev.data.orbit === 'profileChanged' && ev.source === document.getElementById('loungeFrame').contentWindow){
                 syncChip();

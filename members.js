@@ -107,7 +107,20 @@
     },
   };
   if (sb && window.ORBIT_CONFIG.membersEnabled) {
-    sb.auth.onAuthStateChange(function () {
+    sb.auth.onAuthStateChange(function (event, session) {
+      var user = session && session.user || null;
+      function identity(u) { return u ? u.id + "|" + !!u.is_anonymous + "|" + !!u.email_confirmed_at : ""; }
+      if (identity(state.user) !== identity(user)) {
+        // Invalidate in-flight member_visit before scheduling the next refresh.
+        // Account controls must not retain the previous profile during the gap.
+        ++sequence;
+        clearNickname();
+        current = user && !user.is_anonymous ? user.id : null;
+        state.user = user;
+        state.profile = null;
+        state.error = null;
+        publish();
+      }
       clearTimeout(busy);
       busy = setTimeout(refresh, 0);
     });
