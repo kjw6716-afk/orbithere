@@ -522,6 +522,13 @@ async function identityRegressions() {
     const mode = embedded ? 'iframe' : 'direct';
     {
       const f = await fixture({nickname:'', signedIn:false, registered:false}), {page,state} = f;
+      if (embedded) await f.context.addInitScript(() => {
+        if (window === top) window.addEventListener('message', event => {
+          // Delay the old asynchronous route signal independently of the visible
+          // editor, reproducing a reload before the parent's message task runs.
+          if (window.holdWritingState && event.data?.orbit === 'writingState') event.stopImmediatePropagation();
+        }, true);
+      });
       let board = await openBoard(f, embedded, '?write=1');
       await board.locator('#postTitle').fill('익명 열람 전의 제목');
       await board.locator('#postInput').fill('열람하고 돌아와도 이어 쓰는 내용');
@@ -533,8 +540,13 @@ async function identityRegressions() {
       ok(mode + ': first detail view creates only anonymous Auth and retains the stored visitor row', state.signups === 1 && state.inserts === 0 &&
         await page.evaluate(({key,owner}) => JSON.parse(localStorage.getItem(key)).drafts.some(row => row.owner===owner && row.text==='열람하고 돌아와도 이어 쓰는 내용'), {key:draftKey,owner:original.owner}));
       await board.locator('#backToFeed').click();
+      if (embedded) {
+        await page.waitForURL(url => !url.searchParams.has('write'));
+        await page.evaluate(() => { window.holdWritingState = true; });
+      }
       await board.locator('#writeTop').click();
       await board.locator('#postInput').waitFor();
+      if (embedded) ok('iframe: visible editor already has a reloadable parent URL despite delayed route messages',new URL(page.url()).searchParams.get('write')==='1');
       ok(mode + ': browsing and anonymous Auth never hide the original guest draft', await board.locator('#postTitle').inputValue()==='익명 열람 전의 제목' && await board.locator('#postInput').inputValue()==='열람하고 돌아와도 이어 쓰는 내용');
       await page.reload();
       if (embedded) { await page.frameLocator('#loungeFrame').locator('#postInput').waitFor(); board = page.frames().find(frame => new URL(frame.url()).pathname==='/lounge.html'); }
@@ -746,9 +758,17 @@ async function identityRegressions() {
       // request itself instead of nondeterministically replacing the next login.
       state.authFail=true;
       await openAccount(f,embedded);
+      const detailUpdate=f.defer((req,actor)=>!actor&&req.method()==='GET'&&new URL(req.url()).pathname==='/rest/v1/posts');
       await page.locator('#signOut').click();
       await page.locator('#authCard').waitFor();
+      await detailUpdate.entered;
+      await page.locator('#email').focus();
+      detailUpdate.release(); await detailUpdate.finished;
       await board.locator('.detail-title').waitFor();
+      await settle(board);
+      ok(mode + ': delayed detail refresh never steals focus from the open account form',await page.locator('#email').evaluate(input=>input===document.activeElement));
+      await page.keyboard.type('still-typing@example.test');
+      ok(mode + ': credentials typed during detail refresh reach the focused account input',await page.locator('#email').inputValue()==='still-typing@example.test');
       await board.locator('#postViews').filter({hasText:'조회 1'}).waitFor();
       await login(f,embedded,B,true);
       await board.locator('#commentInput:enabled').waitFor();

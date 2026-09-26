@@ -207,6 +207,15 @@
       if (count != null) show(count);
     } catch (_) { /* Keep the last known count if authentication/counting fails. */ }
   }
+  // A late iframe read must not redirect keystrokes from the parent's login form.
+  function canFocusBoard() {
+    if (document.querySelector('.account-dialog[open]')) return false;
+    if (embed) {
+      try { if (parent.document.querySelector('.account-dialog[open]')) return false; }
+      catch (_) { return false; }
+    }
+    return true;
+  }
   function status(message, error) {
     $('loungeStatus').textContent = message || '';
     $('loungeStatus').classList.toggle('error', !!error);
@@ -865,7 +874,7 @@
       loadComments(false);
       loadReactions(p, token);
       loadPostViews(p, token);
-      $('postDetail').focus({ preventScroll: true });
+      if (canFocusBoard()) $('postDetail').focus({ preventScroll: true });
     } catch (e) {
       if (token !== route) return;
       status('글을 불러오지 못했어요. ' + hint(e), true);
@@ -1337,7 +1346,12 @@
     query = (params.get('q') || '').trim().slice(0, 80);
     var id = params.get('post');
     view = id ? 'detail' : params.has('write') ? 'editor' : 'list';
-    if (embed) parent.postMessage({ orbit: 'writingState', writing: view === 'editor' }, location.origin);
+    if (embed) {
+      var routeSynced = false;
+      try { routeSynced = !!(parent.OrbitBoardRoute && parent.OrbitBoardRoute.syncWriting(window)); }
+      catch (_) { /* A cached parent can still receive the existing message. */ }
+      if (!routeSynced) parent.postMessage({ orbit: 'writingState', writing: view === 'editor' }, location.origin);
+    }
     ['list', 'detail', 'editor'].forEach(function (v) {
       $(v + 'View').hidden = v !== view;
     });
@@ -1356,7 +1370,7 @@
       syncWriter();
       // A slow identity check must not redirect keystrokes from a field the
       // writer has already selected, or focus an editor after navigating away.
-      if (document.activeElement === focusBeforeRefresh && !$('postForm').contains(document.activeElement))
+      if (canFocusBoard() && document.activeElement === focusBeforeRefresh && !$('postForm').contains(document.activeElement))
         $('postInput').focus({ preventScroll: true });
       return;
     }
