@@ -77,6 +77,7 @@ function session(anonymous = false, metadata = {}) {
 function profile() {
   return {
     nickname: "밤하늘",
+    is_admin: false,
     joined_at: "2026-09-14T00:00:00Z",
     nickname_change_available_at: "2026-09-01T00:00:00Z",
     level: 12,
@@ -104,6 +105,7 @@ async function fixture({
   enabled = true,
   google = true,
   width = 1280,
+  cards = [{ user_id: A, nickname: "<img src=x onerror=alert(1)>", level: 12, badge: "first-post", is_admin: false }],
 } = {}) {
   const context = await browser.newContext({
       viewport: { width, height: 900 },
@@ -111,6 +113,7 @@ async function fixture({
     state = {
       auth,
       profile: p,
+      cards,
       calls: [],
       fail: false,
       signupFail: false,
@@ -236,15 +239,7 @@ async function fixture({
       state.profile.selected_badge = body.p_badge;
       return json(state.profile);
     }
-    if (rpc === "member_cards")
-      return json([
-        {
-          user_id: A,
-          nickname: "<img src=x onerror=alert(1)>",
-          level: 12,
-          badge: "first-post",
-        },
-      ]);
+    if (rpc === "member_cards") return json(state.cards);
     if (rpc === "is_admin") return json(true);
     if (rpc === "member_admin_events") return json({ events: [], history: [] });
     if (rpc === "visit_stats" || rpc === "report_queue") return json([]);
@@ -736,6 +731,47 @@ try {
     await f.page.locator("[data-account-link]").isVisible(),
   );
   ok("member-enabled board has no uncaught exceptions", f.errors.length === 0);
+  await f.close();
+  f = await fixture({
+    auth: session(), width: 390,
+    p: { ...profile(), nickname: "Orbit", is_admin: true },
+    cards: [{ user_id: A, nickname: "Orbit", level: 12, badge: "level-10", is_admin: true }],
+  });
+  await f.page.goto(base + "/main.html#planets");
+  await f.page.getByRole("button", { name: "Orbit · 운영자", exact: true }).waitFor();
+  ok("home identifies a server-confirmed operator instead of displaying a level");
+  await f.page.locator("#profileChip").click();
+  await f.page.locator(".account-dialog #profileCard").waitFor();
+  ok("operator profile shows the role and hides level progress",
+    await f.page.locator("#profileLevel").innerText() === "운영자" &&
+    await f.page.locator("#levelProgress").isHidden() &&
+    await f.page.locator("#levelProgressText").isHidden());
+  ok("operator profile fits a narrow screen",
+    await f.page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+  await f.page.goto(base + "/lounge.html");
+  await f.page.locator("#postList .member-role").waitFor();
+  ok("board account and public author use the server operator badge without level badges",
+    await f.page.locator("[data-account-link]").innerText() === "Orbit · 운영자" &&
+    await f.page.locator("#postList [data-member-id]").innerText() === "Orbit · 운영자" &&
+    await f.page.locator("#postList .member-level, #postList .member-badge").count() === 0);
+  await f.close();
+  f = await fixture({
+    auth: session(false, { is_admin: true, role: "admin" }),
+    p: { ...profile(), nickname: "Orbit" },
+    cards: [{ user_id: A, nickname: "Orbit", level: 12, badge: null, is_admin: false }],
+  });
+  await f.page.goto(base + "/main.html#planets");
+  await f.page.getByRole("button", { name: "Orbit · Lv.12", exact: true }).waitFor();
+  await f.page.locator("#profileChip").click();
+  await f.page.locator(".account-dialog #profileCard").waitFor();
+  ok("operator-like nickname and editable metadata do not replace a member level",
+    await f.page.locator("#profileLevel").innerText() === "Lv.12" &&
+    await f.page.locator("#levelProgress").isVisible());
+  await f.page.goto(base + "/lounge.html");
+  await f.page.locator("#postList .member-level").waitFor();
+  ok("public author role also requires the server flag",
+    await f.page.locator("#postList .member-role").count() === 0 &&
+    await f.page.locator("#postList [data-member-id]").innerText() === "Orbit · Lv.12");
   await f.close();
   for (const width of [320,390,1440]) {
     f = await fixture({auth:null,p:null,width});

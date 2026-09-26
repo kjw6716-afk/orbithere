@@ -31,7 +31,7 @@
     document.querySelectorAll("[data-account-link]").forEach(function (el) {
       el.hidden = false;
       el.textContent = profile
-        ? profile.nickname + " · Lv." + profile.level
+        ? window.OrbitMembers.displayName(profile)
         : registered ? "내 계정" : "로그인";
     });
     document.querySelectorAll("[data-account-signup]").forEach(function (el) {

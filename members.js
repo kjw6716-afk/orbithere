@@ -10,6 +10,12 @@
     "attendance-30": "30일 출석",
     "level-10": "Lv.10 달성",
   };
+  function roleLabel(profile) {
+    return profile.is_admin === true ? "운영자" : "Lv." + profile.level;
+  }
+  function displayName(profile) {
+    return profile.nickname + " · " + roleLabel(profile);
+  }
   function publish() {
     window.dispatchEvent(new CustomEvent("orbit:member", { detail: state }));
   }
@@ -55,6 +61,8 @@
     sb: sb,
     state: state,
     badges: badges,
+    roleLabel: roleLabel,
+    displayName: displayName,
     refresh: refresh,
     clearNickname: clearNickname,
     async decorate(root) {
@@ -83,10 +91,10 @@
           if (!node.isConnected || !p) return;
           node.replaceChildren(document.createTextNode(p.nickname + " · "));
           var level = document.createElement("span");
-          level.className = "member-level";
-          level.textContent = "Lv." + p.level;
+          level.className = p.is_admin === true ? "member-role" : "member-level";
+          level.textContent = roleLabel(p);
           node.append(level);
-          if (badges[p.badge]) {
+          if (p.is_admin !== true && badges[p.badge]) {
             var badge = document.createElement("span");
             badge.className = "member-badge";
             badge.textContent = badges[p.badge];

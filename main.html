@@ -258,7 +258,7 @@
 
                 <!-- 글 남기기 -->
                 <section class="panel" id="panel-lounge">
-                    <iframe class="lounge-frame" id="loungeFrame" title="자유게시판" data-src="lounge.html?embed=1&v=20260926-drafts"></iframe>
+                    <iframe class="lounge-frame" id="loungeFrame" title="자유게시판" data-src="lounge.html?embed=1&v=20260926-reactions"></iframe>
                 </section>
                 <aside class="news-brief news-brief--rail" data-news-brief aria-labelledby="newsBriefHeading">
                   <h2 class="news-brief-heading" id="newsBriefHeading">최신 우주 뉴스</h2>
@@ -299,11 +299,11 @@
         </div>
     </div>
 
-    <link rel="stylesheet" href="account.css?v=20260926-separated">
+    <link rel="stylesheet" href="account.css?v=20260926-operator">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
     <script src="orbit-backend.js"></script>
-    <script src="members.js?v=20260926-storage"></script>
-    <script src="account.js?v=20260926-separated"></script>
+    <script src="members.js?v=20260926-operator"></script>
+    <script src="account.js?v=20260926-operator"></script>
     <script src="account-panel.js?v=20260926-separated"></script>
     <script src="site-nav.js?v=20260914-community"></script>
     <script>
@@ -429,7 +429,7 @@
             var state = window.OrbitMembers.state, profile = state.profile;
             var registered = state.user && !state.user.is_anonymous && state.user.email_confirmed_at;
             document.getElementById('profileChipText').textContent = profile
-                ? profile.nickname + ' · Lv.' + profile.level : registered ? '내 계정' : '로그인';
+                ? window.OrbitMembers.displayName(profile) : registered ? '내 계정' : '로그인';
             document.getElementById('headerSignup').hidden = !!registered;
             if(loungeLoaded) document.getElementById('loungeFrame').contentWindow.postMessage({orbit:'profileChanged'},location.origin);
         }
