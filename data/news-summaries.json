@@ -2,6 +2,20 @@
   "version": 1,
   "items": [
     {
+      "id": "f94b2d016089a6f3",
+      "source": "rocketlab",
+      "url": "https://rocketlabcorp.com/updates/mission-success-rocket-lab-launches-97th-electron-mission/",
+      "publishedAt": "2026-09-26T00:00:00Z",
+      "titleOriginal": "MISSION SUCCESS: Rocket Lab Launches 97th Electron Mission",
+      "titleKo": "로켓랩, 일렉트론 97번째 임무에서 신스펙티브 위성 발사 성공",
+      "summaryKo": [
+        "로켓랩은 2026년 9월 26일 뉴질랜드 마히아의 발사단지 1에서 ‘Owlright Owlright Owlright’ 임무를 발사해 신스펙티브의 13번째 StriX 합성개구레이더 위성을 고도 559km 저궤도에 배치했다고 발표했습니다.",
+        "이번 비행은 일렉트론의 97번째 발사이자 2026년 18번째 발사이며, 로켓랩은 신스펙티브 위성군 완성을 위해 2030년 말까지 14차례의 추가 발사가 예정돼 있다고 밝혔습니다."
+      ],
+      "checkedAt": "2026-09-26",
+      "method": "source-checked"
+    },
+    {
       "id": "0040b4ad2fba9cc6",
       "source": "nasa",
       "url": "https://www.nasa.gov/missions/nisar/us-india-satellite-captures-time-lapse-video-of-volcanic-eruption/",
