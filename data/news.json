@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-09-26T17:23:56Z",
+  "checkedAt": "2026-09-26T21:11:59Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-09-26T17:23:56Z",
+      "lastCheckedAt": "2026-09-26T21:11:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-26T17:23:56Z"
+      "lastSuccessfulAt": "2026-09-26T21:11:59Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-09-26T17:23:56Z",
+      "lastCheckedAt": "2026-09-26T21:11:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-26T17:23:56Z"
+      "lastSuccessfulAt": "2026-09-26T21:11:59Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-09-26T17:23:56Z",
+      "lastCheckedAt": "2026-09-26T21:11:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-26T17:23:56Z"
+      "lastSuccessfulAt": "2026-09-26T21:11:59Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-09-26T17:23:56Z",
+      "lastCheckedAt": "2026-09-26T21:11:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-26T17:23:56Z"
+      "lastSuccessfulAt": "2026-09-26T21:11:59Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-09-26T17:23:56Z",
+      "lastCheckedAt": "2026-09-26T21:11:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-26T17:23:56Z"
+      "lastSuccessfulAt": "2026-09-26T21:11:59Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-09-26T17:23:56Z",
+      "lastCheckedAt": "2026-09-26T21:11:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-26T17:23:56Z"
+      "lastSuccessfulAt": "2026-09-26T21:11:59Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-09-26T17:23:56Z",
+      "lastCheckedAt": "2026-09-26T21:11:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-26T17:23:56Z"
+      "lastSuccessfulAt": "2026-09-26T21:11:59Z"
     },
     {
       "id": "firefly",
@@ -78,9 +78,9 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-09-26T17:23:56Z",
+      "lastCheckedAt": "2026-09-26T21:11:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-26T17:23:56Z"
+      "lastSuccessfulAt": "2026-09-26T21:11:59Z"
     }
   ],
   "items": [
@@ -116,6 +116,22 @@
       "titleKoDraft": "ESA 여행을 승리하여 BepiColombo가 Mercury에 도착하는 것을 목격합니다.",
       "titleKoDraftOriginal": "Win a trip to ESA to witness BepiColombo arrive at Mercury",
       "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
+    },
+    {
+      "id": "e0d18ca236384c5e",
+      "source": "rocketlab",
+      "title": "Reorganization of Mynaric’s Executive Management and Strengthening of the Supervisory Board with Additional Proven Industry Expertise",
+      "url": "https://rocketlabcorp.com/updates/new-blog-post-43/",
+      "publishedAt": "2026-09-24T00:00:00Z",
+      "language": "en"
+    },
+    {
+      "id": "b003594c2fec9c9c",
+      "source": "rocketlab",
+      "title": "Neuaufstellung der Unternehmensführung von Mynaric und Stärkung des Aufsichtsrats mit zusätzlicher ausgewiesener Industrieexpertise",
+      "url": "https://rocketlabcorp.com/updates/neuaufstellung-der-unternehmensfuehrung-von-mynaric-und-staerkung-des-aufsichtsrats-mit-zusaetzlicher-ausgewiesener-industrieexpertise/",
+      "publishedAt": "2026-09-24T00:00:00Z",
+      "language": "en"
     },
     {
       "id": "baa6969633fb10bf",
@@ -394,28 +410,6 @@
       "language": "en",
       "titleKo": "NASA, 플로리다에서 진행할 로먼 우주망원경 발사 중계 일정 공개",
       "titleKoOriginal": "NASA Sets Coverage for Roman Space Telescope Launch from Florida",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "4602d76f332cb387",
-      "source": "rocketlab",
-      "title": "MISSION SUCCESS: Rocket Lab Launches 93rd Electron Mission",
-      "url": "https://rocketlabcorp.com/updates/mission-success-rocket-lab-launches-93rd-electron-mission/",
-      "publishedAt": "2026-08-20T00:00:00Z",
-      "language": "en",
-      "titleKo": "로켓랩, 일렉트론 93번째 임무 발사 성공",
-      "titleKoOriginal": "MISSION SUCCESS: Rocket Lab Launches 93rd Electron Mission",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "d009d9abab60ebfb",
-      "source": "rocketlab",
-      "title": "Powering the EMILIA-3D Lunar Mission with Proven Space Robotics",
-      "url": "https://rocketlabcorp.com/updates/powering-the-emilia-3d-lunar-mission-with-proven-space-robotics/",
-      "publishedAt": "2026-08-19T00:00:00Z",
-      "language": "en",
-      "titleKo": "검증된 우주 로봇 기술로 EMILIA-3D 달 탐사 지원",
-      "titleKoOriginal": "Powering the EMILIA-3D Lunar Mission with Proven Space Robotics",
       "titleKoMethod": "reviewed"
     },
     {
