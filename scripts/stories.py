@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate approved editorial files, publish at most one per KST day, render static pages.
+"""Validate approved editorial files, publish due articles, and render static pages.
 
 AI drafts arrive in pull requests. Merging an article file is the editorial approval.
 This renderer never calls a model or treats a successful syntax check as fact checking.
@@ -25,14 +25,6 @@ CATEGORIES = ('달과 행성', '별과 우주', '우주 탐사', '관측 이야�
 SOURCE_DOMAINS = ('nasa.gov', 'esa.int', 'kasi.re.kr', 'imo.net', 'noaa.gov',
                   'spacex.com', 'rocketlabusa.com', 'blueorigin.com', 'fireflyspace.com')
 RELATED = {'sky.html', 'planets.html', 'guide.html', 'reading-sky.html', 'news.html', 'lounge.html'}
-# Operator-approved launch batch only; scheduled publishing remains one per KST day.
-INITIAL_RELEASE_DAY = '2026-09-12'
-INITIAL_RELEASE_IDS = {'moon-face-and-phases', 'seasonal-constellations-camping', 'cosmic-voids'}
-# Exact ledger exceptions approved by the operator; publish_next never uses this map.
-APPROVED_SAME_DAY_RELEASES = {
-    INITIAL_RELEASE_DAY: INITIAL_RELEASE_IDS,
-    '2026-09-26': {'how-gravity-assists-work', 'iss-visible-at-dawn-and-dusk'},
-}
 
 
 def text(value, low=1, high=500):
@@ -127,7 +119,7 @@ def load(root=ROOT):
     ledger = json.loads((root / LEDGER).read_text())
     if not isinstance(ledger, dict) or ledger.get('version') != 1 or not isinstance(ledger.get('items'), list):
         raise ValueError('Invalid publication ledger')
-    seen, days = set(), {}
+    seen = set()
     for item in ledger['items']:
         ident, day = item['id'], valid_date(item['date'])
         if ident not in articles or ident in seen:
@@ -137,17 +129,11 @@ def load(root=ROOT):
         if item['contentHash'] != content_hash(articles[ident]):
             raise ValueError('Published article changed: use --accept-correction ID after source review')
         seen.add(ident)
-        days.setdefault(day, set()).add(ident)
-    for day, ids in days.items():
-        if len(ids) > 1 and ids != APPROVED_SAME_DAY_RELEASES.get(day):
-            raise ValueError('Duplicate publication day outside an explicitly approved release')
     return articles, ledger
 
 
 def publish_next(articles, ledger, today):
     valid_date(today)
-    if any(item['date'] == today for item in ledger['items']):
-        return None
     if any(item['date'] > today for item in ledger['items']):
         raise ValueError('Clock moved before a recorded publication date')
     seen = {item['id'] for item in ledger['items']}
@@ -158,6 +144,13 @@ def publish_next(articles, ledger, today):
     article = queue[0]
     ledger['items'].append({'id': article['id'], 'date': today, 'contentHash': content_hash(article)})
     return article['id']
+
+
+def publish_due(articles, ledger, today):
+    published = []
+    while (ident := publish_next(articles, ledger, today)) is not None:
+        published.append(ident)
+    return published
 
 
 def esc(value):
@@ -344,11 +337,13 @@ def outputs(articles, ledger, root=ROOT):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true', help='Validate and check committed pages, without publishing')
-    parser.add_argument('--publish-next', action='store_true', help='Publish one approved, due article if none published today')
+    publication = parser.add_mutually_exclusive_group()
+    publication.add_argument('--publish-next', action='store_true', help='Publish the next approved, due article')
+    publication.add_argument('--publish-due', action='store_true', help='Publish all approved, due articles without a daily limit')
     parser.add_argument('--date', help='KST day override for reproducible tests')
     parser.add_argument('--accept-correction', metavar='ID', help='Record an explicitly reviewed correction to a published article')
     args = parser.parse_args()
-    if args.check and (args.publish_next or args.accept_correction):
+    if args.check and (args.publish_next or args.publish_due or args.accept_correction):
         parser.error('--check is read-only')
     if args.accept_correction:
         ident = args.accept_correction
@@ -363,10 +358,15 @@ def main():
         item['correctedAt'] = datetime.now(ZoneInfo('Asia/Seoul')).date().isoformat()
         (ROOT / LEDGER).write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + '\n')
     articles, ledger = load()
-    published = None
-    if args.publish_next:
+    published = []
+    if args.publish_next or args.publish_due:
         today = args.date or datetime.now(ZoneInfo('Asia/Seoul')).date().isoformat()
-        published = publish_next(articles, ledger, today)
+        if args.publish_due:
+            published = publish_due(articles, ledger, today)
+        else:
+            ident = publish_next(articles, ledger, today)
+            if ident is not None:
+                published.append(ident)
     rendered = outputs(articles, ledger)
     drift = []
     for path, content in rendered.items():
@@ -385,7 +385,8 @@ def main():
             destination.write_text(content)
         if published:
             (ROOT / LEDGER).write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + '\n')
-    print(f'Stories: {len(articles)} approved files; {len(ledger["items"])} published. ' + (f'Published {published}.' if published else 'No new publication.'))
+    print(f'Stories: {len(articles)} approved files; {len(ledger["items"])} published. ' +
+          ('Published ' + ', '.join(published) + '.' if published else 'No new publication.'))
 
 
 if __name__ == '__main__':

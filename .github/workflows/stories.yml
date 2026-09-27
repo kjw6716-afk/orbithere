@@ -36,9 +36,9 @@ jobs:
           node-version: "22"
       - name: 승인 대기열과 중복 발행 검사
         run: python -m unittest discover -s tests -p 'test_stories.py'
-      - name: 한국 날짜 기준 한 편 발행
+      - name: 한국 날짜 기준 발행 가능한 승인 원고 모두 발행
         run: |
-          python scripts/stories.py --publish-next
+          python scripts/stories.py --publish-due
           python scripts/site_navigation.py --check
           python scripts/stories.py --check
           node tests/links.mjs
