@@ -313,12 +313,19 @@ summary:focus-visible {
   border-top: 1px solid #45395f;
 }
 .pin-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-height: 28px;
   color: #efe7ff;
   background: #7050ac;
   font-size: 0.75rem;
   border-radius: 5px;
   padding: 2px 9px;
   white-space: nowrap;
+  text-align: center;
+  line-height: 1.5;
 }
 .pinned-row .pin-title {
   overflow: hidden;
@@ -352,6 +359,24 @@ summary:focus-visible {
   font-weight: 650;
   color: var(--board-mint);
   margin-bottom: 0;
+}
+.board-category-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  min-width: 76px;
+  max-width: 100%;
+  padding: 4px 9px;
+  border: 1px solid var(--category-line, #286368);
+  border-radius: 7px;
+  background: var(--category-fill, #173e43);
+  color: var(--category-text, #a4eee3);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
 }
 .row-title {
   display: block;
@@ -398,7 +423,7 @@ summary:focus-visible {
   line-height: 1.6;
 }
 .row-meta > span:first-child { max-width: 90px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.row-category .reply-badge { margin: 3px 0 0; font-size: 10px; padding: 1px 4px; }
+.row-category .reply-badge { margin: 0; font-size: 10px; padding: 2px 5px; }
 .row-side {
   flex-shrink: 0;
   display: flex;
@@ -485,6 +510,10 @@ summary:focus-visible {
   margin: 0 0 20px;
 }
 .detail-category {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
   font-size: 0.875rem;
   color: var(--board-mint);
   font-weight: 650;

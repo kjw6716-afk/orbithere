@@ -2,8 +2,9 @@
 
 ## 메뉴 변경
 
-`site-nav.css`와 `site-nav.js`가 12개 콘텐츠 페이지의 데스크톱 사이드바와
+`site-nav.css`와 `site-nav.js`가 콘텐츠 페이지와 우주 이야기 개별 글의 데스크톱 사이드바와
 모바일 펼침 메뉴를 담당합니다. 홈 진입 화면(index.html)은 별도입니다.
+공통 메뉴는 밤하늘 → 자유게시판 → 우주 뉴스 → 우주 이야기 → 관측 가이드 → 소개·문의 순서입니다.
 메뉴 항목·순서는 `scripts/site_navigation.py`의 `MENU` 한 곳에서 수정한 뒤
 `python3 scripts/site_navigation.py`를 실행하고 변경된 HTML을 함께 커밋합니다.
 GitHub Pages 빌드나 방문자의 JavaScript 없이도 직접 페이지의 링크가 남습니다.
