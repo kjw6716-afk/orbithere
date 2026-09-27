@@ -1,8 +1,10 @@
 import copy
 from datetime import datetime
 from email.utils import parsedate_to_datetime
+from html.parser import HTMLParser
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -14,6 +16,20 @@ from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 import stories
+
+
+class PageElements(HTMLParser):
+    def __init__(self, page):
+        super().__init__()
+        self.elements = []
+        self.feed(page)
+
+    def handle_starttag(self, tag, attrs):
+        self.elements.append((tag, dict(attrs)))
+
+    def matching(self, tag, **attrs):
+        return [values for name, values in self.elements
+                if name == tag and all(values.get(key) == value for key, value in attrs.items())]
 
 
 class EditorialTests(unittest.TestCase):
@@ -282,6 +298,120 @@ class EditorialTests(unittest.TestCase):
         self.assertEqual(page.count('width="1200" height="675"'), 3)
         self.assertIn('AI로 만든 주제별 편집 삽화', page)
         self.assertNotIn(items[0][0]['id'], page.split('<div class="story-grid">')[1])
+
+    def test_archive_filters_describe_every_category_and_unique_results(self):
+        items = []
+        for n, category in enumerate(stories.CATEGORIES):
+            article = self.make_article(f'filter-story-{n}')
+            article['category'] = category
+            items.append((article, '2026-09-27'))
+        page = PageElements(stories.render_list(items))
+        filters = page.matching('button', **{'class': 'story-filter'})
+        self.assertEqual([button['data-story-category'] for button in filters], ['', *stories.CATEGORIES])
+        self.assertEqual([button['aria-pressed'] for button in filters], ['true', *(['false'] * 4)])
+        self.assertTrue(all(button['aria-controls'] == 'storyResults' for button in filters))
+        results = [attrs for tag, attrs in page.elements if tag == 'article' and 'data-story-search' in attrs]
+        self.assertEqual([row['data-story-category'] for row in results], list(stories.CATEGORIES))
+        self.assertEqual(len(page.matching('div', id='storyResults')), 1)
+        self.assertEqual(page.matching('span', id='storyCount')[0]['aria-live'], 'polite')
+        self.assertIn('hidden', page.matching('div', id='storyEmpty')[0])
+        self.assertEqual(len(page.matching('button', id='storyReset')), 1)
+
+    def test_related_stories_prioritize_category_sources_then_tool(self):
+        by_category = self.make_article('same-category')
+        by_tool = self.make_article('same-category-and-tool')
+        by_source = self.make_article('same-category-and-source')
+        other_category = self.make_article('other-category')
+        for article in (by_category, by_tool):
+            article['sources'] = [{'url': 'https://science.nasa.gov/solar-system/'}]
+        by_category['related']['href'] = 'news.html'
+        by_source['related']['href'] = 'news.html'
+        other_category['category'] = '별과 우주'
+        items = [(article, '2026-09-27') for article in
+                 (other_category, by_category, by_tool, by_source)]
+        ranked = stories.related_stories(self.article, items)
+        self.assertEqual([article['id'] for article, _ in ranked],
+                         ['same-category-and-source', 'same-category-and-tool', 'same-category'])
+        tied = [(self.make_article(ident), '2026-09-27') for ident in ('latest', 'older', 'oldest')]
+        self.assertEqual(stories.related_stories(self.article, tied), tied)
+
+    def test_related_stories_exclude_self_duplicates_and_use_one_link_per_card(self):
+        first, second = self.make_article('related-first'), self.make_article('related-second')
+        same_title = self.make_article('duplicate-title')
+        same_title['title'] = first['title']
+        current_title = self.make_article('current-title-copy')
+        current_title['title'] = self.article['title']
+        items = [(article, '2026-09-27') for article in
+                 (self.article, current_title, first, first, same_title, second)]
+        self.assertEqual([a['id'] for a, _ in stories.related_stories(self.article, items)],
+                         ['related-first', 'related-second'])
+        html = stories.render_related(self.article, items, stories.load_images())
+        page = PageElements(html)
+        links = page.matching('a')
+        self.assertEqual(len(links), 2)
+        self.assertEqual([link['href'] for link in links], ['related-first.html', 'related-second.html'])
+        self.assertEqual(len(page.matching('img', **{'class': 'story-cover'})), 2)
+        for link in links:
+            self.assertEqual(link['class'], 'story-related-card')
+            self.assertEqual(len(page.matching('h3', id=link['aria-labelledby'])), 1)
+            self.assertNotIn('tabindex', link)
+        self.assertEqual(stories.render_related(self.article, [(self.article, '2026-09-27')],
+                                               stories.load_images()), '')
+
+    def test_related_cards_only_include_published_stories_and_keep_manuscript_hashes(self):
+        public = [self.article, *[self.make_article(f'public-story-{n}') for n in range(3)]]
+        draft = self.make_article('unpublished-related-story', '2026-10-01')
+        articles = {a['id']: a for a in [*public, draft]}
+        stories.publish_due(articles, self.ledger, '2026-09-27')
+        ledger_before = copy.deepcopy(self.ledger)
+        hashes_before = {ident: stories.content_hash(a) for ident, a in articles.items()}
+        rendered = stories.outputs(articles, self.ledger)
+        for article in public:
+            page = PageElements(rendered[f'stories/{article["id"]}.html'])
+            links = page.matching('a', **{'class': 'story-related-card'})
+            self.assertEqual(len(links), 3)
+            self.assertEqual({link['href'] for link in links},
+                             {other['id'] + '.html' for other in public if other != article})
+        self.assertFalse(any(draft['id'] in value or draft['title'] in value for value in rendered.values()))
+        self.assertEqual(self.ledger, ledger_before)
+        self.assertEqual({ident: stories.content_hash(a) for ident, a in articles.items()}, hashes_before)
+
+    def test_article_share_metadata_matches_cover_title_description_and_canonical(self):
+        articles, _ = stories.load()
+        images = stories.load_images()
+        future = self.make_article('future-custom-covered-story')
+        # A future draft's explicit cover is read from the manifest at render time.
+        images['images']['future-original-cover'] = {'alt': '미래 글을 위한 새 표지 삽화'}
+        images['articles'][future['id']] = 'future-original-cover'
+        for article in [*articles.values(), future]:
+            with self.subTest(article=article['id']):
+                html = stories.render_article(article, '2026-09-27', images)
+                page = PageElements(html)
+                meta = {attrs.get('property', attrs.get('name')): attrs.get('content')
+                        for attrs in page.matching('meta')}
+                canonical = f'https://orbithere.com/stories/{article["id"]}.html'
+                key = stories.image_key(article, images)
+                cover = f'https://orbithere.com/images/stories/{key}-1200.webp'
+                self.assertIn(f'<title>{stories.esc(article["title"])} | ORBIT</title>', html)
+                self.assertEqual(page.matching('link', rel='canonical')[0]['href'], canonical)
+                self.assertEqual(meta['og:url'], canonical)
+                self.assertEqual(meta['og:type'], 'article')
+                for field in ('og:title', 'twitter:title'):
+                    self.assertEqual(meta[field], article['title'])
+                for field in ('description', 'og:description', 'twitter:description'):
+                    self.assertEqual(meta[field], article['summary'])
+                for field in ('og:image', 'twitter:image'):
+                    self.assertEqual(meta[field], cover)
+                for field in ('og:image:alt', 'twitter:image:alt'):
+                    self.assertEqual(meta[field], images['images'][key]['alt'])
+                self.assertEqual((meta['og:image:width'], meta['og:image:height']), ('1200', '675'))
+                self.assertEqual(meta['og:image:type'], 'image/webp')
+                self.assertEqual(meta['twitter:card'], 'summary_large_image')
+                schema = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', html).group(1))
+                self.assertEqual(schema['image'], cover)
+                self.assertEqual(schema['headline'], article['title'])
+                self.assertEqual(schema['description'], article['summary'])
+                self.assertEqual(schema['url'], canonical)
 
     def test_batch_publishes_five_after_existing_same_day_release_and_is_idempotent(self):
         today = '2026-09-27'

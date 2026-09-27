@@ -334,8 +334,14 @@ def json_script(value):
     return json.dumps(value, ensure_ascii=False).replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
 
 
-def shell(title, description, path, body, prefix='', schema=None, noindex=False, script='stories.js'):
+def shell(title, description, path, body, prefix='', schema=None, noindex=False, script='stories.js', share_image=None):
     canonical = 'https://orbithere.com/' + path
+    image_url = share_image['url'] if share_image else 'https://orbithere.com/images/og.png'
+    image_meta = ''
+    if share_image:
+        image_meta = (f'<meta property="og:image:width" content="1200"><meta property="og:image:height" content="675">'
+                      f'<meta property="og:image:type" content="image/webp"><meta property="og:image:alt" content="{esc(share_image["alt"])}">'
+                      f'<meta name="twitter:image:alt" content="{esc(share_image["alt"])}">')
     footer = ''.join(f'<a href="{prefix}{href}">{label}</a>' for href, label in
                      [('stories.html', '우주 이야기'), ('about.html', '소개·문의'), ('terms.html', '이용약관'), ('privacy.html', '개인정보처리방침')])
     return f'''<!DOCTYPE html>
@@ -353,16 +359,18 @@ def shell(title, description, path, body, prefix='', schema=None, noindex=False,
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
 <meta property="og:type" content="{'article' if schema else 'website'}"><meta property="og:site_name" content="Orbit">
 <meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}">
-<meta property="og:url" content="{canonical}"><meta property="og:image" content="https://orbithere.com/images/og.png">
+<meta property="og:url" content="{canonical}"><meta property="og:image" content="{esc(image_url)}">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(description)}">
+<meta name="twitter:image" content="{esc(image_url)}">{image_meta}
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
 <link rel="stylesheet" href="{prefix}orbit.css?v=20260912-brand">
 <link rel="stylesheet" href="{prefix}site-nav.css?v=20260926-mint">
-<link rel="stylesheet" href="{prefix}stories.css?v=20260927-imagery">
+<link rel="stylesheet" href="{prefix}stories.css?v=20260927-reading-flow">
 {f'<script type="application/ld+json">{json_script(schema)}</script>' if schema else ''}
 <script src="{prefix}site-nav.js?v=20260914-community" defer></script>
-<script src="{prefix}{script}?v=20260912-editor" defer></script>
+<script src="{prefix}{script}?v=20260927-reading-flow" defer></script>
 <script src="{prefix}orbit-config.js"></script>{'' if noindex else f'<script src="{prefix}orbit-analytics.js?v=20260927-funnel" defer></script>'}<script src="{prefix}visits.js" defer></script>
 </head>
 <body><a class="skip-link" href="#main-content">본문으로 바로가기</a>
@@ -391,17 +399,53 @@ def render_list(items, images=None):
     if items:
         a, day = items[0]
         search_text = ' '.join(p for section in a['sections'] for p in section['paragraphs'])
-        feature = f'<article class="story-feature" data-story-search="{esc(search_text)}" aria-labelledby="latestStoryTitle"><a class="story-cover-link" href="stories/{a["id"]}.html" aria-hidden="true" tabindex="-1">{render_cover(a, images, featured=True, split=True)}</a><div class="story-feature-copy"><p class="story-eyebrow">가장 최근의 이야기</p>{meta(a, day)}<h2 id="latestStoryTitle"><a href="stories/{a["id"]}.html">{esc(a["title"])}</a></h2><p>{esc(a["summary"])}</p><a class="story-link" href="stories/{a["id"]}.html">이야기 읽기 <span aria-hidden="true">↗</span></a></div></article>'
+        feature = f'<article class="story-feature" data-story-search="{esc(search_text)}" data-story-category="{esc(a["category"])}" aria-labelledby="latestStoryTitle"><a class="story-cover-link" href="stories/{a["id"]}.html" aria-hidden="true" tabindex="-1">{render_cover(a, images, featured=True, split=True)}</a><div class="story-feature-copy"><p class="story-eyebrow">가장 최근의 이야기</p>{meta(a, day)}<h2 id="latestStoryTitle"><a href="stories/{a["id"]}.html">{esc(a["title"])}</a></h2><p>{esc(a["summary"])}</p><a class="story-link" href="stories/{a["id"]}.html">이야기 읽기 <span aria-hidden="true">↗</span></a></div></article>'
     rows = []
     for a, day in items[1:]:
         search_text = ' '.join(p for section in a['sections'] for p in section['paragraphs'])
-        rows.append(f'<article class="story-row story-card" data-story-search="{esc(search_text)}"><a class="story-cover-link" href="stories/{a["id"]}.html" aria-hidden="true" tabindex="-1">{render_cover(a, images)}</a><div class="story-card-copy">{meta(a, day)}<h3><a href="stories/{a["id"]}.html">{esc(a["title"])}</a></h3><p>{esc(a["summary"])}</p><a class="story-card-read" href="stories/{a["id"]}.html" aria-label="{esc(a["title"])} 읽기">이야기 읽기 <span aria-hidden="true">↗</span></a></div></article>')
-    archive = f'<section class="stories-archive" aria-labelledby="archiveTitle"><div class="stories-section-head"><h2 id="archiveTitle">차곡차곡 쌓이는 이야기</h2><span class="stories-count" id="storyCount" role="status">{len(items)}편</span></div><label class="story-search" hidden>이야기 찾기<input id="storySearch" type="search" placeholder="제목·주제·내용으로 찾아보세요" maxlength="100"></label>{feature}<div class="story-grid">{"".join(rows)}</div><p class="editor-note" id="storyEmpty" hidden>찾는 이야기가 없어요. 다른 단어로 검색해보세요.</p></section>'
+        rows.append(f'<article class="story-row story-card" data-story-search="{esc(search_text)}" data-story-category="{esc(a["category"])}"><a class="story-cover-link" href="stories/{a["id"]}.html" aria-hidden="true" tabindex="-1">{render_cover(a, images)}</a><div class="story-card-copy">{meta(a, day)}<h3><a href="stories/{a["id"]}.html">{esc(a["title"])}</a></h3><p>{esc(a["summary"])}</p><a class="story-card-read" href="stories/{a["id"]}.html" aria-label="{esc(a["title"])} 읽기">이야기 읽기 <span aria-hidden="true">↗</span></a></div></article>')
+    filters = '<div class="story-filters" role="group" aria-label="이야기 주제" hidden>'
+    for category in ('', *CATEGORIES):
+        filters += f'<button class="story-filter" type="button" data-story-category="{esc(category)}" aria-pressed="{"false" if category else "true"}" aria-controls="storyResults">{esc(category or "전체")}</button>'
+    filters += '</div>'
+    archive = f'<section class="stories-archive" aria-labelledby="archiveTitle"><div class="stories-section-head"><h2 id="archiveTitle">차곡차곡 쌓이는 이야기</h2><span class="stories-count" id="storyCount" role="status" aria-live="polite" aria-atomic="true">전체 · {len(items)}편</span></div><label class="story-search" hidden>이야기 찾기<input id="storySearch" type="search" placeholder="제목·주제·내용으로 찾아보세요" maxlength="100" aria-controls="storyResults"></label>{filters}<div id="storyResults">{feature}<div class="story-grid">{"".join(rows)}</div></div><div class="story-empty" id="storyEmpty" hidden><p id="storyEmptyMessage">찾는 이야기가 없어요. 검색어를 바꾸거나 다른 주제를 골라보세요.</p><button class="story-button" id="storyReset" type="button">검색과 분류 초기화</button></div></section>'
     note = f'<p class="story-image-note">{esc(images["notice"])}</p><p class="editor-note">이야기마다 출처와 자료 확인 날짜를 함께 전합니다. 오류 제보는 <a href="lounge.html#ask">질문 게시판</a>에서 받아요. 새로운 글은 검토를 거쳐 전합니다.</p>'
     return shell('우주 이야기 — ORBIT 에디터', '달과 행성, 별과 우주, 우주 탐사의 궁금증을 공식 자료와 함께 쉽게 풀어주는 ORBIT 에디터의 우주 이야기.', 'stories.html', head + archive + note)
 
 
-def render_article(a, day, images=None):
+def related_stories(article, published_items):
+    """Rank only the public collection; ties retain newest publication order.
+
+    Category comes first, then shared primary sources and the observing tool.
+    These existing fields avoid editing (and re-hashing) approved manuscripts.
+    """
+    sources = {source['url'] for source in article['sources']}
+    seen_ids, seen_titles = {article['id']}, {article['title']}
+    candidates = []
+    for candidate, day in published_items:
+        if candidate['id'] in seen_ids or candidate['title'] in seen_titles:
+            continue
+        seen_ids.add(candidate['id'])
+        seen_titles.add(candidate['title'])
+        shared_sources = len(sources & {source['url'] for source in candidate['sources']})
+        rank = (candidate['category'] == article['category'], shared_sources,
+                candidate['related']['href'] == article['related']['href'])
+        candidates.append((rank, candidate, day))
+    candidates.sort(key=lambda item: item[0], reverse=True)
+    return [(candidate, day) for _, candidate, day in candidates[:3]]
+
+
+def render_related(article, published_items, images):
+    cards = []
+    for candidate, _ in related_stories(article, published_items):
+        title_id = 'related-story-' + candidate['id']
+        cards.append(f'<a class="story-related-card" href="{candidate["id"]}.html" aria-labelledby="{title_id}">{render_cover(candidate, images, "../")}<div class="story-related-copy"><span class="story-tag">{esc(candidate["category"])}</span><h3 id="{title_id}">{esc(candidate["title"])}</h3><p>{esc(candidate["summary"])}</p><span class="story-card-read" aria-hidden="true">이야기 읽기 ↗</span></div></a>')
+    if not cards:
+        return ''
+    return '<section class="story-related" aria-labelledby="relatedStoriesTitle"><div class="story-related-heading"><h2 id="relatedStoriesTitle">함께 읽으면 좋은 이야기</h2><p>이어지는 궁금증도 천천히 살펴보세요.</p></div><div class="story-related-grid">' + ''.join(cards) + '</div></section>'
+
+
+def render_article(a, day, images=None, published_items=()):
     images = images if images is not None else load_images()
     ident = a['id']
     body = f'<article class="story-article"><a class="story-breadcrumb" href="../stories.html">← 우주 이야기 전체보기</a><header>{meta(a, day)}<h1>{esc(a["title"])}</h1><p class="story-standfirst">{esc(a["summary"])}</p><div class="story-byline">{byline(disclose=True)}</div></header><figure class="story-article-cover">{render_cover(a, images, "../", featured=True)}<figcaption class="story-image-note">{esc(images["notice"])}</figcaption></figure><div class="story-body">'
@@ -417,13 +461,19 @@ def render_article(a, day, images=None):
     body += '<section class="story-sources" aria-labelledby="sourcesTitle"><h2 id="sourcesTitle">이 이야기를 확인한 자료</h2><ol>'
     for n, source in enumerate(a['sources'], 1):
         body += f'<li id="source-{n}"><a href="{esc(source["url"])}" target="_blank" rel="noopener noreferrer">{esc(source["title"])} ↗</a><span>자료 확인 {source["checkedAt"].replace("-", ".")} · 원문 새 탭</span></li>'
-    body += '</ol><p class="editor-note">자료의 날짜와 적용 범위를 함께 확인해주세요. <a href="../lounge.html#ask">오류 제보하기 →</a></p></section><div class="story-share"><button class="story-button" id="shareStory" type="button" hidden>이야기 주소 복사</button><a class="story-link" href="../stories.html">다른 이야기 보기 →</a></div><p class="story-status" id="shareStatus" role="status"></p><input class="story-share-fallback" id="shareFallback" aria-label="공유할 이야기 주소" readonly hidden></article>'
+    body += '</ol><p class="editor-note">자료의 날짜와 적용 범위를 함께 확인해주세요. <a href="../lounge.html#ask">오류 제보하기 →</a></p></section>'
+    body += render_related(a, published_items, images)
+    body += '<div class="story-share"><button class="story-button" id="shareStory" type="button" hidden>이야기 주소 복사</button><a class="story-link" href="../stories.html">다른 이야기 보기 →</a></div><p class="story-status" id="shareStatus" role="status"></p><input class="story-share-fallback" id="shareFallback" aria-label="공유할 이야기 주소" readonly hidden></article>'
+    key = image_key(a, images)
+    share_image = {'url': f'https://orbithere.com/images/stories/{key}-1200.webp',
+                   'alt': images['images'][key]['alt']}
     schema = {'@context': 'https://schema.org', '@type': 'Article', 'headline': a['title'], 'description': a['summary'],
               'datePublished': day, 'inLanguage': 'ko', 'url': f'https://orbithere.com/stories/{ident}.html',
+              'image': share_image['url'],
               'author': {'@type': 'Organization', 'name': 'ORBIT 에디터', 'description': 'AI가 쓰는 우주 이야기'},
               'publisher': {'@type': 'Organization', 'name': 'Orbit', 'url': 'https://orbithere.com/'},
               'citation': [s['url'] for s in a['sources']]}
-    return shell(a['title'], a['summary'], f'stories/{ident}.html', body, '../', schema)
+    return shell(a['title'], a['summary'], f'stories/{ident}.html', body, '../', schema, share_image=share_image)
 
 
 def render_teaser(items, carousel=False):
@@ -447,7 +497,7 @@ def outputs(articles, ledger, root=ROOT):
     images = load_images(root)
     items = [(articles[item['id']], item['date']) for item in sorted(reversed(ledger['items']), key=lambda i: i['date'], reverse=True)]
     result = {'stories.html': render_list(items, images), 'rss.xml': render_rss(items)}
-    result.update({f'stories/{a["id"]}.html': render_article(a, day, images) for a, day in items})
+    result.update({f'stories/{a["id"]}.html': render_article(a, day, images, items) for a, day in items})
     for filename in ('index.html', 'main.html'):
         src = (root / filename).read_text()
         pattern = r'<!-- orbit-story-teaser:start -->.*?<!-- orbit-story-teaser:end -->'
