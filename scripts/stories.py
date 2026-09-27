@@ -158,6 +158,47 @@ def esc(value):
     return escape(str(value), quote=True)
 
 
+def webp_size(path):
+    """Check the WebP container and frame dimensions without a decoder dependency.
+
+    Browser image decoding and editorial visual review remain separate checks.
+    """
+    data = path.read_bytes()
+    if (len(data) < 20 or data[:4] != b'RIFF' or data[8:12] != b'WEBP'
+            or int.from_bytes(data[4:8], 'little') + 8 != len(data)):
+        raise ValueError(f'Invalid WebP cover: {path.name}')
+    offset, frame, canvas = 12, None, None
+    while offset + 8 <= len(data):
+        kind = data[offset:offset + 4]
+        length = int.from_bytes(data[offset + 4:offset + 8], 'little')
+        end = offset + 8 + length
+        chunk = data[offset + 8:end]
+        if end + (length % 2) > len(data):
+            raise ValueError(f'Truncated WebP cover: {path.name}')
+        if kind == b'VP8X':
+            if length != 10 or chunk[0] & 2:
+                raise ValueError(f'Invalid or animated WebP cover: {path.name}')
+            canvas = (int.from_bytes(chunk[4:7], 'little') + 1,
+                      int.from_bytes(chunk[7:10], 'little') + 1)
+        elif kind in (b'VP8 ', b'VP8L'):
+            if frame is not None:
+                raise ValueError(f'Multiple frames in WebP cover: {path.name}')
+            if kind == b'VP8 ' and length >= 10 and chunk[3:6] == b'\x9d\x01\x2a':
+                frame = (int.from_bytes(chunk[6:8], 'little') & 0x3fff,
+                         int.from_bytes(chunk[8:10], 'little') & 0x3fff)
+            elif kind == b'VP8L' and length >= 5 and chunk[0] == 0x2f:
+                bits = int.from_bytes(chunk[1:5], 'little')
+                frame = ((bits & 0x3fff) + 1, ((bits >> 14) & 0x3fff) + 1)
+            else:
+                raise ValueError(f'Invalid WebP frame: {path.name}')
+        elif kind in (b'ANIM', b'ANMF'):
+            raise ValueError(f'Animated WebP cover: {path.name}')
+        offset = end + (length % 2)
+    if offset != len(data) or frame is None or (canvas is not None and canvas != frame):
+        raise ValueError(f'Invalid WebP cover: {path.name}')
+    return frame
+
+
 def load_images(root=ROOT):
     """Keep artwork separate from approved article content and publication hashes."""
     images = json.loads((root / IMAGE_MANIFEST).read_text(encoding='utf-8'))
@@ -171,10 +212,18 @@ def load_images(root=ROOT):
         if not isinstance(image, dict):
             raise ValueError('Invalid story cover metadata')
         text(image['alt'], 10, 160)
+        if 'generation' in image:
+            generation = image['generation']
+            if not isinstance(generation, dict) or generation.get('tool') != 'image_gen':
+                raise ValueError('Story cover generation must record image_gen')
+            valid_date(generation['generatedAt'])
+            text(generation['prompt'], 50, 6000)
         for width in (640, 1200):
             path = root / f'images/stories/{key}-{width}.webp'
             if not path.is_file():
                 raise ValueError(f'Missing story cover: {path.relative_to(root)}')
+            if webp_size(path) != (width, width * 9 // 16):
+                raise ValueError(f'Story cover must be {width}×{width * 9 // 16}: {path.name}')
     categories = images['categories']
     if set(categories) != set(CATEGORIES):
         raise ValueError('Every story category needs a cover fallback')
@@ -186,6 +235,36 @@ def load_images(root=ROOT):
 
 def image_key(article, images):
     return images['articles'].get(article['id'], images['categories'][article['category']])
+
+
+def validate_draft_covers(articles, ledger, images, root=ROOT):
+    """A new story needs its own generated cover before any publication writes.
+
+    Already published stories retain their existing shared or category covers.
+    """
+    published = {item['id'] for item in ledger['items']}
+    used = {}
+    for article in articles.values():
+        used.setdefault(image_key(article, images), []).append(article['id'])
+    fingerprints = {}
+    for key in images['images']:
+        for width in (640, 1200):
+            path = root / f'images/stories/{key}-{width}.webp'
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            fingerprints.setdefault((width, digest), []).append(key)
+    for ident in sorted(set(articles) - published):
+        key = images['articles'].get(ident)
+        if key is None:
+            raise ValueError(f'Unpublished story needs an explicit generated cover: {ident}')
+        if key in images['categories'].values() or len(used[key]) != 1:
+            raise ValueError(f'Unpublished story needs a unique cover, not a shared/category cover: {ident}')
+        if 'generation' not in images['images'][key]:
+            raise ValueError(f'Unpublished story cover needs generation metadata: {ident}')
+        for width in (640, 1200):
+            path = root / f'images/stories/{key}-{width}.webp'
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            if len(fingerprints[(width, digest)]) > 1:
+                raise ValueError(f'Unpublished story cover reuses an existing image file: {ident}')
 
 
 def render_cover(article, images, prefix='', featured=False, split=False):
@@ -407,6 +486,8 @@ def main():
         item['correctedAt'] = datetime.now(ZoneInfo('Asia/Seoul')).date().isoformat()
         (ROOT / LEDGER).write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + '\n')
     articles, ledger = load()
+    images = load_images()
+    validate_draft_covers(articles, ledger, images)
     published = []
     if args.publish_next or args.publish_due:
         today = args.date or datetime.now(ZoneInfo('Asia/Seoul')).date().isoformat()

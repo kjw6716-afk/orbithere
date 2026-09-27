@@ -26,6 +26,34 @@ class EditorialTests(unittest.TestCase):
         a.update(id=ident, title='별과 우주를 읽는 새로운 질문 ' + ident, publishAfter=after)
         return a
 
+    def install_cover_fixture(self, root, articles):
+        original = stories.load_images()
+        images = copy.deepcopy(original)
+        images['images'] = {'moon-phases': original['images']['moon-phases']}
+        images['articles'] = {self.article['id']: 'moon-phases'}
+        images['categories'] = {category: 'moon-phases' for category in stories.CATEGORIES}
+        sources = iter(key for key in original['images'] if key != 'moon-phases')
+        copies = [('moon-phases', 'moon-phases')]
+        for article in articles:
+            if article['id'] == self.article['id']:
+                continue
+            key, source = article['id'], next(sources)
+            images['articles'][key] = key
+            images['images'][key] = {
+                'alt': '새 이야기만을 위한 우주 편집 삽화',
+                'generation': {'tool': 'image_gen', 'generatedAt': '2026-09-27',
+                               'prompt': 'Create an original editorial space illustration for the specific story: ' + key},
+            }
+            copies.append((key, source))
+        (root / 'data').mkdir(exist_ok=True)
+        (root / 'images/stories').mkdir(parents=True, exist_ok=True)
+        for key, source in copies:
+            for width in (640, 1200):
+                shutil.copyfile(stories.ROOT / f'images/stories/{source}-{width}.webp',
+                                root / f'images/stories/{key}-{width}.webp')
+        (root / stories.IMAGE_MANIFEST).write_text(json.dumps(images), encoding='utf-8')
+        return images
+
     def test_next_publishes_one_at_a_time_without_daily_cap_or_backdating(self):
         second = copy.deepcopy(self.article)
         second.update(id='second-story', title='달의 두 번째 이야기')
@@ -183,6 +211,66 @@ class EditorialTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Missing story cover'):
                 stories.load_images()
 
+    def test_new_stories_require_explicit_unique_generated_covers(self):
+        new = [self.make_article('new-story-a'), self.make_article('new-story-b')]
+        articles = {a['id']: a for a in [self.article, *new]}
+        stories.publish_next({self.article['id']: self.article}, self.ledger, '2026-09-27')
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            images = self.install_cover_fixture(root, articles.values())
+            images = stories.load_images(root)
+            stories.validate_draft_covers(articles, self.ledger, images, root)
+            missing = copy.deepcopy(images)
+            del missing['articles']['new-story-a']
+            shared = copy.deepcopy(images)
+            shared['articles']['new-story-a'] = 'moon-phases'
+            duplicate_mapping = copy.deepcopy(images)
+            duplicate_mapping['articles']['new-story-b'] = 'new-story-a'
+            no_generation = copy.deepcopy(images)
+            del no_generation['images']['new-story-a']['generation']
+            for data, message in ((missing, 'explicit generated cover'),
+                                  (shared, 'unique cover'),
+                                  (duplicate_mapping, 'unique cover'),
+                                  (no_generation, 'generation metadata')):
+                with self.subTest(message=message), self.assertRaisesRegex(ValueError, message):
+                    stories.validate_draft_covers(articles, self.ledger, data, root)
+            shutil.copyfile(root / 'images/stories/moon-phases-640.webp',
+                            root / 'images/stories/new-story-a-640.webp')
+            with self.assertRaisesRegex(ValueError, 'reuses an existing image file'):
+                stories.validate_draft_covers(articles, self.ledger, images, root)
+
+    def test_existing_published_covers_and_article_hashes_are_unchanged(self):
+        articles, ledger = stories.load()
+        images = stories.load_images()
+        before = {ident: stories.content_hash(a) for ident, a in articles.items()}
+        stories.validate_draft_covers(articles, ledger, images)
+        self.assertEqual(before, {ident: stories.content_hash(a) for ident, a in articles.items()})
+        for path, rendered in stories.outputs(articles, ledger).items():
+            self.assertEqual((stories.ROOT / path).read_text(), rendered, path)
+
+    def test_cover_generation_metadata_and_real_webp_dimensions_are_checked(self):
+        article = self.make_article('new-story')
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            images = self.install_cover_fixture(root, [self.article, article])
+            for field, value in [('tool', 'stock-photo'), ('generatedAt', '2026-02-30'),
+                                 ('prompt', 'missing detail')]:
+                broken = copy.deepcopy(images)
+                broken['images']['new-story']['generation'][field] = value
+                (root / stories.IMAGE_MANIFEST).write_text(json.dumps(broken), encoding='utf-8')
+                with self.subTest(field=field), self.assertRaises(ValueError):
+                    stories.load_images(root)
+            (root / stories.IMAGE_MANIFEST).write_text(json.dumps(images), encoding='utf-8')
+            asset = root / 'images/stories/new-story-640.webp'
+            original = asset.read_bytes()
+            for data in (b'not an image', original[:-1], b'FAKE' + original[4:]):
+                asset.write_bytes(data)
+                with self.subTest(length=len(data)), self.assertRaisesRegex(ValueError, 'WebP cover'):
+                    stories.load_images(root)
+            shutil.copyfile(root / 'images/stories/new-story-1200.webp', asset)
+            with self.assertRaisesRegex(ValueError, 'must be 640×360'):
+                stories.load_images(root)
+
     def test_archive_features_latest_once_and_keeps_all_stories_searchable(self):
         items = [(self.make_article(f'cover-story-{n}'), '2026-09-27') for n in range(3)]
         page = stories.render_list(items)
@@ -254,16 +342,29 @@ class EditorialTests(unittest.TestCase):
                 (root / 'scripts' / name).write_bytes((stories.ROOT / 'scripts' / name).read_bytes())
             for name in ('index.html', 'main.html', 'sitemap.xml'):
                 (root / name).write_bytes((stories.ROOT / name).read_bytes())
-            (root / 'data').mkdir()
-            shutil.copyfile(stories.ROOT / stories.IMAGE_MANIFEST, root / stories.IMAGE_MANIFEST)
-            shutil.copytree(stories.ROOT / 'images/stories', root / 'images/stories')
             articles = [self.article] + [self.make_article(f'cli-story-{n}') for n in range(5)]
             articles.append(self.make_article('future-story', '2026-09-28'))
+            images = self.install_cover_fixture(root, articles)
             for article in articles:
                 (root / stories.ARTICLE_DIR / (article['id'] + '.json')).write_text(json.dumps(article))
             stories.publish_next({self.article['id']: self.article}, self.ledger, today)
             (root / stories.LEDGER).write_text(json.dumps(self.ledger))
             command = [sys.executable, 'scripts/stories.py', '--publish-due', '--date', today]
+            # Cover validation is required in both CI and publishing, before any
+            # ledger or public output changes, including for future-dated drafts.
+            invalid = copy.deepcopy(images)
+            del invalid['articles']['future-story']
+            manifest_path = root / stories.IMAGE_MANIFEST
+            manifest_path.write_text(json.dumps(invalid), encoding='utf-8')
+            snapshot = {p.relative_to(root): p.read_bytes() for p in root.rglob('*')
+                        if p.is_file() and p.suffix != '.pyc'}
+            for attempt in ([sys.executable, 'scripts/stories.py', '--check'], command):
+                result = subprocess.run(attempt, cwd=root, capture_output=True, text=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn('explicit generated cover: future-story', result.stderr)
+                self.assertEqual(snapshot, {p.relative_to(root): p.read_bytes() for p in root.rglob('*')
+                                            if p.is_file() and p.suffix != '.pyc'})
+            manifest_path.write_text(json.dumps(images), encoding='utf-8')
             result = subprocess.run(command, cwd=root, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             _, ledger = stories.load(root)

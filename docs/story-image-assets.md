@@ -2,7 +2,13 @@
 
 Created 2026-09-27 with the built-in image generation tool (no external stock imagery). These are original AI-generated editorial illustrations, not astronomical observation photographs or scale diagrams. Published story prose and publication hashes are unchanged.
 
-The web delivery files use 640 px and 1200 px WebP versions with the same composition. Cards use responsive srcset; only the featured image loads eagerly. Category defaults give future reviewed articles a cover without requiring changes to the editorial article schema. Specific subjects can override the category cover in data/story-images.json.
+The web delivery files use 640 px and 1200 px WebP versions with the same composition. Cards use responsive srcset; only the featured image loads eagerly. The original category defaults and article overrides in `data/story-images.json` remain available for legacy stories; they do not satisfy the bespoke-cover requirement for new daily drafts. Artwork metadata stays separate from editorial article JSON and its publication hashes.
+
+## New daily story covers
+
+The daily editorial task creates two article drafts and two new, subject-specific AI illustrations in one dated draft PR. Each article has its own explicit image key, 640×360 and 1200×675 WebP deliveries, Korean alt text, and a provenance record containing the final prompt and actual generation tool. New covers follow the approved midnight navy, restrained mint, and warm cream/amber style; they are labelled AI editorial illustrations, never observation photographs or literal scale diagrams.
+
+The canonical creation, review, validation, and safe-rerun procedure is [`_editorial/IMAGE_WORKFLOW.md`](../_editorial/IMAGE_WORKFLOW.md). Generation failure leaves the draft incomplete; an existing category cover cannot be substituted to mark the daily task complete. The original asset list and generation prompts below are a historical record and are not replaced when new covers are added.
 
 ## Delivery files
 

@@ -117,10 +117,11 @@ design, content, or characters is prohibited.
 `stories.html`은 글 목록이며 `stories/ID.html`은 출처·확인 날짜·AI 작성 표시가 있는 정적 본문입니다.
 첫 화면과 메인 도구 화면에서 가장 최근의 글로 연결합니다. JS 없이도 목록·본문·출처를 읽을 수 있습니다.
 
-AI 초안 작성은 ChatGPT Work 예약 작업, 발행은 `.github/workflows/stories.yml`이 담당합니다.
-하루 두 편을 날짜별 초안 PR 하나로 작성하며, article JSON을 검토하고 main에 병합하면 해당 글을 승인합니다. 승인된 대기열에서 한국 날짜 기준 발행 가능일이 된 글을 모두 발행하며 하루 발행 수 상한은 없습니다.
+AI 원고와 표지 생성은 ChatGPT Work 예약 작업, 발행은 `.github/workflows/stories.yml`이 담당합니다. Actions 자체는 AI 글이나 이미지를 생성하지 않습니다.
+하루 두 편과 각 글에 맞춘 새 AI 편집 삽화 두 장을 날짜별 초안 PR 하나에 담습니다. 각 표지는 640×360·1200×675 WebP, 글별 연결·alt, 최종 프롬프트·생성 기록을 원고와 함께 검토합니다. 기존 공용 표지는 유지하지만 새 글의 맞춤 표지로 재사용하지 않습니다.
+글과 표지를 검토하고 main에 병합하면 해당 글을 승인합니다. 승인된 대기열에서 한국 날짜 기준 발행 가능일이 된 글을 모두 발행하며 하루 발행 수 상한은 없습니다. 이미지 생성이 불가능하거나 실패하면 완성된 원고를 보존하고 미완성 초안으로 남겨 재시도합니다.
 새 글이 없거나 검사에 실패하면 기존 글을 유지합니다. 자동 사실 검증이나 무검토 자동 발행을 보장하지 않습니다.
-작성 규칙·검토·수정·예약 작업 복구는 [_editorial/README.md](_editorial/README.md)를 참고하세요.
+작성 규칙·검토·수정은 [_editorial/README.md](_editorial/README.md), 표지 제작·검사·예약 작업 복구는 [_editorial/IMAGE_WORKFLOW.md](_editorial/IMAGE_WORKFLOW.md)를 참고하세요.
 `npm run test:stories`는 일괄 발행·중복 방지·미래일 대기·정적 렌더링·공유·노트 저장본 보존을 검사합니다.
 
 ## 한국어 뉴스 핵심 요약
