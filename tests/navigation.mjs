@@ -114,7 +114,7 @@ try{
     await page.goto(base+'/news.html');await page.locator('.news-article').first().waitFor();
     await page.locator('.news-original summary').click();
     ok('translated title is primary and original stays visible',await page.getByRole('link',{name:'우주 관측의 새 소식',exact:true}).count()===1 && await page.locator('.news-original [lang=en]').innerText()==='Original headline 0');
-    ok('changed original and unsafe translation fall back',await page.getByRole('link',{name:'Original headline 1',exact:true}).count()===1 && await page.getByRole('link',{name:'Original headline 2',exact:true}).count()===1 && await page.locator('#newsList img').count()===0);
+    ok('changed original and unsafe translation fall back',await page.getByRole('link',{name:'Original headline 1',exact:true}).count()===1 && await page.getByRole('link',{name:'Original headline 2',exact:true}).count()===1 && await page.locator('#newsList .row-title img, #newsList .news-original img, #newsList [onerror]').count()===0);
     ok('unreviewed draft is never published',await page.getByRole('link',{name:'Original headline 3',exact:true}).count()===1 && await page.getByText('검토하지 않은 번역 초안',{exact:true}).count()===0);
     await page.setViewportSize({width:1440,height:900});
     await page.goto(base+'/main.html');await page.locator('.news-brief-title').first().waitFor();

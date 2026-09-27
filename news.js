@@ -8,6 +8,9 @@
     sources = news.sources;
   var data = null,
     summaries = null,
+    images = null,
+    imageLoading = false,
+    failedImages = new Set(),
     loading = false,
     lastFocused = "";
   function esc(s) {
@@ -32,6 +35,92 @@
           minute: "2-digit",
         })
       : "확인 기록 없음";
+  }
+  function imageFor(item) {
+    if (!images || !/^[a-f0-9]{16}$/.test(item.id || "") || !Object.hasOwn(images, item.id)) return null;
+    var image = images[item.id];
+    function text(value, max) {
+      return typeof value === "string" && value.trim().length > 0 && value.length <= max &&
+        !/[\x00-\x1f]/.test(value);
+    }
+    return image && typeof image === "object" && typeof image.src === "string" &&
+      /^\/images\/news\/[a-z0-9][a-z0-9-]*\.(webp|png|jpe?g|avif)$/i.test(image.src) &&
+      !failedImages.has(image.src) && image.sourceUrl === item.url &&
+      text(image.alt, 240) && text(image.credit, 300) &&
+      ["photo", "visualization"].includes(image.kind) ? image : null;
+  }
+  function applyImages() {
+    if (!data) return;
+    news.items(data).forEach(function (item) {
+      var article = document.getElementById(news.articleId(item));
+      if (!article) return;
+      article.querySelectorAll(".news-thumbnail, .news-image-credit").forEach(function (node) { node.remove(); });
+      article.classList.remove("news-article-imaged");
+      var image = imageFor(item);
+      if (!image) return;
+      var thumbnail = document.createElement("div"),
+        img = document.createElement("img"),
+        credit = document.createElement("p"),
+        link = document.createElement("a");
+      thumbnail.className = "news-thumbnail";
+      img.width = 160;
+      img.height = 100;
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.alt = image.alt;
+      credit.className = "news-image-credit";
+      link.href = image.sourceUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = (image.kind === "visualization" ? "시각화·삽화" : "사진") + " · 이미지: " + image.credit + " ↗";
+      credit.append(link);
+      if ([
+        "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "https://creativecommons.org/licenses/by/4.0/",
+        "https://creativecommons.org/licenses/by-sa/3.0/igo/",
+      ].includes(image.licenseUrl)) {
+        var license = document.createElement("a");
+        license.href = image.licenseUrl;
+        license.target = "_blank";
+        license.rel = "noopener noreferrer";
+        license.className = "news-image-license";
+        license.textContent = "이용 조건";
+        credit.append(" · ", license);
+      }
+      img.addEventListener("error", function () {
+        failedImages.add(image.src);
+        thumbnail.remove();
+        credit.remove();
+        if (!article.querySelector(".news-thumbnail")) article.classList.remove("news-article-imaged");
+      }, { once: true });
+      thumbnail.append(img);
+      article.prepend(thumbnail);
+      article.querySelector(".news-article-body").append(credit);
+      article.classList.add("news-article-imaged");
+      img.src = image.src;
+    });
+  }
+  async function loadImages() {
+    if (imageLoading) return;
+    imageLoading = true;
+    var controller = new AbortController(),
+      timer = setTimeout(function () { controller.abort(); }, 3000);
+    try {
+      var response = await fetch("data/news-images.json", { cache: "no-cache", signal: controller.signal });
+      if (!response.ok) throw new Error("images unavailable");
+      var result = await response.json();
+      if (!result || result.version !== 1 || !result.images || typeof result.images !== "object" ||
+          Array.isArray(result.images) || Object.keys(result.images).length > 256) throw new Error("invalid images");
+      images = result.images;
+      failedImages.clear();
+      // Enhance existing rows without resetting open details or keyboard focus.
+      applyImages();
+    } catch (_) {
+      // Curated imagery is optional; the news list remains usable on its own.
+    } finally {
+      clearTimeout(timer);
+      imageLoading = false;
+    }
   }
   function render() {
     if (!data) return;
@@ -87,7 +176,7 @@
             return (
               '<article id="' +
               esc(news.articleId(item)) +
-              '" tabindex="-1" class="board-row news-article"><div class="row-meta"><span class="row-category">' +
+              '" tabindex="-1" class="board-row news-article"><div class="news-article-heading"><div class="row-meta"><span class="row-category">' +
               sources[item.source].name +
               '</span>' + companyBadges + '<span aria-hidden="true">·</span><time datetime="' +
               esc(item.publishedAt) +
@@ -101,10 +190,10 @@
               (english && !korean ? ' lang="en"' : "") +
               ">" +
               esc(summary ? summary.titleKo : news.displayTitle(item)) +
-              '</a>' +
-              (summary ? '<div class="news-summary"><span class="news-summary-label">핵심 요약</span>' +
+              '</a></div><div class="news-article-body">' +
+              (summary ? '<div class="news-summary"><span class="news-summary-label">핵심 요약</span><div class="news-summary-text" id="summary-' + esc(news.articleId(item)) + '">' +
                 summary.summaryKo.map(function (sentence) { return '<p>' + esc(sentence) + '</p>'; }).join('') +
-                '</div>' : '') +
+                '</div><button type="button" class="text-button news-summary-toggle" aria-expanded="false" aria-controls="summary-' + esc(news.articleId(item)) + '">요약 더보기</button></div>' : '') +
               (korean ? '<details class="news-original"><summary>영문 제목 보기</summary><span lang="en">' + esc(item.title) + '</span></details>' : '') +
               '<div class="news-links"><a href="' +
               esc(item.url) +
@@ -116,11 +205,12 @@
                   esc(format(source && source.lastSuccessfulAt)) +
                   "</div>"
                 : "") +
-              "</article>"
+              "</div></article>"
             );
           })
           .join("")
       : '<div class="empty-state"><p>아직 가져온 소식이 없어요.<br>아래 공식 사이트에서 최신 소식을 확인해주세요.</p></div>';
+    applyImages();
     var selected = location.hash.slice(1);
     if (selected.startsWith("article-")) {
       var article = document.getElementById(selected);
@@ -139,6 +229,7 @@
   async function load() {
     if (loading) return;
     loading = true;
+    loadImages();
     button.disabled = true;
     list.setAttribute("aria-busy", "true");
     try {
@@ -160,6 +251,14 @@
       list.setAttribute("aria-busy", "false");
     }
   }
+  list.addEventListener("click", function (event) {
+    var toggle = event.target.closest(".news-summary-toggle");
+    if (!toggle || !list.contains(toggle)) return;
+    var expanded = toggle.getAttribute("aria-expanded") !== "true";
+    toggle.setAttribute("aria-expanded", String(expanded));
+    toggle.textContent = expanded ? "요약 접기" : "요약 더보기";
+    toggle.closest(".news-summary").classList.toggle("news-summary-expanded", expanded);
+  });
   window.addEventListener("hashchange", render);
   button.onclick = load;
   load();

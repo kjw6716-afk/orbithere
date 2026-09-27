@@ -3,10 +3,12 @@ from datetime import datetime
 from email.utils import parsedate_to_datetime
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 import xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
 
@@ -148,6 +150,51 @@ class EditorialTests(unittest.TestCase):
         self.assertIn('href="news.html"', html)
         self.assertIn('0편', html)
 
+    def test_cover_mapping_has_future_category_fallback_without_changing_article_hashes(self):
+        images = stories.load_images()
+        article = self.make_article('future-unmapped-story')
+        for category in stories.CATEGORIES:
+            article['category'] = category
+            before = stories.content_hash(article)
+            cover = stories.render_cover(article, images)
+            self.assertIn(f'images/stories/{images["categories"][category]}-640.webp', cover)
+            stories.render_article(article, '2026-09-27', images)
+            self.assertEqual(stories.content_hash(article), before)
+        article.update(id='why-saturn-has-rings', category='달과 행성')
+        self.assertEqual(stories.image_key(article, images), 'saturn-rings')
+        self.assertIn('../images/stories/saturn-rings-1200.webp',
+                      stories.render_article(article, '2026-09-27', images))
+
+    def test_cover_manifest_rejects_missing_assets_bad_paths_and_incomplete_fallbacks(self):
+        manifest = stories.load_images()
+        broken = copy.deepcopy(manifest)
+        broken['images']['../escape'] = {'alt': '경로가 잘못된 우주 편집 삽화'}
+        missing_category = copy.deepcopy(manifest)
+        del missing_category['categories'][stories.CATEGORIES[0]]
+        unknown = copy.deepcopy(manifest)
+        unknown['articles']['new-story'] = 'unknown-image'
+        for data, message in ((broken, 'Invalid story image key'),
+                              (missing_category, 'category needs'),
+                              (unknown, 'Unknown story cover mapping')):
+            with self.subTest(message=message), patch.object(Path, 'read_text', return_value=json.dumps(data)):
+                with self.assertRaisesRegex(ValueError, message):
+                    stories.load_images()
+        with patch.object(Path, 'is_file', return_value=False):
+            with self.assertRaisesRegex(ValueError, 'Missing story cover'):
+                stories.load_images()
+
+    def test_archive_features_latest_once_and_keeps_all_stories_searchable(self):
+        items = [(self.make_article(f'cover-story-{n}'), '2026-09-27') for n in range(3)]
+        page = stories.render_list(items)
+        self.assertEqual(page.count('data-story-search='), 3)
+        self.assertEqual(page.count('class="story-cover"'), 3)
+        self.assertEqual(page.count('class="story-row story-card"'), 2)
+        self.assertEqual(page.count('fetchpriority="high"'), 1)
+        self.assertEqual(page.count('loading="lazy"'), 2)
+        self.assertEqual(page.count('width="1200" height="675"'), 3)
+        self.assertIn('AI로 만든 주제별 편집 삽화', page)
+        self.assertNotIn(items[0][0]['id'], page.split('<div class="story-grid">')[1])
+
     def test_batch_publishes_five_after_existing_same_day_release_and_is_idempotent(self):
         today = '2026-09-27'
         articles = {self.article['id']: self.article}
@@ -207,6 +254,9 @@ class EditorialTests(unittest.TestCase):
                 (root / 'scripts' / name).write_bytes((stories.ROOT / 'scripts' / name).read_bytes())
             for name in ('index.html', 'main.html', 'sitemap.xml'):
                 (root / name).write_bytes((stories.ROOT / name).read_bytes())
+            (root / 'data').mkdir()
+            shutil.copyfile(stories.ROOT / stories.IMAGE_MANIFEST, root / stories.IMAGE_MANIFEST)
+            shutil.copytree(stories.ROOT / 'images/stories', root / 'images/stories')
             articles = [self.article] + [self.make_article(f'cli-story-{n}') for n in range(5)]
             articles.append(self.make_article('future-story', '2026-09-28'))
             for article in articles:
