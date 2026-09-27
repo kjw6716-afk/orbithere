@@ -370,6 +370,24 @@ summary:focus-visible {
   text-decoration: underline;
   text-underline-offset: 4px;
 }
+.row-title-line {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.row-title-line .row-title { min-width: 0; }
+.row-photo-count {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--board-muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+  white-space: nowrap;
+}
+.row-photo-count svg { width: 15px; height: 15px; }
 .row-meta {
   font-size: 0.8125rem;
   color: var(--board-muted);
@@ -388,31 +406,6 @@ summary:focus-visible {
   align-items: center;
   gap: 8px;
   min-width: 30px;
-}
-.row-thumb-link {
-  display: block;
-  position: relative;
-  width: 36px;
-  height: 36px;
-  overflow: hidden;
-  background: #0c1524;
-  border: 1px solid #3b4c65;
-  border-radius: 9px;
-}
-.row-thumb-link img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.image-count {
-  position: absolute;
-  bottom: 2px;
-  right: 3px;
-  font-size: 0.75rem;
-  background: #07101dce;
-  padding: 0 4px;
-  border-radius: 3px;
-  color: white;
 }
 .comment-count {
   font-size: 0.8125rem;
@@ -496,6 +489,11 @@ summary:focus-visible {
   color: var(--board-mint);
   font-weight: 650;
 }
+.detail-heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 12px; align-items: center; }
+.detail-heading .detail-title, .detail-heading .detail-meta, .detail-heading .share-link { grid-column: 1 / -1; }
+.detail-share { display: inline-flex; align-items: center; gap: 5px; justify-self: end; min-height: 36px; padding: 4px 7px; font-size: 0.8125rem; color: var(--board-muted); }
+.detail-share svg { width: 15px; height: 15px; }
+.edited-label { font-size: 0.75rem; }
 .detail-title {
   font-size: 1.7rem;
   font-weight: 750;
@@ -562,9 +560,6 @@ summary:focus-visible {
   gap: 8px;
   align-items: center;
   padding: 6px 0 20px;
-}
-.detail-actions .spacer {
-  flex: 1;
 }
 .share-link {
   width: 100%;
@@ -994,10 +989,6 @@ summary:focus-visible {
   }
   .row-title {
     font-size: 1rem;
-  }
-  .row-thumb-link {
-    width: 32px;
-    height: 32px;
   }
   .board-search {
     gap: 6px;

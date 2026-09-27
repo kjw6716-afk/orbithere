@@ -32,7 +32,8 @@
     posts = [],
     more = false,
     listBusy = false,
-    cache = null;
+    cache = null,
+    editState = null;
   var photos = [],
     preparing = false,
     busy = false,
@@ -99,7 +100,7 @@
   }
   function activityHeading() {
     $('boardTitle').textContent = activity ? '내 활동' : '자유게시판';
-    $('boardTitle').href = activityURL(activity || '');
+    $('boardTitle').href = url();
     $('boardIntro').textContent = activity ? '내가 남긴 이야기와 이어지는 대화를 확인해요.' : '오늘 본 하늘부터, 아직 모르는 별까지.';
     $('activityPanel').hidden = !activity;
     document.querySelector('.board-filters').hidden = !!activity;
@@ -178,7 +179,7 @@
     var n = Number(value);
     return '조회 ' + (value != null && Number.isSafeInteger(n) && n >= 0 ? n.toLocaleString('ko-KR') : '—');
   }
-  async function loadPostViews(p, token) {
+  async function loadPostViews(p, token, preserveViews) {
     function show(value) {
       if (token !== route || detail !== p) return;
       p.view_count = value;
@@ -197,7 +198,7 @@
       var counts = checked(await sb.from('post_view_counts').select('view_count').eq('post_id', p.id).maybeSingle());
       show(counts ? counts.view_count : 0);
     } catch (_) { /* An unavailable counter must never prevent reading. */ }
-    if (token !== route || detail !== p) return;
+    if (token !== route || detail !== p || preserveViews) return;
     // Logging out must not silently start a new Auth operation behind login.
     if (!userId && !anonymousViewsAllowed) return;
     try {
@@ -278,15 +279,36 @@
     try { return await pending; }
     finally { if (writerPromise === pending) writerPromise = null; }
   }
-  function canWrite() {
-    var state = window.OrbitMembers.state, user = state.user;
+  function canWrite(readyState) {
+    var state = readyState || window.OrbitMembers.state, user = state.user;
     return !!(user && user.id === userId && !user.is_anonymous && user.email_confirmed_at && state.profile && !state.error);
   }
-  async function ensureAuthor() {
+  function refreshEditMember() {
+    // refresh() may be superseded and resolve while the latest profile is still
+    // loading. Wait for its publication and check an Auth-only update below.
+    if (!window.ORBIT_CONFIG.membersEnabled) return Promise.resolve(window.OrbitMembers.state);
+    return new Promise(function (resolve) {
+      async function ready(ev) {
+        if (ev.detail !== window.OrbitMembers.state) return;
+        window.removeEventListener('orbit:member', ready);
+        var snapshot = Object.assign({}, ev.detail), user = snapshot.user;
+        // Auth also publishes before the profile refresh. A confirmed account
+        // with an empty profile needs a real lookup, not a loading-state denial.
+        if (user && !user.is_anonymous && user.email_confirmed_at && !snapshot.profile && !snapshot.error) {
+          try { snapshot.profile = checked(await sb.rpc('member_profile')); }
+          catch (e) { snapshot.error = e; }
+        }
+        resolve(snapshot);
+      }
+      window.addEventListener('orbit:member', ready);
+      window.OrbitMembers.refresh();
+    });
+  }
+  async function ensureAuthor(editing) {
     var token = actorSeq, actor = userId;
-    await window.OrbitMembers.refresh();
+    var ready = await (editing ? refreshEditMember() : window.OrbitMembers.refresh());
     assertActor(token, actor);
-    if (!canWrite()) { join(); throw new Error('로그인하고 닉네임 설정을 마쳐주세요.'); }
+    if (!canWrite(editing ? ready : null)) { join(); throw new Error('로그인하고 닉네임 설정을 마쳐주세요.'); }
     var id = await ensureWriter();
     assertActor(token, actor);
     var profile = checked(await sb.rpc('member_profile'));
@@ -304,6 +326,7 @@
     u.hash = channel;
     if (options && options.post) u.searchParams.set('post', options.post);
     if (options && options.write) u.searchParams.set('write', '1');
+    if (options && options.edit) u.searchParams.set('edit', '1');
     return u.pathname + u.search + u.hash;
   }
   function dirty() {
@@ -380,6 +403,7 @@
   }
   function persistDraft() {
     clearTimeout(draftTimer);
+    if (editState || view === 'edit') return true;
     if (!draftOwner) return true;
     var row = draftContent();
     draftBuffers.set(draftOwner, { row: row, photos: photos, attempt: attempt });
@@ -436,6 +460,7 @@
       buffer ? '저장된 초안을 불러왔어요.' : '');
   }
   function syncDraftOwner() {
+    if (editState || view === 'edit') return;
     if (busy || preparing || (!draftOwner && view !== 'editor' && !validHandoff())) return;
     var next = nextDraftOwner(), handoff = validHandoff() && memberOwner() ? draftSession.handoff : null;
     if (handoff && typeof handoff.target === 'string' && handoff.target !== memberOwner() &&
@@ -488,6 +513,7 @@
   function beginDraftLogin() {
     anonymousViewsAllowed = false;
     if (window.cancelOrbitAnonymousAuth) window.cancelOrbitAnonymousAuth();
+    if (editState || view === 'edit') return;
     persistDraft();
     // Opening login is the user's explicit handoff intent even after browsing
     // away from the editor. Only this tab's nonempty guest draft is eligible.
@@ -510,10 +536,27 @@
   function syncWriter() {
     syncDraftOwner();
     var allowed = canWrite(), profile = allowed ? window.OrbitMembers.state.profile : null;
+    if (view === 'edit' && !editState) {
+      $('memberWriteGate').hidden = $('postForm').hidden = true;
+      return;
+    }
     $('memberWriteGate').hidden = allowed;
     $('postForm').hidden = false;
     $('writerName').textContent = profile ? profile.nickname + ' 이름으로 남겨요.' : '';
     $('writerName').hidden = !profile;
+    var actions = $('postDetail').querySelector('.detail-actions'), editButton = actions && actions.querySelector('[data-action="edit-post"]');
+    if (view === 'detail' && detail && actions) {
+      if (allowed && detail.author_id === userId) {
+        if (!editButton) {
+          editButton = document.createElement('button');
+          editButton.type = 'button';
+          editButton.className = 'text-button';
+          editButton.dataset.action = 'edit-post';
+          editButton.textContent = '수정';
+          actions.prepend(editButton);
+        }
+      } else if (editButton) editButton.remove();
+    }
     var comment = $('commentInput'), form = $('commentForm');
     if (comment && form) {
       comment.hidden = !allowed;
@@ -539,10 +582,11 @@
       status('진행 중인 저장을 마친 뒤 이동해주세요.', true);
       return false;
     }
-    if (attempt && attempt.uncertain) {
+    if (!editState && attempt && attempt.uncertain) {
       status('등록 여부를 아직 확인하지 못했어요. ‘글 남기기’를 다시 눌러 확인해주세요.', true);
       return false;
     }
+    if (editState && editDirty() && !confirm('수정한 내용을 저장하지 않고 나갈까요?')) return false;
     if (
       view === 'editor' &&
       dirty() &&
@@ -563,6 +607,74 @@
       };
     history[replace ? 'replaceState' : 'pushState'](null, '', href);
     showRoute();
+  }
+  function editFingerprint() {
+    return JSON.stringify([$('postTitle').value, $('postInput').value, $('orbitSelect').value,
+      OrbitBoardWriting.collect($('postForm'))]);
+  }
+  function editDirty() { return !!editState && editState.original !== editFingerprint(); }
+  function editorMode(editing) {
+    $('editorTitle').textContent = editing ? '글 수정' : '오늘 본 하늘을 들려주세요';
+    $('editorIntro').textContent = editing ? '제목과 이야기, 분류와 관측 정보를 고칠 수 있어요.' : '한 줄도 좋아요. 별 이름이나 장비를 몰라도 괜찮아요.';
+    $('btnTrace').textContent = editing ? '저장' : '글 남기기';
+    ['draftHelp', 'draftControls', 'photoHeading', 'photoInput', 'photoHelp', 'photoPreviews'].forEach(function (id) { $(id).hidden = editing; });
+    $('draftPhotoNotice').hidden = editing || (!photos.length && !draftMissingPhotos);
+    $('editPhotoNotice').hidden = !editing;
+    $('photoInput').disabled = editing;
+    $('cancelWriteLink').textContent = editing ? '← 글로 돌아가기' : '← 목록';
+  }
+  function clearEdit(restore) {
+    editState = null;
+    $('postForm').reset();
+    editorMode(false);
+    if (restore) restoreDraft(draftOwner ? readDraft(draftOwner) : null);
+    else {
+      // The saved new-post buffer stays with its owner; no edit input is saved.
+      draftOwner = null;
+      photos = [];
+      attempt = null;
+      draftMissingPhotos = false;
+      renderPreviews();
+      $('charCount').textContent = '0 / 5,000';
+    }
+    writeStatus('');
+  }
+  async function loadEdit(id, token) {
+    editorMode(true);
+    $('postForm').hidden = true;
+    $('memberWriteGate').hidden = true;
+    writeStatus('글을 불러오고 있어요…');
+    try {
+      var ready = await refreshEditMember();
+      if (token !== route) return;
+      if (!canWrite(ready)) throw new Error('이 글을 수정하려면 작성한 계정으로 로그인해주세요.');
+      var p = checked(await sb.from('posts').select('id,title,text,orbit,observation,author_id').eq('id', id).maybeSingle());
+      if (token !== route) return;
+      if (!p || p.author_id !== userId) throw new Error('자신이 작성한 글만 수정할 수 있어요.');
+      editState = { id: p.id, actor: userId, original: null };
+      $('postForm').reset();
+      $('postTitle').value = p.title;
+      $('postInput').value = p.text;
+      $('orbitSelect').value = p.orbit;
+      $('postForm').querySelectorAll('[data-observation]').forEach(function (input) {
+        input.value = (p.observation || {})[input.dataset.observation] || '';
+      });
+      [$('observationFields'), $('equipmentFields')].forEach(function (section) {
+        section.open = Array.from(section.querySelectorAll('[data-observation]')).some(function (input) { return !!input.value; });
+      });
+      editState.original = editFingerprint();
+      $('charCount').textContent = p.text.length.toLocaleString('ko-KR') + ' / 5,000';
+      lockEditor(false);
+      syncWriter();
+      writeStatus('');
+      if (canFocusBoard()) $('postTitle').focus({ preventScroll: true });
+    } catch (e) {
+      if (token !== route) return;
+      history.replaceState(null, '', url({ post: id }));
+      clearEdit(true);
+      await showRoute();
+      status(hint(e), true);
+    }
   }
   function revokeImages() {
     imageURLs.forEach(function (u) {
@@ -661,28 +773,19 @@
               esc(label(p.orbit)) +
               (activity && p.is_pinned ? ' · 공지' : '') +
               (activity && Number(p.unread_count) > 0 ? '<span class="reply-badge">새 답글 ' + Math.min(999, Number(p.unread_count)) + '개</span>' : '') +
-              '</div><a class="row-title" data-board-nav href="' +
+              '</div><div class="row-title-line"><a class="row-title" data-board-nav href="' +
               esc(href) +
               '">' +
               esc(p.title) +
-              '</a><div class="row-meta"><span>' +
+              '</a>' +
+              (images.length ? '<span class="row-photo-count" role="img" aria-label="첨부 사진 ' + images.length + '장"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m3 17 5-5 4 4 4-6 5 7"/></svg><span aria-hidden="true">' + images.length + '</span></span>' : '') +
+              '</div><div class="row-meta"><span>' +
               '<span data-member-id="' + esc(p.author_id || '') + '">' + esc(p.nick) + '</span>' +
               '</span><span aria-hidden="true">·</span><time datetime="' +
               esc(p.created_at) +
               '">' +
               esc(date(p.created_at)) +
               '</time><span class="view-count">' + viewLabel(p.view_count) + '</span></div></div><div class="row-side">' +
-              (images.length
-                ? '<a class="row-thumb-link" data-board-nav href="' +
-                  esc(href) +
-                  '" aria-label="' +
-                  esc(p.title) +
-                  ' 사진 보기"><img data-path="' +
-                  esc(OrbitBoardMedia.thumbnail(images[0])) +
-                  '" alt="첨부 사진 미리보기" loading="lazy"><span class="image-count">' +
-                  images.length +
-                  '</span></a>'
-                : '') +
               '<a class="comment-count" data-board-nav href="' +
               esc(href) +
               '" aria-label="댓글 ' +
@@ -697,7 +800,6 @@
     $('writeBottom').hidden = !posts.length;
     $('loadMore').hidden = !more;
     $('loadMore').disabled = listBusy;
-    hydrateImages($('postList'), route);
   }
   async function loadList(append) {
     if (listBusy) return;
@@ -790,12 +892,14 @@
       '">신고·삭제 요청</button>'
     );
   }
-  async function loadDetail(id, token) {
+  async function loadDetail(id, token, preserveViews) {
     $('postDetail').innerHTML = '<p class="empty-state">글을 불러오고 있어요…</p>';
     try {
       var columns = 'id,title,nick,orbit,text,created_at,author_id,image_paths,is_pinned,pinned_at';
-      var result = await sb.from('posts').select(columns + ',observation').eq('id', id).maybeSingle();
+      var result = await sb.from('posts').select(columns + ',observation,edited_at').eq('id', id).maybeSingle();
       // Keep old posts readable while a rollout's optional column is unavailable.
+      if (result.error && /^(42703|PGRST204)$/.test(result.error.code || ''))
+        result = await sb.from('posts').select(columns + ',observation').eq('id', id).maybeSingle();
       if (result.error && /^(42703|PGRST204)$/.test(result.error.code || ''))
         result = await sb.from('posts').select(columns).eq('id', id).maybeSingle();
       var p = checked(result);
@@ -809,10 +913,10 @@
       document.title = p.title + ' | Orbit';
       var own = p.author_id && p.author_id === userId;
       $('postDetail').innerHTML =
-        '<div class="detail-category">' +
+        '<header class="detail-heading"><div class="detail-category">' +
         (p.is_pinned ? '<span class="pin-badge">공지</span> · ' : '') +
         esc(label(p.orbit)) +
-        '</div><h1 class="detail-title">' +
+        '</div><button class="text-button detail-share" type="button" data-action="share" aria-label="글 주소 공유"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 15V3m-4 4 4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>공유</button><h1 class="detail-title">' +
         esc(p.title) +
         '</h1><div class="detail-meta"><span>' +
         '<span data-member-id="' + esc(p.author_id || '') + '">' + esc(p.nick) + '</span>' +
@@ -820,7 +924,8 @@
         esc(p.created_at) +
         '">' +
         esc(date(p.created_at)) +
-        '</time><span class="view-count" id="postViews">조회 —</span></div><p class="glossary-help" id="glossaryHelp" hidden>밑줄 친 용어를 누르면 짧은 설명을 볼 수 있어요.</p><div class="detail-body"></div><div id="observationRecord"></div><div class="detail-images">' +
+        '</time>' + (p.edited_at ? '<span class="edited-label" title="' + esc(date(p.edited_at)) + '">수정됨</span>' : '') +
+        '<span class="view-count" id="postViews">조회 —</span></div></header><p class="glossary-help" id="glossaryHelp" hidden>밑줄 친 용어를 누르면 짧은 설명을 볼 수 있어요.</p><div class="detail-body"></div><div id="observationRecord"></div><div class="detail-images">' +
         (p.image_paths || [])
           .map(function (path, i) {
             return (
@@ -838,14 +943,15 @@
             );
           })
           .join('') +
-        '</div><div class="reaction-row" id="reactionRow" aria-label="공감"></div><div class="detail-actions"><button class="button subtle" type="button" data-action="share">글 공유</button><span class="spacer"></span>' +
+        '</div><div class="reaction-row" id="reactionRow" aria-label="공감"></div><div class="detail-actions">' +
+        (own && canWrite() ? '<button class="text-button" type="button" data-action="edit-post">수정</button>' : '') +
+        (own || isAdmin
+          ? '<button class="text-button" type="button" data-action="delete-post">글 삭제</button>'
+          : '') +
         (isAdmin
           ? '<button class="text-button" type="button" data-action="pin">' +
             (p.is_pinned ? '공지 해제' : '공지로 고정') +
             '</button>'
-          : '') +
-        (own || isAdmin
-          ? '<button class="text-button" type="button" data-action="delete-post">글 삭제</button>'
           : '') +
         (!own ? reportButton('post', p.id) : '') +
         '</div><section class="comments-section" aria-label="댓글"><div class="comments-heading"><h2>댓글</h2><button class="text-button" type="button" data-action="refresh-comments">새로고침</button></div><div id="commentList"></div><p class="comment-message" id="commentMessage" role="status"></p><button class="button subtle" type="button" id="moreComments" hidden>이전 댓글 더 보기</button><form class="comment-form" id="commentForm"><label class="sr-only" for="commentInput">댓글 내용</label><textarea id="commentInput" maxlength="300" rows="2" required placeholder="경험을 나누거나 궁금한 점을 더 물어보세요. (300자 이내)"></textarea><button class="button primary" type="submit">등록</button></form></section>';
@@ -873,7 +979,7 @@
       hydrateImages($('postDetail'), token);
       loadComments(false);
       loadReactions(p, token);
-      loadPostViews(p, token);
+      loadPostViews(p, token, preserveViews);
       if (canFocusBoard()) $('postDetail').focus({ preventScroll: true });
     } catch (e) {
       if (token !== route) return;
@@ -1178,6 +1284,10 @@
     $('btnTrace').disabled = busy || preparing;
     $('cancelWrite').disabled = busy || preparing || !!(attempt && attempt.uncertain);
     $('clearDraft').disabled = busy || preparing || !!(attempt && attempt.uncertain);
+    if (editState || view === 'edit') {
+      $('photoInput').disabled = true;
+      $('cancelWrite').disabled = busy;
+    }
   }
   async function clearAttempt() {
     if (!attempt) return;
@@ -1211,6 +1321,10 @@
     }
     if (Object.values(observation).some(function (value) { return value.length > 120; })) {
       writeStatus('추가 정보는 항목마다 120자 이내로 적어주세요.', true);
+      return;
+    }
+    if (view === 'edit') {
+      if (editState) await saveEdit(title, text, observation);
       return;
     }
     if (!canWrite()) { beginDraftLogin(); join(); return; }
@@ -1323,7 +1437,52 @@
       }
     }
   }
-  async function showRoute() {
+  async function saveEdit(title, text, observation) {
+    var editing = editState, identity = actorSeq, actor = userId, token = route,
+      editedOrbit = $('orbitSelect').value;
+    if (!editing || editing.actor !== actor || memberOwner() !== 'member:' + actor) {
+      writeStatus('작성한 계정으로 로그인한 뒤 다시 시도해주세요.', true);
+      return;
+    }
+    busy = true;
+    lockEditor(true);
+    writeStatus('변경사항을 저장하고 있어요…');
+    try {
+      await ensureAuthor(true);
+      assertActor(identity, actor);
+      if (editState !== editing || route !== token) return;
+      checked(await sb.rpc('board_edit_post', {
+        p_id: editing.id, p_title: title, p_text: text, p_orbit: editedOrbit,
+        p_observation: observation,
+      }));
+      if (!sameActor(identity, actor) || editState !== editing || token !== route) return;
+      cache = null;
+      busy = false;
+      var destination = url({ post: editing.id });
+      clearEdit(true);
+      history.replaceState(null, '', destination);
+      var returning = showRoute(editing.id), returningRoute = route;
+      await returning;
+      if (sameActor(identity, actor) && route === returningRoute) status('글을 수정했어요.');
+    } catch (e) {
+      if (sameActor(identity, actor) && editState === editing && token === route)
+        writeStatus('수정 실패 — ' + hint(e), true);
+    } finally {
+      if (sameActor(identity, actor) && editState === editing && token === route) {
+        busy = false;
+        lockEditor(false);
+        syncWriter();
+      }
+    }
+  }
+  async function showRoute(preserveViewsId) {
+    var nextParams = new URLSearchParams(location.search),
+      nextEdit = nextParams.has('edit') && validId(nextParams.get('post'));
+    if (editState && (!nextEdit || editState.id !== nextParams.get('post'))) {
+      preserveViewsId = editState.id;
+      clearEdit(true);
+    }
+    if (nextEdit && view !== 'edit') persistDraft();
     activityReader.reset();
     commentsLoaded = false;
     $('readSyncStatus').hidden = true;
@@ -1345,7 +1504,7 @@
     if (activity) channel = 'all';
     query = (params.get('q') || '').trim().slice(0, 80);
     var id = params.get('post');
-    view = id ? 'detail' : params.has('write') ? 'editor' : 'list';
+    view = nextEdit ? 'edit' : id ? 'detail' : params.has('write') ? 'editor' : 'list';
     if (embed) {
       var routeSynced = false;
       try { routeSynced = !!(parent.OrbitBoardRoute && parent.OrbitBoardRoute.syncWriting(window)); }
@@ -1353,7 +1512,7 @@
       if (!routeSynced) parent.postMessage({ orbit: 'writingState', writing: view === 'editor' }, location.origin);
     }
     ['list', 'detail', 'editor'].forEach(function (v) {
-      $(v + 'View').hidden = v !== view;
+      $(v + 'View').hidden = v !== (view === 'edit' ? 'editor' : view);
     });
     document.title = 'Orbit | 자유게시판';
     activityHeading();
@@ -1361,6 +1520,13 @@
     $('backToFeed').href = $('cancelWriteLink').href = url();
     $('writeTop').href = $('writeBottom').href = url({ write: true });
     OrbitBoardEmbed.scrollTo(0);
+    if (view === 'edit') {
+      $('cancelWriteLink').href = url({ post: id });
+      if (editState && editState.id === id) { editorMode(true); syncWriter(); return; }
+      await loadEdit(id, token);
+      return;
+    }
+    editorMode(false);
     if (view === 'editor') {
       syncWriter();
       if (!dirty()) $('orbitSelect').value = channel === 'all' ? 'free' : channel;
@@ -1375,7 +1541,7 @@
       return;
     }
     if (view === 'detail') {
-      if (validId(id)) await loadDetail(id, token);
+      if (validId(id)) await loadDetail(id, token, preserveViewsId === id);
       else
         $('postDetail').innerHTML =
           '<div class="empty-state"><h1>글 주소가 올바르지 않아요</h1><p>목록에서 다시 찾아주세요.</p></div>';
@@ -1405,6 +1571,13 @@
     }
   }
   document.addEventListener('click', async function (ev) {
+    var menu = ev.target.closest('#sideNav a[aria-current="page"]');
+    if (menu && !ev.ctrlKey && !ev.metaKey && !ev.shiftKey && !ev.altKey && ev.button === 0) {
+      ev.preventDefault();
+      if (window.OrbitNavigation) window.OrbitNavigation.setOpen(false);
+      if (view !== 'list') navigate(url());
+      return;
+    }
     var link = ev.target.closest(
       'a[data-board-nav],#writeTop,#writeBottom,#backToFeed,#cancelWriteLink',
     );
@@ -1472,14 +1645,20 @@
       loadReactions(p, route);
       return;
     }
+    if (action === 'edit-post' && p && canWrite() && p.author_id === userId) {
+      navigate(url({ post: p.id, edit: true }));
+      return;
+    }
     if (action === 'share' && p) {
       var share = new URL('lounge.html', location.href);
       share.searchParams.set('post', p.id);
       share.hash = p.orbit;
       try {
         await navigator.clipboard.writeText(share.href);
+        if (actionRoute !== route) return;
         status('글 주소를 복사했어요.');
       } catch (e) {
+        if (actionRoute !== route) return;
         var input = $('shareAddress');
         if (!input) {
           input = document.createElement('input');
@@ -1551,6 +1730,7 @@
     .join('');
   $('postForm').addEventListener('submit', submitPost);
   $('postForm').addEventListener('input', function () {
+    if (editState || view === 'edit') return;
     if (busy || preparing || (attempt && attempt.uncertain)) return;
     clearTimeout(draftTimer);
     draftTimer = setTimeout(persistDraft, 250);
@@ -1561,6 +1741,7 @@
     if (event.target.closest('[data-account-open]')) beginDraftLogin();
   }, true);
   $('clearDraft').onclick = async function () {
+    if (editState || view === 'edit') return;
     if (busy || preparing || (attempt && attempt.uncertain)) return;
     if (!confirm('이 브라우저의 현재 초안과 첨부한 사진 선택을 지울까요?')) return;
     var identity = actorSeq, actor = userId, owner = draftOwner;
@@ -1592,7 +1773,7 @@
   $('photoInput').addEventListener('change', async function () {
     var files = Array.from(this.files);
     this.value = '';
-    if (busy || preparing || (attempt && attempt.uncertain)) return;
+    if (editState || view === 'edit' || busy || preparing || (attempt && attempt.uncertain)) return;
     if (photos.length + files.length > 5) { writeStatus('사진은 글당 5장까지 첨부할 수 있어요.', true); return; }
     var identity = actorSeq, actor = userId, owner = draftOwner, selectedPhotos = photos;
     preparing = true;
@@ -1625,7 +1806,7 @@
     }
   });
   $('cancelWrite').onclick = function () {
-    navigate(url());
+    navigate(view === 'edit' ? url({ post: new URLSearchParams(location.search).get('post') }) : url());
   };
   $('questionFilter').onchange = function () {
     var next = new URL(url(), location.href);
@@ -1658,6 +1839,10 @@
     loadList(true);
   };
   window.addEventListener('popstate', function () {
+    if (editState && !canLeave()) {
+      history.pushState(null, '', activeURL);
+      return;
+    }
     if (busy || preparing || commentBusy || (attempt && attempt.uncertain)) {
       history.pushState(null, '', activeURL);
       status('진행 중인 등록을 먼저 완료해주세요.', true);
@@ -1671,6 +1856,7 @@
   window.addEventListener('beforeunload', function (ev) {
     persistDraft();
     if (
+      editDirty() ||
       (dirty() && (!draftStorageOK || !!photos.length)) ||
       (attempt && attempt.uncertain) ||
       busy ||
@@ -1690,6 +1876,11 @@
     if (view === 'detail' && detail && commentsLoaded) activityReader.observe($('commentList'), detail.id, comments);
   });
   window.addEventListener('message', function (ev) {
+    if (embed && ev.origin === location.origin && ev.source === parent && ev.data &&
+        ev.data.orbit === 'boardList') {
+      if (view !== 'list') navigate(url());
+      return;
+    }
     if (ev.origin === location.origin && ev.source === parent && ev.data &&
         ev.data.orbit === 'accountOpening') {
       beginDraftLogin();
@@ -1708,6 +1899,14 @@
     var next = user && user.id || null;
     if (identityReady && identityKey(user) === actorIdentity) { draftUser = user; syncWriter(); return; }
     if (draftOwner) persistDraft();
+    if (editState || view === 'edit') {
+      var previousPost = new URLSearchParams(location.search).get('post');
+      clearEdit(false);
+      history.replaceState(null, '', url({ post: previousPost }));
+      view = 'detail';
+      $('editorView').hidden = true;
+      $('detailView').hidden = false;
+    }
     identityReady = true;
     actorIdentity = identityKey(user);
     if (user && !user.is_anonymous) {
@@ -1747,7 +1946,7 @@
       if (!sameActor(token, actor)) return;
       // Public reading and profile readiness never wait for the role lookup.
       if (view !== 'editor') showRoute();
-      window.OrbitMembers.refresh().then(function () { if (sameActor(token, actor)) syncWriter(); });
+      if (view !== 'edit') window.OrbitMembers.refresh().then(function () { if (sameActor(token, actor)) syncWriter(); });
       try { if (actor) {
         var admin = checked(await sb.rpc('is_admin')) === true;
         if (!sameActor(token, actor)) return;
