@@ -20,8 +20,8 @@ MENU = [
     ('night', '🔭', '밤하늘', 'main.html#planets'),
     ('lounge', '💬', '자유게시판', 'main.html#lounge'),
     ('news', '📰', '우주 뉴스', 'news.html'),
-    ('guide', '📖', '관측 가이드', 'guide.html'),
     ('stories', editor_star(), '우주 이야기', 'stories.html'),
+    ('guide', '📖', '관측 가이드', 'guide.html'),
     ('about', 'ⓘ', '소개·문의', 'about.html'),
 ]
 PAGES = {'main': 'night', 'sky': 'night', 'planets': 'night',

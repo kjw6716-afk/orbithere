@@ -773,11 +773,12 @@
             var href = url({ post: p.id }),
               images = p.image_paths || [];
             return (
-              '<article class="board-row" id="post-' +
+              '<article class="board-row" data-board-category="' + esc(p.is_pinned ? 'notice' : p.orbit) + '" id="post-' +
               esc(p.id) +
-              '"><div class="row-main"><div class="row-category">' +
+              '"><div class="row-main"><div class="row-category"><span class="board-category-chip" data-board-category="' + esc(p.orbit) + '">' +
               esc(label(p.orbit)) +
-              (activity && p.is_pinned ? ' · 공지' : '') +
+              '</span>' +
+              (activity && p.is_pinned ? '<span class="pin-badge">공지</span>' : '') +
               (activity && Number(p.unread_count) > 0 ? '<span class="reply-badge">새 답글 ' + Math.min(999, Number(p.unread_count)) + '개</span>' : '') +
               '</div><div class="row-title-line"><a class="row-title" data-board-nav href="' +
               esc(href) +
@@ -920,9 +921,10 @@
       var own = p.author_id && p.author_id === userId;
       $('postDetail').innerHTML =
         '<header class="detail-heading"><div class="detail-category">' +
-        (p.is_pinned ? '<span class="pin-badge">공지</span> · ' : '') +
+        (p.is_pinned ? '<span class="pin-badge">공지</span>' : '') +
+        '<span class="board-category-chip" data-board-category="' + esc(p.orbit) + '">' +
         esc(label(p.orbit)) +
-        '</div><button class="text-button detail-share" type="button" data-action="share" aria-label="글 주소 공유"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 15V3m-4 4 4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>공유</button><h1 class="detail-title">' +
+        '</span></div><button class="text-button detail-share" type="button" data-action="share" aria-label="글 주소 공유"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 15V3m-4 4 4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>공유</button><h1 class="detail-title">' +
         esc(p.title) +
         '</h1><div class="detail-meta"><span>' +
         '<span data-member-id="' + esc(p.author_id || '') + '">' + esc(p.nick) + '</span>' +
