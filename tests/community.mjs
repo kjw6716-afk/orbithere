@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { join, dirname, extname, resolve, sep } from 'node:path';
 import { chromium } from 'playwright';
 import { boardDetailEditRegressions } from './board-detail-edit-cases.mjs';
+import { boardStatusRegressions } from './board-status-cases.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const types = {
   '.html': 'text/html',
@@ -854,6 +855,7 @@ async function identityRegressions() {
 }
 
 try {
+  await boardStatusRegressions({fixture,base,A,P,uid,ok});
   await boardDetailEditRegressions({fixture,base,A,B,P,uid,now,ok});
   await identityRegressions();
   {
@@ -1198,6 +1200,8 @@ try {
     await page.locator('.account-close').click();
     await page.locator('#btnTrace').click();
     await page.locator('.detail-title').filter({hasText:title}).waitFor();
+    ok('publication confirmation survives arrival at the new detail',
+      await page.locator('#loungeStatus').innerText()==='글을 등록했어요.');
     ok('explicit publication uses the saved content once and removes its local copy',
       state.posts.filter(p=>p.title===title&&p.text===text&&p.observation.location==='집 앞 공원').length===1&&
       await page.evaluate(({key,title})=>!(localStorage.getItem(key)||'').includes(title),{key:draftKey,title}));

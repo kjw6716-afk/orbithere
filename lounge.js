@@ -48,6 +48,7 @@
   var reactionBusy = false,
     reported = new Set(),
     boardReady = false,
+    statusTimer = null,
     activeURL = location.href;
   var activityScopes = [['mine', '내 글'], ['joined', '참여한 글'], ['unread', '새 답글']],
     summarySeq = 0, summaryTime = 0, unreadThreads = 0, commentsLoaded = false;
@@ -218,8 +219,11 @@
     return true;
   }
   function status(message, error) {
+    clearTimeout(statusTimer);
+    statusTimer = null;
     $('loungeStatus').textContent = message || '';
     $('loungeStatus').classList.toggle('error', !!error);
+    if (message && !error) statusTimer = setTimeout(function () { status(''); }, 5000);
   }
   function writeStatus(message, error) {
     $('writeStatus').textContent = message || '';
@@ -595,7 +599,7 @@
       return false;
     return true;
   }
-  function navigate(href, replace) {
+  function navigate(href, replace, successMessage) {
     if (!canLeave()) return;
     if (view === 'list')
       cache = {
@@ -607,6 +611,7 @@
       };
     history[replace ? 'replaceState' : 'pushState'](null, '', href);
     showRoute();
+    if (successMessage) status(successMessage);
   }
   function editFingerprint() {
     return JSON.stringify([$('postTitle').value, $('postInput').value, $('orbitSelect').value,
@@ -672,8 +677,9 @@
       if (token !== route) return;
       history.replaceState(null, '', url({ post: id }));
       clearEdit(true);
-      await showRoute();
-      status(hint(e), true);
+      var returning = showRoute(), returningRoute = route;
+      await returning;
+      if (returningRoute === route) status(hint(e), true);
     }
   }
   function revokeImages() {
@@ -1420,9 +1426,8 @@
       writeStatus('');
       busy = false;
       lockEditor(false);
-      status('글을 등록했어요.');
       refreshActivity();
-      navigate(url({ post: id }), true);
+      navigate(url({ post: id }), true, '글을 등록했어요.');
     } catch (e) {
       if (sameActor(identity, actor)) writeStatus(
         (postingAttempt && postingAttempt.uncertain
@@ -1476,6 +1481,7 @@
     }
   }
   async function showRoute(preserveViewsId) {
+    status('');
     var nextParams = new URLSearchParams(location.search),
       nextEdit = nextParams.has('edit') && validId(nextParams.get('post'));
     if (editState && (!nextEdit || editState.id !== nextParams.get('post'))) {
@@ -1652,6 +1658,7 @@
       return;
     }
     if (action === 'share' && p) {
+      status('');
       var share = new URL('lounge.html', location.href);
       share.searchParams.set('post', p.id);
       share.hash = p.orbit;
@@ -1688,8 +1695,9 @@
         if (!sameActor(actionIdentity, actionActor) || actionRoute !== route) return;
         cache = null;
         p.is_pinned = !p.is_pinned;
-        await showRoute();
-        if (!sameActor(actionIdentity, actionActor)) return;
+        var refreshing = showRoute(), refreshedRoute = route;
+        await refreshing;
+        if (!sameActor(actionIdentity, actionActor) || refreshedRoute !== route) return;
         status(p.is_pinned ? '공지를 상단에 고정했어요.' : '공지 고정을 해제했어요.');
       } catch (e) {
         if (!sameActor(actionIdentity, actionActor) || actionRoute !== route) return;
@@ -1715,8 +1723,7 @@
         });
         if (paths.length) await sb.storage.from('board-images').remove(paths);
         if (!sameActor(actionIdentity, actionActor) || actionRoute !== route) return;
-        status('글을 삭제했어요.');
-        navigate(url(), true);
+        navigate(url(), true, '글을 삭제했어요.');
       } catch (e) {
         if (!sameActor(actionIdentity, actionActor) || actionRoute !== route) return;
         status('삭제 실패 — ' + hint(e), true);
