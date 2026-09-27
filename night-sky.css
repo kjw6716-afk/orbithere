@@ -1,0 +1,140 @@
+/* A shared, quiet frame for tonight's sky and the astronomy calendar. */
+.night-active, .night-page {
+  --night-line: #293d51;
+  --night-mint: #80e2d4;
+  --night-muted: #b2c1d3;
+  background: #0b1526;
+}
+.night-active .bg-glow, .night-page .bg-glow { display: none; }
+.night-active .topbar { background: #0b1526ee; border-color: #213044; }
+.night-active .panel-wrap { padding-top: 24px; }
+.night-active .panel-title { color: #e4edf6; }
+.night-active .embed-frame { display: block; border-radius: 0; }
+.night-active .embed-out { min-height: 44px; display: inline-flex; align-items: center; line-height: 1.6; }
+.night-active .story-teaser { margin-top: 28px; margin-bottom: 0; background: #111e30; border-color: var(--night-line); }
+.night-hub { margin: 0 0 22px; min-width: 0; }
+.night-hub[hidden], .embed .night-hub { display: none !important; }
+.night-hero, .night-page .hero.night-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 170px;
+  padding: 25px 30px 24px;
+  margin: 0;
+  border: 1px solid #2c465d;
+  border-radius: 18px 18px 0 0;
+  background: #0d2037;
+  text-align: left;
+}
+.night-hero-sky { position: absolute; inset: 0; z-index: -2; pointer-events: none; }
+.night-hero-sky img { width: 100%; height: 100%; object-fit: cover; object-position: center 23%; }
+.night-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, #071626eb 0%, #0716269c 50%, #07162638 100%);
+  pointer-events: none;
+}
+.night-hero-copy { min-width: 0; max-width: 780px; }
+.night-eyebrow { display: block; margin-bottom: 11px; color: #b8e4df; font-size: 10px; font-weight: 650; letter-spacing: .17em; line-height: 1.6; }
+.night-hero h2, .night-page .night-hero h1 {
+  color: #f2f7fc;
+  font-size: clamp(25px, 2.5vw, 32px);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -.035em;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  margin: 0 0 8px;
+}
+.night-hero p, .night-page .night-hero p { color: #c4d3e4; font-size: 14px; line-height: 1.7; margin: 0; word-break: keep-all; overflow-wrap: anywhere; }
+.night-hero .night-context, .night-page .night-hero .night-context { margin-top: 13px; color: #c1d5e5; font-size: 12px; line-height: 1.6; }
+.night-tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 24px;
+  padding: 0 30px;
+  min-height: 53px;
+  border: 1px solid #2c465d;
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  background: #111f32;
+}
+.night-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 12px 2px;
+  margin-bottom: -1px;
+  border-bottom: 3px solid transparent;
+  color: #b4c4d8;
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 600;
+  text-decoration: none;
+}
+.night-tab:hover { color: #e0f6f1; }
+.night-tab[aria-selected="true"], .night-tab[aria-current="page"] { color: #87e5d8; border-bottom-color: #69dfcf; }
+.night-tab:focus-visible, .night-event-link:focus-visible { outline: 2px solid #80e2d4; outline-offset: 4px; border-radius: 3px; }
+.night-page .place-row { margin-bottom: 16px; gap: 7px; }
+.night-page .pbtn { min-height: 40px; border-color: #334d62; }
+.night-page .pbtn:hover { border-color: #83cdbf; }
+.night-page .pbtn.on, .night-page .fbtn.on { background: #74daca; border-color: #74daca; color: #092b2b; }
+.night-event-preview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  margin: 0 0 18px;
+  background: #102236;
+  border: 1px solid #2c465c;
+  border-radius: 12px;
+  color: #d5e2ef;
+}
+.night-event-copy { flex: 1; min-width: 0; }
+.night-event-label { color: #94dcd1; font-size: 11px; font-weight: 600; line-height: 1.6; }
+.night-event-name { display: block; font-size: 15px; font-weight: 650; line-height: 1.6; color: #edf4fb; word-break: keep-all; overflow-wrap: anywhere; }
+.night-event-meta { display: block; font-size: 12px; color: #b6c8da; line-height: 1.65; word-break: keep-all; overflow-wrap: anywhere; }
+.night-event-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; flex-shrink: 0; padding: 7px 11px; color: #9ee9df; font-size: 13px; text-decoration: none; border-radius: 8px; background: #163447; }
+.night-event-link:hover { background: #1c4353; }
+.night-page .sky-card, .night-page .next-card, .night-page .moon-card, .night-page .ev, .night-page .pl { background: #132135; border-color: #2a3e52; }
+.night-page .sky-card::before, .night-page .next-card::before { display: none; }
+.night-page .card-tag { color: #9ce7db; background: #1b3a43; }
+.night-page .sky-sum b { color: #a1e6dd; }
+.night-page .next-card { padding: 22px 24px; }
+.night-page .dday-row { margin-top: 14px; }
+.night-page .dday { font-size: 2rem; }
+.night-page .cd-units { gap: 14px; margin-top: 10px; }
+.night-page .cd-unit { min-width: 0; display: inline-flex; gap: 4px; align-items: baseline; padding: 0; border: 0; border-radius: 0; background: transparent; }
+.night-page .cd-unit b { font-size: 14px; }
+.night-page .cd-unit span { font-size: 12px; }
+.night-page .nx-note { padding: 10px 12px; margin-top: 14px; }
+.night-page .nx-alt { padding: 10px 12px; }
+.night-page .moon-card { padding: 18px 24px; }
+.night-page .filter-row { margin-top: 24px; }
+.night-page .fbtn { min-height: 40px; }
+@media (max-width: 860px) {
+  .night-active .panel-wrap { padding-top: 18px; }
+  .night-hero, .night-page .hero.night-hero { min-height: 156px; padding: 21px 22px; }
+  .night-tabs { padding-inline: 22px; }
+}
+@media (max-width: 480px) {
+  .night-hub { margin-bottom: 18px; }
+  .night-hero, .night-page .hero.night-hero { min-height: 0; padding: 20px 18px; border-radius: 14px 14px 0 0; }
+  .night-hero h2, .night-page .night-hero h1 { font-size: 25px; }
+  .night-hero p, .night-page .night-hero p { font-size: 13px; }
+  .night-eyebrow { font-size: 9px; letter-spacing: .12em; margin-bottom: 9px; }
+  .night-tabs { padding-inline: 18px; gap: 24px; }
+  .night-event-preview { align-items: flex-start; flex-wrap: wrap; padding: 13px 15px; gap: 6px 12px; }
+  .night-event-copy { flex-basis: 100%; }
+  .night-event-link { margin-left: auto; padding-block: 5px; }
+  .night-page .sky-card { padding: 16px 13px; }
+  .night-page .next-card { padding: 18px 16px; }
+  .night-page .moon-card { padding: 18px 16px; gap: 14px; }
+}
+@media (forced-colors: active) {
+  .night-hero::after, .night-hero-sky { display: none; }
+  .night-tab[aria-selected="true"], .night-tab[aria-current="page"] { border-bottom-color: Highlight; }
+}

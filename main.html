@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orbit | Community</title>
-    <meta name="description" content="오빗 자유게시판에서 천체관측과 별사진·출사 후기, 장비 이야기와 우주에 대한 질문을 나눠요.">
+    <title>밤하늘 — 오늘 밤 행성과 천문 일정 | ORBIT</title>
+    <meta name="description" content="오늘 밤 볼 수 있는 행성과 다가오는 천문 일정을 한곳에서 살펴보고, 같은 하늘을 본 사람들과 이야기를 나눠요.">
     <meta name="theme-color" content="#0F172A">
     <link rel="canonical" href="https://orbithere.com/main.html">
     <link rel="icon" href="/favicon.ico" sizes="any">
@@ -15,8 +15,8 @@
     <link rel="manifest" href="/site.webmanifest">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Orbit">
-    <meta property="og:title" content="Orbit | Community">
-    <meta property="og:description" content="오빗 자유게시판에서 천체관측과 별사진·출사 후기, 장비 이야기와 우주에 대한 질문을 나눠요.">
+    <meta property="og:title" content="밤하늘 — 오늘 밤 행성과 천문 일정 | ORBIT">
+    <meta property="og:description" content="오늘 밤 볼 수 있는 행성과 다가오는 천문 일정을 한곳에서 살펴보고, 같은 하늘을 본 사람들과 이야기를 나눠요.">
     <meta property="og:image" content="https://orbithere.com/images/og.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -200,6 +200,7 @@
 <link rel="stylesheet" href="site-nav.css?v=20260926-mint">
 <link rel="stylesheet" href="story-teaser.css?v=20260914-codes">
 <link rel="stylesheet" href="lounge-design.css?v=20260927-board-edit">
+<link rel="stylesheet" href="night-sky.css?v=20260927-night">
 </head>
 <body>
     <div class="bg-glow"></div>
@@ -210,11 +211,10 @@
 <aside class="sidebar orbit-navigation">
 <a class="side-logo orbit-brand" href="index.html" aria-label="ORBIT 홈">ORBIT.</a>
 <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="sideNav" aria-label="메뉴 열기">
-<span class="nt-ic" id="navToggleIc" aria-hidden="true">🪐</span>
-<span class="nt-lbl" id="navToggleLbl">오늘 밤 행성</span><span class="nt-arrow" aria-hidden="true"></span></button>
+<span class="nt-ic" id="navToggleIc" aria-hidden="true">🔭</span>
+<span class="nt-lbl" id="navToggleLbl">밤하늘</span><span class="nt-arrow" aria-hidden="true"></span></button>
 <nav class="side-nav" id="sideNav" aria-label="주요 메뉴">
-<a class="nav-item nav-link" href="sky.html" data-panel="sky"><span class="ic" aria-hidden="true">🔭</span><span class="lbl">밤하늘 달력</span></a>
-<a class="nav-item nav-link on" href="planets.html" data-panel="planets" aria-current="page"><span class="ic" aria-hidden="true">🪐</span><span class="lbl">오늘 밤 행성</span></a>
+<a class="nav-item nav-link on" href="planets.html" data-panel="planets" data-nav-group="night" aria-current="page"><span class="ic" aria-hidden="true">🔭</span><span class="lbl">밤하늘</span></a>
 <a class="nav-item nav-link" href="lounge.html" data-panel="lounge"><span class="ic" aria-hidden="true">💬</span><span class="lbl">자유게시판</span></a>
 <a class="nav-item nav-link" href="news.html"><span class="ic" aria-hidden="true">📰</span><span class="lbl">우주 뉴스</span></a>
 <a class="nav-item nav-link" href="guide.html"><span class="ic" aria-hidden="true">📖</span><span class="lbl">관측 가이드</span></a>
@@ -227,7 +227,7 @@
         <!-- 콘텐츠 -->
         <div class="content">
             <div class="topbar">
-                <h1 class="panel-title" id="panelTitle"><a class="page-title-link" id="panelTitleLink" href="planets.html">오늘 밤 <span>행성</span></a></h1>
+                <h1 class="panel-title" id="panelTitle"><a class="page-title-link" id="panelTitleLink" href="planets.html">밤하늘</a></h1>
                 <div class="topbar-right">
                     <button class="profile-chip" id="profileChip" type="button" aria-haspopup="dialog" aria-expanded="false">
                         <span id="profileChipText">로그인</span>
@@ -237,22 +237,40 @@
             </div>
 
             <div class="panel-wrap">
+                <section class="night-hub" id="nightHub" aria-label="밤하늘 관측 안내">
+                    <header class="night-hero">
+                        <picture class="night-hero-sky" aria-hidden="true">
+                            <source type="image/avif" srcset="images/nebula-landing-1200.avif 1200w, images/nebula-landing-1600.avif 1600w, images/nebula-landing-2000.avif 2000w, images/nebula-landing-2430.avif 2430w" sizes="(max-width: 860px) calc(100vw - 36px), calc(100vw - 308px)">
+                            <img src="images/nebula-landing-1600.webp" srcset="images/nebula-landing-1200.webp 1200w, images/nebula-landing-1600.webp 1600w, images/nebula-landing-2000.webp 2000w, images/nebula-landing-2430.webp 2430w" sizes="(max-width: 860px) calc(100vw - 36px), calc(100vw - 308px)" width="2430" height="1457" alt="" decoding="async">
+                        </picture>
+                        <div class="night-hero-copy">
+                            <span class="night-eyebrow">NIGHT SKY, YOUR NEXT DISCOVERY</span>
+                            <h2>오늘은 어떤 하늘을 만날까요?</h2>
+                            <p>행성의 위치를 찾고, 다음 천문 일정을 함께 살펴봐요.</p>
+                            <p class="night-context" data-night-context>도시별 행성 위치 · 한국 표준시(KST)</p>
+                        </div>
+                    </header>
+                    <nav class="night-tabs" id="nightTabs" aria-label="밤하늘 도구">
+                        <a class="night-tab" id="night-tab-planets" href="planets.html" data-night-panel="planets" aria-current="page">오늘 밤</a>
+                        <a class="night-tab" id="night-tab-sky" href="sky.html" data-night-panel="sky">천문 일정</a>
+                    </nav>
+                </section>
 <!-- orbit-story-teaser:start -->
 <aside class="story-teaser" aria-label="최신 우주 이야기"><span class="story-teaser-icon" aria-hidden="true"><svg width="21" height="21" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span><div class="story-teaser-copy"><div class="story-teaser-meta"><span>ORBIT 에디터</span></div><a class="story-teaser-title" href="stories/why-stars-have-different-colors.html">별빛은 왜 파랗고 붉게 보일까요?</a></div><a class="story-teaser-all" href="stories.html">전체보기 →</a></aside>
 <!-- orbit-story-teaser:end -->
 
-                <!-- 밤하늘 달력 — 첫 화면 -->
-                <section class="panel on" id="panel-sky">
+                <!-- 천문 일정: 기존 직접 주소와 패널 키 유지 -->
+                <section class="panel" id="panel-sky">
                     <div class="embed-wrap">
-                        <iframe class="embed-frame" id="skyFrame" title="밤하늘 달력 — 유성우 · 일식 · 월식 일정" data-src="sky.html?embed=1&v=20260927-funnel"></iframe>
+                        <iframe class="embed-frame" id="skyFrame" title="밤하늘 달력 — 유성우 · 일식 · 월식 일정" data-src="sky.html?embed=1&v=20260927-night"></iframe>
                         <a class="embed-out" href="sky.html">전체 화면으로 열기 · 관측 방법과 FAQ 보기 →</a>
                     </div>
                 </section>
 
                 <!-- 오늘 밤 행성 -->
-                <section class="panel" id="panel-planets">
+                <section class="panel on" id="panel-planets">
                     <div class="embed-wrap">
-                        <iframe class="embed-frame" id="planetFrame" title="오늘 밤 행성 — 지금 하늘의 행성 위치" data-src="planets.html?embed=1&v=20260927-funnel"></iframe>
+                        <iframe class="embed-frame" id="planetFrame" title="오늘 밤 행성 — 지금 하늘의 행성 위치" data-src="planets.html?embed=1&v=20260927-night"></iframe>
                         <a class="embed-out" href="planets.html">전체 화면으로 열기 · 행성 찾는 법과 FAQ 보기 →</a>
                     </div>
                 </section>
@@ -311,13 +329,52 @@
     // ===== 패널 전환 =====
     (function(){
         var TITLES = {
-            sky:     '밤하늘 <span>달력</span>',
-            planets: '오늘 밤 <span>행성</span>',
+            sky:     '밤하늘',
+            planets: '밤하늘',
             lounge:  '<span>자유게시판</span>'
         };
         var DEFAULT_PANEL = 'planets';
         var activePanel = DEFAULT_PANEL;
         var loungeLoaded = false, skyLoaded = false, planetsLoaded = false;
+        var nightHub = document.getElementById('nightHub');
+        var nightTabs = document.getElementById('nightTabs');
+        var nightContext = nightHub.querySelector('[data-night-context]');
+        var planetContext = '도시별 행성 위치 · 한국 표준시(KST)';
+        nightTabs.setAttribute('role', 'tablist');
+        nightTabs.querySelectorAll('[data-night-panel]').forEach(function(tab){
+            var panel = document.getElementById('panel-' + tab.dataset.nightPanel);
+            tab.setAttribute('role', 'tab');
+            tab.setAttribute('aria-controls', panel.id);
+            tab.removeAttribute('aria-current');
+            panel.setAttribute('role', 'tabpanel');
+            panel.setAttribute('aria-labelledby', tab.id);
+        });
+
+        function ordinaryClick(event) {
+            return !event.defaultPrevented && event.button === 0 &&
+                !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
+        }
+
+        function selectNightPanel(name, focusTab) {
+            if (name !== 'planets' && name !== 'sky') return;
+            switchPanel(name, true);
+            if (focusTab) document.getElementById('night-tab-' + name).focus();
+        }
+
+        nightTabs.addEventListener('click', function(event){
+            var tab = event.target.closest('[data-night-panel]');
+            if (!tab || !ordinaryClick(event)) return;
+            event.preventDefault();
+            selectNightPanel(tab.dataset.nightPanel, false);
+        });
+        nightTabs.addEventListener('keydown', function(event){
+            var tab = event.target.closest('[data-night-panel]');
+            if (!tab || !['ArrowLeft', 'ArrowRight', 'Home', 'End', ' '].includes(event.key)) return;
+            event.preventDefault();
+            var name = event.key === 'Home' ? 'planets' : event.key === 'End' ? 'sky' :
+                event.key === ' ' ? tab.dataset.nightPanel : tab.dataset.nightPanel === 'planets' ? 'sky' : 'planets';
+            selectNightPanel(name, true);
+        });
 
         // Publish the child route before its editor becomes visible. A queued
         // postMessage alone can lose write=1 if the user immediately reloads.
@@ -343,16 +400,24 @@
             if(!Object.prototype.hasOwnProperty.call(TITLES, name)) name = DEFAULT_PANEL;
             activePanel = name;
             document.body.classList.toggle('lounge-active', name === 'lounge');
+            document.body.classList.toggle('night-active', name !== 'lounge');
+            nightHub.hidden = name === 'lounge';
+            nightContext.textContent = name === 'sky' ? '유성우 · 달 · 일식과 월식 · 한국 표준시(KST)' : planetContext;
+            nightTabs.querySelectorAll('[data-night-panel]').forEach(function(tab){
+                var selected = tab.dataset.nightPanel === name;
+                tab.setAttribute('aria-selected', String(selected));
+                tab.tabIndex = selected ? 0 : -1;
+            });
             var teaser = document.querySelector('.panel-wrap > .story-teaser');
             if (teaser) {
                 var panelWrap = teaser.parentElement;
-                if (name === 'lounge') panelWrap.appendChild(teaser);
-                else panelWrap.insertBefore(teaser, panelWrap.firstElementChild);
+                panelWrap.appendChild(teaser);
             }
             document.querySelectorAll('.nav-item[data-panel]').forEach(function(b){
-                var on = b.getAttribute('data-panel') === name;
+                var on = b.dataset.navGroup === 'night' ? name !== 'lounge' : b.getAttribute('data-panel') === name;
                 b.classList.toggle('on', on);
-                b.setAttribute('aria-current', on ? 'page' : 'false');
+                if (on) b.setAttribute('aria-current', 'page');
+                else b.removeAttribute('aria-current');
                 if(on){
                     document.getElementById('navToggleIc').textContent  = b.querySelector('.ic').textContent;
                     document.getElementById('navToggleLbl').textContent = b.querySelector('.lbl').textContent;
@@ -361,9 +426,11 @@
             setMenu(false);
             document.querySelectorAll('.panel').forEach(function(p){
                 p.classList.toggle('on', p.id === 'panel-' + name);
+                p.hidden = p.id !== 'panel-' + name;
             });
             document.getElementById('panelTitleLink').innerHTML = TITLES[name];
             document.getElementById('panelTitleLink').href = {sky:'sky.html',planets:'planets.html',lounge:'lounge.html'}[name];
+            document.title = {sky:'밤하늘 — 천문 일정 | ORBIT', planets:'밤하늘 — 오늘 밤 행성 | ORBIT', lounge:'자유게시판 | ORBIT'}[name];
             // 처음 열 때만 iframe 로드 (지연 로딩)
             if(name === 'lounge' && !loungeLoaded){
                 var fr = document.getElementById('loungeFrame');
@@ -388,7 +455,7 @@
         }
         document.getElementById('sideNav').addEventListener('click', function(e){
             var link = e.target.closest('.nav-item[data-panel]');
-            if(!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            if(!link || !ordinaryClick(e)) return;
             e.preventDefault();
             switchPanel(link.getAttribute('data-panel'), true);
             if(link.getAttribute('data-panel') === 'lounge' && loungeLoaded){
@@ -406,6 +473,19 @@
             if(ev.origin !== window.location.origin) return;
             var frames = ['skyFrame', 'planetFrame', 'loungeFrame'];
             if (!frames.some(function(id){ return document.getElementById(id).contentWindow === ev.source; })) return;
+            if (ev.data && ev.data.orbit === 'nightPanel' &&
+                (ev.source === document.getElementById('skyFrame').contentWindow || ev.source === document.getElementById('planetFrame').contentWindow)) {
+                // Hidden tools cannot move the visitor away from another panel.
+                var currentFrame = document.getElementById(activePanel === 'sky' ? 'skyFrame' : activePanel === 'planets' ? 'planetFrame' : 'loungeFrame');
+                if (ev.source === currentFrame.contentWindow) selectNightPanel(ev.data.panel, true);
+                return;
+            }
+            if (ev.data && ev.data.orbit === 'nightContext' && ev.source === document.getElementById('planetFrame').contentWindow &&
+                typeof ev.data.text === 'string' && ev.data.text.length <= 240) {
+                planetContext = ev.data.text;
+                if (activePanel === 'planets') nightContext.textContent = planetContext;
+                return;
+            }
             // 예전 이름(goHome)도 같이 받는다 — 캐시에 남은 옛 lounge.html이
             // 아직 그 이름으로 보내고 있어도 진입 대화상자가 열리게.
             if(ev.data && (ev.data.orbit === 'join' || ev.data.orbit === 'goHome')){

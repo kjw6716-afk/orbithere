@@ -15,7 +15,7 @@
     "test:landing": "node tests/landing.mjs",
     "test:content": "node tests/content.mjs",
     "test:news": "python3 -m unittest discover -s tests -p 'test_news*.py' && python3 scripts/news_summaries.py && node tests/company-news.mjs && node tests/news-brief.mjs",
-    "test:navigation": "python3 scripts/site_navigation.py --check && node tests/navigation.mjs",
+    "test:navigation": "python3 scripts/site_navigation.py --check && node tests/navigation.mjs && node tests/night-sky.mjs",
     "test:stories": "python3 -m unittest discover -s tests -p 'test_stories.py' && python3 scripts/stories.py --check && node tests/stories.mjs",
     "test:members": "node tests/members.mjs && node tests/member-withdraw.mjs"
   },

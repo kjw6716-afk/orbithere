@@ -101,11 +101,15 @@ async function waitEvent(f, name, feature) {
 }
 async function panel(f, name) {
   const action = f.mobile ? 'tap' : 'click';
-  if (await f.page.locator('#navToggle').isVisible()) await f.page.locator('#navToggle')[action]();
-  await f.page.locator(`#sideNav [data-panel="${name}"]`)[action]();
-  // The existing mobile scrim fades for 0.2s and intercepts clicks until hidden.
-  // Our local responses can render an entire iframe before that transition ends.
-  await f.page.locator('#navScrim').waitFor({ state: 'hidden' });
+  const night = name === 'planets' || name === 'sky';
+  if (!night || !await f.page.locator('#nightHub').isVisible()) {
+    if (await f.page.locator('#navToggle').isVisible()) await f.page.locator('#navToggle')[action]();
+    const menu = night ? '#sideNav [data-nav-group="night"]' : `#sideNav [data-panel="${name}"]`;
+    await f.page.locator(menu)[action]();
+    // The mobile scrim fades for 0.2s and intercepts clicks until hidden.
+    await f.page.locator('#navScrim').waitFor({ state: 'hidden' });
+  }
+  if (night) await f.page.locator(`#nightTabs [data-night-panel="${name}"]`)[action]();
 }
 function privacy(f) {
   const allowed = ['audience', 'context', 'detail', 'event', 'feature', 'page_key', 'sequence', 'session_id'];
@@ -180,7 +184,7 @@ try {
     ok('hidden iframe preload has no view, ready, or use', !f.state.events.some(e => e.feature === 'calendar'));
     await panel(f, 'planets'); await panel(f, 'planets');
     await f.page.setViewportSize({ width: 1100, height: 760 }); await settle(f.page);
-    ok('repeat menu and resize do not create actual use', events(f, 'tool_use').length === 0);
+    ok('repeat selected night tab and resize do not create actual use', events(f, 'tool_use').length === 0);
     const planet = f.page.frameLocator('#planetFrame');
     await planet.locator('#scrubRange').focus(); await f.page.keyboard.press('Home'); await f.page.keyboard.press('ArrowRight');
     await waitEvent(f, 'tool_use', 'planets');
@@ -192,6 +196,7 @@ try {
     await settle(f.page);
     ok('same choice and synthetic input do not add use', events(f, 'tool_use').length === useCount);
     await panel(f, 'sky'); await waitEvent(f, 'tool_ready', 'calendar');
+    ok('changing night tabs records one view per feature without actual tool use', events(f, 'feature_view', 'planets').length === 1 && events(f, 'feature_view', 'calendar').length === 1 && events(f, 'tool_use').length === useCount);
     const sky = f.page.frameLocator('#skyFrame');
     await sky.locator('#filterRow button').nth(1).click(); await waitEvent(f, 'tool_use', 'calendar');
     ok('calendar filter is actual use', events(f, 'tool_use', 'calendar').some(e => e.detail === 'filter'));

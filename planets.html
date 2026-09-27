@@ -253,8 +253,10 @@
     <script src="orbit-analytics.js?v=20260927-funnel" defer></script>
     <script src="visits.js" defer></script>
 <link rel="stylesheet" href="site-nav.css?v=20260926-mint">
+    <link rel="stylesheet" href="night-sky.css?v=20260927-night">
+    <script src="sky-events.js?v=20260927-night"></script>
 </head>
-<body>
+<body class="night-page">
     <div class="bg-glow"></div>
 
     <div class="orbit-page-layout">
@@ -262,11 +264,10 @@
 <aside class="sidebar orbit-navigation">
 <a class="side-logo orbit-brand" href="index.html" aria-label="ORBIT 홈">ORBIT.</a>
 <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="sideNav" aria-label="메뉴 열기">
-<span class="nt-ic" id="navToggleIc" aria-hidden="true">🪐</span>
-<span class="nt-lbl" id="navToggleLbl">오늘 밤 행성</span><span class="nt-arrow" aria-hidden="true"></span></button>
+<span class="nt-ic" id="navToggleIc" aria-hidden="true">🔭</span>
+<span class="nt-lbl" id="navToggleLbl">밤하늘</span><span class="nt-arrow" aria-hidden="true"></span></button>
 <nav class="side-nav" id="sideNav" aria-label="주요 메뉴">
-<a class="nav-item nav-link" href="main.html#sky"><span class="ic" aria-hidden="true">🔭</span><span class="lbl">밤하늘 달력</span></a>
-<a class="nav-item nav-link on" href="main.html#planets" aria-current="page"><span class="ic" aria-hidden="true">🪐</span><span class="lbl">오늘 밤 행성</span></a>
+<a class="nav-item nav-link on" href="main.html#planets" aria-current="page"><span class="ic" aria-hidden="true">🔭</span><span class="lbl">밤하늘</span></a>
 <a class="nav-item nav-link" href="main.html#lounge"><span class="ic" aria-hidden="true">💬</span><span class="lbl">자유게시판</span></a>
 <a class="nav-item nav-link" href="news.html"><span class="ic" aria-hidden="true">📰</span><span class="lbl">우주 뉴스</span></a>
 <a class="nav-item nav-link" href="guide.html"><span class="ic" aria-hidden="true">📖</span><span class="lbl">관측 가이드</span></a>
@@ -278,15 +279,38 @@
 <div class="orbit-page-content">
 
     <main class="container">
-        <div class="hero">
-            <h1><a class="page-title-link" href="planets.html" target="_top"><strong>오늘 밤 행성 보기</strong></a> — 저 밝은 별, 사실 행성입니다</h1>
-            <p>해가 지고 나면 하늘에서 가장 먼저 눈에 띄는 밝은 점들은 대개 별이 아니라 행성입니다. 오늘 밤 어느 방향 몇 도 높이에 무엇이 떠 있는지, 맨눈으로 보이는지 망원경이 필요한지 계산해서 알려드립니다. 유성우와 달리 <strong>도심에서도 보입니다.</strong></p>
+        <div class="night-hub">
+            <header class="hero night-hero">
+                <picture class="night-hero-sky" aria-hidden="true">
+                    <source type="image/avif" srcset="images/nebula-landing-1200.avif 1200w, images/nebula-landing-1600.avif 1600w, images/nebula-landing-2000.avif 2000w, images/nebula-landing-2430.avif 2430w" sizes="(max-width: 860px) calc(100vw - 36px), calc(100vw - 308px)">
+                    <img src="images/nebula-landing-1200.webp" srcset="images/nebula-landing-1200.webp 1200w, images/nebula-landing-1600.webp 1600w, images/nebula-landing-2000.webp 2000w, images/nebula-landing-2430.webp 2430w" sizes="(max-width: 860px) calc(100vw - 36px), calc(100vw - 308px)" width="2430" height="1457" alt="" decoding="async">
+                </picture>
+                <div class="night-hero-copy">
+                    <span class="night-eyebrow">ORBIT · 밤하늘</span>
+                    <h1><a class="page-title-link" href="planets.html" target="_top"><strong>오늘 밤 행성 보기</strong></a></h1>
+                    <p>가까운 도시를 고르고, 오늘 밤 어디를 보면 좋을지 확인하세요.</p>
+                    <p class="night-context" data-night-context>한국 표준시(KST) 기준</p>
+                </div>
+            </header>
+            <nav class="night-tabs" aria-label="밤하늘 도구">
+                <a class="night-tab on" href="planets.html" data-night-panel="planets" target="_top" aria-current="page">오늘 밤</a>
+                <a class="night-tab" href="sky.html" data-night-panel="sky" target="_top">천문 일정</a>
+            </nav>
         </div>
 
         <!-- 관측지 -->
         <div class="place-row" id="placeRow">
             <span class="place-label">관측지</span>
         </div>
+
+        <section class="night-event-preview" id="nightEventPreview" aria-label="가까운 천문 일정">
+            <div class="night-event-copy">
+                <span class="night-event-label" data-event-label>가까운 천문 일정</span>
+                <strong class="night-event-name" data-event-name>다음 천문 일정을 살펴보세요</strong>
+                <span class="night-event-meta" data-event-meta>유성우와 일식·월식, 보름달 일정</span>
+            </div>
+            <a class="night-event-link" href="sky.html" data-night-panel="sky" target="_top">일정 보기 <span aria-hidden="true">→</span></a>
+        </section>
 
         <!-- 하늘 지도 -->
         <section class="sky-card">
@@ -1284,6 +1308,12 @@
         document.getElementById('skyWhen').textContent =
             state.nightLabel + ' · ' + fmtDate(state.window.start) + ' 저녁 ~ ' +
             fmtDate(state.window.end) + ' 새벽 · ' + state.place.ko + ' 기준 · 한국 표준시(KST)';
+        var nightContext = state.place.ko + ' · ' + state.nightLabel + ' · ' +
+            fmtDate(state.window.start) + ' 저녁 기준 (KST)';
+        document.querySelectorAll('[data-night-context]').forEach(function (el) { el.textContent = nightContext; });
+        if (document.documentElement.classList.contains('embed')) {
+            parent.postMessage({ orbit: 'nightContext', text: nightContext }, window.location.origin);
+        }
 
         renderList();
         renderAt(selected);
@@ -1345,6 +1375,9 @@
     });
 
     renderAll();
+    if (window.OrbitSkyEvents && typeof window.OrbitSkyEvents.mountPreview === 'function') {
+        window.OrbitSkyEvents.mountPreview(document.getElementById('nightEventPreview'), window.OrbitSkyEvents.EVENTS);
+    }
     document.documentElement.dataset.orbitToolReady = 'planets';
     if (window.OrbitAnalytics) window.OrbitAnalytics.ready();
     var mapWidth = 0;
@@ -1375,5 +1408,6 @@
     </script>
 </div></div>
 <script src="site-nav.js?v=20260914-community"></script>
+<script src="night-sky.js?v=20260927-night"></script>
 </body>
 </html>

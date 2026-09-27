@@ -17,15 +17,15 @@ def editor_star(size=20):
 
 
 MENU = [
-    ('sky', '🔭', '밤하늘 달력', 'main.html#sky'),
-    ('planets', '🪐', '오늘 밤 행성', 'main.html#planets'),
+    ('night', '🔭', '밤하늘', 'main.html#planets'),
     ('lounge', '💬', '자유게시판', 'main.html#lounge'),
     ('news', '📰', '우주 뉴스', 'news.html'),
     ('guide', '📖', '관측 가이드', 'guide.html'),
     ('stories', editor_star(), '우주 이야기', 'stories.html'),
     ('about', 'ⓘ', '소개·문의', 'about.html'),
 ]
-PAGES = {'main': 'planets', **{key: key for key, *_ in MENU},
+PAGES = {'main': 'night', 'sky': 'night', 'planets': 'night',
+         **{key: key for key, *_ in MENU if key != 'night'},
          'reading-sky': 'guide', 'notes': None, 'terms': None, 'privacy': None, 'admin': None}
 PATTERN = r'<!-- orbit-navigation:start -->.*?<!-- orbit-navigation:end -->'
 
@@ -36,10 +36,12 @@ def render(page, active, prefix=''):
         selected = ' on' if key == active else ''
         aria = ' aria-current="page"' if selected else ''
         content = f'<span class="ic" aria-hidden="true">{icon}</span><span class="lbl">{label}</span>'
-        if page == 'main' and key in ('sky', 'planets', 'lounge'):
+        if page == 'main' and key in ('night', 'lounge'):
             # A real destination works before JS loads and exposes each public page
             # to crawlers. The main shell enhances ordinary clicks into panel changes.
-            rows.append(f'<a class="nav-item nav-link{selected}" href="{key}.html" data-panel="{key}"{aria}>{content}</a>')
+            panel = 'planets' if key == 'night' else key
+            group = ' data-nav-group="night"' if key == 'night' else ''
+            rows.append(f'<a class="nav-item nav-link{selected}" href="{panel}.html" data-panel="{panel}"{group}{aria}>{content}</a>')
         else:
             rows.append(f'<a class="nav-item nav-link{selected}" href="{prefix}{href}"{aria}>{content}</a>')
     return '\n'.join([
