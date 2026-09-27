@@ -508,15 +508,15 @@ summary:focus-visible {
   flex-wrap: wrap;
   color: var(--board-muted);
   font-size: 0.8125rem;
-  padding-bottom: 20px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--board-line);
 }
 .detail-body {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   font-size: 1rem;
-  line-height: 1.9;
-  padding: 25px 0 16px;
+  line-height: 1.65;
+  padding: 16px 0 12px;
 }
 .detail-body a {
   color: var(--board-mint);
@@ -527,6 +527,9 @@ summary:focus-visible {
   display: grid;
   gap: 14px;
   margin: 10px 0 24px;
+}
+.detail-images:empty {
+  display: none;
 }
 .detail-image {
   margin: 0;
@@ -591,7 +594,7 @@ summary:focus-visible {
 }
 .comments-section {
   border-top: 1px solid var(--board-line);
-  padding-top: 20px;
+  padding-top: 16px;
 }
 .comments-heading {
   display: flex;
@@ -603,19 +606,33 @@ summary:focus-visible {
   font-size: 1.125rem;
   margin: 0;
 }
+.comments-heading .text-button {
+  min-height: 44px;
+  min-width: 44px;
+}
 .comment-item {
-  padding: 20px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 2px 12px;
+  padding: 8px 0;
   border-bottom: 1px solid var(--board-line);
 }
 .comment-meta {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  align-self: center;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 2px 6px;
   flex-wrap: wrap;
   font-size: 0.8125rem;
   color: var(--board-muted);
 }
 .comment-author {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: 0.9375rem;
   font-weight: 650;
   color: #e2e8f0;
@@ -628,19 +645,28 @@ summary:focus-visible {
   border-radius: 5px;
 }
 .comment-body {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  min-width: 0;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  margin: 8px 0 6px;
+  margin: 0;
   font-size: 1rem;
-  line-height: 1.75;
+  line-height: 1.6;
 }
 .comment-actions {
+  grid-column: 2;
+  grid-row: 1;
   display: flex;
-  gap: 12px;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
 }
 .comment-actions button {
-  min-height: 32px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 4px 6px;
+  white-space: nowrap;
   font-size: 0.8125rem;
 }
 .comment-form {
@@ -1002,9 +1028,6 @@ summary:focus-visible {
   }
   .detail-title {
     font-size: 1.5rem;
-  }
-  .detail-body {
-    padding-top: 20px;
   }
   .photo-previews {
     grid-template-columns: repeat(3, minmax(0, 1fr));
