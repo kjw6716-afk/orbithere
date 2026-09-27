@@ -601,8 +601,10 @@
   }
   function navigate(href, replace, successMessage) {
     if (!canLeave()) return;
+    // An initial pending list has no result to restore and must reload because
+    // navigation invalidates its response. Pagination keeps completed rows.
     if (view === 'list')
-      cache = {
+      cache = listBusy && posts.length === 0 ? null : {
         key: activity + '|' + channel + '|' + query,
         posts: posts.slice(),
         more: more,
@@ -1567,6 +1569,7 @@
       $('pinnedPosts').innerHTML = cache.pins;
       $('pinnedPosts').hidden = !cache.pins;
       renderPosts();
+      $('postList').setAttribute('aria-busy', 'false');
       OrbitBoardEmbed.scrollTo(cache.scroll);
     } else {
       posts = [];

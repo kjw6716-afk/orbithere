@@ -118,36 +118,26 @@
   --category-text: #a4eee3;
   --category-fill: #173e43;
   --category-line: #286368;
-  --category-row: #112830;
-  --category-hover: #17343c;
 }
 .lounge-page [data-board-category='ask'] {
   --category-text: #b8d6ff;
   --category-fill: #223c61;
   --category-line: #456a9c;
-  --category-row: #15243b;
-  --category-hover: #1c304b;
 }
 .lounge-page [data-board-category='report'] {
   --category-text: #c9e8a9;
   --category-fill: #293f31;
   --category-line: #526e46;
-  --category-row: #1a2929;
-  --category-hover: #23372f;
 }
 .lounge-page [data-board-category='gear'] {
   --category-text: #f3d39b;
   --category-fill: #463828;
   --category-line: #786142;
-  --category-row: #2b272a;
-  --category-hover: #39322f;
 }
 .lounge-page [data-board-category='live'] {
   --category-text: #a9e4f3;
   --category-fill: #193e51;
   --category-line: #376b83;
-  --category-row: #122936;
-  --category-hover: #193646;
 }
 .lounge-page [data-board-category='notice'] {
   --category-line: #795a9e;
@@ -158,12 +148,12 @@
   min-height: 58px;
   padding: 9px 16px;
   border-color: #293e50;
-  background: var(--category-row, #112830);
-  box-shadow: inset 3px 0 var(--category-line, #286368);
+  background: var(--category-row, #101d2f);
 }
+.lounge-page .board-row[data-board-category='notice'] { box-shadow: inset 3px 0 var(--category-line); }
 .lounge-page .board-row:first-child { border-top: 0; }
 .lounge-page .board-row:last-child { border-bottom: 0; }
-.lounge-page .board-row:hover, .lounge-page .board-row:focus-within { background: var(--category-hover, #17343c); }
+.lounge-page .board-row:hover, .lounge-page .board-row:focus-within { background: var(--category-hover, #15263b); }
 .lounge-page .board-row:first-child { border-radius: 13px 13px 0 0; }
 .lounge-page .board-row:last-child { border-radius: 0 0 13px 13px; }
 .lounge-page .board-row:only-child { border-radius: 13px; }
