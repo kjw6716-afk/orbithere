@@ -509,7 +509,14 @@ async function identityRegressions() {
     });
     const board = embedded ? f.page.frames().find(frame => new URL(frame.url()).pathname === '/lounge.html') : f.page;
     await board.waitForFunction(actor => window.OrbitMembers.state.user?.id === actor && window.OrbitMembers.state.profile, actor);
+    // dialog.close() queues its close event. Its focus-restoration handler must
+    // finish before the next iframe fill, or it can steal that field's focus.
+    await f.page.evaluate(() => {
+      window.__accountClosedForTest = new Promise(resolve =>
+        document.querySelector('.account-dialog').addEventListener('close', () => resolve(), {once:true}));
+    });
     await f.page.locator('.account-close').click();
+    await f.page.evaluate(() => window.__accountClosedForTest);
   }
   async function switchAccount(f, embedded, actor) {
     await openAccount(f, embedded);

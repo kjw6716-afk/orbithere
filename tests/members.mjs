@@ -279,7 +279,10 @@ try {
 
   {
     const f = await fixture({p:null,width:390});
-    await f.page.clock.install();
+    const codeSentAt = Date.now();
+    // Only the expiry/cooldown wall clock needs to move. Keep browser timers
+    // running: fastForward can race an in-flight realtime clock tick in 1.56.1.
+    await f.page.clock.setFixedTime(codeSentAt);
     await f.page.goto(base+'/account.html?mode=signup');
     await f.page.locator('#email').fill('code@example.test');
     await f.page.locator('#password').fill('abcdef');
@@ -296,7 +299,13 @@ try {
     await f.page.locator('#verifySubmit').click();
     await f.page.getByText('인증번호가 다르거나 만료됐어요.',{exact:false}).waitFor();
     ok('wrong or expired code keeps the visitor outside member setup',await f.page.locator('#verifyCard').isVisible()&&await f.page.locator('#setupCard').isHidden());
-    await f.page.clock.fastForward(301000);
+    const expiredAt = codeSentAt + 301000;
+    await f.page.clock.setFixedTime(expiredAt);
+    // Wait for the real updateControls interval to publish the same clock state
+    // that the resend handler will read; a disabled verify button alone is not enough.
+    await f.page.waitForFunction(expected => Date.now() === expected &&
+      document.querySelector('#verifyExpiry').textContent === '인증 시간이 지났어요. 인증번호를 다시 받아주세요.' &&
+      document.querySelector('#verifySubmit').disabled && !document.querySelector('#resendCode').disabled, expiredAt);
     ok('expired code cannot be submitted',await f.page.locator('#verifySubmit').isDisabled());
     let releaseResend;
     f.state.resendGate = new Promise(resolve => { releaseResend = resolve; });
