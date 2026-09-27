@@ -2,8 +2,10 @@
 // Run directly or import from astronomy.mjs; failures throw rather than exiting the parent suite.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
 
 const html = readFileSync(new URL('../sky.html', import.meta.url), 'utf8');
+const sharedSource = readFileSync(new URL('../sky-events.js', import.meta.url), 'utf8');
 const from = html.indexOf('var RAD = Math.PI / 180');
 const to = html.indexOf('// 카드 펼치기');
 assert(from >= 0 && to > from, 'sky calculation/render markers exist');
@@ -17,14 +19,21 @@ function fixture() {
     static now() { return now; }
   }
   const elements = new Map();
-  const document = { getElementById(id) {
+  const listeners = new Map();
+  const document = { hidden: false, addEventListener(type, callback) { listeners.set(type, callback); },
+    removeEventListener(type) { listeners.delete(type); }, getElementById(id) {
     if (!elements.has(id)) elements.set(id, { textContent: '', innerHTML: '', style: {} });
     return elements.get(id);
   } };
   let timerId = 0;
   const timers = new Map();
+  const previewTimers = new Map();
   const window = {};
   const scope = {};
+  runInNewContext(sharedSource, { window, Date: ClockDate,
+    setTimeout(callback, delay) { previewTimers.set(++timerId, { callback, due: now + delay }); return timerId; },
+    clearTimeout(id) { previewTimers.delete(id); },
+  });
   new Function('exports', 'document', 'window', 'Date', 'setInterval', 'clearInterval',
     html.slice(from, to) + `
       Object.assign(exports, { EVENTS, eventTiming, activeEvents, upcoming, calendarDays,
@@ -35,10 +44,21 @@ function fixture() {
       (callback) => { timers.set(++timerId, callback); return timerId; },
       (id) => timers.delete(id));
   return {
-    ...scope, window, elements, timers,
+    ...scope, window, elements, timers, previewTimers,
     setTime(value) { now = typeof value === 'number' ? value : Date.parse(value); },
     tick() { for (const callback of [...timers.values()]) callback(); },
     el(id) { return document.getElementById(id); },
+    preview(events) {
+      const container = { dataset: {}, ownerDocument: document,
+        querySelector(selector) { return document.getElementById(selector); } };
+      return { container, ...window.OrbitSkyEvents.mountPreview(container, events) };
+    },
+    tickPreview() {
+      for (const [id, timer] of [...previewTimers]) {
+        if (timer.due <= now) { previewTimers.delete(id); timer.callback(); }
+      }
+    },
+    resumePreview() { listeners.get('visibilitychange')?.(); },
   };
 }
 
@@ -207,6 +227,49 @@ try {
     f.setTime(Date.parse(last.watchEnd) + 1); f.renderNext(); f.renderTimeline();
     check(f.upcoming(Date.parse(last.watchEnd)).length === 0, 'all real registered events end at final boundary');
     check(f.el('nxAlt').innerHTML.includes('오늘 밤 행성 보기'), 'last real event fallback links to computed planets');
+
+    // The compact tonight preview uses the identical event periods, without a second schedule.
+    const p = fixture();
+    const shared = p.window.OrbitSkyEvents;
+    const previewGem = p.EVENTS.find((event) => event.id === 'geminids2026');
+    p.setTime('2026-12-13T23:59:59.999+09:00');
+    const mounted = p.preview([previewGem]);
+    check(p.el('[data-event-label]').textContent === 'D-1', `${tz}: preview starts on the KST previous date`);
+    p.setTime('2026-12-14T00:00:00+09:00'); p.tickPreview();
+    check(p.el('[data-event-label]').textContent === 'D-DAY', `${tz}: preview changes at exact KST midnight`);
+    check(p.previewTimers.size === 1, `${tz}: preview keeps one pending boundary timer`);
+    p.setTime(previewGem.watchStart); p.tickPreview();
+    check(mounted.container.dataset.eventState === 'ongoing' &&
+      p.el('[data-event-label]').textContent === '안내 기간 중', `${tz}: preview starts at watchStart without promising daytime visibility`);
+    p.setTime(previewGem.watchEnd); p.tickPreview();
+    check(mounted.container.dataset.eventState === 'exhausted' &&
+      p.el('[data-event-name]').textContent === '다음 천문 일정을 준비하고 있어요' &&
+      p.el('[data-event-meta]').textContent.endsWith(' · 종료'), `${tz}: preview ends at watchEnd and explains exhausted schedule`);
+    check(shared.previewState([], Date.now()).status === 'empty', `${tz}: empty schedule differs from ended schedule`);
+    const foreign = p.EVENTS.find((event) => event.id === 'tse2027');
+    const foreignState = shared.previewState([foreign], Date.parse(foreign.watchStart));
+    check(foreignState.label === '진행 중' && foreignState.meta.includes('국내 관측 불가'),
+      `${tz}: preview retains global eclipse state and domestic unavailability`);
+    const daylightState = shared.previewState([perseids], daytime);
+    check(daylightState.label === '안내 기간 중', `${tz}: preview preserves multi-night guide wording in daylight`);
+    // A paused background tab must catch up immediately when visible, even before its delayed timer fires.
+    p.setTime('2026-12-13T23:59:00+09:00'); mounted.render();
+    p.setTime(previewGem.watchStart); p.resumePreview();
+    check(p.el('[data-event-label]').textContent === '안내 기간 중', `${tz}: visible-tab return refreshes an overdue preview`);
+    mounted.destroy();
+    check(p.previewTimers.size === 0, `${tz}: preview cleanup cancels its timer`);
+    p.setTime(Date.parse(previewGem.watchEnd) - 1);
+    const realPreview = p.preview(p.EVENTS);
+    check(realPreview.container.dataset.eventId === 'geminids2026', `${tz}: real schedule previews Geminids until the last millisecond`);
+    p.setTime(previewGem.watchEnd); p.tickPreview();
+    check(realPreview.container.dataset.eventId === 'ursids2026', `${tz}: preview advances to the next real event at the exact end`);
+    realPreview.destroy();
+    for (const event of p.EVENTS) {
+      const begin = Date.parse(event.watchStart), finish = Date.parse(event.watchEnd);
+      check(shared.nextPreviewRefresh([event], begin - 1) === begin, `${tz} ${event.id}: preview schedules exact start`);
+      check(shared.nextPreviewRefresh([event], finish - 1) === finish, `${tz} ${event.id}: preview schedules exact end`);
+      check(shared.previewState([event], finish).status === 'exhausted', `${tz} ${event.id}: ended events cannot remain featured`);
+    }
   }
 } finally {
   if (originalTZ === undefined) delete process.env.TZ; else process.env.TZ = originalTZ;

@@ -18,7 +18,7 @@ const base=`http://127.0.0.1:${server.address().port}`;
 const browser=await chromium.launch();
 let checks=0;
 function ok(name,value=true){assert.ok(value,name);checks++;console.log('✓ '+name);}
-const pages={main:'오늘 밤 행성',sky:'밤하늘 달력',planets:'오늘 밤 행성',lounge:'자유게시판',news:'우주 뉴스',guide:'관측 가이드',notes:null,stories:'우주 이야기','stories/moon-face-and-phases':'우주 이야기','reading-sky':'관측 가이드',about:'소개·문의',terms:null,privacy:null,admin:null};
+const pages={main:'밤하늘',sky:'밤하늘',planets:'밤하늘',lounge:'자유게시판',news:'우주 뉴스',guide:'관측 가이드',notes:null,stories:'우주 이야기','stories/moon-face-and-phases':'우주 이야기','reading-sky':'관측 가이드',about:'소개·문의',terms:null,privacy:null,admin:null};
 async function context(options={}){
   const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',...options});
   await ctx.route('**/*',async route=>{
@@ -44,7 +44,9 @@ try{
       await page.goto(`${base}/${name}.html`);
       await page.locator('.orbit-navigation.enhanced').waitFor();
       ok(`${name} ${width}px fits viewport`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
-      ok(`${name} has one shared logo/menu`,await page.locator('.orbit-brand').count()===1 && await page.locator('#sideNav .nav-item').count()===7);
+      ok(`${name} has one shared logo/menu`,await page.locator('.orbit-brand').count()===1 && await page.locator('#sideNav .nav-item').count()===6);
+      const menuLabels=(await page.locator('#sideNav .nav-item .lbl').allTextContents()).map(label=>label.trim());
+      ok(`${name} groups both sky tools under one night menu`,menuLabels.filter(label=>label==='밤하늘').length===1 && !menuLabels.some(label=>label==='오늘 밤 행성'||label==='밤하늘 달력'));
       if(width===1440&&['main','sky','planets','lounge','news','guide','stories','about'].includes(name)){
         const titleLink=page.locator('h1 .page-title-link').first();
         const target=new URL(await titleLink.getAttribute('href'),page.url());

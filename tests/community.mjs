@@ -2036,7 +2036,7 @@ try {
     await page.goto(base + '/main.html');
     await page.locator('#panel-planets.on').waitFor();
     ok('today’s sky is the default panel');
-    await page.locator('[data-panel="sky"]').click();
+    await page.locator('#nightTabs [data-night-panel="sky"]').click();
     await page.locator('[data-panel="lounge"]').click();
     await page.goBack();
     await page.locator('#panel-sky.on').waitFor();
@@ -2064,7 +2064,7 @@ try {
     );
     await page.setViewportSize({ width: 390, height: 844 });
     await page.locator('#navToggle').click();
-    await page.locator('[data-panel="planets"]').click();
+    await page.locator('#sideNav [data-nav-group="night"]').click();
     const frame = page.frameLocator('#planetFrame');
     await frame.locator('#skyMap [data-label]').first().waitFor();
     await page.waitForFunction(() => {
