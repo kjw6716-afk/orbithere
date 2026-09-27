@@ -5,6 +5,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { join, dirname, extname, resolve, sep } from 'node:path';
 import { chromium } from 'playwright';
+import { boardDetailEditRegressions } from './board-detail-edit-cases.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const types = {
   '.html': 'text/html',
@@ -124,6 +125,7 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
     logins: 0,
     postIds: [],
     inserts: 0,
+    edits: [],
     selects: [],
     delays: {},
     uploads: [],
@@ -244,6 +246,15 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
       return json(ids.length);
     }
     if (url.pathname.endsWith('/rpc/record_visit')) return json(null);
+    if (url.pathname.endsWith('/rpc/board_edit_post')) {
+      const b = req.postDataJSON(), p = state.posts.find(p => p.id === b.p_id);
+      state.edits.push({actor, ...b});
+      if (!p || p.author_id !== actor || !state.auth || state.auth.user.is_anonymous)
+        return json({code:'42501',message:'post_edit_forbidden'},403);
+      if (state.editFail) return json({message:'isolated edit unavailable'},503);
+      Object.assign(p,{title:b.p_title,text:b.p_text,orbit:b.p_orbit,observation:b.p_observation,edited_at:now()});
+      return json(p.id);
+    }
     if (url.pathname.endsWith('/rpc/board_posts')) {
       const b = req.postDataJSON();
       state.boardCalls.push(b);
@@ -509,7 +520,14 @@ async function identityRegressions() {
     });
     const board = embedded ? f.page.frames().find(frame => new URL(frame.url()).pathname === '/lounge.html') : f.page;
     await board.waitForFunction(actor => window.OrbitMembers.state.user?.id === actor && window.OrbitMembers.state.profile, actor);
+    // dialog.close() queues its close event. Its focus-restoration handler must
+    // finish before the next iframe fill, or it can steal that field's focus.
+    await f.page.evaluate(() => {
+      window.__accountClosedForTest = new Promise(resolve =>
+        document.querySelector('.account-dialog').addEventListener('close', () => resolve(), {once:true}));
+    });
     await f.page.locator('.account-close').click();
+    await f.page.evaluate(() => window.__accountClosedForTest);
   }
   async function switchAccount(f, embedded, actor) {
     await openAccount(f, embedded);
@@ -836,6 +854,7 @@ async function identityRegressions() {
 }
 
 try {
+  await boardDetailEditRegressions({fixture,base,A,B,P,uid,now,ok});
   await identityRegressions();
   {
     const f = await fixture(), {page, state} = f;
@@ -1622,7 +1641,7 @@ try {
     );
     await page.getByRole('link', { name: '오래된 토성 기록', exact: true }).click();
     await page.locator('.detail-body').waitFor();
-    await page.getByRole('button', { name: '글 공유', exact: true }).click();
+    await page.getByRole('button', { name: '글 주소 공유', exact: true }).click();
     await page.getByLabel('공유할 글 주소').waitFor();
     const shared = await page.getByLabel('공유할 글 주소').inputValue();
     ok(
@@ -1947,13 +1966,16 @@ try {
       (await page.locator('#newsList img').count()) === 0 &&
         (await page.getByText('Unsafe link', { exact: true }).count()) === 0,
     );
+    // Each fixture timestamp can differ by a millisecond. Check the named
+    // article's original link regardless of where date sorting places it.
     const original = await page
+      .locator('.news-article')
+      .filter({ has: page.getByRole('link', { name: '우주에서 새로운 별을 발견했습니다', exact: true }) })
       .getByRole('link', { name: '원문 읽기 ↗', exact: true })
-      .first()
       .getAttribute('href');
     ok(
       'news keeps direct official links without the broken translation proxy',
-      new URL(original).hostname === 'www.kasi.re.kr' &&
+      original === state.newsData.items[0].url &&
         (await page.getByRole('link', { name: '한국어 번역 ↗', exact: true }).count()) === 0,
     );
     await page.locator('[data-source=nasa]').click();
@@ -2069,7 +2091,8 @@ try {
         ic: '☄️',
         type: 'meteor',
         kr: true,
-        watch: '2026-09-12T03:00:00+09:00',
+        watchStart: '2026-09-12T03:00:00+09:00',
+        watchEnd: '2026-09-12T06:00:00+09:00',
         dateText: '검사용',
         best: '검사용',
         desc: '검사용',

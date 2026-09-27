@@ -10,6 +10,10 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
+// Run through the existing astronomy CI entry point as well as npm test.
+await import('./planet-time-boundaries.mjs');
+await import('./sky-time-boundaries.mjs');
+
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const src = readFileSync(join(root, 'planets.html'), 'utf8');
 

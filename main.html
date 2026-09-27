@@ -192,13 +192,14 @@
         </style>
     <script src="effects.js?v=20260911-layout" defer></script>
     <script src="orbit-config.js"></script>
+    <script src="orbit-analytics.js?v=20260927-funnel" defer></script>
     <script src="visits.js" defer></script>
     <link rel="stylesheet" href="news-brief.css?v=20260914-community">
     <script src="news-data.js?v=20260914-ast" defer></script>
     <script src="news-brief.js?v=20260914-community" defer></script>
 <link rel="stylesheet" href="site-nav.css?v=20260926-mint">
 <link rel="stylesheet" href="story-teaser.css?v=20260914-codes">
-<link rel="stylesheet" href="lounge-design.css?v=20260926-compact">
+<link rel="stylesheet" href="lounge-design.css?v=20260927-board-edit">
 </head>
 <body>
     <div class="bg-glow"></div>
@@ -243,7 +244,7 @@
                 <!-- 밤하늘 달력 — 첫 화면 -->
                 <section class="panel on" id="panel-sky">
                     <div class="embed-wrap">
-                        <iframe class="embed-frame" id="skyFrame" title="밤하늘 달력 — 유성우 · 일식 · 월식 일정" data-src="sky.html?embed=1&v=20260914-community"></iframe>
+                        <iframe class="embed-frame" id="skyFrame" title="밤하늘 달력 — 유성우 · 일식 · 월식 일정" data-src="sky.html?embed=1&v=20260927-funnel"></iframe>
                         <a class="embed-out" href="sky.html">전체 화면으로 열기 · 관측 방법과 FAQ 보기 →</a>
                     </div>
                 </section>
@@ -251,14 +252,14 @@
                 <!-- 오늘 밤 행성 -->
                 <section class="panel" id="panel-planets">
                     <div class="embed-wrap">
-                        <iframe class="embed-frame" id="planetFrame" title="오늘 밤 행성 — 지금 하늘의 행성 위치" data-src="planets.html?embed=1&v=20260914-community"></iframe>
+                        <iframe class="embed-frame" id="planetFrame" title="오늘 밤 행성 — 지금 하늘의 행성 위치" data-src="planets.html?embed=1&v=20260927-funnel"></iframe>
                         <a class="embed-out" href="planets.html">전체 화면으로 열기 · 행성 찾는 법과 FAQ 보기 →</a>
                     </div>
                 </section>
 
                 <!-- 글 남기기 -->
                 <section class="panel" id="panel-lounge">
-                    <iframe class="lounge-frame" id="loungeFrame" title="자유게시판" data-src="lounge.html?embed=1&v=20260926-identity-route"></iframe>
+                    <iframe class="lounge-frame" id="loungeFrame" title="자유게시판" data-src="lounge.html?embed=1&v=20260927-funnel"></iframe>
                 </section>
                 <aside class="news-brief news-brief--rail" data-news-brief aria-labelledby="newsBriefHeading">
                   <h2 class="news-brief-heading" id="newsBriefHeading">최신 우주 뉴스</h2>
@@ -303,8 +304,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
     <script src="orbit-backend.js?v=20260926-identity"></script>
     <script src="members.js?v=20260926-identity"></script>
-    <script src="account.js?v=20260926-operator"></script>
-    <script src="account-panel.js?v=20260926-identity"></script>
+    <script src="account.js?v=20260927-funnel"></script>
+    <script src="account-panel.js?v=20260927-funnel"></script>
     <script src="site-nav.js?v=20260914-community"></script>
     <script>
     // ===== 패널 전환 =====
@@ -383,12 +384,16 @@
             }
             if(location.hash !== '#' + name) history[addHistory ? 'pushState' : 'replaceState'](null, '', '#' + name);
             if (loungeLoaded) document.getElementById('loungeFrame').contentWindow.postMessage({ orbit: 'panelActive', active: name === 'lounge' }, location.origin);
+            if (window.OrbitAnalytics) window.OrbitAnalytics.panel(name);
         }
         document.getElementById('sideNav').addEventListener('click', function(e){
             var link = e.target.closest('.nav-item[data-panel]');
             if(!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
             e.preventDefault();
             switchPanel(link.getAttribute('data-panel'), true);
+            if(link.getAttribute('data-panel') === 'lounge' && loungeLoaded){
+                document.getElementById('loungeFrame').contentWindow.postMessage({ orbit: 'boardList' }, location.origin);
+            }
         });
         window.addEventListener('hashchange', function(){
             // #join은 패널이 아니라 대화상자를 여는 신호다 (광장에서 단독 페이지로 넘어올 때)

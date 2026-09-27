@@ -39,18 +39,19 @@
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css"
     />
     <link rel="stylesheet" href="/orbit.css?v=20260912-brand" />
-    <link rel="stylesheet" href="board.css?v=20260926-post-links" />
+    <link rel="stylesheet" href="board.css?v=20260927-board-spacing" />
     <script>
       if (new URLSearchParams(location.search).get('embed'))
         document.documentElement.classList.add('embed');
     </script>
     <script src="orbit-config.js"></script>
+    <script src="orbit-analytics.js?v=20260927-funnel" defer></script>
     <script src="visits.js" defer></script>
     <link rel="stylesheet" href="news-brief.css?v=20260914-community">
     <script src="news-data.js?v=20260914-ast" defer></script>
     <script src="news-brief.js?v=20260914-community" defer></script>
   <link rel="stylesheet" href="site-nav.css?v=20260926-mint">
-  <link rel="stylesheet" href="lounge-design.css?v=20260926-compact">
+  <link rel="stylesheet" href="lounge-design.css?v=20260927-board-edit">
 </head>
   <body class="lounge-page">
     <div class="bg-glow" aria-hidden="true"></div>
@@ -156,12 +157,13 @@
       </section>
       <section id="editorView" hidden>
         <a class="back-link" id="cancelWriteLink" href="lounge.html">← 목록</a>
-        <h1>오늘 본 하늘을 들려주세요</h1>
-        <p class="editor-intro">한 줄도 좋아요. 별 이름이나 장비를 몰라도 괜찮아요.</p>
+        <h1 id="editorTitle">오늘 본 하늘을 들려주세요</h1>
+        <p class="editor-intro" id="editorIntro">한 줄도 좋아요. 별 이름이나 장비를 몰라도 괜찮아요.</p>
         <div id="memberWriteGate" class="member-write-gate" hidden><p>먼저 적어보세요. 등록할 때 로그인하면 돼요.</p><button type="button" class="text-button" data-account-open="login">로그인</button> <button type="button" class="text-button" data-account-open="signup">회원가입</button></div>
-        <p class="field-hint">작성 중인 글은 이 기기에 7일간 임시 저장돼요.</p>
-        <div class="board-filter-actions"><p class="field-hint" id="draftStatus" role="status"></p><button class="text-button" id="clearDraft" type="button" hidden>임시저장 지우기</button></div>
+        <p class="field-hint" id="draftHelp">작성 중인 글은 이 기기에 7일간 임시 저장돼요.</p>
+        <div class="board-filter-actions" id="draftControls"><p class="field-hint" id="draftStatus" role="status"></p><button class="text-button" id="clearDraft" type="button" hidden>임시저장 지우기</button></div>
         <p class="field-hint" id="draftPhotoNotice" hidden>사진 파일은 임시저장되지 않아요. 새로고침하거나 Google 인증으로 화면을 이동하면 사진을 다시 첨부해주세요.</p>
+        <p class="field-hint" id="editPhotoNotice" hidden>기존 첨부 사진은 그대로 유지돼요. 사진 변경은 지원하지 않아요.</p>
         <form id="postForm" novalidate>
           <label for="postTitle">제목 <span class="field-hint">선택 · 80자 이내</span></label
           ><input
@@ -184,7 +186,7 @@
           <p class="field-hint" id="charCount">0 / 5,000</p>
           <label for="orbitSelect">어떤 글인가요?</label>
           <select id="orbitSelect" name="orbit" required></select>
-          <div class="photo-heading">
+          <div class="photo-heading" id="photoHeading">
             <label for="photoInput" class="button">사진 첨부 <span class="optional-label">선택</span></label
             ><span id="photoCount" class="field-hint">0 / 5장</span>
           </div>
@@ -275,14 +277,14 @@
     <script src="orbit-backend.js?v=20260926-identity"></script>
     <link rel="stylesheet" href="account.css?v=20260926-operator">
     <script src="members.js?v=20260926-identity"></script>
-    <script src="account.js?v=20260926-operator"></script>
-    <script src="account-panel.js?v=20260926-identity"></script>
+    <script src="account.js?v=20260927-funnel"></script>
+    <script src="account-panel.js?v=20260927-funnel"></script>
     <script src="board-media.js?v=20260912-board"></script>
     <script src="board-writing.js?v=20260926-identity"></script>
     <script src="board-glossary.js?v=20260914-community"></script>
     <script src="board-activity.js?v=20260914-activity"></script>
     <script src="board-embed.js?v=20260914-community"></script>
-    <script src="lounge.js?v=20260926-identity-route"></script>
+    <script src="lounge.js?v=20260927-funnel"></script>
     <script src="member-board.js?v=20260926-operator"></script>
   </div></div>
 <script src="site-nav.js?v=20260914-community"></script>
