@@ -3,6 +3,7 @@ from datetime import datetime
 from email.utils import parsedate_to_datetime
 import json
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -18,27 +19,34 @@ class EditorialTests(unittest.TestCase):
         self.article = json.loads((stories.ROOT / stories.ARTICLE_DIR / 'moon-face-and-phases.json').read_text())
         self.ledger = {'version': 1, 'items': []}
 
-    def article(self, ident, after='2026-09-12'):
+    def make_article(self, ident, after='2026-09-12'):
         a = copy.deepcopy(self.article)
         a.update(id=ident, title='별과 우주를 읽는 새로운 질문 ' + ident, publishAfter=after)
         return a
 
-    def test_daily_idempotency_and_no_backfill(self):
+    def test_next_publishes_one_at_a_time_without_daily_cap_or_backdating(self):
         second = copy.deepcopy(self.article)
         second.update(id='second-story', title='달의 두 번째 이야기')
         articles = {a['id']: a for a in (self.article, second)}
         first = stories.publish_next(articles, self.ledger, '2026-09-12')
         self.assertIsNotNone(first)
+        self.assertEqual(len(self.ledger['items']), 1)
+        self.assertIsNotNone(stories.publish_next(articles, self.ledger, '2026-09-12'))
         self.assertIsNone(stories.publish_next(articles, self.ledger, '2026-09-12'))
-        self.assertIsNotNone(stories.publish_next(articles, self.ledger, '2026-09-15'))
-        self.assertEqual([i['date'] for i in self.ledger['items']], ['2026-09-12', '2026-09-15'])
+        self.assertEqual([i['date'] for i in self.ledger['items']], ['2026-09-12', '2026-09-12'])
         self.assertEqual(len({i['id'] for i in self.ledger['items']}), 2)
+        later = self.make_article('later-story')
+        articles[later['id']] = later
+        self.assertEqual(stories.publish_next(articles, self.ledger, '2026-09-15'), later['id'])
+        self.assertEqual(self.ledger['items'][-1]['date'], '2026-09-15')
 
     def test_future_and_empty_queue(self):
         self.article['publishAfter'] = '2026-09-13'
         a = {self.article['id']: self.article}
         self.assertIsNone(stories.publish_next(a, self.ledger, '2026-09-12'))
         self.assertIsNone(stories.publish_next({}, self.ledger, '2026-09-12'))
+        self.assertEqual(stories.publish_due(a, self.ledger, '2026-09-12'), [])
+        self.assertEqual(stories.publish_due({}, self.ledger, '2026-09-12'), [])
         self.assertEqual(self.ledger['items'], [])
 
     def test_kst_day_boundary_and_clock_regression(self):
@@ -49,6 +57,8 @@ class EditorialTests(unittest.TestCase):
         stories.publish_next(a, self.ledger, after)
         with self.assertRaises(ValueError):
             stories.publish_next(a, self.ledger, before)
+        with self.assertRaises(ValueError):
+            stories.publish_due(a, self.ledger, before)
 
     def test_sources_require_real_official_https_addresses(self):
         for url in ('javascript:alert(1)', 'http://science.nasa.gov/moon/', 'https://nasa.gov.evil.example/',
@@ -138,83 +148,95 @@ class EditorialTests(unittest.TestCase):
         self.assertIn('href="news.html"', html)
         self.assertIn('0편', html)
 
-    def test_launch_batch_does_not_relax_normal_daily_publishing(self):
-        articles, ledger = stories.load()
-        articles = {ident: a for ident, a in articles.items() if ident in stories.INITIAL_RELEASE_IDS}
-        ledger = {'version': 1, 'items': [i for i in ledger['items'] if i['id'] in stories.INITIAL_RELEASE_IDS]}
-        self.assertEqual({i['id'] for i in ledger['items'] if i['date'] == stories.INITIAL_RELEASE_DAY}, stories.INITIAL_RELEASE_IDS)
-        extra = copy.deepcopy(self.article)
-        extra.update(id='fourth-story', title='시작 이후에 검토된 새로운 이야기')
-        articles[extra['id']] = extra
-        self.assertIsNone(stories.publish_next(articles, ledger, '2026-09-12'))
-        self.assertEqual(stories.publish_next(articles, ledger, '2026-09-13'), 'fourth-story')
-        self.assertIsNone(stories.publish_next(articles, ledger, '2026-09-13'))
-        self.assertIsNone(stories.publish_next(articles, ledger, '2026-09-14'))
+    def test_batch_publishes_five_after_existing_same_day_release_and_is_idempotent(self):
+        today = '2026-09-27'
+        articles = {self.article['id']: self.article}
+        stories.publish_next(articles, self.ledger, today)
+        existing = copy.deepcopy(self.ledger['items'])
+        # Deliberately insert out of publication order; an older due date wins.
+        for ident, day in [('due-e', today), ('due-c', today), ('due-b', today),
+                           ('due-d', today), ('due-a', '2026-09-26'),
+                           ('future-story', '2026-09-28')]:
+            articles[ident] = self.make_article(ident, day)
+        expected = ['due-a', 'due-b', 'due-c', 'due-d', 'due-e']
+        self.assertEqual(stories.publish_due(articles, self.ledger, today), expected)
+        self.assertEqual(self.ledger['items'][:1], existing)
+        self.assertEqual(len(self.ledger['items']), 6)
+        self.assertEqual(len({i['id'] for i in self.ledger['items']}), 6)
+        for item in self.ledger['items']:
+            self.assertEqual(item['date'], today)
+            self.assertEqual(item['contentHash'], stories.content_hash(articles[item['id']]))
+        rendered = stories.outputs(articles, self.ledger)
+        for ident in expected:
+            self.assertIn(f'stories/{ident}.html', rendered)
+            self.assertIn(f'stories/{ident}.html', rendered['stories.html'])
+            self.assertIn(f'stories/{ident}.html', rendered['sitemap.xml'])
+            self.assertIn(f'stories/{ident}.html', rendered['rss.xml'])
+        self.assertFalse(any('future-story' in content for content in rendered.values()))
+        published = copy.deepcopy(self.ledger)
+        self.assertEqual(stories.publish_due(articles, self.ledger, today), [])
+        self.assertEqual(self.ledger, published)
+        self.assertEqual(stories.outputs(articles, self.ledger), rendered)
+        self.assertEqual(stories.publish_due(articles, self.ledger, '2026-09-28'), ['future-story'])
 
-    def test_only_the_exact_launch_batch_may_share_a_day(self):
-        articles, original = stories.load()
+    def test_same_day_ledger_still_rejects_early_publication(self):
         with tempfile.TemporaryDirectory() as folder:
-            root = Path(folder); dest = root / stories.ARTICLE_DIR; dest.mkdir(parents=True)
-            for a in articles.values():
-                (dest / (a['id'] + '.json')).write_text(json.dumps(a))
-            launch = [i for i in original['items'] if i['id'] in stories.INITIAL_RELEASE_IDS]
-            for items in (launch[:2], [dict(i, date='2026-09-13') for i in launch]):
-                with self.subTest(items=items):
-                    (root / stories.LEDGER).write_text(json.dumps({'version': 1, 'items': items}))
-                    with self.assertRaisesRegex(ValueError, 'Duplicate publication day'):
-                        stories.load(root)
-
-    def test_only_the_approved_september_26_pair_may_share_that_day(self):
-        articles, original = stories.load()
-        day = '2026-09-26'
-        approved = {'how-gravity-assists-work', 'iss-visible-at-dawn-and-dusk'}
-        pair = [i for i in original['items'] if i['date'] == day]
-        self.assertEqual({i['id'] for i in pair}, approved)
-        self.assertEqual(stories.APPROVED_SAME_DAY_RELEASES[day], approved)
-        extra = dict(next(i for i in original['items'] if i['id'] == self.article['id']), date=day)
-        with tempfile.TemporaryDirectory() as folder:
-            root = Path(folder); dest = root / stories.ARTICLE_DIR; dest.mkdir(parents=True)
+            root = Path(folder)
+            dest = root / stories.ARTICLE_DIR
+            dest.mkdir(parents=True)
+            articles = {self.article['id']: self.article,
+                        'second-story': self.make_article('second-story', '2026-09-28')}
             for article in articles.values():
                 (dest / (article['id'] + '.json')).write_text(json.dumps(article))
+            stories.publish_due(articles, self.ledger, '2026-09-28')
             ledger_path = root / stories.LEDGER
-            ledger_path.write_text(json.dumps({'version': 1, 'items': pair}))
-            _, accepted = stories.load(root)
-            self.assertEqual(accepted['items'], pair)
-            cases = {
-                'extra article': pair + [extra],
-                'wrong pair': [pair[0], extra],
-                'wrong day': [dict(item, date='2026-09-27') for item in pair],
-            }
-            for label, items in cases.items():
-                with self.subTest(label=label):
-                    ledger_path.write_text(json.dumps({'version': 1, 'items': items}))
-                    with self.assertRaisesRegex(ValueError, 'Duplicate publication day'):
-                        stories.load(root)
+            ledger_path.write_text(json.dumps(self.ledger))
+            self.assertEqual(stories.load(root)[1], self.ledger)
+            self.ledger['items'][-1]['date'] = '2026-09-27'
+            ledger_path.write_text(json.dumps(self.ledger))
+            with self.assertRaisesRegex(ValueError, 'before its allowed date'):
+                stories.load(root)
 
-    def test_manual_release_exception_does_not_change_scheduled_publishing(self):
-        articles, ledger = stories.load()
-        today = '2026-09-26'
-        approved = {'how-gravity-assists-work', 'iss-visible-at-dawn-and-dusk'}
-        articles = {ident: article for ident, article in articles.items() if ident in approved}
-        ledger = {'version': 1, 'items': [i for i in ledger['items'] if i['id'] in approved]}
-        before_manual_release = copy.deepcopy(ledger)
-        before_manual_release['items'] = [i for i in before_manual_release['items']
-                                          if i['id'] != 'iss-visible-at-dawn-and-dusk']
-        before = copy.deepcopy(before_manual_release)
-        self.assertIsNone(stories.publish_next(articles, before_manual_release, today))
-        self.assertEqual(before_manual_release, before)
-        published = copy.deepcopy(ledger)
-        for _ in range(2):
-            self.assertIsNone(stories.publish_next(articles, ledger, today))
-        self.assertEqual(ledger, published)
-        future = copy.deepcopy(self.article)
-        future.update(id='future-reviewed-story', title='다음 날 검토를 마친 새로운 우주 이야기',
-                      publishAfter='2026-09-27')
-        articles[future['id']] = future
-        self.assertIsNone(stories.publish_next(articles, ledger, today))
-        self.assertEqual(stories.publish_next(articles, ledger, '2026-09-27'), future['id'])
-        self.assertIsNone(stories.publish_next(articles, ledger, '2026-09-27'))
-        self.assertEqual(sum(i['id'] == future['id'] for i in ledger['items']), 1)
+    def test_publish_due_cli_preserves_batch_on_rerun_and_rejects_changed_published_content(self):
+        today = '2026-09-27'
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / 'scripts').mkdir()
+            (root / stories.ARTICLE_DIR).mkdir(parents=True)
+            for name in ('stories.py', 'site_navigation.py'):
+                (root / 'scripts' / name).write_bytes((stories.ROOT / 'scripts' / name).read_bytes())
+            for name in ('index.html', 'main.html', 'sitemap.xml'):
+                (root / name).write_bytes((stories.ROOT / name).read_bytes())
+            articles = [self.article] + [self.make_article(f'cli-story-{n}') for n in range(5)]
+            articles.append(self.make_article('future-story', '2026-09-28'))
+            for article in articles:
+                (root / stories.ARTICLE_DIR / (article['id'] + '.json')).write_text(json.dumps(article))
+            stories.publish_next({self.article['id']: self.article}, self.ledger, today)
+            (root / stories.LEDGER).write_text(json.dumps(self.ledger))
+            command = [sys.executable, 'scripts/stories.py', '--publish-due', '--date', today]
+            result = subprocess.run(command, cwd=root, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            _, ledger = stories.load(root)
+            self.assertEqual(len(ledger['items']), 6)
+            self.assertEqual({item['date'] for item in ledger['items']}, {today})
+            self.assertFalse((root / 'stories/future-story.html').exists())
+            snapshot = {p.relative_to(root): p.read_bytes() for p in root.rglob('*')
+                        if p.is_file() and p.suffix != '.pyc'}
+            result = subprocess.run(command, cwd=root, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn('No new publication.', result.stdout)
+            self.assertEqual(snapshot, {p.relative_to(root): p.read_bytes() for p in root.rglob('*')
+                                        if p.is_file() and p.suffix != '.pyc'})
+            article_path = root / stories.ARTICLE_DIR / (self.article['id'] + '.json')
+            changed = copy.deepcopy(self.article)
+            changed['title'] = '검토되지 않은 변경이 들어간 이야기 제목'
+            article_path.write_text(json.dumps(changed))
+            result = subprocess.run(command, cwd=root, capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('Published article changed', result.stderr)
+            for path, content in snapshot.items():
+                if path != article_path.relative_to(root):
+                    self.assertEqual((root / path).read_bytes(), content)
 
     def test_publication_dates_are_not_displayed(self):
         day = '2026-09-12'
