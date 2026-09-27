@@ -87,3 +87,50 @@ Create a finished original editorial astronomy cover illustration for the Korean
 Subject: a plausible robotic interplanetary spacecraft gliding past a large Earthlike blue-green planet, an elegant depiction of exploration and gravity assist. Compact gold-foil bus, one restrained dish antenna and two neatly engineered dark-blue solar arrays, occupying about30percent of the frame in lower-left-middle, fully visible. Curved blue atmospheric limb of a complete medium planet at upper-right, soft stars behind. One very faint curved mint orbital arc suggests the flyby trajectory, only a conceptual path without arrows or labels. No engine fire, no weapons, no station, no logos, no imaginary branded mission. Naturalistic sophisticated editorial illustration, warm gold spacecraft against navy and cool blue planet, with uncluttered negative space.
 ```
 
+## 2026-09-28 published-story cover refresh
+
+The sixteen published stories now each have a distinct, explicitly mapped cover. Nine new article-specific illustrations replace repeated category art, while seven existing illustrations remain with the stories they best represent. Existing category fallbacks, original files, and the historical generation prompts above are preserved. Published manuscript JSON and publication hashes are unchanged.
+
+The new originals were created with the built-in `image_gen` tool and reviewed as AI editorial illustrations, not observation photographs or literal scale diagrams. Each original supplies 640×360 and 1200×675 WebP delivery files. Korean alt text, the actual generation date, and each final generation prompt are recorded in `data/story-images.json`.
+
+The generated source canvases were 1672×941 pixels, within half a source pixel of 16:9. Delivery sizes use ordinary proportional resizing with integer-pixel rounding (height = round(source height × target width / source width)); the artwork was not cropped, composited, or altered.
+
+| Published article | Cover key | Change |
+| --- | --- | --- |
+| `are-shooting-stars-stars` | `are-shooting-stars-stars` | New illustration |
+| `cosmic-voids` | `cosmic-voids` | New illustration |
+| `how-gravity-assists-work` | `spaceflight` | Existing illustration retained |
+| `how-moonlight-affects-stargazing` | `how-moonlight-affects-stargazing` | New illustration |
+| `is-mars-all-red` | `is-mars-all-red` | New illustration |
+| `iss-visible-at-dawn-and-dusk` | `iss-visible-at-dawn-and-dusk` | New illustration |
+| `moon-face-and-phases` | `moon-phases` | Existing illustration retained |
+| `seasonal-constellations-camping` | `seasonal-constellations-camping` | New illustration |
+| `what-is-a-light-year` | `light-year` | Existing illustration retained |
+| `why-comet-tails-point-away` | `comet-tails` | Existing illustration retained |
+| `why-eyes-need-dark-adaptation` | `night-observing` | Existing illustration retained |
+| `why-planets-go-retrograde` | `why-planets-go-retrograde` | New illustration |
+| `why-saturn-has-rings` | `saturn-rings` | Existing illustration retained |
+| `why-stars-have-different-colors` | `why-stars-have-different-colors` | New illustration |
+| `why-stars-twinkle` | `why-stars-twinkle` | New illustration |
+| `why-venus-is-hottest` | `planets` | Existing illustration retained |
+
+New delivery files:
+
+- `images/stories/seasonal-constellations-camping-640.webp` — 640×360, 39,780 bytes
+- `images/stories/seasonal-constellations-camping-1200.webp` — 1200×675, 128,640 bytes
+- `images/stories/iss-visible-at-dawn-and-dusk-640.webp` — 640×360, 32,046 bytes
+- `images/stories/iss-visible-at-dawn-and-dusk-1200.webp` — 1200×675, 92,384 bytes
+- `images/stories/are-shooting-stars-stars-640.webp` — 640×360, 15,034 bytes
+- `images/stories/are-shooting-stars-stars-1200.webp` — 1200×675, 51,066 bytes
+- `images/stories/why-stars-twinkle-640.webp` — 640×360, 8,296 bytes
+- `images/stories/why-stars-twinkle-1200.webp` — 1200×675, 23,984 bytes
+- `images/stories/how-moonlight-affects-stargazing-640.webp` — 640×360, 24,006 bytes
+- `images/stories/how-moonlight-affects-stargazing-1200.webp` — 1200×675, 66,992 bytes
+- `images/stories/cosmic-voids-640.webp` — 640×360, 69,846 bytes
+- `images/stories/cosmic-voids-1200.webp` — 1200×675, 197,836 bytes
+- `images/stories/why-stars-have-different-colors-640.webp` — 640×360, 7,098 bytes
+- `images/stories/why-stars-have-different-colors-1200.webp` — 1200×675, 20,552 bytes
+- `images/stories/is-mars-all-red-640.webp` — 640×360, 14,008 bytes
+- `images/stories/is-mars-all-red-1200.webp` — 1200×675, 44,084 bytes
+- `images/stories/why-planets-go-retrograde-640.webp` — 640×360, 12,106 bytes
+- `images/stories/why-planets-go-retrograde-1200.webp` — 1200×675, 37,038 bytes

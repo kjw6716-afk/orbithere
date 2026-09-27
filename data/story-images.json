@@ -2,28 +2,120 @@
   "version": 1,
   "notice": "표지 이미지는 AI로 만든 주제별 편집 삽화입니다. 실제 관측 사진과 구분해 감상해주세요.",
   "images": {
-    "saturn-rings": {"alt": "고리가 펼쳐진 토성을 그린 우주 편집 삽화"},
-    "light-year": {"alt": "먼 별에서 빛이 건너오는 우주를 표현한 편집 삽화"},
-    "comet-tails": {"alt": "어두운 우주를 가로지르는 혜성과 꼬리의 편집 삽화"},
-    "night-observing": {"alt": "별이 빛나는 밤하늘과 관측 풍경을 그린 편집 삽화"},
-    "moon-phases": {"alt": "달의 밝은 면과 여러 위상을 표현한 편집 삽화"},
-    "deep-space": {"alt": "별과 은하가 펼쳐진 깊은 우주를 표현한 편집 삽화"},
-    "planets": {"alt": "우주에 떠 있는 행성의 모습을 그린 편집 삽화"},
-    "spaceflight": {"alt": "행성 곁을 비행하는 우주 탐사선을 그린 편집 삽화"}
+    "saturn-rings": {
+      "alt": "고리가 펼쳐진 토성을 그린 우주 편집 삽화"
+    },
+    "light-year": {
+      "alt": "먼 별에서 빛이 건너오는 우주를 표현한 편집 삽화"
+    },
+    "comet-tails": {
+      "alt": "어두운 우주를 가로지르는 혜성과 꼬리의 편집 삽화"
+    },
+    "night-observing": {
+      "alt": "별이 빛나는 밤하늘과 관측 풍경을 그린 편집 삽화"
+    },
+    "moon-phases": {
+      "alt": "달의 밝은 면과 여러 위상을 표현한 편집 삽화"
+    },
+    "deep-space": {
+      "alt": "별과 은하가 펼쳐진 깊은 우주를 표현한 편집 삽화"
+    },
+    "planets": {
+      "alt": "우주에 떠 있는 행성의 모습을 그린 편집 삽화"
+    },
+    "spaceflight": {
+      "alt": "행성 곁을 비행하는 우주 탐사선을 그린 편집 삽화"
+    },
+    "seasonal-constellations-camping": {
+      "alt": "따뜻한 불빛의 작은 텐트 곁에서 한 사람이 별이 가득한 밤하늘을 바라보는 산 위 캠핑장 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-09-28",
+        "prompt": "Use case: illustration-story. Create an original editorial astronomy cover illustration for ORBIT, exactly 1792x1008 pixels, wide landscape aspect ratio 16:9, edge-to-edge raster art. Article question: How can a beginner enjoy the seasonal constellations while camping? Scene: an intimate quiet campsite on a low mountain ridge at night, one small dim warm amber tent near the lower left and one small standing naked-eye observer in silhouette nearby looking up, several receding soft mountain ridges along the lower quarter. Expansive clear midnight sky dominates the scene, a few loosely grouped bright stars suggesting the recognizable large shapes one might learn, but NO connecting lines and no exact star map. No telescope. One readable focal scene, tent and observer entirely within the frame with generous safe margins. Sophisticated naturalistic science magazine illustration, painterly photoreal textures, subtle grain, deep midnight navy #0B1423, restrained mint atmospheric accents, warm cream stars, very dim amber tent light without washing out the sky. No exaggerated nebula, no giant moon, no meteor, no fantastical planets. This is a conceptual AI editorial illustration, not a claimed observation photo or literal astronomical chart. No words, labels, numbers, logos, watermark, UI, panels, border or diagram. Render a true 16:9 original; do not use a 3:2 canvas. Critical output dimensions: the actual file MUST be 1792 pixels wide and 1008 pixels tall (exact 16:9), or 2048 by 1152. Do not approximate with 1672 by 941. This cover must be used without any cropping."
+      }
+    },
+    "iss-visible-at-dawn-and-dusk": {
+      "alt": "어두운 지구의 곡선과 푸른 대기 가장자리 위에서 태양빛을 받는 국제우주정거장 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-09-28",
+        "prompt": "Use case: illustration-story. Generate an original editorial astronomy cover for ORBIT as a raster image, landscape 2048 by 1152 pixels, exact 16:9 aspect ratio. Scientific article question: Why is the International Space Station easiest to see around dawn and dusk? Show the recognizable International Space Station above Earth's curved twilight limb: the ISS has a long integrated truss, multiple paired rectangular blue-brown solar panel wings, white cylindrical pressurized modules and white radiator panels. Three-quarter orbital view, entire station fits well inside the frame, occupying the middle-left with large clear margins, warmly sunlit from upper left. Earth fills the lower third, its deep blue night side and faint cloud layers edged by a narrow mint-blue atmospheric curve and cream amber twilight rim. The station remains in sunlight although the planet below is dim. Calm near-black midnight navy #0B1423 space behind, very sparse small stars. Sophisticated naturalistic science magazine illustration with subtle material texture and soft grain, restrained mint and warm cream amber, readable silhouette at thumbnail size. AI editorial concept, not an actual NASA photograph, not a scale diagram. No rocket engines, exhaust, flames, extra spacecraft, fantasy space station, labels, words, logo, watermark, UI, panels, border or diagram. Actual output file must be precisely 2048x1152 or1792x1008 pixels, true16:9; avoid approximate1672x941 because cropping and stretching are prohibited."
+      }
+    },
+    "are-shooting-stars-stars": {
+      "alt": "어두운 산 능선 위 밤하늘에 가느다란 빛줄기 하나를 남기며 지나가는 유성 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-09-28",
+        "prompt": "Use case: illustration-story. Create an original ORBIT astronomy article cover, landscape 16:9 at least1200x675 pixels, preferably2048x1152. Article central question: Are shooting stars really stars falling? Show exactly one delicate slender meteor streak in Earth's night sky above a dark rugged mountain ridge. The meteor is a short diagonal tapered thread of cream-white light, subtly mint at one tip, located in upper-middle sky with generous clear margins; it is a transient atmospheric streak, no visible solid body. The ridge occupies the lower quarter, with a faint dark valley and slight distant blue atmospheric haze. Sky is expansive deep midnight navy #0B1423 with sparse natural stationary pinprick stars and very subtle grain. The meteor is bright enough to read on a small thumbnail, but slim and modest, not a fiery bolide. Naturalistic refined science magazine editorial illustration; quiet and believable terrestrial observer perspective. Distinct singular subject, restrained mint and warm cream palette. Conceptual AI illustration, not an actual observational photograph or measured star chart. No meteor shower or second streak, no giant fireball, no impact, no explosions, no comet nucleus or comet tail, no curved orbital trail, no planet globe, no people, no tent. No text, labels, logo, watermark, UI, diagram, panels, border. Complete subject within the frame."
+      }
+    },
+    "why-stars-twinkle": {
+      "alt": "낮은 언덕과 옅은 대기 안개 위 밤하늘에서 밝은 별 하나가 섬세하게 반짝이는 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-09-28",
+        "prompt": "Use case: illustration-story. Original ORBIT editorial astronomy cover for article 'Why do stars twinkle while planets usually twinkle less?'. Wide landscape16:9 canvas,1536x864 pixels, minimum1200x675, edge-to-edge naturalistic raster art. Scene: from Earth's ground, a low dark hill ridge and sparse natural grasses occupy only the bottom fifth; no person or equipment. A single distinct bright pointlike blue-white star with a very small delicate irregular scintillating halo sits comfortably in the upper middle-left of a spacious navy night sky. A few much fainter stars surround it. Faint soft layered atmospheric haze just above the distant landscape hints at moving terrestrial air, with subtle gentle mottled softness around the brilliant stellar point, not a visible light path. The atmosphere should be translucent and understated, never a dramatic cloudy nebula. Quiet intimate observation mood, sophisticated science-magazine illustration, deep midnight navy #0B1423, a whisper of restrained mint haze and warm cream in the star, very subtle grain. Keep the star a distant light point, not an enormous sun or shaded planet; make this focal twinkle legible at thumbnail size. Generous safe margins. Scientific meaning: a distant star's light appears to shimmer because it passes through Earth's moving atmosphere, not because the star is switching off and on. This is a conceptual editorial landscape, not a scientific measured diagram or real observation photograph. Avoid Milky Way band, aurora, telescope, human observer, planet surface, giant moon, bright city, physical zigzag light beams, rays connecting star to ground, weather arrows, circular insets, comparison panels, text, labels, numbers, logos, watermark, border or UI."
+      }
+    },
+    "how-moonlight-affects-stargazing": {
+      "alt": "밝은 보름달이 산과 호수를 비추고 밤하늘에 드문드문 별이 보이는 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-09-28",
+        "prompt": "Use case: illustration-story. Create an original finished editorial astronomy cover illustration for ORBIT. EXACT wide 16:9 canvas, 1536x864 pixels or another exact 16:9 size at least1200x675. Edge-to-edge raster illustration. Sophisticated science magazine style: deep midnight navy #0B1423, softly shaded naturalistic celestial forms, restrained mint/cyan, warm cream/amber, subtle texture, sparse pinprick stars. Beautiful clear composition at thumbnail scale with generous margins. No text, numbers, labels, logos, watermarks, frame, panels or UI. An artistic editorial concept, not an actual observation photograph or precise diagram. Article question: how does bright moonlight affect stargazing? Scene: a quiet moonlit highland lake with a low rugged dark mountain skyline, a single luminous almost-full Moon above the right third, its small realistic textured disc creating a broad subtle pale glow in atmospheric haze. A restrained ivory reflection on the lake. The sky is softly washed in moonlight with only a handful of bright stars still readable; NO prominent bright Milky Way. No person or telescope; this composition must be distinct from a dark observing scene or a lunar phases sequence. The Moon is modestly sized, not enormous, entirely inside frame. Cinematic quiet navy and pearl light, realistic landscape but deliberately illustrated."
+      }
+    },
+    "cosmic-voids": {
+      "alt": "가느다란 은하 연결망 사이에 드문 은하만 남아 있는 넓고 어두운 보이드 영역을 그린 개념 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-09-28",
+        "prompt": "Generate a PNG image at EXACTLY 2048 pixels wide and 1152 pixels high (16:9). The required file pixel dimensions are 2048x1152, not approximate; use those dimensions in the image generation request. Use case: illustration-story. Original editorial astronomy cover for ORBIT explaining cosmic voids. Edge-to-edge naturalistic science-magazine raster painting, subtle grain, midnight navy #0B1423, restrained mint/cyan with warm cream/amber tiny galaxy nodes. Show a distant cosmic web with wispy interconnected irregular filaments crossing the wide composition, tiny galaxies clustering along strands and surrounding broad dark low-density regions. The central low-density region is irregular and expansive, with only a few extremely faint little galaxies still inside; multiple other imperfect sparse regions around it add depth. Comfortable safe margins and readable focal structure at thumbnail size. This is a conceptual editorial illustration, never an actual observation photograph or measured map. Voids contain relatively few galaxies and matter, not absolute nothingness. No black hole, vortex, accretion disk, tunnel, single giant spiral galaxy, planet, starburst sun, perfect spherical empty bubble, text, labels, logo, watermark, borders, UI or panels."
+      }
+    },
+    "why-stars-have-different-colors": {
+      "alt": "어두운 우주에 서로 떨어져 빛나는 청백색·노란색·주황색 별 세 개를 비교한 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-09-28",
+        "prompt": "Use case: illustration-story. Create an original editorial astronomy website cover for ORBIT article 'Why do stars have different colors?'. Wide landscape image with exact16:9 canvas, request1536x864 pixels, at least1200x675. Naturalistic refined science-magazine raster illustration on quiet midnight navy #0B1423 with subtle grain. Three separate luminous stars form a loose shallow triangle across the middle of the wide scene, not a lineup chart: a bright blue-white star left of center, a creamy warm yellow star a little higher around center, and a subdued orange-red star right of center. Stars have intensely luminous softly resolved cores and airy restrained halos, never rocky or shaded spheres. Each stellar glow is clearly distinct in color, with generous dark space separating them and generous safe margins. Only a few tiny faint background stars. The core of each star remains light-emitting, softly bright, and naturally warm/cool; no rainbow neon. Preserve an inviting calm editorial mood with blue-white, cream and amber-orange color, very restrained atmospheric softness. Scientific meaning: perceived broad stellar color is mainly a surface-temperature clue; blue-white stars are hotter than orange-red ones. This scene is a conceptual comparison, not a scale diagram, literal three-star system or observational photograph; no implied size-temperature chart. No planets, craters, rings, orbit lines, human figures, landscape, nebula clouds, decorative star shapes, huge spikes, text, labels, numbers, logos, watermark, border, UI or panels."
+      }
+    },
+    "is-mars-all-red": {
+      "alt": "붉은 먼지와 어두운 갈색 지형, 밝은 극관이 함께 보이는 화성의 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-09-28",
+        "prompt": "Use case: illustration-story. Create an original finished editorial astronomy cover illustration for ORBIT. EXACT wide 16:9 canvas, 1536x864 pixels or another exact 16:9 size at least1200x675. Edge-to-edge raster illustration. Sophisticated science magazine style: deep midnight navy #0B1423, softly shaded naturalistic celestial forms, restrained mint/cyan, warm cream/amber, subtle texture, sparse pinprick stars. Beautiful clear composition at thumbnail scale with generous margins. No text, numbers, labels, logos, watermarks, frame, panels or UI. An artistic editorial concept, not an actual observation photograph or precise diagram. Article question: is Mars entirely red? One dominant complete Mars globe centered slightly left, with broad visible rusty ochre dust, dark brown-grey basalt regions, a small pale polar ice cap and varied muted terrain. Raking sunlight gives the planet roundness, softly lit from upper left, shadow on lower right. Surface color variation should be the visual story, not a uniform red ball. Spacious clean navy background with just a few tiny stars. The whole planet fits with margins. No Earth, Venus, spacecraft, rings, oceans, vegetation, flames, giant geometric crater, or labels. Naturalistic editorial planetary portrait with fine restrained texture."
+      }
+    },
+    "why-planets-go-retrograde": {
+      "alt": "산 너머 별하늘에서 행성의 겉보기 위치가 되돌아가는 모습을 연속된 빛점으로 표현한 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-09-28",
+        "prompt": "Use case: illustration-story. Create an original finished editorial astronomy cover illustration for ORBIT. EXACT wide 16:9 canvas, 1536x864 pixels or another exact 16:9 size at least1200x675. Edge-to-edge raster illustration. Sophisticated science magazine style: deep midnight navy #0B1423, softly shaded naturalistic celestial forms, restrained mint/cyan, warm cream/amber, subtle texture, sparse pinprick stars. Beautiful clear composition at thumbnail scale with generous margins. No text, numbers, labels, logos, watermarks, frame, panels or UI. An artistic editorial concept, not an actual observation photograph or precise diagram. Article question: why do planets sometimes seem to move backward against the stars? Make an artistic time-composite of the night sky seen from Earth. Across the upper two thirds, a sequence of small warm orange Mars-like light points of slightly varying brightness traces a graceful shallow sideways loop against fixed sparse ivory background stars; one central orange point is subtly brighter. A very faint thin mint trace gently connects this sequence as a conceptual long-term observation overlay, not a physical orbit, ending openly on both sides. Along the bottom only a thin silhouette of a calm mountain ridge grounds the viewpoint on Earth. Mars points must appear as distant lights, not repeated huge planet balls. No Sun, orbital circles around a central body, arrows, numbers, map grid, exact constellations, diagrams, clocks, labels, or large planets. Quiet elegant observational concept rather than an instructional chart. Centered loop and its endpoints stay safely inside the image."
+      }
+    }
   },
   "articles": {
     "why-saturn-has-rings": "saturn-rings",
     "what-is-a-light-year": "light-year",
     "why-comet-tails-point-away": "comet-tails",
     "why-eyes-need-dark-adaptation": "night-observing",
-    "how-moonlight-affects-stargazing": "moon-phases",
+    "how-moonlight-affects-stargazing": "how-moonlight-affects-stargazing",
     "moon-face-and-phases": "moon-phases",
-    "seasonal-constellations-camping": "night-observing",
-    "iss-visible-at-dawn-and-dusk": "night-observing",
-    "are-shooting-stars-stars": "night-observing",
-    "why-stars-twinkle": "night-observing",
-    "cosmic-voids": "deep-space",
-    "why-stars-have-different-colors": "deep-space"
+    "seasonal-constellations-camping": "seasonal-constellations-camping",
+    "iss-visible-at-dawn-and-dusk": "iss-visible-at-dawn-and-dusk",
+    "are-shooting-stars-stars": "are-shooting-stars-stars",
+    "why-stars-twinkle": "why-stars-twinkle",
+    "cosmic-voids": "cosmic-voids",
+    "why-stars-have-different-colors": "why-stars-have-different-colors",
+    "is-mars-all-red": "is-mars-all-red",
+    "why-planets-go-retrograde": "why-planets-go-retrograde",
+    "why-venus-is-hottest": "planets",
+    "how-gravity-assists-work": "spaceflight"
   },
   "categories": {
     "달과 행성": "planets",
