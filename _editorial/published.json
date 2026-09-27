@@ -50,6 +50,11 @@
       "id": "iss-visible-at-dawn-and-dusk",
       "date": "2026-09-26",
       "contentHash": "f491c3e719ccb1e69885e1bb3066bda2c2f5403b3248b479033ba241bd3a700f"
+    },
+    {
+      "id": "why-stars-have-different-colors",
+      "date": "2026-09-27",
+      "contentHash": "9a0f1fcdee45fbb6db8498497ca4a65449a3f7e4c39e2e03a683776733f1ea11"
     }
   ]
 }
