@@ -8,6 +8,10 @@ import {chromium} from 'playwright';
 const root=fileURLToPath(new URL('..',import.meta.url));
 const seed=JSON.parse(await readFile(resolve(root,'_editorial/articles/moon-face-and-phases.json'),'utf8'));
 const ledger=JSON.parse(await readFile(resolve(root,'_editorial/published.json'),'utf8'));
+const images=JSON.parse(await readFile(resolve(root,'data/story-images.json'),'utf8'));
+const articles=await Promise.all(ledger.items.map(async item=>JSON.parse(await readFile(resolve(root,`_editorial/articles/${item.id}.json`),'utf8'))));
+const articlesById=new Map(articles.map(article=>[article.id,article]));
+const categories=['달과 행성','별과 우주','우주 탐사','관측 이야기'];
 const firstStory=[...ledger.items].sort((a,b)=>a.date.localeCompare(b.date))[0];
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.woff2':'font/woff2','.webp':'image/webp','.avif':'image/avif'};
 const server=createServer(async(req,res)=>{
@@ -20,6 +24,29 @@ await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const base=`http://127.0.0.1:${server.address().port}`;
 const browser=await chromium.launch();let count=0;
 const ok=(name,value)=>{assert.ok(value,name);count++;console.log('✓ '+name);};
+const storyId=href=>new URL(href,base).pathname.split('/').pop().replace(/\.html$/,'');
+const visibleStoryIds=page=>page.locator('[data-story-search]:visible').evaluateAll(rows=>rows.map(row=>row.querySelector('a[href]').getAttribute('href'))).then(hrefs=>hrefs.map(storyId));
+async function waitForCover(page,cover){
+ // Scrolling lazy srcset images into view can replace the pending source. Poll
+ // until the selected source finishes decoding rather than racing that change.
+ await page.waitForFunction(async img=>{
+  const src=img.currentSrc;
+  if(!src||!img.complete||!img.naturalWidth)return false;
+  try{await img.decode();return img.currentSrc===src&&img.complete&&img.naturalWidth>0;}
+  catch{return false;}
+ },await cover.elementHandle(),{timeout:5000});
+}
+function expectedStories(category='',query=''){
+ const needle=query.trim().toLocaleLowerCase('ko-KR');
+ return articles.filter(a=>(!category||a.category===category)&&[a.title,a.summary,a.category,...a.sections.flatMap(section=>section.paragraphs)].join(' ').toLocaleLowerCase('ko-KR').includes(needle)).map(a=>a.id).sort();
+}
+async function checkStoryResults(page,category='',query=''){
+ const visible=await visibleStoryIds(page),expected=expectedStories(category,query);
+ ok(`filter ${category||'전체'} / search ${query||'(empty)'} shows exactly the matching published stories`,JSON.stringify([...visible].sort())===JSON.stringify(expected)&&new Set(visible).size===visible.length);
+ const status=await page.locator('#storyCount').textContent();
+ ok('result status identifies category, search and exact count',status.includes(category||'전체')&&(!query||status.includes(query.trim()))&&new RegExp(`(?:^|\\D)${expected.length}편$`).test(status));
+ ok('only the chosen filter is pressed',await page.locator('.story-filter[aria-pressed="true"]').count()===1&&await page.locator('.story-filter[aria-pressed="true"]').getAttribute('data-story-category')===category);
+}
 async function fixture(options={}){
  const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',...options});
  const sent=[],errors=[];
@@ -63,7 +90,7 @@ try{
    ok(`${path} offers stories instead of note creation`,await page.locator('#sideNav a[href$="stories.html"]').count()===1&&await page.locator('#sideNav a[href$="notes.html"]').count()===0);
    if(path==='stories.html'){
     const cover=page.locator('.story-feature .story-cover');
-    await cover.evaluate(img=>img.decode());
+    await waitForCover(page,cover);
     const hero=await cover.boundingBox();
     const featureCopy=await page.locator('.story-feature-copy').boundingBox();
     const cards=await page.locator('.story-card').evaluateAll(els=>els.slice(0,2).map(el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height};}));
@@ -75,16 +102,53 @@ try{
     }
     ok(`cards use ${width<=600?'one':'two'} columns at ${width}px`,width<=600?Math.abs(cards[0].x-cards[1].x)<1&&cards[1].y>=cards[0].y+cards[0].height:Math.abs(cards[0].y-cards[1].y)<1&&cards[1].x>=cards[0].x+cards[0].width);
     ok('each published story has exactly one searchable cover',await page.locator('[data-story-search] .story-cover').count()===ledger.items.length&&await page.locator('.story-card').count()===ledger.items.length-1);
+    const listed=await visibleStoryIds(page);
+    ok('featured and regular cards list each published story exactly once',new Set(listed).size===ledger.items.length&&articles.every(a=>listed.includes(a.id)));
+    ok(`topic filters have readable touch targets at ${width}px`,await page.locator('.story-filter').evaluateAll(buttons=>buttons.length===5&&buttons.every(button=>{const r=button.getBoundingClientRect();return r.height>=44&&r.width>=44;})));
     for(const image of await page.locator('.story-card .story-cover').all()){
      await image.scrollIntoViewIfNeeded();
-     await image.evaluate(img=>img.decode());
+     await waitForCover(page,image);
     }
     ok('every local cover loads with meaningful alt text',await page.locator('.story-cover').evaluateAll(imgs=>imgs.every(img=>img.complete&&img.naturalWidth>0&&img.alt.length>0)));
     await page.evaluate(()=>scrollTo(0,0));
    }else if(path.startsWith('stories/')){
     const image=page.locator('.story-article-cover .story-cover');
-    await image.evaluate(img=>img.decode());
+    await waitForCover(page,image);
     ok(`${path} resolves its relative cover`,await image.evaluate(img=>img.naturalWidth>0)&&await page.locator('.story-article-cover figcaption').isVisible());
+    const article=articlesById.get(storyId(path));
+    const related=page.locator('.story-related-card');
+    const recommended=await related.evaluateAll(cards=>cards.map(card=>({href:card.getAttribute('href'),tag:card.tagName,tabIndex:card.tabIndex,title:card.querySelector('h3')?.textContent,summary:card.querySelector('.story-related-copy p')?.textContent,category:card.querySelector('.story-tag')?.textContent,nested:card.querySelectorAll('a,button,input').length})));
+    const recommendedIds=recommended.map(card=>storyId(card.href));
+    ok(`${path} recommends 2–3 distinct published stories without itself`,recommended.length>=2&&recommended.length<=3&&new Set(recommendedIds).size===recommended.length&&new Set(recommended.map(card=>card.title)).size===recommended.length&&recommended.every(card=>card.title!==article.title)&&recommendedIds.every(id=>id!==article.id&&articlesById.has(id)));
+    ok(`${path} gives each related card one complete, named keyboard link`,recommended.every(card=>card.tag==='A'&&card.tabIndex===0&&!card.nested&&card.title===articlesById.get(storyId(card.href)).title&&card.summary===articlesById.get(storyId(card.href)).summary)&&await related.evaluateAll(cards=>cards.every(card=>document.getElementById(card.getAttribute('aria-labelledby'))?.textContent===card.querySelector('h3').textContent)));
+    const sameCategory=articles.filter(a=>a.id!==article.id&&a.category===article.category).length;
+    ok(`${path} prioritizes the current category`,recommended.slice(0,Math.min(sameCategory,recommended.length)).every(card=>card.category===article.category));
+    for(const cover of await related.locator('.story-cover').all()){
+     await cover.scrollIntoViewIfNeeded();await waitForCover(page,cover);
+    }
+    ok(`${path} related covers load and cards stay within ${width}px`,await related.evaluateAll(cards=>cards.every(card=>{const img=card.querySelector('img'),r=card.getBoundingClientRect();return img?.naturalWidth>0&&img.alt.length>0&&r.left>=0&&r.right<=innerWidth+1;})));
+    const relatedColumns=width<=600?1:width<=1080?2:3;
+    ok(`${path} uses ${relatedColumns} readable related-card columns at ${width}px`,await related.evaluateAll((cards,columns)=>{const boxes=cards.map(card=>card.getBoundingClientRect());return boxes.filter(box=>Math.abs(box.y-boxes[0].y)<1).length===Math.min(columns,boxes.length);},relatedColumns));
+    const toolBox=await page.locator('.story-next').boundingBox(),relatedBox=await page.locator('.story-related').boundingBox();
+    ok(`${path} places recommendations below the observation connection`,relatedBox.y>=toolBox.y+toolBox.height);
+    if(width===390){
+     const key=images.articles[article.id]||images.categories[article.category];
+     const canonical=`https://orbithere.com/stories/${article.id}.html`,shareImage=`https://orbithere.com/images/stories/${key}-1200.webp`;
+     ok(`${path} title and canonical identify the article`,await page.title()===article.title+' | ORBIT'&&await page.locator('h1').textContent()===article.title&&await page.locator('link[rel="canonical"]').getAttribute('href')===canonical);
+     for(const [selector,expected] of [
+      ['meta[name="description"]',article.summary],['meta[property="og:title"]',article.title],['meta[property="og:description"]',article.summary],['meta[property="og:url"]',canonical],['meta[property="og:type"]','article'],
+      ['meta[property="og:image"]',shareImage],['meta[property="og:image:width"]','1200'],['meta[property="og:image:height"]','675'],['meta[property="og:image:type"]','image/webp'],['meta[property="og:image:alt"]',images.images[key].alt],
+      ['meta[name="twitter:card"]','summary_large_image'],['meta[name="twitter:title"]',article.title],['meta[name="twitter:description"]',article.summary],['meta[name="twitter:image"]',shareImage],['meta[name="twitter:image:alt"]',images.images[key].alt]
+     ])ok(`${path} has matching ${selector}`,await page.locator(selector).count()===1&&await page.locator(selector).getAttribute('content')===expected);
+     const schema=JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+     ok(`${path} structured data matches its article and cover`,schema.headline===article.title&&schema.description===article.summary&&schema.url===canonical&&schema.image===shareImage);
+     ok(`${path} serves the declared 1200px share image`,await page.evaluate(async path=>{const img=new Image();img.src=path;await img.decode();return img.naturalWidth===1200&&img.naturalHeight===675;},new URL(shareImage).pathname));
+    }
+    if(process.env.ORBIT_QA_DIR&&[390,1440].includes(width)&&article.id===firstStory.id){
+     await mkdir(process.env.ORBIT_QA_DIR,{recursive:true});await page.locator('.story-related').scrollIntoViewIfNeeded();
+     await page.screenshot({path:`${process.env.ORBIT_QA_DIR}/story-related-${width}.png`});
+    }
+    await page.evaluate(()=>scrollTo(0,0));
    }
    if(process.env.ORBIT_QA_DIR&&[390,1440].includes(width)){
     await mkdir(process.env.ORBIT_QA_DIR,{recursive:true});
@@ -214,16 +278,46 @@ try{
  {
   const {context,page,sent}=await fixture();
   await page.goto(base+'/stories.html');
+  const filters=page.getByRole('group',{name:'이야기 주제'}),search=page.getByRole('searchbox');
+  ok('all five topic choices have native button semantics',await filters.getByRole('button').allTextContents().then(labels=>JSON.stringify(labels)===JSON.stringify(['전체',...categories]))&&await filters.getByRole('button').evaluateAll(buttons=>buttons.every(button=>button.tagName==='BUTTON'&&button.type==='button'&&button.getAttribute('aria-controls')==='storyResults')));
+  ok('result changes have a polite, atomic status announcement',await page.locator('#storyCount').getAttribute('role')==='status'&&await page.locator('#storyCount').getAttribute('aria-live')==='polite'&&await page.locator('#storyCount').getAttribute('aria-atomic')==='true');
+  for(const category of ['',...categories]){
+   await filters.getByRole('button',{name:category||'전체',exact:true}).click();
+   await search.fill('');await checkStoryResults(page,category);
+   await search.fill('달');await checkStoryResults(page,category,'달');
+  }
+  await search.fill('');await filters.getByRole('button',{name:'전체',exact:true}).click();
+  await search.focus();await page.keyboard.press('Tab');
+  ok('Tab reaches the first filter after search',await filters.getByRole('button',{name:'전체',exact:true}).evaluate(button=>button===document.activeElement));
+  await page.keyboard.press('Tab');await page.keyboard.press('Space');
+  await checkStoryResults(page,categories[0]);
+  ok('keyboard-selected filter has visible focus',await page.locator('.story-filter:focus-visible').count()===1&&await page.locator('.story-filter:focus-visible').evaluate(button=>getComputedStyle(button).outlineStyle!=='none'));
+  await page.keyboard.press('Tab');await page.keyboard.press('Enter');await checkStoryResults(page,categories[1]);
+  await filters.getByRole('button',{name:'전체',exact:true}).click();
   const latestTitle=await page.locator('#latestStoryTitle').textContent();
-  await page.getByRole('searchbox').fill(latestTitle);
-  ok('latest story appears once when searched',await page.locator('[data-story-search]:visible').count()===1&&await page.locator('.story-feature').isVisible()&&(await page.locator('#storyCount').textContent())==='1편');
-  await page.getByRole('searchbox').fill('없는검색어-SEARCH-PRIVATE');
-  ok('no-match search explains the empty result',await page.locator('#storyEmpty').isVisible()&&!await page.locator('.story-feature').isVisible()&&(await page.locator('#storyCount').textContent())==='0편');
-  await page.getByRole('searchbox').fill('달과 행성');
+  const latestCategory=await page.locator('.story-feature').getAttribute('data-story-category');
+  await search.fill(latestTitle);await checkStoryResults(page,'',latestTitle);
+  ok('latest story appears once when searched, without an empty grid',await page.locator('[data-story-search]:visible').count()===1&&await page.locator('.story-feature').isVisible()&&!await page.locator('.story-grid').isVisible());
+  await filters.getByRole('button',{name:latestCategory,exact:true}).click();await checkStoryResults(page,latestCategory,latestTitle);
+  const otherCategory=categories.find(category=>category!==latestCategory);
+  await filters.getByRole('button',{name:otherCategory,exact:true}).click();await checkStoryResults(page,otherCategory,latestTitle);
+  ok('featured story is excluded when only its search text matches',!await page.locator('.story-feature').isVisible()&&await page.locator('#storyEmpty').isVisible());
+  const regular=articles.find(article=>article.category===otherCategory);
+  await search.fill(regular.title);await checkStoryResults(page,otherCategory,regular.title);
+  ok('a matching regular card remains when the feature does not match',await page.locator('.story-card:visible').count()===1&&!await page.locator('.story-feature').isVisible());
+  if(process.env.ORBIT_QA_DIR){
+   await mkdir(process.env.ORBIT_QA_DIR,{recursive:true});await page.evaluate(()=>scrollTo(0,0));
+   await page.screenshot({path:`${process.env.ORBIT_QA_DIR}/story-filter-search-390.png`,fullPage:true});
+  }
+  await search.fill('없는검색어-SEARCH-PRIVATE');await checkStoryResults(page,otherCategory,'없는검색어-SEARCH-PRIVATE');
+  ok('no-match search explains both the chosen topic and query',await page.locator('#storyEmpty').isVisible()&&!await page.locator('.story-feature').isVisible()&&(await page.locator('#storyEmptyMessage').textContent()).includes(otherCategory)&&(await page.locator('#storyEmptyMessage').textContent()).includes('없는검색어-SEARCH-PRIVATE'));
+  await page.getByRole('button',{name:'검색과 분류 초기화',exact:true}).click();await checkStoryResults(page);
+  ok('empty state reset clears both controls and returns focus to search',await search.inputValue()===''&&!await page.locator('#storyEmpty').isVisible()&&await search.evaluate(input=>input===document.activeElement));
+  await search.fill('달과 행성');
   ok('category words find stories',await page.locator('[data-story-search]:visible').count()>=1);
-  await page.getByRole('searchbox').fill('동주기');
+  await search.fill('동주기');
   ok('full article text is searchable',await page.locator('[data-story-search]:visible').count()>=1);
-  await page.getByRole('searchbox').fill('');
+  await search.fill('');
   await page.locator('.story-row').getByRole('link',{name:seed.title+' 읽기',exact:true}).click();
   await page.locator('.story-article').waitFor();
   ok('list opens a readable standalone article',await page.locator('.story-body section').count()===seed.sections.length&&await page.locator('.story-sources li').count()===seed.sources.length);
@@ -243,13 +337,29 @@ try{
   await context.close();
  }
  {
+  const {context,page}=await fixture();
+  await page.goto(base+`/stories/${firstStory.id}.html`);
+  const related=page.locator('.story-related-card');
+  await page.locator('.story-sources a').last().focus();await page.keyboard.press('Tab');
+  ok('Tab reaches the related whole-card link after the article references',await related.first().evaluate(link=>link===document.activeElement));
+  await page.keyboard.press('Tab');
+  ok('one Tab advances to the next card with a visible focus outline',await related.nth(1).evaluate(link=>link===document.activeElement&&link.matches(':focus-visible')&&getComputedStyle(link).outlineStyle!=='none'));
+  const destination=await related.nth(1).getAttribute('href');await page.keyboard.press('Enter');await page.waitForURL(base+'/stories/'+destination);
+  ok('keyboard activation opens the recommended article',await page.locator('h1').textContent()===articlesById.get(storyId(destination)).title);
+  await page.goBack();
+  await related.first().locator('.story-cover').click();
+  ok('the related cover itself opens its article',await page.locator('h1').textContent()!==articlesById.get(firstStory.id).title&&new URL(page.url()).pathname.startsWith('/stories/'));
+  await context.close();
+ }
+ {
   const {context,page}=await fixture({javaScriptEnabled:false});
   await page.goto(base+'/index.html');
   ok('no-JS landing keeps a readable story and archive link',await page.locator('[data-story-original] .story-belt-card').first().isVisible()&&await page.locator('.story-belt .story-teaser-all').isVisible()&&await page.locator('.story-belt button').count()===0);
   await page.goto(base+'/stories.html');
-  ok('stories work without JavaScript',await page.getByRole('link',{name:'이야기 읽기',exact:true}).isVisible()&&!await page.locator('.story-search').isVisible());
+  ok('stories work without JavaScript',await page.getByRole('link',{name:'이야기 읽기',exact:true}).isVisible()&&!await page.locator('.story-search').isVisible()&&!await page.locator('.story-filters').isVisible());
   await page.getByRole('link',{name:'이야기 읽기',exact:true}).click();
   ok('article body and sources are static HTML',await page.locator('.story-body').isVisible()&&await page.locator('.story-sources li').count()>=1);
+  ok('related stories are available without JavaScript',await page.locator('.story-related-card').count()>=2&&await page.locator('.story-related-card').first().isVisible());
   await context.close();
  }
  {
