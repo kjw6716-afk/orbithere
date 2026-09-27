@@ -61,6 +61,31 @@ try{
    await page.goto(base+'/'+path);await page.locator('.orbit-navigation.enhanced').waitFor();
    ok(`${path} fits ${width}px`,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
    ok(`${path} offers stories instead of note creation`,await page.locator('#sideNav a[href$="stories.html"]').count()===1&&await page.locator('#sideNav a[href$="notes.html"]').count()===0);
+   if(path==='stories.html'){
+    const cover=page.locator('.story-feature .story-cover');
+    await cover.evaluate(img=>img.decode());
+    const hero=await cover.boundingBox();
+    const featureCopy=await page.locator('.story-feature-copy').boundingBox();
+    const cards=await page.locator('.story-card').evaluateAll(els=>els.slice(0,2).map(el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height};}));
+    ok(`hero keeps its wide image at ${width}px`,Math.abs(hero.width/hero.height-16/9)<0.01&&await cover.evaluate(img=>img.naturalWidth>0&&img.alt.length>0));
+    ok(`feature copy fits ${width>=1200?'beside':'below'} its image at ${width}px`,width>=1200?hero.x+hero.width<=featureCopy.x+1:hero.y+hero.height<=featureCopy.y+1);
+    if(width>=1200){
+     const headline=await page.locator('#latestStoryTitle').boundingBox();
+     ok('desktop headline appears in the first viewport',headline.y+headline.height<900);
+    }
+    ok(`cards use ${width<=600?'one':'two'} columns at ${width}px`,width<=600?Math.abs(cards[0].x-cards[1].x)<1&&cards[1].y>=cards[0].y+cards[0].height:Math.abs(cards[0].y-cards[1].y)<1&&cards[1].x>=cards[0].x+cards[0].width);
+    ok('each published story has exactly one searchable cover',await page.locator('[data-story-search] .story-cover').count()===ledger.items.length&&await page.locator('.story-card').count()===ledger.items.length-1);
+    for(const image of await page.locator('.story-card .story-cover').all()){
+     await image.scrollIntoViewIfNeeded();
+     await image.evaluate(img=>img.decode());
+    }
+    ok('every local cover loads with meaningful alt text',await page.locator('.story-cover').evaluateAll(imgs=>imgs.every(img=>img.complete&&img.naturalWidth>0&&img.alt.length>0)));
+    await page.evaluate(()=>scrollTo(0,0));
+   }else if(path.startsWith('stories/')){
+    const image=page.locator('.story-article-cover .story-cover');
+    await image.evaluate(img=>img.decode());
+    ok(`${path} resolves its relative cover`,await image.evaluate(img=>img.naturalWidth>0)&&await page.locator('.story-article-cover figcaption').isVisible());
+   }
    if(process.env.ORBIT_QA_DIR&&[390,1440].includes(width)){
     await mkdir(process.env.ORBIT_QA_DIR,{recursive:true});
     await page.screenshot({path:`${process.env.ORBIT_QA_DIR}/${path.replaceAll('/','-')}-${width}.png`,fullPage:path==='stories.html'});
@@ -189,14 +214,17 @@ try{
  {
   const {context,page,sent}=await fixture();
   await page.goto(base+'/stories.html');
+  const latestTitle=await page.locator('#latestStoryTitle').textContent();
+  await page.getByRole('searchbox').fill(latestTitle);
+  ok('latest story appears once when searched',await page.locator('[data-story-search]:visible').count()===1&&await page.locator('.story-feature').isVisible()&&(await page.locator('#storyCount').textContent())==='1편');
   await page.getByRole('searchbox').fill('없는검색어-SEARCH-PRIVATE');
-  ok('no-match search explains the empty result',await page.locator('#storyEmpty').isVisible()&&(await page.locator('#storyCount').textContent())==='0편');
+  ok('no-match search explains the empty result',await page.locator('#storyEmpty').isVisible()&&!await page.locator('.story-feature').isVisible()&&(await page.locator('#storyCount').textContent())==='0편');
   await page.getByRole('searchbox').fill('달과 행성');
   ok('category words find stories',await page.locator('[data-story-search]:visible').count()>=1);
   await page.getByRole('searchbox').fill('동주기');
   ok('full article text is searchable',await page.locator('[data-story-search]:visible').count()>=1);
   await page.getByRole('searchbox').fill('');
-  await page.locator('.story-row').getByRole('link',{name:seed.title,exact:true}).click();
+  await page.locator('.story-row').getByRole('link',{name:seed.title+' 읽기',exact:true}).click();
   await page.locator('.story-article').waitFor();
   ok('list opens a readable standalone article',await page.locator('.story-body section').count()===seed.sections.length&&await page.locator('.story-sources li').count()===seed.sources.length);
   const src=await page.locator('.story-sources li a').first().getAttribute('href');
@@ -219,8 +247,8 @@ try{
   await page.goto(base+'/index.html');
   ok('no-JS landing keeps a readable story and archive link',await page.locator('[data-story-original] .story-belt-card').first().isVisible()&&await page.locator('.story-belt .story-teaser-all').isVisible()&&await page.locator('.story-belt button').count()===0);
   await page.goto(base+'/stories.html');
-  ok('stories work without JavaScript',await page.getByRole('link',{name:'이야기 읽기'}).isVisible()&&!await page.locator('.story-search').isVisible());
-  await page.getByRole('link',{name:'이야기 읽기'}).click();
+  ok('stories work without JavaScript',await page.getByRole('link',{name:'이야기 읽기',exact:true}).isVisible()&&!await page.locator('.story-search').isVisible());
+  await page.getByRole('link',{name:'이야기 읽기',exact:true}).click();
   ok('article body and sources are static HTML',await page.locator('.story-body').isVisible()&&await page.locator('.story-sources li').count()>=1);
   await context.close();
  }

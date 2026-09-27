@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "notice": "표지 이미지는 AI로 만든 주제별 편집 삽화입니다. 실제 관측 사진과 구분해 감상해주세요.",
+  "images": {
+    "saturn-rings": {"alt": "고리가 펼쳐진 토성을 그린 우주 편집 삽화"},
+    "light-year": {"alt": "먼 별에서 빛이 건너오는 우주를 표현한 편집 삽화"},
+    "comet-tails": {"alt": "어두운 우주를 가로지르는 혜성과 꼬리의 편집 삽화"},
+    "night-observing": {"alt": "별이 빛나는 밤하늘과 관측 풍경을 그린 편집 삽화"},
+    "moon-phases": {"alt": "달의 밝은 면과 여러 위상을 표현한 편집 삽화"},
+    "deep-space": {"alt": "별과 은하가 펼쳐진 깊은 우주를 표현한 편집 삽화"},
+    "planets": {"alt": "우주에 떠 있는 행성의 모습을 그린 편집 삽화"},
+    "spaceflight": {"alt": "행성 곁을 비행하는 우주 탐사선을 그린 편집 삽화"}
+  },
+  "articles": {
+    "why-saturn-has-rings": "saturn-rings",
+    "what-is-a-light-year": "light-year",
+    "why-comet-tails-point-away": "comet-tails",
+    "why-eyes-need-dark-adaptation": "night-observing",
+    "how-moonlight-affects-stargazing": "moon-phases",
+    "moon-face-and-phases": "moon-phases",
+    "seasonal-constellations-camping": "night-observing",
+    "iss-visible-at-dawn-and-dusk": "night-observing",
+    "are-shooting-stars-stars": "night-observing",
+    "why-stars-twinkle": "night-observing",
+    "cosmic-voids": "deep-space",
+    "why-stars-have-different-colors": "deep-space"
+  },
+  "categories": {
+    "달과 행성": "planets",
+    "별과 우주": "deep-space",
+    "우주 탐사": "spaceflight",
+    "관측 이야기": "night-observing"
+  }
+}

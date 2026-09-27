@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "images": {
+    "c90de238e618819e": {
+      "src": "/images/news/bepicolombo-mercury-welcome.webp",
+      "alt": "수성에 다가가며 손을 흔드는 Bepi와 Mio 캐릭터가 담긴 ESA의 BepiColombo 환영 행사 공식 일러스트",
+      "credit": "ESA · Acknowledgements: Design & Data GmbH · CC BY-SA 3.0 IGO",
+      "sourceUrl": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo/Win_a_trip_to_ESA_to_witness_BepiColombo_arrive_at_Mercury",
+      "kind": "visualization",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/igo/"
+    },
+    "0040b4ad2fba9cc6": {
+      "src": "/images/news/nisar-kamchatka-volcano.webp",
+      "alt": "NISAR 레이더 관측으로 만든 캄차카 크라셰닌니코프 화산과 용암 흐름 시각화",
+      "credit": "NASA’s Scientific Visualization Studio",
+      "sourceUrl": "https://www.nasa.gov/missions/nisar/us-india-satellite-captures-time-lapse-video-of-volcanic-eruption/",
+      "kind": "visualization",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+    },
+    "89cffd08a80b28f1": {
+      "src": "/images/news/juice-earth-flyby.webp",
+      "alt": "지구 곁을 지나가는 Juice 탐사선과 비행 경로를 그린 ESA의 공식 렌더링",
+      "credit": "© European Space Agency · CC BY-SA 3.0 IGO",
+      "sourceUrl": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Juice_to_fly_past_Earth_for_third_gravity_assist",
+      "kind": "visualization",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/igo/"
+    },
+    "a7121263bf60a3eb": {
+      "src": "/images/news/hubble-ngc-4698.webp",
+      "alt": "허블이 관측한 밝은 중심부와 붉은 먼지 띠를 가진 나선은하 NGC 4698",
+      "credit": "ESA/Hubble & NASA, D. Thilker, the MAUVE-HST Team · CC BY 4.0",
+      "sourceUrl": "https://www.esa.int/ESA_Multimedia/Images/2026/09/A_galaxy_spinning_out_of_sync",
+      "kind": "photo",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "99f40581eed35fd5": {
+      "src": "/images/news/earth-center-of-mass.webp",
+      "alt": "내부 단면을 드러낸 지구 모형으로 질량중심을 설명하는 NASA의 공식 시각화",
+      "credit": "NASA’s Scientific Visualization Studio",
+      "sourceUrl": "https://www.nasa.gov/science-research/earth-science/nasa-watches-earths-weight-finds-center-of-mass/",
+      "kind": "visualization",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+    },
+    "58b1e077a564609b": {
+      "src": "/images/news/mars-thyles-rupes.webp",
+      "alt": "Mars Express HRSC가 관측한 화성 남극 부근 Thyles Rupes의 보랏빛 절벽과 얼음 지형",
+      "credit": "© ESA/DLR/FU Berlin · CC BY-SA 3.0 IGO",
+      "sourceUrl": "https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Purple_swirls_on_the_Red_Planet",
+      "kind": "photo",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/igo/"
+    },
+    "3df2eabd436d73bc": {
+      "src": "/images/news/webb-ic-348.webp",
+      "alt": "웹 우주망원경 NIRCam이 근적외선으로 관측한 IC 348의 별과 가스·먼지 구름",
+      "credit": "ESA/Webb, NASA, CSA, K. Luhman, C. Alves De Oliveira, M. Zamani (ESA/Webb) · CC BY 4.0",
+      "sourceUrl": "https://www.esa.int/Science_Exploration/Space_Science/Webb/Webb_reveals_stunning_panorama_of_star_formation",
+      "kind": "photo",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  }
+}
