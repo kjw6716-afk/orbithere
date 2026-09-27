@@ -537,6 +537,146 @@ try {
     if(process.env.ORBIT_QA_DIR) await p.screenshot({path:process.env.ORBIT_QA_DIR+'/news-mobile.png'});
     await f.close();
   }
+  {
+    const f = await open(1440, "reduce"), p = f.page;
+    // Freeze before navigation so the five-minute boundary is deterministic.
+    await p.clock.pauseAt(new Date(Date.now() + 1000));
+    await p.goto(base + "/news.html#rocketlab");
+    const article = p.locator(".news-article").first();
+    await article.locator(".news-summary-toggle").waitFor();
+    const articleId = await article.getAttribute("id");
+    await article.locator(".news-summary-toggle").click();
+    await article.locator(".news-original > summary").click();
+    await article.locator(".news-summary-toggle").focus();
+    await article.evaluate(el => { window.refreshArticle = el; });
+    const originalChecked = await p.locator("#newsChecked").textContent();
+    const originalScroll = await p.evaluate(() => scrollY);
+    const initialRequests = f.state.requests;
+    f.state.data.checkedAt = new Date(Date.parse(f.state.data.checkedAt) + 3600000).toISOString();
+    await p.clock.runFor(299999);
+    ok("news does not refetch before five minutes", f.state.requests === initialRequests);
+    await p.clock.runFor(1);
+    await p.waitForFunction(previous => document.querySelector("#newsChecked").textContent !== previous, originalChecked);
+    ok("five-minute refresh updates the check time without replacing unchanged articles",
+      f.state.requests === initialRequests + 1 &&
+      await p.evaluate(id => window.refreshArticle === document.getElementById(id), articleId));
+    ok("unchanged refresh retains expanded summary, original title, focus and scroll",
+      await p.evaluate(({id, y}) => {
+        const row = document.getElementById(id);
+        return row.querySelector(".news-summary-toggle").getAttribute("aria-expanded") === "true" &&
+          row.querySelector(".news-original").open &&
+          document.activeElement === row.querySelector(".news-summary-toggle") && Math.abs(scrollY - y) < 2;
+      }, {id: articleId, y: originalScroll}));
+
+    const beforeTop = await p.locator("#" + articleId).evaluate(el => el.getBoundingClientRect().top);
+    const added = {
+      id: "abcdef0123456789", source: "rocketlab", language: "en",
+      title: "Refresh regression: a new Rocket Lab mission",
+      url: "https://rocketlabcorp.com/updates/refresh-regression/",
+      publishedAt: new Date(Date.parse(f.state.data.items[0].publishedAt) + 86400000).toISOString(),
+    };
+    f.state.data.items.unshift(added);
+    f.state.data.checkedAt = new Date(Date.parse(f.state.data.checkedAt) + 3600000).toISOString();
+    await p.clock.runFor(300000);
+    await p.locator("#article-" + added.id).waitFor();
+    ok("new headlines retain the selected source and the reader's expanded article and focus",
+      await p.evaluate(id => {
+        const row = document.getElementById(id);
+        return location.hash === "#rocketlab" &&
+          document.querySelector('[data-source="rocketlab"]').getAttribute("aria-current") === "page" &&
+          row.querySelector(".news-summary-toggle").getAttribute("aria-expanded") === "true" &&
+          row.querySelector(".news-original").open &&
+          document.activeElement === row.querySelector(".news-summary-toggle");
+      }, articleId));
+    ok("inserting a headline preserves the reading position",
+      Math.abs(await p.locator("#" + articleId).evaluate(el => el.getBoundingClientRect().top) - beforeTop) < 3);
+
+    const healthyChecked = await p.locator("#newsChecked").textContent();
+    const healthyCount = await p.locator(".news-article").count();
+    f.state.fail = true;
+    await p.clock.runFor(300000);
+    await p.locator("#newsStatus").filter({hasText: "불러오지 못했어요"}).waitFor();
+    ok("failed background refresh retains the previous news and successful check time",
+      await p.locator(".news-article").count() === healthyCount &&
+      await p.locator("#newsChecked").textContent() === healthyChecked);
+    f.state.fail = false;
+    f.state.data.checkedAt = new Date(Date.parse(f.state.data.checkedAt) + 3600000).toISOString();
+    await p.clock.runFor(300000);
+    await p.waitForFunction(previous => document.querySelector("#newsChecked").textContent !== previous, healthyChecked);
+    ok("the next five-minute refresh recovers without reloading the page",
+      !((await p.locator("#newsStatus").textContent()).includes("불러오지 못했어요")) &&
+      await p.locator(".news-article").count() === healthyCount);
+    await f.close();
+  }
+  {
+    const f = await open(1440), p = f.page;
+    await p.clock.pauseAt(new Date(Date.now() + 1000));
+    await p.goto(base + "/main.html#planets");
+    await p.locator(".news-brief-title").first().waitFor();
+    await p.locator("[data-news-next]").click();
+    await settle(p);
+    await p.evaluate(() => document.activeElement.blur());
+    await p.mouse.move(0, 0);
+    const current = await p.locator(".news-brief-title").first().getAttribute("href");
+    await p.locator(".news-brief-item").first().evaluate(el => { window.refreshBriefRow = el; });
+    const checked = await p.locator(".news-brief-updated").textContent();
+    f.state.data.checkedAt = new Date(Date.parse(f.state.data.checkedAt) + 3600000).toISOString();
+    await p.clock.runFor(300000);
+    await p.waitForFunction(previous => document.querySelector(".news-brief-updated").textContent !== previous, checked);
+    ok("sidebar refresh retains the current headline, existing row and explicit pause",
+      await p.locator(".news-brief-title").first().getAttribute("href") === current &&
+      await p.evaluate(() => window.refreshBriefRow === document.querySelector(".news-brief-item")) &&
+      await p.locator("[data-news-toggle]").getAttribute("aria-label") === "뉴스 자동 전환 재생");
+
+    const beforeHidden = f.state.requests;
+    await p.evaluate(() => {
+      Object.defineProperty(document, "hidden", {configurable: true, value: true});
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await p.clock.runFor(600000);
+    ok("hidden tabs do not poll the news feed", f.state.requests === beforeHidden);
+    const beforeReturn = await p.locator(".news-brief-updated").textContent();
+    f.state.data.checkedAt = new Date(Date.parse(f.state.data.checkedAt) + 3600000).toISOString();
+    await p.evaluate(() => {
+      Object.defineProperty(document, "hidden", {configurable: true, value: false});
+      document.dispatchEvent(new Event("visibilitychange"));
+      window.dispatchEvent(new Event("pageshow"));
+    });
+    await p.clock.runFor(10);
+    await p.waitForFunction(previous => document.querySelector(".news-brief-updated").textContent !== previous, beforeReturn);
+    ok("returning to an overdue tab catches up once despite repeated resume events",
+      f.state.requests === beforeHidden + 1);
+
+    await p.locator(".news-brief-title").first().focus();
+    const focusedRequests = f.state.requests;
+    const beforeFocusRefresh = await p.locator(".news-brief-updated").textContent();
+    f.state.data.checkedAt = new Date(Date.parse(f.state.data.checkedAt) + 3600000).toISOString();
+    await p.clock.runFor(300000);
+    ok("sidebar refresh waits while a reader has keyboard focus in the panel",
+      f.state.requests === focusedRequests &&
+      await p.locator(".news-brief-title").first().evaluate(el => el === document.activeElement));
+    await p.evaluate(() => document.activeElement.blur());
+    await p.clock.runFor(10);
+    await p.waitForFunction(previous => document.querySelector(".news-brief-updated").textContent !== previous, beforeFocusRefresh);
+    ok("leaving the focused panel catches up without moving the paused headline",
+      f.state.requests === focusedRequests + 1 &&
+      await p.locator(".news-brief-title").first().getAttribute("href") === current &&
+      await p.locator("[data-news-toggle]").getAttribute("aria-label") === "뉴스 자동 전환 재생");
+    const currentItem = f.state.data.items.find(item => current.endsWith("article-" + item.id));
+    f.state.data.items.unshift({
+      ...currentItem, id: "abcdef0123456790", title: "A newly collected headline",
+      url: currentItem.url.split("#")[0] + "#refresh-regression",
+      publishedAt: new Date(Date.parse(f.state.data.items[0].publishedAt) + 86400000).toISOString(),
+    });
+    const beforeNewItem = await p.locator(".news-brief-updated").textContent();
+    f.state.data.checkedAt = new Date(Date.parse(f.state.data.checkedAt) + 3600000).toISOString();
+    await p.clock.runFor(300000);
+    await p.waitForFunction(previous => document.querySelector(".news-brief-updated").textContent !== previous, beforeNewItem);
+    ok("changed sidebar items preserve the current article by identity and stay paused",
+      await p.locator(".news-brief-title").first().getAttribute("href") === current &&
+      await p.locator("[data-news-toggle]").getAttribute("aria-label") === "뉴스 자동 전환 재생");
+    await f.close();
+  }
   console.log(`News discovery: ${checks} checks passed`);
 } finally {
   await browser.close();

@@ -184,6 +184,37 @@
       clearTimeout(timer);
     }
   }
+  // Poll only while the reader can see this surface. Resume overdue checks on
+  // return; the caller can also wake the timer when its panel becomes visible.
+  function autoRefresh(refresh, isActive) {
+    var interval = 5 * 60 * 1000, lastAttempt = Date.now(), timer,
+      busy = false, suspended = false;
+    function active() {
+      return !suspended && !document.hidden && (!isActive || isActive());
+    }
+    function check() {
+      clearTimeout(timer);
+      if (busy || !active()) return;
+      timer = setTimeout(async function () {
+        if (!active()) return;
+        busy = true;
+        lastAttempt = Date.now();
+        try { await refresh(); }
+        finally { busy = false; check(); }
+      }, Math.max(0, interval - (Date.now() - lastAttempt)));
+    }
+    document.addEventListener("visibilitychange", check);
+    window.addEventListener("pagehide", function () {
+      suspended = true;
+      clearTimeout(timer);
+    });
+    window.addEventListener("pageshow", function () {
+      suspended = false;
+      check();
+    });
+    check();
+    return check;
+  }
   window.OrbitNews = Object.freeze({
     sources: sources,
     companies: companies,
@@ -199,5 +230,6 @@
     loadSummaries: loadSummaries,
     stale: stale,
     load: load,
+    autoRefresh: autoRefresh,
   });
 })();

@@ -54,7 +54,9 @@
     visible = false,
     loading = false;
   var attempted = false,
-    pointerPlay = null;
+    pointerPlay = null,
+    itemSignature = "",
+    pendingData = null;
   function shown() {
     return root.getClientRects().length > 0;
   }
@@ -189,7 +191,47 @@
     animation.onfinish = function () { render(manual); };
     schedule();
   }
-  async function load() {
+  function applyData(data) {
+    var freshItems = news.briefItems(data), signature = JSON.stringify(freshItems);
+    var changed = signature !== itemSignature;
+    if (changed) {
+      clearMotion();
+      var current = items[index];
+      items = freshItems;
+      index = Math.max(0, items.findIndex(function (item) { return current && item.id === current.id; }));
+      itemSignature = signature;
+    }
+    var checkedAt = new Date(data.checkedAt);
+    updated.hidden = !Number.isFinite(checkedAt.getTime());
+    if (!updated.hidden) updated.textContent = checkedAt.toLocaleString("ko-KR", {
+      timeZone: "Asia/Seoul", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false,
+    }) + " 확인 · 한국 시간";
+    var stale = Object.keys(news.sources).some(function (id) {
+      return news.stale(
+        data.sources.find(function (s) {
+          return s.id === id;
+        }),
+      );
+    });
+    notice.hidden = items.length > 0 && !stale;
+    notice.textContent = !items.length
+      ? "아직 가져온 소식이 없어요."
+      : "일부 출처의 갱신이 늦어져 저장된 소식을 표시해요.";
+    retry.hidden = true;
+    if (changed) render(false);
+  }
+  function canRefresh() {
+    return attempted && visible && shown() && !hovered && !root.contains(document.activeElement);
+  }
+  function refreshWhenActive() {
+    if (pendingData && !document.hidden && canRefresh()) {
+      var data = pendingData;
+      pendingData = null;
+      applyData(data);
+    }
+    checkRefresh();
+  }
+  async function load(background) {
     if (loading) return;
     attempted = true;
     loading = true;
@@ -197,27 +239,9 @@
     root.setAttribute("aria-busy", "true");
     try {
       var data = await news.load();
-      clearMotion();
-      items = news.briefItems(data);
-      var checkedAt = new Date(data.checkedAt);
-      updated.hidden = !Number.isFinite(checkedAt.getTime());
-      if (!updated.hidden) updated.textContent = checkedAt.toLocaleString("ko-KR", {
-        timeZone: "Asia/Seoul", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false,
-      }) + " 확인 · 한국 시간";
-      index = 0;
-      var stale = Object.keys(news.sources).some(function (id) {
-        return news.stale(
-          data.sources.find(function (s) {
-            return s.id === id;
-          }),
-        );
-      });
-      notice.hidden = items.length > 0 && !stale;
-      notice.textContent = !items.length
-        ? "아직 가져온 소식이 없어요."
-        : "일부 출처의 갱신이 늦어져 저장된 소식을 표시해요.";
-      retry.hidden = true;
-      render(false);
+      // A reader may enter the rail while the request is in flight.
+      if (background === true && (document.hidden || !canRefresh())) pendingData = data;
+      else { pendingData = null; applyData(data); }
     } catch (e) {
       notice.hidden = false;
       notice.textContent = items.length
@@ -239,10 +263,15 @@
   root.addEventListener("pointerleave", function () {
     hovered = false;
     schedule();
+    refreshWhenActive();
   });
   root.addEventListener("focusin", function () {
     focusPaused = true;
     schedule();
+  });
+  root.addEventListener("focusout", function () {
+    // The active element changes after focusout has finished dispatching.
+    setTimeout(refreshWhenActive, 0);
   });
   // Focus pauses persist until an explicit play action, so tabbing away never
   // silently restarts a carousel that the reader was using.
@@ -276,11 +305,13 @@
     schedule();
   });
   document.addEventListener("visibilitychange", schedule);
+  document.addEventListener("visibilitychange", refreshWhenActive);
   window.addEventListener("pagehide", function () {
     clearTimeout(timer);
     if (animation) animation.pause();
   });
   window.addEventListener("pageshow", schedule);
+  window.addEventListener("pageshow", refreshWhenActive);
   // Changing only the viewport height does not resize the rail until we render.
   window.addEventListener("resize", function () {
     if (shown() && capacity() !== size) render(false);
@@ -289,10 +320,13 @@
     if (shown() && capacity() !== size) render(false);
     if (shown() && !attempted) load();
     schedule();
+    refreshWhenActive();
   }).observe(root);
   new IntersectionObserver(function (entries) {
     visible = entries[0].isIntersecting;
     if (visible && !attempted) load();
     schedule();
+    refreshWhenActive();
   }).observe(root);
+  var checkRefresh = news.autoRefresh(function () { return load(true); }, canRefresh);
 })();

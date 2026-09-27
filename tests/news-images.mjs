@@ -30,8 +30,9 @@ const mapping={version:1,images:Object.fromEntries(items.slice(0,2).map((item,i)
   sourceUrl:item.url,kind:i?'visualization':'photo',
   ...(i?{licenseUrl:'https://creativecommons.org/licenses/by-sa/3.0/igo/'}:{}),
 }]))};
+// Keep enough valid summary text to exceed three lines at the desktop width too.
 const summaries={version:1,items:items.map(item=>({...item,titleOriginal:item.title,method:'source-checked',
-  checkedAt:'2026-09-27',summaryKo:['공식 자료를 바탕으로 정리한 첫 번째 관측 내용입니다. '.repeat(3).trim(),'관측 결과의 자세한 설명은 공식 원문에서 확인할 수 있습니다. '.repeat(3).trim()]}))};
+  checkedAt:'2026-09-27',summaryKo:['공식 자료를 바탕으로 정리한 첫 번째 관측 내용입니다. '.repeat(6).trim(),'관측 결과의 자세한 설명은 공식 원문에서 확인할 수 있습니다. '.repeat(6).trim()]}))};
 const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jBzEAAAAASUVORK5CYII=','base64');
 let checks=0;
 function ok(name,value=true){assert.ok(value,name);checks++;console.log('✓ '+name);}
