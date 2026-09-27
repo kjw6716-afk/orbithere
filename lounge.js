@@ -601,8 +601,10 @@
   }
   function navigate(href, replace, successMessage) {
     if (!canLeave()) return;
+    // A pending list has no completed result to restore. Returning must reload
+    // it because this navigation invalidates the in-flight response's route.
     if (view === 'list')
-      cache = {
+      cache = listBusy ? null : {
         key: activity + '|' + channel + '|' + query,
         posts: posts.slice(),
         more: more,
