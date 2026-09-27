@@ -5,6 +5,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { join, dirname, extname, resolve, sep } from 'node:path';
 import { chromium } from 'playwright';
+import { boardDetailEditRegressions } from './board-detail-edit-cases.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const types = {
   '.html': 'text/html',
@@ -124,6 +125,7 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
     logins: 0,
     postIds: [],
     inserts: 0,
+    edits: [],
     selects: [],
     delays: {},
     uploads: [],
@@ -244,6 +246,15 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
       return json(ids.length);
     }
     if (url.pathname.endsWith('/rpc/record_visit')) return json(null);
+    if (url.pathname.endsWith('/rpc/board_edit_post')) {
+      const b = req.postDataJSON(), p = state.posts.find(p => p.id === b.p_id);
+      state.edits.push({actor, ...b});
+      if (!p || p.author_id !== actor || !state.auth || state.auth.user.is_anonymous)
+        return json({code:'42501',message:'post_edit_forbidden'},403);
+      if (state.editFail) return json({message:'isolated edit unavailable'},503);
+      Object.assign(p,{title:b.p_title,text:b.p_text,orbit:b.p_orbit,observation:b.p_observation,edited_at:now()});
+      return json(p.id);
+    }
     if (url.pathname.endsWith('/rpc/board_posts')) {
       const b = req.postDataJSON();
       state.boardCalls.push(b);
@@ -843,6 +854,7 @@ async function identityRegressions() {
 }
 
 try {
+  await boardDetailEditRegressions({fixture,base,A,B,P,uid,now,ok});
   await identityRegressions();
   {
     const f = await fixture(), {page, state} = f;
@@ -1629,7 +1641,7 @@ try {
     );
     await page.getByRole('link', { name: '오래된 토성 기록', exact: true }).click();
     await page.locator('.detail-body').waitFor();
-    await page.getByRole('button', { name: '글 공유', exact: true }).click();
+    await page.getByRole('button', { name: '글 주소 공유', exact: true }).click();
     await page.getByLabel('공유할 글 주소').waitFor();
     const shared = await page.getByLabel('공유할 글 주소').inputValue();
     ok(

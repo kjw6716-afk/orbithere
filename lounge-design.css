@@ -121,7 +121,6 @@
 .lounge-page .board-row:last-child { border-radius: 0 0 13px 13px; }
 .lounge-page .row-category { color: #a2c5d0; }
 .lounge-page .row-title { font-size: 16px; font-weight: 600; }
-.lounge-page .row-thumb-link { width: 48px; height: 48px; }
 .lounge-page .comment-count { min-height: 44px; min-width: 40px; justify-content: center; }
 .lounge-page .board-empty { margin: 0; padding: 32px 20px 36px; border: 0; background: #101d2f; border-radius: 14px; }
 .lounge-page .board-empty h2 { margin-bottom: 10px; font-size: 22px; }
@@ -170,10 +169,9 @@
   .lounge-page .board-row { padding: 8px 14px; align-items: center; gap: 8px; }
   .lounge-page .row-main { grid-template-columns: minmax(0, 1fr); gap: 3px; }
   .lounge-page .row-category { font-size: 11px; }
-  .lounge-page .row-title { white-space: normal; line-height: 1.55; font-size: 16px; }
+  .lounge-page .row-title { white-space: nowrap; line-height: 1.55; font-size: 16px; }
   .lounge-page .row-meta { grid-column: 1; font-size: 11px; }
   .lounge-page .row-side { flex-direction: column; gap: 2px; }
-  .lounge-page .row-thumb-link { width: 44px; height: 44px; }
   .lounge-page .board-empty { padding: 26px 16px 30px; }
   .lounge-page .board-empty h2 { font-size: 20px; }
   .lounge-page .board-empty p { font-size: 13px; }
