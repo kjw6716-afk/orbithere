@@ -248,6 +248,7 @@
     <script>if(new URLSearchParams(location.search).get('embed'))document.documentElement.classList.add('embed');</script>
     <script src="effects.js?v=20260911-layout" defer></script>
     <script src="orbit-config.js"></script>
+    <script src="orbit-analytics.js?v=20260927-funnel" defer></script>
     <script src="visits.js" defer></script>
 <link rel="stylesheet" href="site-nav.css?v=20260926-mint">
 </head>
@@ -921,16 +922,20 @@
     $('filterRow').addEventListener('click', function (ev) {
         var b = ev.target.closest('.fbtn');
         if (!b) return;
+        var changed = curFilter !== b.getAttribute('data-f');
         curFilter = b.getAttribute('data-f');
         Array.prototype.forEach.call(this.querySelectorAll('.fbtn'), function (x) {
             x.classList.toggle('on', x === b);
         });
         renderTimeline();
+        if (changed && window.OrbitAnalytics) window.OrbitAnalytics.use('filter', ev);
     });
 
     renderNext();
     renderMoon();
     renderTimeline();
+    document.documentElement.dataset.orbitToolReady = 'calendar';
+    if (window.OrbitAnalytics) window.OrbitAnalytics.ready();
 
     // ===== 임베드될 때 부모에게 콘텐츠 높이 알리기 =====
     // 이게 없으면 메인의 iframe이 고정 620px에 머물러

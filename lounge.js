@@ -1584,6 +1584,8 @@
     if (link && !ev.ctrlKey && !ev.metaKey && !ev.shiftKey && ev.button === 0) {
       ev.preventDefault();
       navigate(link.href);
+      if (view === 'editor' && new URL(link.href, location.href).searchParams.has('write') && window.OrbitAnalytics)
+        window.OrbitAnalytics.write('explicit', ev);
       return;
     }
     var b = ev.target.closest('button');
@@ -1729,9 +1731,10 @@
     })
     .join('');
   $('postForm').addEventListener('submit', submitPost);
-  $('postForm').addEventListener('input', function () {
+  $('postForm').addEventListener('input', function (event) {
     if (editState || view === 'edit') return;
     if (busy || preparing || (attempt && attempt.uncertain)) return;
+    if (window.OrbitAnalytics) window.OrbitAnalytics.write('input', event);
     clearTimeout(draftTimer);
     draftTimer = setTimeout(persistDraft, 250);
     draftNotice();

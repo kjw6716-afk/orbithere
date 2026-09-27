@@ -1,4 +1,12 @@
 {
+  "orbit_analytics_session_v1": {
+    "section": "storage-analytics",
+    "purpose": "사용 분석용 무작위 탭 세션·시작 회원 여부·마지막 활동·날짜·기능·순서·중복 방지 표시와 명시적 글쓰기 이동 의도 시각(60초) (sessionStorage, 30분 비활동 또는 KST 날짜 변경 시 다음 활동에서 교체, 탭 종료 시 삭제, 회원 ID·내용·원문 URL 저장 안 함)"
+  },
+  "orbit_analytics_exclude": {
+    "section": "storage-analytics",
+    "purpose": "운영자·QA 등 사용 분석 제외 선택 (localStorage 값 1, 식별자 아님, 직접 설정 해제 또는 사이트 데이터 삭제까지 유지)"
+  },
   "orbit_board_drafts_v1": {
     "section": "storage-board-draft",
     "purpose": "게시글 제목·본문·분류·관측 정보 및 등록 결과 확인용 게시 ID·고정 제출 내용·업로드한 사진 경로 임시 저장 (localStorage, 계정/비회원 탭 구분, 마지막 저장 후 7일이 지난 다음 접근·등록 완료·직접 삭제 시 정리, 사진 파일 제외)"

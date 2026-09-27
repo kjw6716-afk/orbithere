@@ -40,6 +40,9 @@ jobs:
       - name: 데이터베이스 권한 검증
         run: node tests/security.mjs
 
+      - name: 사용 퍼널 의미 · 개인정보 · 권한 검증
+        run: npm run test:funnel
+
       - name: 회원·인증·탈퇴 검증
         run: npm run test:members
 
