@@ -109,8 +109,53 @@ try {
       check(f.eventTiming(perseids, Date.parse(when)).status === 'ongoing', 'two-night period persists through peak and second dawn');
     }
     check(f.eventRangeText(perseids).includes('2026.08.14 05:00'), 'multi-night end is visible');
-    check(html.includes('여러 밤에 걸친 유성우는 낮에도 기간이 진행 중'), 'multi-night daytime does not promise current visibility');
+    check(html.includes('여러 밤 사이의 낮도 안내 기간에 포함되며, 실제 관측은 안내된 밤 시간에 가능합니다.'),
+      'multi-night daytime does not promise current visibility');
     check(html.includes('달빛 조건 최상') && html.includes('달 밝기만'), 'rating explicitly covers moonlight only');
+
+    // A guide period can span daytime: retain the state and night advice, without claiming current visibility.
+    const daytime = Date.parse('2026-08-13T13:00:00+09:00');
+    const perseidsBest = '12일 밤~13일 새벽, 13일 밤~14일 새벽 모두 좋습니다. 자정 이후가 특히 유리합니다.';
+    f.setTime(daytime); f.renderNext(); f.renderTimeline();
+    check(f.eventTiming(perseids, daytime).status === 'ongoing', `${tz}: daytime Perseids keeps internal ongoing state`);
+    check(f.eventTiming(perseids, daytime).label === '진행 중', `${tz}: display wording leaves eventTiming unchanged`);
+    check(f.upcoming(daytime).some((x) => x.e.id === perseids.id), `${tz}: daytime Perseids remains in the event list`);
+    check(f.el('nxName').textContent === perseids.name, `${tz}: daytime Perseids stays featured`);
+    check(f.el('nxDday').textContent === '안내 기간 중', `${tz}: daytime hero describes the guide period`);
+    check(f.el('nxDdaySub').textContent === '안내 기간 종료까지', `${tz}: daytime countdown still targets guide end`);
+    const perseidsCard = f.el('timeline').innerHTML.match(/<article\b[^>]*data-id="perseids2026"[\s\S]*?<\/article>/)?.[0] || '';
+    check(perseidsCard.includes('class="ev-dday">안내 기간 중'), `${tz}: daytime timeline D-day describes the guide period`);
+    check(perseidsCard.includes('>안내 기간 중</span>'), `${tz}: daytime timeline badge describes the guide period`);
+    check(!perseidsCard.includes('진행 중'), `${tz}: daytime meteor card does not imply a currently visible phenomenon`);
+    check(perseidsCard.includes('국내 관측 가능'), `${tz}: regional visibility badge remains available`);
+    check(perseids.best === perseidsBest && f.el('nxNote').innerHTML.includes(perseidsBest) && perseidsCard.includes(perseidsBest),
+      `${tz}: daytime Perseids retains the exact two-night observing advice`);
+
+    // Solar and lunar eclipse periods describe an actual global phenomenon; their status remains literal.
+    for (const id of ['tse2026', 'ple2026']) {
+      const eclipse = f.EVENTS.find((event) => event.id === id);
+      const midpoint = (Date.parse(eclipse.watchStart) + Date.parse(eclipse.watchEnd)) / 2;
+      f.setEvents([eclipse]); f.setTime(midpoint); f.renderNext(); f.renderTimeline();
+      check(f.eventTiming(eclipse, midpoint).status === 'ongoing', `${tz} ${id}: global phenomenon remains ongoing`);
+      check(f.el('nxDday').textContent === '진행 중', `${tz} ${id}: hero retains phenomenon status`);
+      check(f.el('nxDdaySub').textContent === '현상 종료까지', `${tz} ${id}: countdown retains phenomenon end`);
+      check(f.el('timeline').innerHTML.includes('class="ev-dday">진행 중') &&
+        f.el('timeline').innerHTML.includes('>진행 중</span>'), `${tz} ${id}: timeline retains phenomenon status`);
+      check(f.el('nxRange').textContent.startsWith('전지구 진행 기간 '), `${tz} ${id}: range remains explicitly global`);
+      check(f.el('nxNote').innerHTML.includes('국내에서는 볼 수 없습니다.') &&
+        f.el('timeline').innerHTML.includes('국내 관측 불가'), `${tz} ${id}: ongoing does not imply Korean visibility`);
+      f.setFilter('kr'); f.renderTimeline();
+      check(!f.el('timeline').innerHTML.includes(`data-id="${id}"`), `${tz} ${id}: Korean filter still excludes the eclipse`);
+      f.setFilter('all');
+    }
+
+    const moon = f.EVENTS.find((event) => event.id === 'supermoon2026');
+    f.setEvents([moon]); f.setTime('2026-12-24T23:00:00+09:00'); f.renderNext(); f.renderTimeline();
+    check(f.eventTiming(moon, Date.parse('2026-12-24T23:00:00+09:00')).status === 'ongoing', `${tz}: full moon retains ongoing state`);
+    check(f.el('nxDday').textContent === '안내 기간 중' && f.el('nxDdaySub').textContent === '안내 기간 종료까지',
+      `${tz}: full moon uses the same guide-period wording`);
+    check(f.el('timeline').innerHTML.includes('class="ev-dday">안내 기간 중') &&
+      f.el('timeline').innerHTML.includes('>안내 기간 중</span>'), `${tz}: full moon timeline agrees with its hero`);
 
     // Use the real rendering functions and ticker at both exact boundaries.
     f.setEvents([gem]);
@@ -120,12 +165,19 @@ try {
     check(f.el('nxDdaySub').textContent === '시작까지', 'scheduled countdown is to start');
     check(f.el('timeline').innerHTML.includes('>예정</span>'), 'timeline says scheduled');
     f.setTime(start); f.tick();
-    check(f.el('nxDday').textContent === '진행 중', 'ticker transitions at exact start');
-    check(f.el('timeline').innerHTML.includes('class="ev-dday">진행 중'), 'timeline transitions at exact start');
+    check(f.el('nxDday').textContent === '안내 기간 중', 'ticker transitions at exact start');
+    check(f.el('timeline').innerHTML.includes('class="ev-dday">안내 기간 중'), 'timeline transitions at exact start');
     check(f.el('nxDdaySub').textContent === '안내 기간 종료까지', 'ongoing countdown targets end');
     check(f.timers.size === 1, 'one timer after transition');
     f.setTime(ongoing); f.tick();
     check(f.el('nxName').textContent === gem.name, '23:01 hero retains Geminids');
+    check(f.el('nxDday').textContent === '안내 기간 중' && f.el('nxDdaySub').textContent === '안내 기간 종료까지',
+      '23:01 Geminids hero consistently describes its guide period');
+    check(f.el('timeline').innerHTML.includes('>안내 기간 중</span>') && !f.el('timeline').innerHTML.includes('진행 중'),
+      '23:01 Geminids timeline uses the same guide-period wording');
+    const gemBest = '극대 시각이 한국의 밤과 정확히 겹칩니다. 14일 밤부터 15일 새벽까지가 최적입니다.';
+    check(gem.best === gemBest && f.el('nxNote').innerHTML.includes(gemBest) && f.el('timeline').innerHTML.includes(gemBest),
+      '23:01 Geminids keeps its exact nighttime observing advice');
     check([...f.el('nxUnits').innerHTML.matchAll(/<b>(\d+)<\/b>/g)].map((x) => +x[1]).join(',') === '0,6,59,0',
       '23:01 countdown has 6h 59m until end');
     f.setTime(end - 1); f.tick();
@@ -144,7 +196,7 @@ try {
     f.setEvents([gem, nested]);
     f.setTime('2026-12-14T23:59:59+09:00'); f.renderNext(); f.renderTimeline();
     f.setTime('2026-12-15T00:00:00+09:00'); f.tick();
-    check((f.el('timeline').innerHTML.match(/class="ev-dday">진행 중/g) || []).length === 2,
+    check((f.el('timeline').innerHTML.match(/class="ev-dday">안내 기간 중/g) || []).length === 2,
       'non-featured event starts without waiting for KST midnight or hero replacement');
     f.setTime('2026-12-15T01:00:00+09:00'); f.tick();
     check(!f.el('timeline').innerHTML.includes('data-id="nested"'), 'non-featured event disappears at its end');

@@ -80,10 +80,10 @@ try {
             }
           } else {
             check('Geminids remain next after the start',view.name==='쌍둥이자리 유성우');
-            check('next card reports ongoing',view.dday==='진행 중');
+            check('next card distinguishes the guidance period',view.dday==='안내 기간 중');
             check('timeline keeps Geminids',view.ids.includes('geminids2026'));
             check('countdown targets the end',view.sub.includes('종료까지'));
-            check('timeline state reports ongoing',await frame.locator('[data-id="geminids2026"] .ev-dday').textContent()==='진행 중');
+            check('timeline distinguishes the guidance period',await frame.locator('[data-id="geminids2026"] .ev-dday').textContent()==='안내 기간 중');
           }
           if(process.env.ORBIT_SCREENSHOT_DIR && timezone==='Asia/Seoul' && (time.includes('10:00')||time.includes('23:01'))) {
             await mkdir(process.env.ORBIT_SCREENSHOT_DIR,{recursive:true});
@@ -96,6 +96,50 @@ try {
       if(snapshots.has(key)) { assert.deepEqual(pair[0],snapshots.get(key),`${key}: device timezone changed KST output`); checks++; }
       else snapshots.set(key,pair[0]);
     }
+  }
+
+  // An ongoing guidance period is not a promise that the event is visible now.
+  // Verify the actual multi-night daytime fixture as well as night and eclipse UI.
+  for (const [id, time, label, sub, best] of [
+    ['perseids2026', '2026-08-13T13:00:00+09:00', '안내 기간 중', '안내 기간 종료까지',
+      '12일 밤~13일 새벽, 13일 밤~14일 새벽 모두 좋습니다. 자정 이후가 특히 유리합니다.'],
+    ['geminids2026', '2026-12-14T23:01:00+09:00', '안내 기간 중', '안내 기간 종료까지',
+      '극대 시각이 한국의 밤과 정확히 겹칩니다. 14일 밤부터 15일 새벽까지가 최적입니다.'],
+    ['ase2027', '2027-02-07T01:00:00+09:00', '진행 중', '현상 종료까지', null],
+    ['ple2026', '2026-08-28T13:00:00+09:00', '진행 중', '현상 종료까지', null]
+  ]) {
+    const pair = [];
+    for (const embedded of [false,true]) {
+      const {context,page} = await contextAt(time,'America/Los_Angeles',true);
+      try {
+        const frame = await loaded(page,'sky',embedded);
+        const card = frame.locator(`[data-id="${id}"]`);
+        check(`${id}: the event stays on the timeline`,await card.count()===1);
+        const internal = await frame.evaluate(id => {
+          const e=EVENTS.find(e=>e.id===id), timing=eventTiming(e,Date.now());
+          return {status:timing.status,label:timing.label,best:e.best};
+        },id);
+        check(`${id}: the internal state and label remain unchanged`,internal.status==='ongoing' && internal.label==='진행 중');
+        check(`${id}: hero status`,await frame.locator('#nxDday').textContent()===label);
+        check(`${id}: countdown wording unchanged`,await frame.locator('#nxDdaySub').textContent()===sub);
+        check(`${id}: timeline status`,await card.locator('.ev-dday').textContent()===label);
+        check(`${id}: status badge matches`,await card.locator('.badges .bdg').first().textContent()===label);
+        check(`${id}: neutral heading`,await frame.locator('.card-tag').textContent()==='🔭 천문 일정 안내');
+        if(best) {
+          check(`${id}: original night guidance data is unchanged`,internal.best===best);
+          check(`${id}: original night guidance stays visible`,(await frame.locator('#nxNote').textContent()).includes(best));
+          check(`${id}: displayed state cannot imply current observation`,!(await card.textContent()).includes('진행 중'));
+          check(`${id}: domestic classification remains`,(await card.locator('.badges').textContent()).includes('국내 관측 가능'));
+        } else {
+          check(`${id}: global event range remains explicit`,(await frame.locator('#nxRange').textContent()).includes('전지구 진행 기간'));
+          check(`${id}: domestic unavailability remains`,(await card.locator('.badges').textContent()).includes('국내 관측 불가'));
+        }
+        check(`${id}: longer text does not overflow on mobile`,await frame.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+        pair.push(await capture(frame,'sky'));
+        if(process.env.ORBIT_SCREENSHOT_DIR) await page.screenshot({path:join(process.env.ORBIT_SCREENSHOT_DIR,`wording-${id}-${embedded?'iframe':'direct'}.png`)});
+      } finally {await context.close();}
+    }
+    assert.deepEqual(pair[0],pair[1],`${id}: wording differs in direct/iframe`); checks++;
   }
 
   // Every city retains the same independent/iframe output after city selection.
@@ -122,7 +166,7 @@ try {
       const frame=await loaded(page,'sky',embedded);
       check('pre-start D-day uses the KST calendar day',await frame.locator('#nxDday').textContent()==='D-DAY');
       await page.clock.runFor(1000);
-      check('timer changes to ongoing at start',await frame.locator('#nxDday').textContent()==='진행 중');
+      check('timer displays the guidance period at start',await frame.locator('#nxDday').textContent()==='안내 기간 중');
       check('timer preserves the ongoing row',await frame.locator('[data-id="geminids2026"]').count()===1);
       check('mobile sky dates do not overflow',await frame.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
       if(process.env.ORBIT_SCREENSHOT_DIR && !embedded) await page.screenshot({path:join(process.env.ORBIT_SCREENSHOT_DIR,'after-sky-mobile.png')});
