@@ -246,7 +246,7 @@ def shell(title, description, path, body, prefix='', schema=None, noindex=False,
 {f'<script type="application/ld+json">{json_script(schema)}</script>' if schema else ''}
 <script src="{prefix}site-nav.js?v=20260914-community" defer></script>
 <script src="{prefix}{script}?v=20260912-editor" defer></script>
-<script src="{prefix}orbit-config.js"></script><script src="{prefix}visits.js" defer></script>
+<script src="{prefix}orbit-config.js"></script>{'' if noindex else f'<script src="{prefix}orbit-analytics.js?v=20260927-funnel" defer></script>'}<script src="{prefix}visits.js" defer></script>
 </head>
 <body><a class="skip-link" href="#main-content">본문으로 바로가기</a>
 <div class="orbit-page-layout">

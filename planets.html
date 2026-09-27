@@ -250,6 +250,7 @@
     <script>if(new URLSearchParams(location.search).get('embed'))document.documentElement.classList.add('embed');</script>
     <script src="effects.js?v=20260911-layout" defer></script>
     <script src="orbit-config.js"></script>
+    <script src="orbit-analytics.js?v=20260927-funnel" defer></script>
     <script src="visits.js" defer></script>
 <link rel="stylesheet" href="site-nav.css?v=20260926-mint">
 </head>
@@ -1306,22 +1307,28 @@
             var b = e.target.closest('.pbtn');
             if (!b) return;
             var id = b.getAttribute('data-place');
+            var changed = id !== state.place.id;
             for (var i = 0; i < PLACES.length; i++) if (PLACES[i].id === id) state.place = PLACES[i];
             savePlace(id);
             row.querySelectorAll('.pbtn').forEach(function (x) { x.classList.toggle('on', x === b); });
             state.scrubbed = false;
             renderAll();
+            if (changed && window.OrbitAnalytics) window.OrbitAnalytics.use('region', e);
         });
     })();
 
     // ---------- 스크러버 ----------
-    document.getElementById('scrubRange').addEventListener('input', function () {
+    document.getElementById('scrubRange').addEventListener('input', function (event) {
+        var changed = parseInt(this.value, 10) !== state.idx;
         state.scrubbed = true;
         renderAt(parseInt(this.value, 10));
+        if (changed && window.OrbitAnalytics) window.OrbitAnalytics.use('time', event);
     });
-    document.getElementById('scrubBack').addEventListener('click', function () {
+    document.getElementById('scrubBack').addEventListener('click', function (event) {
+        var changed = state.idx !== state.defaultIdx;
         state.scrubbed = false;
         renderAll();
+        if (changed && window.OrbitAnalytics) window.OrbitAnalytics.use('time', event);
     });
 
     // ---------- 카드 펼치기 ----------
@@ -1338,6 +1345,8 @@
     });
 
     renderAll();
+    document.documentElement.dataset.orbitToolReady = 'planets';
+    if (window.OrbitAnalytics) window.OrbitAnalytics.ready();
     var mapWidth = 0;
     if (window.ResizeObserver) new ResizeObserver(function(entries){
         var width = entries[0].contentRect.width;

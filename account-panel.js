@@ -67,6 +67,9 @@
       if (staleError) staleError.remove();
       controller.mode(options.mode || 'login');
       if (!dialog.open) dialog.showModal();
+      var authState = window.OrbitMembers.state;
+      if (window.OrbitAnalytics && !(authState.user && !authState.user.is_anonymous && authState.user.email_confirmed_at))
+        window.OrbitAnalytics.authOpen(options.mode === 'signup' ? 'signup' : 'login');
       if (anchor) anchor.setAttribute('aria-expanded', 'true');
       position();
       await window.OrbitMembers.refresh();

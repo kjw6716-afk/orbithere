@@ -246,10 +246,11 @@
   root.querySelectorAll("[data-mode]").forEach((b) =>
     b.addEventListener("click", () => {
       setMode(b.dataset.mode);
+      if (window.OrbitAnalytics) window.OrbitAnalytics.authOpen(b.dataset.mode);
       say("");
     }),
   );
-  $("googleSignIn").addEventListener("click", () =>
+  $("googleSignIn").addEventListener("click", (event) =>
     run(async () => {
       if (
         !window.ORBIT_CONFIG.membersEnabled ||
@@ -260,6 +261,7 @@
       var session = checked(await sb.auth.getSession()).session;
       if (session && !session.user.is_anonymous)
         throw new Error("session_changed");
+      if (window.OrbitAnalytics) window.OrbitAnalytics.authAttempt('google', event);
       var options = {
         redirectTo: callback,
         queryParams: { prompt: "select_account" },
@@ -277,6 +279,7 @@
       var email = $("email").value.trim(),
         password = $("password").value;
       if (mode === "login") {
+        if (window.OrbitAnalytics) window.OrbitAnalytics.authAttempt('email_login', e);
         checked(await sb.auth.signInWithPassword({ email, password }));
         $("password").value = "";
         await member.refresh();
@@ -288,6 +291,7 @@
         var session = checked(await sb.auth.getSession()).session;
         if (session && !session.user.is_anonymous)
           throw new Error("session_changed");
+        if (window.OrbitAnalytics) window.OrbitAnalytics.authAttempt('email_signup', e);
         if (session)
           checked(
             await sb.auth.updateUser(
