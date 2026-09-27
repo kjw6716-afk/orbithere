@@ -1,0 +1,98 @@
+# 매일 두 편의 글과 맞춤 표지 만들기
+
+Work 예약 작업은 매일 한국 날짜 기준으로 서로 다른 질문을 다룬 원고 두 편과 **각 글을 위해 새로 생성한 표지 두 장**을 날짜별 초안 PR 하나에 담습니다. 이 문서는 [_editorial/README.md](README.md)의 원고·공식 출처·사람의 검토 기준에 더해 적용합니다. GitHub Actions는 승인된 원고와 이미지를 검사하고 발행하며, 이미지 생성 도구를 호출하지 않습니다.
+
+## 1. 재실행과 주제 확인
+
+1. 최신 main의 기존 글·승인 대기열·`_editorial/published.json`과 열린 PR을 확인합니다. 한국 날짜의 `codex/orbit-story-YYYY-MM-DD` 브랜치 및 열린·병합된 PR을 먼저 찾습니다.
+2. 같은 날짜의 열린 PR이 있으면 이어서 작업합니다. 첫 번째·두 번째 슬롯의 원고와 표지 완성 상태를 각각 확인하고 이미 완성된 항목을 다시 생성하지 않습니다. 원고 두 편이 있어도 표지·크기별 파일·메타데이터·생성 기록 중 하나가 빠지면 미완성입니다.
+3. 같은 날짜의 PR이 이미 병합되어 있으면 세 번째 글이나 두 번째 날짜별 PR을 만들지 않습니다. 누락이 발견되면 운영자에게 별도 검토가 필요한 상태를 알립니다.
+4. 기존 글·대기열·열린 PR과 두 새 글 사이에서 핵심 질문이 겹치지 않도록 공식 자료를 실제로 읽고 두 주제를 정합니다. 원고의 출처와 `factChecks`를 먼저 갖춘 뒤 각 글의 핵심 내용을 보여 줄 구도를 정합니다.
+
+## 2. 표지 생성
+
+- 각 글에 대해 내장 `image_gen` 도구로 별도의 새 원본을 생성합니다. 기본 이미지, 기존 8종 테마, 다른 글의 그림, 이름만 바꾼 파일을 새 표지로 세지 않습니다. 코드로 만든 임시 그림으로 생성 성공을 대신하지 않습니다.
+- 기존 승인된 미감을 유지합니다. 깊은 네이비 `#0B1423` 바탕, 절제된 민트·청록, 따뜻한 크림·앰버, 은은한 재질과 별빛을 사용합니다. 단정한 과학 잡지의 편집 삽화로 만들고 썸네일에서도 핵심 피사체가 분명히 보이게 합니다.
+- 가로 16:9, 최소 1200×675 원본을 요청합니다. 주 피사체 전체가 프레임에 들어오고 가장자리에는 여백이 있게 합니다. 글자·로고·워터마크·UI·테두리를 넣지 않습니다.
+- 원고에서 확인한 과학적 관계를 프롬프트에 명시합니다. 예를 들어 혜성 꼬리와 태양의 방향, 달의 밝은 면, 고리의 앞뒤 가림을 확인합니다. 축척·궤도·시간을 사실대로 재현하지 않은 개념 그림은 과학 측정 도표로 설명하지 않습니다.
+- 원고의 실제 관측 사진이나 특정 기관이 촬영한 영상인 것처럼 만들거나 소개하지 않습니다. `data/story-images.json`의 AI 편집 삽화 안내를 그대로 유지합니다.
+- 출력 이미지를 실제로 열어 피사체·구도·과학적 오해·원치 않는 글자와 손상을 확인합니다. 문제가 있으면 이미지 생성 도구로 수정하거나 새로 생성합니다. 선택한 최종 결과와 그 결과를 만든 최종 프롬프트를 기록합니다.
+
+공통 프롬프트 예시는 다음과 같습니다. `<…>` 부분은 각 글에 맞게 구체화하고 실제로 사용한 완성 문장을 보관합니다.
+
+```text
+Create an original editorial astronomy cover illustration for ORBIT.
+Wide landscape 16:9, at least 1200x675, edge-to-edge raster art.
+Deep midnight navy (#0B1423), restrained mint/cyan accents, warm cream/amber,
+subtle texture, sparse stars, naturalistic illustrated rendering with the
+clarity of a sophisticated science magazine. One readable focal subject,
+complete subject inside the frame with generous margins. No text, labels,
+logos, watermark, border, UI, or panels. This is an AI editorial illustration,
+not an observation photograph or a literal scale diagram.
+Article's central question: <the specific question this article answers>.
+Subject and composition: <a distinct scene designed for this article>.
+Scientific constraints: <verified relationships that must remain correct>.
+Avoid: <misleading depictions and irrelevant objects for this subject>.
+```
+
+## 3. 파일과 메타데이터
+
+원고의 `id`를 새 표지 키로 사용합니다. 기존 글의 키·파일·매핑을 덮어쓰지 않습니다. 각 글에 아래 두 파일을 추가합니다.
+
+- `images/stories/<article-id>-640.webp`: 640×360
+- `images/stories/<article-id>-1200.webp`: 1200×675
+
+두 파일은 선택한 **같은 원본을 크기 조정·WebP 압축만** 해서 만듭니다. 색·구도·피사체를 코드로 바꾸거나 부분 합성하지 않습니다. 원본 비율이 16:9가 아니면 늘이거나 잘라 맞추지 말고 도구에서 다시 생성합니다. 원본은 작업 공간에 보존하고, 사이트가 사용하는 두 최종 WebP는 반드시 PR에 실제 바이너리 파일로 포함합니다. 로컬 경로나 임시 생성 링크만 적어 놓은 상태는 완료가 아닙니다.
+
+`data/story-images.json`의 기존 내용을 보존하면서 다음 항목을 추가합니다. 아래는 구조 예시이며 날짜·프롬프트·alt는 실제 결과로 채웁니다.
+
+```json
+{
+  "images": {
+    "new-article-id": {
+      "alt": "실제 표지의 핵심 피사체와 관계를 설명하는 한국어 편집 삽화 문장",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "YYYY-MM-DD",
+        "prompt": "선택한 최종 원본을 생성할 때 실제로 사용한 전체 프롬프트"
+      }
+    }
+  },
+  "articles": {
+    "new-article-id": "new-article-id"
+  }
+}
+```
+
+`alt`는 그림에 실제로 보이는 내용으로 10~160자, `generation.prompt`는 실제 최종 프롬프트 전체로 50~6000자입니다. `generatedAt`은 실제 생성한 한국 날짜입니다. `tool: image_gen`은 내장 도구를 실제로 사용했을 때만 기록합니다. 프롬프트에 출처에서 복사한 긴 본문·개인정보·비밀값을 넣지 않습니다.
+
+새 원고마다 `articles[article.id]`를 명시하고 다른 글이나 카테고리 기본 이미지와 공유하지 않습니다. `_editorial/articles/*.json`의 스키마에 이미지 정보를 넣지 않으며, 이미 승인된 원고와 발행 해시를 바꾸지 않습니다. 기존 카테고리 매핑과 공용 자산은 기존 글의 표시를 위해 유지합니다. 기존 8종의 생성 이력은 [`docs/story-image-assets.md`](../docs/story-image-assets.md)에 그대로 보존합니다.
+
+## 4. 검사와 검토용 PR
+
+```sh
+python3 scripts/stories.py --check
+python3 -m unittest discover -s tests -p 'test_stories.py'
+```
+
+검사는 미발행 원고의 명시적 이미지 연결, 고유 표지, 생성 기록, WebP 파일·규격을 확인합니다. `--publish-due`에도 같은 발행 전 검사가 적용됩니다. 기존 공개 글에는 소급해서 생성 기록이나 새 그림을 요구하지 않습니다. 자동 검사만으로 새 그림의 실제 생성 여부, 과학적 정확성, 미적 품질을 입증할 수는 없습니다.
+
+두 크기를 모두 실제로 디코딩해 열고 글과 그림이 맞는지 확인합니다. 임시 작업 복사본에서 새 글을 렌더링해 PC·모바일 카드와 상세 화면의 이미지·비율·alt·AI 안내를 확인합니다. 임시 미리보기에 사용한 발행 장부나 HTML은 초안 PR에 넣지 않습니다. 기존 공개 페이지가 달라지지 않았는지도 확인합니다.
+
+완료된 날짜별 PR에 들어갈 변경은 다음과 같습니다.
+
+- 새 원고 JSON 두 개
+- 새 맞춤 표지 두 장의 WebP 파일 네 개
+- `data/story-images.json`의 글별 연결·alt·실제 생성 기록
+
+설정·코드·워크플로·기존 글·기존 이미지·발행 장부·공개 HTML·RSS·사이트맵은 예약 작성 작업에서 변경하지 않습니다. PR 본문에는 두 슬롯의 전체 본문, 공식 출처, 핵심 주장과 근거 대조, 발행 가능일, 표지 미리보기, 저장 경로, 최종 생성 프롬프트·도구, 검사 결과를 넣습니다. 불완전한 부분은 숨기지 않습니다.
+
+운영자가 원고·출처·표지를 함께 검토하고 수동으로 병합합니다. 예약 작성자는 자기 PR을 병합하거나 검토를 생략하지 않습니다. 검증 성공은 사람의 사실 확인을 대신하지 않습니다.
+
+## 5. 이미지 생성 실패와 재시도
+
+- 도구가 없거나 생성이 실패하면 이미 작성한 원고와 완성된 표지를 보존합니다. PR을 초안으로 유지하고 실패한 슬롯·빠진 파일·원인을 정확하게 적습니다. 기존 표지로 대체한 뒤 “글 두 편과 새 이미지 두 장 완료”라고 보고하지 않습니다.
+- 내장 도구가 없다는 이유로 별도 유료 API·CLI를 자동 선택하거나 키를 생성하지 않습니다. 승인되지 않은 대체 경로가 필요하면 그 한계를 운영자에게 알립니다.
+- 다음 실행은 같은 날짜의 열린 PR을 확인해 누락된 항목만 보완합니다. 두 크기 중 하나만 빠졌다면 보존된 동일 원본에서 그 크기만 파생합니다. 완성된 다른 글이나 표지는 다시 만들지 않습니다.
+- 원본이 없어 파생 파일을 복원할 수 없거나 결과가 검토 기준에 맞지 않으면 해당 미완성 표지만 다시 생성·검토하고 두 크기와 생성 기록을 일치시킵니다. 승인된 기존 자산은 변경하지 않습니다.
+- 최종 보고는 실제 확보한 원고 수, 새 표지 수, PR 링크와 남은 항목을 구분합니다. 두 원고·두 새 표지·네 파일·매핑·생성 기록·검사가 모두 갖춰진 경우에만 일일 초안 완료로 표시합니다.
