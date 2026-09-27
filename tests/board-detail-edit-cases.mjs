@@ -83,6 +83,54 @@ export async function boardDetailEditRegressions({fixture,base,A,B,P,uid,now,ok}
         await f.close();
       }
     }
+    {
+      const f=await fixture();
+      let pendingPage, pageEntered=false;
+      try {
+        f.state.posts=Array.from({length:45},(_,i)=>({id:uid(7200+i),title:'목록으로 돌아올 관측 '+i,
+          text:'관측 본문',nick:'관측자',orbit:'report',author_id:A,
+          created_at:'2026-09-14T01:00:00Z',image_paths:[]}));
+        const board=await open(f,embedded);
+        await board.waitForFunction(()=>!!window.OrbitMembers.state.profile);
+        await board.locator('#postList[aria-busy=false]').waitFor();
+        await board.locator('#loadMore').click();
+        await board.waitForFunction(()=>document.querySelectorAll('#postList .board-row').length===40);
+        await board.locator('#postList[aria-busy=false]').waitFor();
+        const matches=req=>req.method()==='POST' &&
+          new URL(req.url()).pathname.endsWith('/rpc/board_posts') &&
+          req.postDataJSON().p_before_id===uid(7205);
+        pendingPage=f.defer(matches);
+        await board.locator('#loadMore').click();
+        await pendingPage.entered;
+        pageEntered=true;
+        await board.locator('#post-'+uid(7214)).scrollIntoViewIfNeeded();
+        const scroll=await f.page.evaluate(()=>window.scrollY);
+        assert.ok(scroll>0,'the paginated list has a scroll position to restore');
+        await detail(board,uid(7214));
+        await board.locator('#backToFeed').click();
+        await board.locator('#postList[aria-busy=false]').waitFor();
+        ok(`${mode}: returning during pagination preserves all forty completed rows`,
+          await board.locator('#postList .board-row').count()===40);
+        await f.page.waitForFunction(y=>Math.abs(window.scrollY-y)<8,scroll);
+        ok(`${mode}: returning during pagination restores the completed list scroll`);
+        const response=f.page.waitForResponse(res=>matches(res.request()));
+        pendingPage.release();
+        await pendingPage.finished;
+        await (await response).finished();
+        await board.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+        ok(`${mode}: the stale pagination response cannot append to the restored list`,
+          await board.locator('#postList .board-row').count()===40);
+        await board.locator('#loadMore').click();
+        await board.waitForFunction(()=>document.querySelectorAll('#postList .board-row').length===45);
+        ok(`${mode}: pagination can resume after returning to the cached list`);
+      } finally {
+        if (pendingPage) {
+          pendingPage.release();
+          if (pageEntered) await pendingPage.finished;
+        }
+        await f.close();
+      }
+    }
     for (const width of [1440,360]) {
       const f=await fixture(),{page,state}=f;
       await page.setViewportSize({width,height:900});
