@@ -43,7 +43,7 @@ function ok(name, value = true) {
   console.log("✓ " + name);
   count++;
 }
-function session(anonymous = false, metadata = {}) {
+function session(anonymous = false, metadata = {}, actor = A) {
   const exp = Math.floor(Date.now() / 1000) + 3600;
   return {
     access_token:
@@ -51,7 +51,7 @@ function session(anonymous = false, metadata = {}) {
       "." +
       Buffer.from(
         JSON.stringify({
-          sub: A,
+          sub: actor,
           exp,
           role: "authenticated",
           is_anonymous: anonymous,
@@ -63,7 +63,7 @@ function session(anonymous = false, metadata = {}) {
     expires_in: 3600,
     expires_at: exp,
     user: {
-      id: A,
+      id: actor,
       email: anonymous ? "" : "member@example.test",
       email_confirmed_at: anonymous ? null : new Date().toISOString(),
       is_anonymous: anonymous,
@@ -77,6 +77,7 @@ function session(anonymous = false, metadata = {}) {
 function profile() {
   return {
     nickname: "밤하늘",
+    is_admin: false,
     joined_at: "2026-09-14T00:00:00Z",
     nickname_change_available_at: "2026-09-01T00:00:00Z",
     level: 12,
@@ -104,6 +105,7 @@ async function fixture({
   enabled = true,
   google = true,
   width = 1280,
+  cards = [{ user_id: A, nickname: "<img src=x onerror=alert(1)>", level: 12, badge: "first-post", is_admin: false }],
 } = {}) {
   const context = await browser.newContext({
       viewport: { width, height: 900 },
@@ -111,6 +113,7 @@ async function fixture({
     state = {
       auth,
       profile: p,
+      cards,
       calls: [],
       fail: false,
       signupFail: false,
@@ -174,7 +177,7 @@ async function fixture({
         url: "https://unwxpuvfqyjhgrcrmuhu.supabase.co/auth/v1/authorize?provider=google&linked=true",
       });
     if (url.pathname === "/auth/v1/token") {
-      state.auth = session();
+      state.auth = session(false, {}, state.loginUserId || A);
       return json(state.auth);
     }
     if (url.pathname === "/auth/v1/verify") {
@@ -224,6 +227,12 @@ async function fixture({
     }
     const rpc = url.pathname.split("/").pop();
     if (rpc === "member_visit" || rpc === "member_profile") {
+      const gate = rpc === "member_visit" && state.memberVisitGates?.shift();
+      if (gate) {
+        const captured = structuredClone(state.profile);
+        gate.enter(); await gate.wait;
+        return json(captured);
+      }
       if (state.fail)
         return json({ code: "42501", message: "withdrawal_in_progress" }, 403);
       return json(state.profile);
@@ -236,15 +245,7 @@ async function fixture({
       state.profile.selected_badge = body.p_badge;
       return json(state.profile);
     }
-    if (rpc === "member_cards")
-      return json([
-        {
-          user_id: A,
-          nickname: "<img src=x onerror=alert(1)>",
-          level: 12,
-          badge: "first-post",
-        },
-      ]);
+    if (rpc === "member_cards") return json(state.cards);
     if (rpc === "is_admin") return json(true);
     if (rpc === "member_admin_events") return json({ events: [], history: [] });
     if (rpc === "visit_stats" || rpc === "report_queue") return json([]);
@@ -278,7 +279,10 @@ try {
 
   {
     const f = await fixture({p:null,width:390});
-    await f.page.clock.install();
+    const codeSentAt = Date.now();
+    // Only the expiry/cooldown wall clock needs to move. Keep browser timers
+    // running: fastForward can race an in-flight realtime clock tick in 1.56.1.
+    await f.page.clock.setFixedTime(codeSentAt);
     await f.page.goto(base+'/account.html?mode=signup');
     await f.page.locator('#email').fill('code@example.test');
     await f.page.locator('#password').fill('abcdef');
@@ -295,7 +299,13 @@ try {
     await f.page.locator('#verifySubmit').click();
     await f.page.getByText('인증번호가 다르거나 만료됐어요.',{exact:false}).waitFor();
     ok('wrong or expired code keeps the visitor outside member setup',await f.page.locator('#verifyCard').isVisible()&&await f.page.locator('#setupCard').isHidden());
-    await f.page.clock.fastForward(301000);
+    const expiredAt = codeSentAt + 301000;
+    await f.page.clock.setFixedTime(expiredAt);
+    // Wait for the real updateControls interval to publish the same clock state
+    // that the resend handler will read; a disabled verify button alone is not enough.
+    await f.page.waitForFunction(expected => Date.now() === expected &&
+      document.querySelector('#verifyExpiry').textContent === '인증 시간이 지났어요. 인증번호를 다시 받아주세요.' &&
+      document.querySelector('#verifySubmit').disabled && !document.querySelector('#resendCode').disabled, expiredAt);
     ok('expired code cannot be submitted',await f.page.locator('#verifySubmit').isDisabled());
     let releaseResend;
     f.state.resendGate = new Promise(resolve => { releaseResend = resolve; });
@@ -310,9 +320,9 @@ try {
     ok('resend uses signup endpoint and restarts the expiry',f.state.calls.some(c=>c.path==='/auth/v1/resend'&&c.body.type==='signup')&&!(await f.page.locator('#verifySubmit').isDisabled()));
     await f.page.locator('#emailCode').fill('123456');
     await f.page.locator('.account-close').click();
-    await f.page.locator('#profileChip').click();
+    await f.page.locator('#headerSignup').click();
     await f.page.locator('#verifyCard').waitFor();
-    ok('closing clears the code while reopening resumes verification',await f.page.locator('#emailCode').inputValue()==='');
+    ok('closing clears the code while the signup entry resumes verification',await f.page.locator('#emailCode').inputValue()==='');
     f.state.otpFail=false; f.state.otpPartial=true;
     await f.page.locator('#emailCode').fill('123456');
     await f.page.locator('#verifySubmit').click();
@@ -529,7 +539,8 @@ try {
     "reading the account page never creates an anonymous account",
     !f.state.calls.some((c) => c.path.includes("signup")),
   );
-  await f.page.locator('.account-dialog').getByRole("button", { name: "회원가입", exact: true }).click();
+  await f.page.locator('.account-close').click();
+  await f.page.locator('#headerSignup').click();
   await f.page.locator("#email").fill("new@example.test");
   await f.page.locator("#password").fill("only-a-fixture-password");
   await f.page.locator("#consent").check();
@@ -548,10 +559,16 @@ try {
     "signup clears the password after submission",
     (await f.page.locator("#password").inputValue()) === "",
   );
-  await f.page.locator("#verifyBack").click();
+  await f.page.locator('.account-close').click();
+  await f.page.locator('#profileChip').click();
+  await f.page.getByRole('dialog', {name:'로그인', exact:true}).waitFor();
+  ok('login entry leaves pending signup verification and opens the login form',
+    await f.page.locator('#authCard').isVisible() && await f.page.locator('#verifyCard').isHidden() &&
+    await f.page.locator('#signupConsent').isHidden() && await f.page.locator('#emailCode').inputValue()==='');
   await f.page
     .getByRole("button", { name: "비밀번호 찾기", exact: true })
     .click();
+  await f.page.locator('#email').fill('new@example.test');
   await f.page.locator("#authSubmit").click();
   await f.page
     .getByText("재설정 메일을 요청했어요.", { exact: false })
@@ -587,9 +604,7 @@ try {
   await f.close();
   f = await fixture({ auth: session(true), p: null });
   await f.page.goto(base + "/account.html?mode=signup");
-  await f.page
-    .getByRole("heading", { name: "회원가입", exact: true })
-    .waitFor();
+  await f.page.getByRole('dialog', {name:'회원가입', exact:true}).waitFor();
   ok(
     "anonymous upgrade does not request a password before email verification",
     await f.page.locator("#passwordField").isHidden(),
@@ -732,14 +747,63 @@ try {
   );
   ok("member-enabled board has no uncaught exceptions", f.errors.length === 0);
   await f.close();
+  f = await fixture({
+    auth: session(), width: 390,
+    p: { ...profile(), nickname: "Orbit", is_admin: true },
+    cards: [{ user_id: A, nickname: "Orbit", level: 12, badge: "level-10", is_admin: true }],
+  });
+  await f.page.goto(base + "/main.html#planets");
+  await f.page.getByRole("button", { name: "Orbit · 운영자", exact: true }).waitFor();
+  ok("home identifies a server-confirmed operator instead of displaying a level");
+  await f.page.locator("#profileChip").click();
+  await f.page.locator(".account-dialog #profileCard").waitFor();
+  ok("operator profile shows the role and hides level progress",
+    await f.page.locator("#profileLevel").innerText() === "운영자" &&
+    await f.page.locator("#levelProgress").isHidden() &&
+    await f.page.locator("#levelProgressText").isHidden());
+  ok("operator profile fits a narrow screen",
+    await f.page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+  await f.page.goto(base + "/lounge.html");
+  await f.page.locator("#postList .member-role").waitFor();
+  ok("board account and public author use the server operator badge without level badges",
+    await f.page.locator("[data-account-link]").innerText() === "Orbit · 운영자" &&
+    await f.page.locator("#postList [data-member-id]").innerText() === "Orbit · 운영자" &&
+    await f.page.locator("#postList .member-level, #postList .member-badge").count() === 0);
+  await f.close();
+  f = await fixture({
+    auth: session(false, { is_admin: true, role: "admin" }),
+    p: { ...profile(), nickname: "Orbit" },
+    cards: [{ user_id: A, nickname: "Orbit", level: 12, badge: null, is_admin: false }],
+  });
+  await f.page.goto(base + "/main.html#planets");
+  await f.page.getByRole("button", { name: "Orbit · Lv.12", exact: true }).waitFor();
+  await f.page.locator("#profileChip").click();
+  await f.page.locator(".account-dialog #profileCard").waitFor();
+  ok("operator-like nickname and editable metadata do not replace a member level",
+    await f.page.locator("#profileLevel").innerText() === "Lv.12" &&
+    await f.page.locator("#levelProgress").isVisible());
+  await f.page.goto(base + "/lounge.html");
+  await f.page.locator("#postList .member-level").waitFor();
+  ok("public author role also requires the server flag",
+    await f.page.locator("#postList .member-role").count() === 0 &&
+    await f.page.locator("#postList [data-member-id]").innerText() === "Orbit · Lv.12");
+  await f.close();
   for (const width of [320,390,1440]) {
     f = await fixture({auth:null,p:null,width});
     await f.page.goto(base + '/main.html#sky');
+    ok('outside entries clearly distinguish login and signup at '+width,
+      await f.page.locator('#profileChip').innerText()==='로그인' && await f.page.locator('#headerSignup').innerText()==='회원가입');
     await f.page.locator('#profileChip').hover();
     ok('hover does not open an account dialog at '+width, await f.page.locator('.account-dialog[open]').count()===0);
     await f.page.locator('#profileChip').click();
     await f.page.locator('.account-dialog #authCard').waitFor();
     ok('login opens on the current page at '+width,new URL(f.page.url()).hash==='#sky');
+    ok('login popup contains the login form without signup tabs at '+width,
+      await f.page.getByRole('dialog',{name:'로그인',exact:true}).isVisible() &&
+      await f.page.locator('#signupConsent').isHidden() &&
+      await f.page.locator('#password').getAttribute('autocomplete')==='current-password' &&
+      await f.page.locator('#authSubmit').innerText()==='로그인' &&
+      await f.page.locator('.account-dialog .account-tabs, .account-dialog [role="tablist"], .account-dialog [data-mode="signup"]').count()===0);
     const box=await f.page.locator('.account-dialog').boundingBox();
     ok('popup stays compact and within viewport at '+width,box.width<=380.1 && box.x>=0 && box.x+box.width<=width+1 && box.y>=0 && box.height<=868);
     await f.page.locator('#email').fill('test@example.test');
@@ -749,13 +813,56 @@ try {
     ok('Escape returns focus to the account trigger at '+width,await f.page.locator('#profileChip').evaluate(el=>el===document.activeElement));
     await f.page.locator('#profileChip').click();
     ok('closing a popup clears unsent passwords at '+width,await f.page.locator('#password').inputValue()==='');
+    await f.page.locator('.account-close').click();
+    await f.page.locator('#headerSignup').click();
+    await f.page.getByRole('dialog',{name:'회원가입',exact:true}).waitFor();
+    ok('signup entry opens only the signup form at '+width,
+      await f.page.locator('#signupConsent').isVisible() &&
+      await f.page.locator('#password').getAttribute('autocomplete')==='new-password' &&
+      await f.page.locator('#authSubmit').innerText()==='인증번호 받기' &&
+      await f.page.locator('.account-dialog .account-tabs, .account-dialog [role="tablist"], .account-dialog [data-mode="signup"]').count()===0);
+    const signupBox=await f.page.locator('.account-dialog').boundingBox();
+    ok('signup popup stays inside the viewport at '+width,
+      signupBox.x>=0&&signupBox.x+signupBox.width<=width+1&&signupBox.y>=0&&signupBox.y+signupBox.height<=901);
+    await f.page.locator('#password').fill('unsent-signup-password');
+    await f.page.locator('.account-close').click();
+    await f.page.locator('#profileChip').click();
+    await f.page.getByRole('dialog',{name:'로그인',exact:true}).waitFor();
+    ok('login entry resets signup mode and clears its password at '+width,
+      await f.page.locator('#signupConsent').isHidden() && await f.page.locator('#password').inputValue()==='' &&
+      await f.page.locator('#password').getAttribute('autocomplete')==='current-password' &&
+      new URL(f.page.url()).hash==='#sky');
+    await f.close();
+  }
+  {
+    f=await fixture({auth:null,p:null,width:390});
+    await f.page.goto(base+'/lounge.html');
+    await f.page.locator('#postList .board-row').waitFor();
+    const login=f.page.locator('[data-account-open="login"]:visible'), signup=f.page.locator('[data-account-open="signup"]:visible');
+    ok('standalone board has separate public login and signup entries',await login.innerText()==='로그인'&&await signup.innerText()==='회원가입');
+    await signup.click();
+    await f.page.getByRole('dialog',{name:'회원가입',exact:true}).waitFor();
+    await f.page.locator('.account-close').click();
+    await login.click();
+    await f.page.getByRole('dialog',{name:'로그인',exact:true}).waitFor();
+    ok('standalone login entry restores login after signup without navigation',
+      new URL(f.page.url()).pathname==='/lounge.html'&&await f.page.locator('#signupConsent').isHidden()&&
+      await f.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+    ok('switching public entry points has no browser errors',f.errors.length===0);
     await f.close();
   }
   f=await fixture({auth:null,p:null});
   await f.page.goto(base+'/lounge.html?write=1');
-  await f.page.locator('.account-dialog #authCard').waitFor();
-  ok('visitor writing opens login over the board, without a nickname-only branch',new URL(f.page.url()).pathname==='/lounge.html'&&await f.page.locator('#postForm').isHidden()&&await f.page.locator('#writerNickname').count()===0);
+  await f.page.locator('#postForm').waitFor();
+  ok('visitor writing opens an editable form before login, without a nickname-only branch',
+    new URL(f.page.url()).pathname==='/lounge.html'&&await f.page.locator('.account-dialog[open]').count()===0&&await f.page.locator('#writerNickname').count()===0);
   ok('opening writing does not create an anonymous account or publish a post',!f.state.calls.some(c=>c.path==='/auth/v1/signup'||c.path.endsWith('/create_board_post')));
+  await f.page.locator('#postInput').fill('로그인 전에 적어 둔 별 이야기');
+  await f.page.locator('#btnTrace').click();
+  await f.page.getByRole('dialog',{name:'로그인',exact:true}).waitFor();
+  ok('publishing asks for login while preserving the visitor draft',
+    await f.page.locator('#postInput').inputValue()==='로그인 전에 적어 둔 별 이야기'&&
+    !f.state.calls.some(c=>c.path==='/auth/v1/signup'||c.path.endsWith('/create_board_post')||c.path.endsWith('/create_observation_post')));
   await f.close();
   f=await fixture({auth:session()});
   await f.page.goto(base+'/main.html#sky');
@@ -767,9 +874,33 @@ try {
   await f.page.reload();
   ok('normal page refresh does not force the account popup open',await f.page.locator('.account-dialog[open]').count()===0);
   await f.close();
+  f=await fixture({auth:session()});
+  await f.page.goto(base+'/main.html#sky');
+  await f.page.waitForFunction(()=>window.OrbitMembers.state.profile?.nickname==='밤하늘');
+  const deferredVisit=()=>{
+    let enter,release;
+    const entered=new Promise(r=>{enter=r;}),wait=new Promise(r=>{release=r;});
+    return {enter,release,entered,wait};
+  };
+  const oldVisit=deferredVisit(),newVisit=deferredVisit();
+  f.state.memberVisitGates=[oldVisit];
+  await f.page.evaluate(()=>{ window.pendingOldProfile = window.OrbitMembers.refresh(); });
+  await oldVisit.entered;
+  const nextMember='22222222-2222-4222-8222-222222222222';
+  f.state.loginUserId=nextMember;
+  f.state.profile={...profile(),nickname:'새 계정'};
+  f.state.memberVisitGates=[newVisit];
+  await f.page.evaluate(async()=>{await window.OrbitMembers.sb.auth.signInWithPassword({email:'b@example.test',password:'isolated-password'});});
+  await newVisit.entered;
+  ok('account event clears A profile immediately while B member_visit is pending',await f.page.evaluate(id=>window.OrbitMembers.state.user?.id===id&&window.OrbitMembers.state.profile===null,nextMember));
+  newVisit.release();
+  await f.page.waitForFunction(()=>window.OrbitMembers.state.profile?.nickname==='새 계정');
+  oldVisit.release();
+  await f.page.evaluate(()=>window.pendingOldProfile);
+  ok('late A member_visit cannot republish A nickname or profile on B',await f.page.evaluate(id=>window.OrbitMembers.state.user?.id===id&&window.OrbitMembers.state.profile?.nickname==='새 계정',nextMember));
+  await f.close();
   console.log("Members: " + count + " checks passed");
 } finally {
   await browser.close();
   await new Promise((r) => server.close(r));
 }
-

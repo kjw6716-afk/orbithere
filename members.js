@@ -10,13 +10,19 @@
     "attendance-30": "30일 출석",
     "level-10": "Lv.10 달성",
   };
+  function roleLabel(profile) {
+    return profile.is_admin === true ? "운영자" : "Lv." + profile.level;
+  }
+  function displayName(profile) {
+    return profile.nickname + " · " + roleLabel(profile);
+  }
   function publish() {
     window.dispatchEvent(new CustomEvent("orbit:member", { detail: state }));
   }
   function clearNickname() {
     ["orbit_nickname", "orbit_joindate", "orbit_jointime"].forEach(
       function (k) {
-        localStorage.removeItem(k);
+        try { localStorage.removeItem(k); } catch (_) { /* The active account stays in memory. */ }
       },
     );
   }
@@ -38,8 +44,9 @@
         if (token !== sequence) return state;
         if (visit.error) throw visit.error;
         state.profile = visit.data;
-        if (visit.data)
-          localStorage.setItem("orbit_nickname", visit.data.nickname);
+        if (visit.data) {
+          try { localStorage.setItem("orbit_nickname", visit.data.nickname); } catch (_) { /* Storage may be full or blocked. */ }
+        }
       }
     } catch (error) {
       if (token === sequence) {
@@ -54,6 +61,8 @@
     sb: sb,
     state: state,
     badges: badges,
+    roleLabel: roleLabel,
+    displayName: displayName,
     refresh: refresh,
     clearNickname: clearNickname,
     async decorate(root) {
@@ -82,10 +91,10 @@
           if (!node.isConnected || !p) return;
           node.replaceChildren(document.createTextNode(p.nickname + " · "));
           var level = document.createElement("span");
-          level.className = "member-level";
-          level.textContent = "Lv." + p.level;
+          level.className = p.is_admin === true ? "member-role" : "member-level";
+          level.textContent = roleLabel(p);
           node.append(level);
-          if (badges[p.badge]) {
+          if (p.is_admin !== true && badges[p.badge]) {
             var badge = document.createElement("span");
             badge.className = "member-badge";
             badge.textContent = badges[p.badge];
@@ -98,7 +107,20 @@
     },
   };
   if (sb && window.ORBIT_CONFIG.membersEnabled) {
-    sb.auth.onAuthStateChange(function () {
+    sb.auth.onAuthStateChange(function (event, session) {
+      var user = session && session.user || null;
+      function identity(u) { return u ? u.id + "|" + !!u.is_anonymous + "|" + !!u.email_confirmed_at : ""; }
+      if (identity(state.user) !== identity(user)) {
+        // Invalidate in-flight member_visit before scheduling the next refresh.
+        // Account controls must not retain the previous profile during the gap.
+        ++sequence;
+        clearNickname();
+        current = user && !user.is_anonymous ? user.id : null;
+        state.user = user;
+        state.profile = null;
+        state.error = null;
+        publish();
+      }
       clearTimeout(busy);
       busy = setTimeout(refresh, 0);
     });

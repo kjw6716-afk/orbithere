@@ -28,6 +28,11 @@ RELATED = {'sky.html', 'planets.html', 'guide.html', 'reading-sky.html', 'news.h
 # Operator-approved launch batch only; scheduled publishing remains one per KST day.
 INITIAL_RELEASE_DAY = '2026-09-12'
 INITIAL_RELEASE_IDS = {'moon-face-and-phases', 'seasonal-constellations-camping', 'cosmic-voids'}
+# Exact ledger exceptions approved by the operator; publish_next never uses this map.
+APPROVED_SAME_DAY_RELEASES = {
+    INITIAL_RELEASE_DAY: INITIAL_RELEASE_IDS,
+    '2026-09-26': {'how-gravity-assists-work', 'iss-visible-at-dawn-and-dusk'},
+}
 
 
 def text(value, low=1, high=500):
@@ -134,8 +139,8 @@ def load(root=ROOT):
         seen.add(ident)
         days.setdefault(day, set()).add(ident)
     for day, ids in days.items():
-        if len(ids) > 1 and not (day == INITIAL_RELEASE_DAY and ids == INITIAL_RELEASE_IDS):
-            raise ValueError('Duplicate publication day outside the approved initial release')
+        if len(ids) > 1 and ids != APPROVED_SAME_DAY_RELEASES.get(day):
+            raise ValueError('Duplicate publication day outside an explicitly approved release')
     return articles, ledger
 
 
@@ -236,12 +241,12 @@ def shell(title, description, path, body, prefix='', schema=None, noindex=False,
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
 <link rel="stylesheet" href="{prefix}orbit.css?v=20260912-brand">
-<link rel="stylesheet" href="{prefix}site-nav.css?v=20260914-community">
+<link rel="stylesheet" href="{prefix}site-nav.css?v=20260926-mint">
 <link rel="stylesheet" href="{prefix}stories.css?v=20260914-text-feature">
 {f'<script type="application/ld+json">{json_script(schema)}</script>' if schema else ''}
 <script src="{prefix}site-nav.js?v=20260914-community" defer></script>
 <script src="{prefix}{script}?v=20260912-editor" defer></script>
-<script src="{prefix}orbit-config.js"></script><script src="{prefix}visits.js" defer></script>
+<script src="{prefix}orbit-config.js"></script>{'' if noindex else f'<script src="{prefix}orbit-analytics.js?v=20260927-funnel" defer></script>'}<script src="{prefix}visits.js" defer></script>
 </head>
 <body><a class="skip-link" href="#main-content">본문으로 바로가기</a>
 <div class="orbit-page-layout">

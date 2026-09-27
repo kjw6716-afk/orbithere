@@ -45,12 +45,13 @@
         .panel-title span { color: var(--accent); }
         .profile-chip {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
-            padding: 8px 12px; min-height: 36px; border-radius: 8px; text-align: center;
-            background: rgba(255,159,67,0.08); border: 1px solid rgba(255,159,67,0.2);
-            color: var(--accent); font-size: 13px; font-weight: 600; transition: all 0.15s;
+            padding: 8px 12px; min-height: 44px; border-radius: 8px; text-align: center;
+            background: #153038; border: 1px solid #33575e;
+            color: #9ae8dd; font-size: 13px; font-weight: 600; transition: background 0.15s, border-color 0.15s;
             font-family: 'Pretendard', sans-serif; line-height: 1.4; white-space: nowrap;
         }
-        .profile-chip:hover { background: rgba(255,159,67,0.14); border-color: var(--accent); }
+        .profile-chip:hover { background: #1b3d44; border-color: #69dfcf; }
+        .profile-chip:focus-visible { outline: 2px solid #69dfcf; outline-offset: 3px; }
 
         /* 닉네임 안내는 좁은 화면에서 대화상자 안에 표시합니다. */
         .topbar-right { display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -191,12 +192,14 @@
         </style>
     <script src="effects.js?v=20260911-layout" defer></script>
     <script src="orbit-config.js"></script>
+    <script src="orbit-analytics.js?v=20260927-funnel" defer></script>
     <script src="visits.js" defer></script>
     <link rel="stylesheet" href="news-brief.css?v=20260914-community">
     <script src="news-data.js?v=20260914-ast" defer></script>
     <script src="news-brief.js?v=20260914-community" defer></script>
-<link rel="stylesheet" href="site-nav.css?v=20260914-community">
+<link rel="stylesheet" href="site-nav.css?v=20260926-mint">
 <link rel="stylesheet" href="story-teaser.css?v=20260914-codes">
+<link rel="stylesheet" href="lounge-design.css?v=20260927-board-edit">
 </head>
 <body>
     <div class="bg-glow"></div>
@@ -226,22 +229,22 @@
             <div class="topbar">
                 <h1 class="panel-title" id="panelTitle"><a class="page-title-link" id="panelTitleLink" href="planets.html">오늘 밤 <span>행성</span></a></h1>
                 <div class="topbar-right">
-                    <button class="account-signup-link" id="headerSignup" data-account-open="signup" type="button">회원가입</button>
                     <button class="profile-chip" id="profileChip" type="button" aria-haspopup="dialog" aria-expanded="false">
-                        <span id="profileChipText">궤도 진입하기</span>
+                        <span id="profileChipText">로그인</span>
                     </button>
+                    <button class="account-signup-link" id="headerSignup" data-account-open="signup" type="button" aria-haspopup="dialog" aria-expanded="false">회원가입</button>
                 </div>
             </div>
 
             <div class="panel-wrap">
 <!-- orbit-story-teaser:start -->
-<aside class="story-teaser" aria-label="최신 우주 이야기"><span class="story-teaser-icon" aria-hidden="true"><svg width="21" height="21" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span><div class="story-teaser-copy"><div class="story-teaser-meta"><span>ORBIT 에디터</span></div><a class="story-teaser-title" href="stories/how-gravity-assists-work.html">우주선은 행성 옆을 스치며 어떻게 속도를 얻을까요?</a></div><a class="story-teaser-all" href="stories.html">전체보기 →</a></aside>
+<aside class="story-teaser" aria-label="최신 우주 이야기"><span class="story-teaser-icon" aria-hidden="true"><svg width="21" height="21" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span><div class="story-teaser-copy"><div class="story-teaser-meta"><span>ORBIT 에디터</span></div><a class="story-teaser-title" href="stories/iss-visible-at-dawn-and-dusk.html">국제우주정거장은 왜 새벽과 저녁에 잘 보일까요?</a></div><a class="story-teaser-all" href="stories.html">전체보기 →</a></aside>
 <!-- orbit-story-teaser:end -->
 
                 <!-- 밤하늘 달력 — 첫 화면 -->
                 <section class="panel on" id="panel-sky">
                     <div class="embed-wrap">
-                        <iframe class="embed-frame" id="skyFrame" title="밤하늘 달력 — 유성우 · 일식 · 월식 일정" data-src="sky.html?embed=1&v=20260914-community"></iframe>
+                        <iframe class="embed-frame" id="skyFrame" title="밤하늘 달력 — 유성우 · 일식 · 월식 일정" data-src="sky.html?embed=1&v=20260927-funnel"></iframe>
                         <a class="embed-out" href="sky.html">전체 화면으로 열기 · 관측 방법과 FAQ 보기 →</a>
                     </div>
                 </section>
@@ -249,14 +252,14 @@
                 <!-- 오늘 밤 행성 -->
                 <section class="panel" id="panel-planets">
                     <div class="embed-wrap">
-                        <iframe class="embed-frame" id="planetFrame" title="오늘 밤 행성 — 지금 하늘의 행성 위치" data-src="planets.html?embed=1&v=20260914-community"></iframe>
+                        <iframe class="embed-frame" id="planetFrame" title="오늘 밤 행성 — 지금 하늘의 행성 위치" data-src="planets.html?embed=1&v=20260927-funnel"></iframe>
                         <a class="embed-out" href="planets.html">전체 화면으로 열기 · 행성 찾는 법과 FAQ 보기 →</a>
                     </div>
                 </section>
 
                 <!-- 글 남기기 -->
                 <section class="panel" id="panel-lounge">
-                    <iframe class="lounge-frame" id="loungeFrame" title="자유게시판" data-src="lounge.html?embed=1&v=20260914-community"></iframe>
+                    <iframe class="lounge-frame" id="loungeFrame" title="자유게시판" data-src="lounge.html?embed=1&v=20260927-funnel"></iframe>
                 </section>
                 <aside class="news-brief news-brief--rail" data-news-brief aria-labelledby="newsBriefHeading">
                   <h2 class="news-brief-heading" id="newsBriefHeading">최신 우주 뉴스</h2>
@@ -297,12 +300,12 @@
         </div>
     </div>
 
-    <link rel="stylesheet" href="account.css?v=20260914-codes">
+    <link rel="stylesheet" href="account.css?v=20260926-operator">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
-    <script src="orbit-backend.js"></script>
-    <script src="members.js?v=20260914-popover"></script>
-    <script src="account.js?v=20260914-codes"></script>
-    <script src="account-panel.js?v=20260914-codes"></script>
+    <script src="orbit-backend.js?v=20260926-identity"></script>
+    <script src="members.js?v=20260926-identity"></script>
+    <script src="account.js?v=20260927-funnel"></script>
+    <script src="account-panel.js?v=20260927-funnel"></script>
     <script src="site-nav.js?v=20260914-community"></script>
     <script>
     // ===== 패널 전환 =====
@@ -316,11 +319,36 @@
         var activePanel = DEFAULT_PANEL;
         var loungeLoaded = false, skyLoaded = false, planetsLoaded = false;
 
+        // Publish the child route before its editor becomes visible. A queued
+        // postMessage alone can lose write=1 if the user immediately reloads.
+        window.OrbitBoardRoute = {
+            syncWriting: function(source){
+                var frame = document.getElementById('loungeFrame');
+                if (!source || source !== frame.contentWindow) return false;
+                var child;
+                try { child = new URL(source.location.href); } catch (_) { return false; }
+                if (child.origin !== location.origin || child.pathname !== '/lounge.html') return false;
+                var boardRoute = new URL(location.href);
+                var writing = child.searchParams.has('write') && !child.searchParams.get('post');
+                if(writing) boardRoute.searchParams.set('write', '1');
+                else boardRoute.searchParams.delete('write');
+                history.replaceState(null, '', boardRoute.pathname + boardRoute.search + boardRoute.hash);
+                return true;
+            }
+        };
+
         function setMenu(open) { window.OrbitNavigation.setOpen(open); }
 
         function switchPanel(name, addHistory){
             if(!Object.prototype.hasOwnProperty.call(TITLES, name)) name = DEFAULT_PANEL;
             activePanel = name;
+            document.body.classList.toggle('lounge-active', name === 'lounge');
+            var teaser = document.querySelector('.panel-wrap > .story-teaser');
+            if (teaser) {
+                var panelWrap = teaser.parentElement;
+                if (name === 'lounge') panelWrap.appendChild(teaser);
+                else panelWrap.insertBefore(teaser, panelWrap.firstElementChild);
+            }
             document.querySelectorAll('.nav-item[data-panel]').forEach(function(b){
                 var on = b.getAttribute('data-panel') === name;
                 b.classList.toggle('on', on);
@@ -339,7 +367,9 @@
             // 처음 열 때만 iframe 로드 (지연 로딩)
             if(name === 'lounge' && !loungeLoaded){
                 var fr = document.getElementById('loungeFrame');
-                fr.src = fr.getAttribute('data-src');
+                var boardURL = new URL(fr.getAttribute('data-src'), location.href);
+                if (new URLSearchParams(location.search).has('write')) boardURL.searchParams.set('write', '1');
+                fr.src = boardURL.pathname + boardURL.search;
                 loungeLoaded = true;
             }
             if(name === 'sky' && !skyLoaded){
@@ -354,12 +384,16 @@
             }
             if(location.hash !== '#' + name) history[addHistory ? 'pushState' : 'replaceState'](null, '', '#' + name);
             if (loungeLoaded) document.getElementById('loungeFrame').contentWindow.postMessage({ orbit: 'panelActive', active: name === 'lounge' }, location.origin);
+            if (window.OrbitAnalytics) window.OrbitAnalytics.panel(name);
         }
         document.getElementById('sideNav').addEventListener('click', function(e){
             var link = e.target.closest('.nav-item[data-panel]');
             if(!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
             e.preventDefault();
             switchPanel(link.getAttribute('data-panel'), true);
+            if(link.getAttribute('data-panel') === 'lounge' && loungeLoaded){
+                document.getElementById('loungeFrame').contentWindow.postMessage({ orbit: 'boardList' }, location.origin);
+            }
         });
         window.addEventListener('hashchange', function(){
             // #join은 패널이 아니라 대화상자를 여는 신호다 (광장에서 단독 페이지로 넘어올 때)
@@ -382,6 +416,11 @@
             // 상한을 두는 건 잘못된 값이 와도 페이지가 끝없이 길어지지 않게 하기 위함이다.
             if(ev.data && ev.data.orbit === 'loungeReady'){
                 ev.source.postMessage({ orbit:'panelActive', active: activePanel === 'lounge' }, location.origin);
+            }
+            if(ev.data && ev.data.orbit === 'writingState' && typeof ev.data.writing === 'boolean' && ev.source === document.getElementById('loungeFrame').contentWindow){
+                // Old/cached children still send messages; derive the current
+                // route so a delayed old boolean cannot overwrite newer state.
+                window.OrbitBoardRoute.syncWriting(ev.source);
             }
             if(ev.data && ev.data.orbit === 'profileChanged' && ev.source === document.getElementById('loungeFrame').contentWindow){
                 syncChip();
@@ -412,7 +451,7 @@
             var state = window.OrbitMembers.state, profile = state.profile;
             var registered = state.user && !state.user.is_anonymous && state.user.email_confirmed_at;
             document.getElementById('profileChipText').textContent = profile
-                ? profile.nickname + ' · Lv.' + profile.level : registered ? '내 계정' : '궤도 진입하기';
+                ? window.OrbitMembers.displayName(profile) : registered ? '내 계정' : '로그인';
             document.getElementById('headerSignup').hidden = !!registered;
             if(loungeLoaded) document.getElementById('loungeFrame').contentWindow.postMessage({orbit:'profileChanged'},location.origin);
         }

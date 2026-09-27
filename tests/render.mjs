@@ -13,6 +13,8 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, extname } from 'node:path';
 import { chromium } from 'playwright';
 
+await import('./time-render.mjs');
+
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript',
                 '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon',
@@ -285,7 +287,8 @@ console.log('\n[8] 밤하늘 달력 — 일정이 비거나 멀 때 오늘 밤 �
     if (d !== null) {
       EVENTS.push({
         id: 'x', type: 'meteor', ic: '☄️', kr: k, name: '검사용 유성우',
-        watch: new Date(Date.now() + d * 86400000).toISOString(),
+        watchStart: new Date(Date.now() + d * 86400000).toISOString(),
+        watchEnd: new Date(Date.now() + d * 86400000 + 7 * 3600000).toISOString(),
         dateText: '검사용', peakText: '검사용', zhr: 50,
         radiant: '검사용', best: '검사용', desc: '검사용 설명입니다.'
       });

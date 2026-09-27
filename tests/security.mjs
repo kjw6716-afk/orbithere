@@ -42,14 +42,32 @@ const legacy = (
     `insert into posts(nick,orbit,text,author_device) values ('이전','report','legacy content','public-device') returning id`,
   )
 ).rows[0].id;
+// Historical rows have no trustworthy account ownership and must stay untouched.
+await db.exec(`insert into reactions(post_id,emoji,device_id,created_at) values
+ ('${legacy}','⭐','legacy-device-one','2025-01-01'),
+ ('${legacy}','⭐','legacy-device-two','2025-01-02'),
+ ('${legacy}','😂','${A}','2025-01-03');`);
+let reactionUpgradeFixture;
 await db.exec(`insert into admins(user_id) values('${ADMIN}');`);
 await db.exec(sql('migration_011_authenticated_ownership.sql'));
 // The migration must also be safe to rerun.
 await db.exec(sql('migration_011_authenticated_ownership.sql'));
 for (const name of readdirSync(new URL('../supabase/migrations/', import.meta.url))
   // Build pre-membership activity first, then verify the upgrade boundary below.
-  .filter((n) => n.endsWith('.sql') && !n.endsWith('_member_only_writing.sql') && !n.endsWith('_nickname_change_cooldown.sql'))
+  .filter((n) => n.endsWith('.sql') && !n.endsWith('_member_only_writing.sql') && !n.endsWith('_nickname_change_cooldown.sql') && !n.endsWith('_operator_display_badge.sql') && !n.endsWith('_author_post_edit.sql'))
   .sort()) {
+  if (name.endsWith('_single_reaction_per_post.sql')) {
+    await db.query(`select set_config('request.jwt.claim.sub',$1,false)`,[A]);
+    await db.exec(`insert into reactions(post_id,emoji,device_id) values
+      ('${legacy}','⭐','ignored'),('${legacy}','🔥','ignored'),('${legacy}','❤️','ignored');
+      update reactions set created_at='2026-01-01' where author_id='${A}';`);
+    await db.query(`select set_config('request.jwt.claim.sub',$1,false)`,[B]);
+    await db.exec(`insert into reactions(post_id,emoji,device_id) values
+      ('${legacy}','⭐','ignored'),('${legacy}','👏','ignored');
+      update reactions set created_at=case when emoji='👏' then '2026-01-02'::timestamptz else '2026-01-01'::timestamptz end where author_id='${B}';`);
+    reactionUpgradeFixture=(await db.query(`select id,post_id,author_id,emoji,device_id,created_at from reactions where post_id='${legacy}' order by id`)).rows;
+    await db.query(`select set_config('request.jwt.claim.sub','',false)`);
+  }
   await db.exec(sql('migrations/' + name));
   await db.exec(sql('migrations/' + name));
 }
@@ -70,6 +88,27 @@ async function denied(name, role, id, query) {
   count++;
   console.log('✓ ' + name);
 }
+const upgradedReactions=(await db.query(`select id,post_id,author_id,emoji,device_id,created_at from reactions where post_id='${legacy}' order by id`)).rows;
+check('reaction upgrade preserves legacy NULL owners byte-for-byte',JSON.stringify(upgradedReactions.filter(r=>r.author_id===null))===JSON.stringify(reactionUpgradeFixture.filter(r=>r.author_id===null)));
+check('reaction upgrade keeps newest timestamp then newest ID per account',upgradedReactions.filter(r=>r.author_id).length===2&&upgradedReactions.find(r=>r.author_id===A).emoji==='❤️'&&upgradedReactions.find(r=>r.author_id===B).emoji==='👏');
+const backedUpReactions=(await db.query('select id,post_id,author_id,emoji,device_id,created_at from orbit_reaction_private.migration_backup order by id')).rows;
+check('removed duplicate reactions retain exact recoverable private copies',JSON.stringify(backedUpReactions)===JSON.stringify(reactionUpgradeFixture.filter(r=>!upgradedReactions.some(k=>k.id===r.id))));
+check('reaction migration rerun does not duplicate backups',backedUpReactions.length===3);
+await denied('visitors cannot read reaction recovery copies','anon',null,'select * from orbit_reaction_private.migration_backup');
+await denied('authenticated users cannot read reaction recovery copies','authenticated',A,'select * from orbit_reaction_private.migration_backup');
+await denied('authenticated users cannot modify reaction recovery copies','authenticated',A,'delete from orbit_reaction_private.migration_backup');
+await db.exec('reset role');
+check('reaction archive has RLS enabled',(await db.query(`select relrowsecurity from pg_class where oid='orbit_reaction_private.migration_backup'::regclass`)).rows[0].relrowsecurity);
+check('reaction public functions are invoker wrappers',(await db.query(`select count(*) as n from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in('set_reaction','delete_reaction') and p.prosecdef`)).rows[0].n===0);
+await denied('legacy device-ID collision fails without claiming the legacy reaction','authenticated',A,`select set_reaction('${legacy}','😂',true)`);
+check('failed replacement preserves the previously selected emoji',(await as('authenticated',A,`select * from reaction_summary(array['${legacy}']::uuid[],null)`)).rows.find(r=>r.mine).emoji==='❤️');
+await db.exec(`reset role; begin; delete from auth.users where id='${A}'`);
+check('account deletion also removes private duplicate recovery copies',(await db.query(`select count(*) as n from orbit_reaction_private.migration_backup where author_id='${A}'`)).rows[0].n===0);
+await db.exec('rollback; reset role');
+await db.exec(`update orbit_reaction_private.migration_backup set archived_at=now()-interval '31 days' where id=(select min(id) from orbit_reaction_private.migration_backup)`);
+await as('authenticated',A,`select set_reaction('${legacy}','❤️',true)`);
+await db.exec('reset role');
+check('expired recovery copies are pruned by a successful reaction',(await db.query('select count(*) as n from orbit_reaction_private.migration_backup')).rows[0].n===2);
 check(
   'public reading remains available',
   (await as('anon', null, `select id,nick,text from posts where id='${legacy}'`)).rows.length === 1,
@@ -171,6 +210,35 @@ check(
   (await as('anon', null, `select * from reaction_summary(array['${post.id}']::uuid[],null)`)).rows
     .length === 0,
 );
+await denied('unauthenticated visitors cannot set a reaction','anon',null,`select set_reaction('${post.id}','⭐',true)`);
+await denied('helper denies caller without an authenticated identity','authenticated',null,`select orbit_reaction_private.set_reaction('${post.id}','⭐',true)`);
+await denied('reaction choice must be supported','authenticated',A,`select set_reaction('${post.id}','unknown',true)`);
+await denied('reaction desired state cannot be NULL','authenticated',A,`select set_reaction('${post.id}','⭐',null)`);
+await denied('reaction target must exist','authenticated',A,`select set_reaction('99999999-9999-4999-8999-999999999999','⭐',true)`);
+await as('authenticated',A,`select set_reaction('${post.id}','⭐',true)`);
+await as('authenticated',A,`select set_reaction('${post.id}','⭐',true)`);
+check('setting the same reaction is retry-idempotent',(await as('authenticated',A,`select * from reaction_summary(array['${post.id}']::uuid[],null)`)).rows.length===1);
+await db.exec('reset role');
+const beforeReplace=(await db.query(`select id from reactions where post_id='${post.id}' and author_id='${A}'`)).rows[0].id;
+await as('authenticated',A,`select set_reaction('${post.id}','🔥',true)`);
+await as('authenticated',A,`select set_reaction('${post.id}','🔥',true)`);
+await as('authenticated',A,`select set_reaction('${post.id}','⭐',false)`);
+await as('authenticated',A,`select delete_reaction('${post.id}','⭐','ignored')`);
+const replaced=(await as('authenticated',A,`select * from reaction_summary(array['${post.id}']::uuid[],null)`)).rows;
+check('alternate emoji replaces the old one and stale deselect does not erase it',replaced.length===1&&replaced[0].emoji==='🔥'&&replaced[0].mine===true&&Number(replaced[0].n)===1);
+await db.exec('reset role');
+check('reaction replacement updates the existing row instead of accumulating rows',(await db.query(`select id from reactions where post_id='${post.id}' and author_id='${A}'`)).rows[0].id===beforeReplace);
+await as('authenticated',B,`select set_reaction('${post.id}','🔥',false)`);
+await as('authenticated',B,`select set_reaction('${post.id}','👏',true)`);
+const independent=(await as('authenticated',A,`select * from reaction_summary(array['${post.id}']::uuid[],null)`)).rows;
+check('another account cannot clear my reaction and owns its own choice',independent.length===2&&independent.find(r=>r.emoji==='🔥').mine&&independent.find(r=>r.emoji==='👏').mine===false);
+await denied('cached direct INSERT cannot add a second emoji','authenticated',A,`insert into reactions(post_id,emoji,device_id) values('${post.id}','❤️','new-device')`);
+await denied('forged reaction author cannot bypass ownership','authenticated',B,`insert into reactions(post_id,emoji,device_id,author_id) values('${post.id}','❤️','forged-device','${A}')`);
+await denied('direct reaction UPDATE remains unavailable','authenticated',A,`update reactions set emoji='❤️' where post_id='${post.id}'`);
+await as('authenticated',A,`select set_reaction('${post.id}','🔥',false)`);
+await as('authenticated',A,`select set_reaction('${post.id}','🔥',false)`);
+check('same-emoji cancellation is idempotent and leaves other accounts intact',(await as('authenticated',B,`select * from reaction_summary(array['${post.id}']::uuid[],null)`)).rows.every(r=>r.emoji==='👏'&&Number(r.n)===1&&r.mine));
+await as('authenticated',B,`select set_reaction('${post.id}','👏',false)`);
 await as(
   'authenticated',
   A,
@@ -202,6 +270,8 @@ check(
   (await as('authenticated', ADMIN, `delete from posts where id='${legacy}' returning id`)).rows
     .length === 1,
 );
+await db.exec('reset role');
+check('deleting a post removes its private reaction recovery copies',(await db.query(`select count(*) as n from orbit_reaction_private.migration_backup where post_id='${legacy}'`)).rows[0].n===0);
 await as(
   'authenticated',
   A,
@@ -744,10 +814,13 @@ await denied('client cannot finalize account deletion','authenticated',M1,`selec
 await denied('withdrawal cannot lock out the operator','service_role',null,`select member_begin_withdrawal('${ADMIN}')`);
 await denied('service deletion requires prior initiation','service_role',null,`select member_finish_withdrawal('${M2}')`);
 await db.exec(`reset role; insert into storage.objects(bucket_id,name) values('board-images','${M1}/test/photo.jpg');`);
+await as('authenticated',M1,`select set_reaction('${mp.id}','⭐',true)`);
 await as('service_role',null,`select member_begin_withdrawal('${M1}')`);
 await denied('withdrawing accounts cannot change their profile','authenticated',M1,`select member_save_profile('탈퇴중','2026-09-14-members')`);
 await denied('withdrawing accounts cannot earn XP','authenticated',M1,'select member_visit()');
 await denied('withdrawing accounts cannot add posts','authenticated',M1,`insert into posts(nick,orbit,text,title) values('탈퇴중','free','삭제 중 새 글','제목')`);
+await denied('withdrawing accounts cannot replace reactions','authenticated',M1,`select set_reaction('${mp.id}','🔥',true)`);
+check('withdrawal guard leaves an existing reaction unchanged',(await as('authenticated',M1,`select * from reaction_summary(array['${mp.id}']::uuid[],null)`)).rows[0].emoji==='⭐');
 check('withdrawing profiles are hidden from public cards',(await as('anon',null,`select member_cards(array['${M1}']::uuid[]) as p`)).rows[0].p.length===0);
 const paths=(await as('service_role',null,`select member_withdrawal_files('${M1}') as p`)).rows[0].p;
 check('withdrawal returns only the authenticated account photo prefix',paths.length===1&&paths[0].startsWith(M1+'/'));
@@ -819,6 +892,21 @@ const firstNickname=(await as('authenticated',N,`select member_save_profile('첫
 check('first nickname can be saved immediately',firstNickname.nickname==='첫닉네임');
 await denied('first nickname also starts the 30-day interval','authenticated',N,`select member_save_profile('두번째','2026-09-14-members')`);
 check('public cards do not expose nickname-change timestamps',!(await as('anon',null,`select member_cards(array['${U}']::uuid[]) as p`)).rows[0].p[0].nickname_change_available_at);
+await db.exec('reset role');
+const roleMigration=readdirSync(new URL('../supabase/migrations/',import.meta.url)).find(n=>n.endsWith('_operator_display_badge.sql'));
+await db.exec(sql('migrations/'+roleMigration));
+await db.exec(sql('migrations/'+roleMigration));
+const operatorProfile=(await as('authenticated',ADMIN,`select member_save_profile('Orbit','2026-09-14-members') as p`)).rows[0].p;
+check('protected administrator registry supplies the operator flag',operatorProfile.is_admin===true);
+check('ordinary member profile has an explicit false operator flag',(await as('authenticated',M2,'select member_profile() as p')).rows[0].p.is_admin===false);
+await as('authenticated',N,`select set_config('request.jwt.claims','{"user_metadata":{"is_admin":true,"role":"admin"}}',false)`);
+check('user metadata does not grant an operator display flag',(await as('authenticated',N,'select member_profile() as p')).rows[0].p.is_admin===false);
+await db.exec(`reset role; update orbit_members_private.profiles set nickname_changed_at=now()-interval '31 days' where user_id='${N}'`);
+check('operator-like nickname does not grant an operator flag',(await as('authenticated',N,`select member_save_profile('운영자','2026-09-14-members') as p`)).rows[0].p.is_admin===false);
+const roleCards=(await as('anon',null,`select member_cards(array['${ADMIN}','${N}','${M2}']::uuid[]) as p`)).rows[0].p;
+check('public cards expose only safe display fields including the protected role flag',roleCards.length===3&&roleCards.every(c=>Object.keys(c).sort().join(',')==='badge,is_admin,level,nickname,user_id')&&roleCards.find(c=>c.user_id===ADMIN).is_admin===true&&roleCards.filter(c=>c.user_id!==ADMIN).every(c=>c.is_admin===false));
+check('public card role flag does not expose the administrator registry',(await as('anon',null,'select * from admins')).rows.length===0);
+await denied('ordinary members cannot add themselves to the administrator registry','authenticated',N,`insert into admins(user_id) values('${N}')`);
 const deliverySQL = `select record_delivery_event('evt-test','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','user@example.test','email.bounced','Permanent',now())`;
 await denied('anonymous callers cannot forge email delivery alerts','anon',null,deliverySQL);
 await denied('members cannot forge email delivery alerts','authenticated',U,deliverySQL);
@@ -840,5 +928,126 @@ await db.exec(`reset role; update orbit_ops_private.delivery_events set occurred
 check('expired delivery metadata is purged on administrator read',(await as('authenticated',ADMIN,'select admin_delivery_alerts() as data')).rows[0].data.events.length===0);
 await db.exec('reset role');
 check('operational public wrappers do not have definer privileges',(await db.query(`select count(*) as n from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('record_delivery_event','admin_delivery_alerts','acknowledge_delivery_event') and p.prosecdef`)).rows[0].n===0);
+await db.exec('reset role; drop table orbit_reaction_private.migration_backup');
+const reactionMigration=readdirSync(new URL('../supabase/migrations/',import.meta.url)).find(n=>n.endsWith('_single_reaction_per_post.sql'));
+await db.exec(sql('migrations/'+reactionMigration));
+check('clean reaction migrations do not create an unnecessary backup table',(await db.query(`select to_regclass('orbit_reaction_private.migration_backup') as table_name`)).rows[0].table_name===null);
+await as('authenticated',U,`select set_reaction('${newMemberPost.id}','⭐',true)`);
+check('reaction writes work when no recovery table was needed',(await as('authenticated',U,`select * from reaction_summary(array['${newMemberPost.id}']::uuid[],null)`)).rows[0].mine);
+
+// Author edits use the real migration, grants, RLS, triggers and RPCs. Applying
+// this after membership also verifies the existing-data upgrade and rerun.
+await db.exec('reset role');
+const postUpdatePermissions = async () => (await db.query(`select jsonb_build_object(
+ 'policies',(select jsonb_agg(to_jsonb(p) order by policyname) from
+  (select policyname,cmd,roles::text,qual,with_check from pg_policies where schemaname='public' and tablename='posts') p),
+ 'grants',(select jsonb_agg(to_jsonb(g) order by grantee,column_name) from
+  (select grantee,column_name,privilege_type from information_schema.column_privileges where table_schema='public'
+   and table_name='posts' and privilege_type='UPDATE' and grantee in ('anon','authenticated')) g)) as permissions`)).rows[0].permissions;
+const updatePermissionsBefore = await postUpdatePermissions();
+const editMigration = readdirSync(new URL('../supabase/migrations/',import.meta.url)).find(n=>n.endsWith('_author_post_edit.sql'));
+await db.exec(sql('migrations/'+editMigration));
+await db.exec(sql('migrations/'+editMigration));
+check('edit migration leaves every posts policy and UPDATE column grant unchanged',JSON.stringify(await postUpdatePermissions())===JSON.stringify(updatePermissionsBefore));
+check('existing posts are not marked edited during migration',(await db.query('select count(*) as n from posts where edited_at is not null')).rows[0].n===0);
+const editFunctions = (await db.query(`select n.nspname,p.proname,p.prosecdef,p.proconfig,p.proargnames from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+ where (n.nspname='public' and p.proname='board_edit_post') or (n.nspname='orbit_post_edit_private' and p.proname='edit_post') order by n.nspname`)).rows;
+check('edit API is an invoker wrapper with one private definer and an empty search path',editFunctions.length===2&&editFunctions[0].prosecdef&&!editFunctions[1].prosecdef&&editFunctions.every(f=>f.proconfig.includes('search_path=""')));
+check('edit functions accept only post identity and the four permitted content fields',editFunctions.every(f=>f.proargnames.join(',')==='p_id,p_title,p_text,p_orbit,p_observation'));
+check('unauthenticated roles have no edit execute grant',(await db.query(`select has_function_privilege('anon','public.board_edit_post(uuid,text,text,text,jsonb)','execute') or has_function_privilege('anon','orbit_post_edit_private.edit_post(uuid,text,text,text,jsonb)','execute') as allowed`)).rows[0].allowed===false);
+check('unrelated roles cannot inherit a PUBLIC edit execute grant',(await db.query(`select has_function_privilege('service_role','public.board_edit_post(uuid,text,text,text,jsonb)','execute') or has_function_privilege('service_role','orbit_post_edit_private.edit_post(uuid,text,text,text,jsonb)','execute') as allowed`)).rows[0].allowed===false);
+
+const editPost='dddddddd-dddd-4ddd-8ddd-000000000001';
+const editPhotos=(await as('authenticated',U,`select reserve_board_images('${editPost}',2) as paths`)).rows[0].paths;
+for(const image of editPhotos) await as('authenticated',U,`insert into storage.objects(bucket_id,name) values('board-images','${image}'),('board-images','${image.replace('.jpg','.thumb.jpg')}')`);
+await as('authenticated',U,`select create_observation_post('${editPost}','무시할닉','수정전 검색별','report','수정전 본문별',array['${editPhotos.join("','")}'],false,'{"method":"phone","target":"달"}')`);
+const editComment=(await as('authenticated',M2,`insert into comments(post_id,nick,text) values('${editPost}','무시할닉','보존할 읽은 댓글') returning id`)).rows[0].id;
+await as('authenticated',M2,`insert into comments(post_id,nick,text) values('${editPost}','무시할닉','보존할 새 댓글')`);
+await as('authenticated',U,`select mark_board_comments_read('${editPost}',array['${editComment}']::uuid[])`);
+await as('authenticated',U,`select set_reaction('${editPost}','⭐',true)`);
+await as('authenticated',M2,`select set_reaction('${editPost}','🔥',true)`);
+await as('authenticated',U,`select record_post_view('${editPost}')`);
+await as('authenticated',M2,`select record_post_view('${editPost}')`);
+await as('authenticated',ADMIN,`update posts set is_pinned=true where id='${editPost}'`);
+const editProfileBefore=(await as('authenticated',U,'select member_visit() as p')).rows[0].p;
+const activityBefore=(await as('authenticated',U,`select * from board_activity_posts() where id='${editPost}'`)).rows[0];
+await db.exec('reset role');
+const editBefore=(await db.query(`select * from posts where id='${editPost}'`)).rows[0];
+const relatedEditSnapshot=async () => (await db.query(`select jsonb_build_object(
+ 'comments',(select jsonb_agg(to_jsonb(c) order by id) from comments c where post_id='${editPost}'),
+ 'reactions',(select jsonb_agg(to_jsonb(r) order by id) from reactions r where post_id='${editPost}'),
+ 'views',(select to_jsonb(v) from post_view_counts v where post_id='${editPost}'),
+ 'recent_views',(select jsonb_agg(to_jsonb(v) order by viewer_id) from orbit_view_private.recent_views v where post_id='${editPost}'),
+ 'read',(select jsonb_agg(to_jsonb(r) order by user_id,comment_id) from orbit_activity_private.read_comments r),
+ 'rewards',(select jsonb_agg(to_jsonb(r) order by user_id,reward_key) from orbit_members_private.rewards r),
+ 'write_events',(select jsonb_agg(to_jsonb(w) order by kind,source_id,occurred_at) from orbit_private.write_events w),
+ 'storage',(select jsonb_agg(to_jsonb(o) order by id) from storage.objects o),
+ 'reservations',(select jsonb_agg(to_jsonb(u) order by path) from orbit_private.board_uploads u),
+ 'post_count',(select count(*) from posts)) as snapshot`)).rows[0].snapshot;
+const relatedBefore=await relatedEditSnapshot();
+const editCall=(id=editPost,title="'수정후 검색별'",body="'수정후 본문별'",orbit="'gear'",observation=`'{"method":"telescope","target":"목성","camera":"새관측카메라"}'::jsonb`,fn='board_edit_post') =>
+ `select ${fn}('${id}',${title},${body},${orbit},${observation}) as id`;
+for(const [role,id,label] of [['anon',null,'visitor'],['authenticated',null,'missing session'],['authenticated',A,'anonymous Auth'],['authenticated',M2,'other member'],['authenticated',ADMIN,'administrator editing another author']]) {
+ await denied(label+' cannot call the edit RPC',role,id,editCall());
+ await denied(label+' cannot bypass the edit wrapper',role,id,editCall(editPost,undefined,undefined,undefined,undefined,'orbit_post_edit_private.edit_post'));
+}
+await denied('missing posts cannot be edited','authenticated',U,editCall('dddddddd-dddd-4ddd-8ddd-000000000099'));
+await db.exec(`reset role; update auth.users set email_confirmed_at=null where id='${U}'`);
+await denied('unverified authors cannot edit','authenticated',U,editCall());
+await db.exec(`reset role; update auth.users set email_confirmed_at=now() where id='${U}'; update orbit_members_private.profiles set deleting_at=now() where user_id='${U}'`);
+await denied('withdrawing authors cannot edit','authenticated',U,editCall());
+await db.exec(`reset role; update orbit_members_private.profiles set deleting_at=null where user_id='${U}'`);
+for(const [label,title,body,orbit,observation] of [
+ ['empty title',"''"],['blank title',"'   '"],['missing title','null'],['long title',"repeat('가',81)"],
+ ['empty body',undefined,"''"],['blank body',undefined,"'   '"],['missing body',undefined,'null'],['long body',undefined,"repeat('가',5001)"],
+ ['unknown orbit',undefined,undefined,"'administrator'"],['missing orbit',undefined,undefined,'null'],
+ ['invalid observation',undefined,undefined,undefined,`'{"latitude":"37"}'::jsonb`],
+ ['unknown method',undefined,undefined,undefined,`'{"method":"admin"}'::jsonb`],
+ ['oversized observation',undefined,undefined,undefined,"jsonb_build_object('target',repeat('가',121))"],
+ ['null observation',undefined,undefined,undefined,'null'],['non-object observation',undefined,undefined,undefined,"'[]'::jsonb"],
+]) await denied('edit validation rejects '+label,'authenticated',U,editCall(editPost,title,body,orbit,observation));
+for(const [column,value] of [['title',"'위조'"],['text',"'위조'"],['orbit',"'ask'"],['observation',"'{}'"],['edited_at','now()'],['image_paths',"'{}'"],['author_id',`'${M2}'`],['nick',"'위조'"],['created_at','now()']]) {
+ await denied('authors cannot directly UPDATE '+column,'authenticated',U,`update posts set ${column}=${value} where id='${editPost}'`);
+}
+check('author cannot change their own pin through REST',(await as('authenticated',U,`update posts set is_pinned=false,pinned_at=null where id='${editPost}' returning id`)).rows.length===0);
+await denied('pin grant cannot be combined with a direct content update','authenticated',U,`update posts set is_pinned=false,title='위조' where id='${editPost}'`);
+await db.exec('reset role');
+check('denied edit attempts preserve the entire original post',JSON.stringify((await db.query(`select * from posts where id='${editPost}'`)).rows[0])===JSON.stringify(editBefore));
+check('unchanged save returns the same post',(await as('authenticated',U,editCall(editPost,"'수정전 검색별'","'수정전 본문별'","'report'",`'{"method":"phone","target":"달"}'::jsonb`))).rows[0].id===editPost);
+check('unchanged save does not mark a post edited',(await as('anon',null,`select edited_at from posts where id='${editPost}'`)).rows[0].edited_at===null);
+check('owner edits title, body, category and observations through one RPC',(await as('authenticated',U,editCall())).rows[0].id===editPost);
+const editAfter=(await as('anon',null,`select title,text,orbit,observation,edited_at from posts where id='${editPost}'`)).rows[0];
+check('saved detail has all edited content and a server edit timestamp',editAfter.title==='수정후 검색별'&&editAfter.text==='수정후 본문별'&&editAfter.orbit==='gear'&&editAfter.observation.target==='목성'&&editAfter.edited_at instanceof Date);
+await as('authenticated',U,editCall());
+check('retrying the same edit keeps its timestamp',(await as('anon',null,`select edited_at from posts where id='${editPost}'`)).rows[0].edited_at.getTime()===editAfter.edited_at.getTime());
+await db.exec('reset role');
+const wholeEditAfter=(await db.query(`select * from posts where id='${editPost}'`)).rows[0];
+const protectedPost=row=>Object.fromEntries(Object.entries(row).filter(([key])=>!['title','text','orbit','observation','edited_at'].includes(key)));
+check('edit preserves identity, ownership, device, nickname, date, images and pin fields exactly',JSON.stringify(protectedPost(wholeEditAfter))===JSON.stringify(protectedPost(editBefore)));
+const relatedAfter=await relatedEditSnapshot();
+for(const key of Object.keys(relatedBefore)) check('edit preserves related '+key+' exactly',JSON.stringify(relatedAfter[key])===JSON.stringify(relatedBefore[key]));
+for(const query of ['검색별','본문별','새관측카메라','망원경']) check('search immediately includes new content: '+query,(await as('anon',null,`select id,title from board_posts(p_query:='${query}',p_pinned:=true)`)).rows.some(p=>p.id===editPost&&p.title==='수정후 검색별'));
+check('old content disappears from search',(await as('anon',null,"select id from board_posts(p_query:='수정전',p_pinned:=true)")).rows.every(p=>p.id!==editPost));
+check('new category contains edited post',(await as('anon',null,"select id from board_posts(p_orbit:='gear',p_pinned:=true)")).rows.some(p=>p.id===editPost));
+check('old category excludes edited post',(await as('anon',null,"select id from board_posts(p_orbit:='report',p_pinned:=true)")).rows.every(p=>p.id!==editPost));
+const activityAfter=(await as('authenticated',U,`select * from board_activity_posts() where id='${editPost}'`)).rows[0];
+check('activity retains post identity and unread state with the new title',activityAfter.id===activityBefore.id&&activityAfter.title==='수정후 검색별'&&activityAfter.unread_count===activityBefore.unread_count&&activityAfter.view_count===activityBefore.view_count);
+check('activity search uses edited content',(await as('authenticated',U,"select id from board_activity_posts(p_query:='새관측카메라')")).rows.some(p=>p.id===editPost));
+const editProfileAfter=(await as('authenticated',U,'select member_visit() as p')).rows[0].p;
+check('post-save member refresh cannot grant another first-post or writing reward',editProfileAfter.xp===editProfileBefore.xp&&JSON.stringify(editProfileAfter.history)===JSON.stringify(editProfileBefore.history));
+await as('authenticated',U,editCall(editPost,"'  공백정리 제목  '","'  공백정리 본문  '","'ask'","'{}'::jsonb"));
+const clearedObservation=(await as('anon',null,`select title,text,observation from posts where id='${editPost}'`)).rows[0];
+check('edit trims title/body and allows clearing optional metadata',clearedObservation.title==='공백정리 제목'&&clearedObservation.text==='공백정리 본문'&&Object.keys(clearedObservation.observation).length===0);
+await as('authenticated',ADMIN,`update posts set is_pinned=false where id='${editPost}'`);
+check('administrator retains unpin permission',(await as('anon',null,`select is_pinned,pinned_at from posts where id='${editPost}'`)).rows.every(p=>!p.is_pinned&&p.pinned_at===null));
+const adminOwn=(await as('authenticated',ADMIN,`select id from posts where author_id='${ADMIN}' limit 1`)).rows[0].id;
+check('administrator may edit their own authored post',(await as('authenticated',ADMIN,editCall(adminOwn))).rows[0].id===adminOwn);
+await denied('administrator still cannot directly UPDATE another author content','authenticated',ADMIN,`update posts set text='운영자 수정' where id='${editPost}'`);
+const unprofiledAuthor='eeeeeeee-eeee-4eee-8eee-000000000001';
+await db.exec(`reset role; insert into auth.users(id,is_anonymous,email_confirmed_at) values('${unprofiledAuthor}',false,now()); update posts set author_id='${unprofiledAuthor}' where id='${editPost}'`);
+await denied('verified authors without profile consent cannot edit','authenticated',unprofiledAuthor,editCall());
+await db.exec(`reset role; update posts set author_id=null where id='${editPost}'`);
+await denied('legacy NULL-owner content cannot be claimed by its old author','authenticated',U,editCall());
+await denied('administrator cannot claim legacy NULL-owner content','authenticated',ADMIN,editCall());
 await db.close();
 console.log(`Security: ${count} checks passed`);

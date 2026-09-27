@@ -39,19 +39,21 @@
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css"
     />
     <link rel="stylesheet" href="/orbit.css?v=20260912-brand" />
-    <link rel="stylesheet" href="board.css?v=20260914-community" />
+    <link rel="stylesheet" href="board.css?v=20260927-board-spacing" />
     <script>
       if (new URLSearchParams(location.search).get('embed'))
         document.documentElement.classList.add('embed');
     </script>
     <script src="orbit-config.js"></script>
+    <script src="orbit-analytics.js?v=20260927-funnel" defer></script>
     <script src="visits.js" defer></script>
     <link rel="stylesheet" href="news-brief.css?v=20260914-community">
     <script src="news-data.js?v=20260914-ast" defer></script>
     <script src="news-brief.js?v=20260914-community" defer></script>
-  <link rel="stylesheet" href="site-nav.css?v=20260914-community">
+  <link rel="stylesheet" href="site-nav.css?v=20260926-mint">
+  <link rel="stylesheet" href="lounge-design.css?v=20260927-board-edit">
 </head>
-  <body>
+  <body class="lounge-page">
     <div class="bg-glow" aria-hidden="true"></div>
     <a class="board-skip" href="#boardMain">본문으로 바로가기</a>
     <div class="orbit-page-layout">
@@ -74,32 +76,48 @@
 <!-- orbit-navigation:end -->
 <div class="orbit-page-content">
     <main class="board-shell" id="boardMain">
-      <a data-account-link hidden href="account.html" data-account-open="login" style="display:block;text-align:right;padding:12px;color:#ffb36b">로그인 · 회원가입</a>
+      <div class="board-account-actions">
+        <a class="account-entry-button" data-account-link hidden href="main.html?account=login#lounge" data-account-open="login" aria-haspopup="dialog" aria-expanded="false">로그인</a>
+        <a class="account-signup-link" data-account-signup hidden href="main.html?account=signup#lounge" data-account-open="signup" aria-haspopup="dialog" aria-expanded="false">회원가입</a>
+      </div>
       <div id="loungeStatus" class="board-status" role="status" aria-live="polite"></div>
       <section id="listView">
-        <header class="board-heading">
-          <div>
+        <header class="board-heading board-hero">
+          <picture class="board-hero-sky" aria-hidden="true">
+            <source type="image/avif" srcset="images/nebula-landing-1200.avif 1200w, images/nebula-landing-1600.avif 1600w, images/nebula-landing-2000.avif 2000w, images/nebula-landing-2430.avif 2430w" sizes="(min-width: 1680px) 1372px, 100vw">
+            <img src="images/nebula-landing-1600.webp" srcset="images/nebula-landing-1200.webp 1200w, images/nebula-landing-1600.webp 1600w, images/nebula-landing-2000.webp 2000w, images/nebula-landing-2430.webp 2430w" sizes="(min-width: 1680px) 1372px, 100vw" width="2430" height="1457" alt="" decoding="async">
+          </picture>
+          <div class="board-hero-copy">
+            <span class="board-eyebrow">SAME SKY, OUR STORIES</span>
             <h1><a class="page-title-link" id="boardTitle" data-board-nav href="lounge.html#all">자유게시판</a></h1>
             <p id="boardIntro">오늘 본 하늘부터, 아직 모르는 별까지.</p>
           </div>
           <div class="board-heading-actions">
             <a class="button subtle" id="activityLink" data-board-nav href="lounge.html?activity=mine">내 활동 <span class="activity-badge" id="activityBadge" hidden></span></a>
-            <a class="button primary" id="writeTop" href="lounge.html?write=1">글쓰기</a>
+            <a class="button primary" id="writeTop" href="lounge.html?write=1"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5 4 4M4 20l4-1L20 7a2.8 2.8 0 0 0-4-4L4 15v5Z"/></svg>글쓰기</a>
           </div>
         </header>
         <div class="activity-status" id="activityStatus" role="status" hidden>새 답글을 확인하지 못했어요. <button class="text-button" id="activityRetry" type="button">다시 확인</button></div>
         <div class="activity-panel" id="activityPanel" hidden>
           <nav class="activity-tabs" aria-label="내 활동 분류" id="activityTabs"></nav>
-          <p class="activity-note">이 브라우저에서 남긴 글과 댓글을 모았어요. 브라우저 데이터를 지우거나 다른 기기로 옮기면 이전 활동을 이어서 확인할 수 없어요.</p>
+          <p class="activity-note">로그인한 계정으로 남긴 글과 댓글을 모았어요. 다른 기기에서도 같은 계정으로 로그인하면 이어서 확인할 수 있어요. 예전 비회원 활동은 작성한 브라우저의 인증 상태가 유지되어야 확인할 수 있어요.</p>
         </div>
-        <div class="board-filters" role="group" aria-label="게시글 필터">
+        <section id="pinnedPosts" class="pinned-posts" aria-label="상단 고정 공지" hidden></section>
+        <div class="board-controls">
+          <div class="board-filters" role="group" aria-label="게시글 필터">
           <p class="board-filter-label" id="activeChannel">모든 이야기</p>
           <div class="board-filter-actions">
             <a class="text-button" id="clearChannel" data-board-nav href="lounge.html#all" hidden>전체 글 보기</a>
             <label class="question-filter" for="questionFilter"><input type="checkbox" id="questionFilter">질문만 보기</label>
           </div>
+          </div>
+          <form class="board-search" id="feedSearch" role="search">
+            <label class="sr-only" for="searchInput">게시글 찾기</label>
+            <input type="search" id="searchInput" maxlength="80" placeholder="제목과 내용으로 검색">
+            <button class="button" type="submit">검색</button>
+            <button class="button subtle" type="button" id="clearSearch" hidden>초기화</button>
+          </form>
         </div>
-        <section id="pinnedPosts" class="pinned-posts" aria-label="상단 고정 공지" hidden></section>
         <div class="list-toolbar">
           <p id="feedContext" aria-live="polite"></p>
           <button class="text-button btn-refresh" id="refreshList" type="button">새로고침</button>
@@ -110,16 +128,6 @@
           <p id="pageStatus" role="status"></p>
         </div>
         <div class="board-bottom">
-        <form class="board-search" id="feedSearch" role="search">
-          <label class="sr-only" for="searchInput">게시글 찾기</label
-          ><input
-            type="search"
-            id="searchInput"
-            maxlength="80"
-            placeholder="제목과 내용으로 검색"
-          /><button class="button" type="submit">검색</button
-          ><button class="button subtle" type="button" id="clearSearch" hidden>초기화</button>
-        </form>
         <a class="button primary bottom-write" id="writeBottom" href="lounge.html?write=1"
           >글쓰기</a
         >
@@ -149,9 +157,13 @@
       </section>
       <section id="editorView" hidden>
         <a class="back-link" id="cancelWriteLink" href="lounge.html">← 목록</a>
-        <h1>오늘 본 하늘을 들려주세요</h1>
-        <p class="editor-intro">한 줄도 좋아요. 별 이름이나 장비를 몰라도 괜찮아요.</p>
-        <div id="memberWriteGate" class="member-write-gate" hidden><p>글을 남기려면 로그인해주세요.</p><button type="button" class="button primary" data-account-open="login">로그인 · 회원가입</button></div>
+        <h1 id="editorTitle">오늘 본 하늘을 들려주세요</h1>
+        <p class="editor-intro" id="editorIntro">한 줄도 좋아요. 별 이름이나 장비를 몰라도 괜찮아요.</p>
+        <div id="memberWriteGate" class="member-write-gate" hidden><p>먼저 적어보세요. 등록할 때 로그인하면 돼요.</p><button type="button" class="text-button" data-account-open="login">로그인</button> <button type="button" class="text-button" data-account-open="signup">회원가입</button></div>
+        <p class="field-hint" id="draftHelp">작성 중인 글은 이 기기에 7일간 임시 저장돼요.</p>
+        <div class="board-filter-actions" id="draftControls"><p class="field-hint" id="draftStatus" role="status"></p><button class="text-button" id="clearDraft" type="button" hidden>임시저장 지우기</button></div>
+        <p class="field-hint" id="draftPhotoNotice" hidden>사진 파일은 임시저장되지 않아요. 새로고침하거나 Google 인증으로 화면을 이동하면 사진을 다시 첨부해주세요.</p>
+        <p class="field-hint" id="editPhotoNotice" hidden>기존 첨부 사진은 그대로 유지돼요. 사진 변경은 지원하지 않아요.</p>
         <form id="postForm" novalidate>
           <label for="postTitle">제목 <span class="field-hint">선택 · 80자 이내</span></label
           ><input
@@ -174,7 +186,7 @@
           <p class="field-hint" id="charCount">0 / 5,000</p>
           <label for="orbitSelect">어떤 글인가요?</label>
           <select id="orbitSelect" name="orbit" required></select>
-          <div class="photo-heading">
+          <div class="photo-heading" id="photoHeading">
             <label for="photoInput" class="button">사진 첨부 <span class="optional-label">선택</span></label
             ><span id="photoCount" class="field-hint">0 / 5장</span>
           </div>
@@ -262,18 +274,18 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
-    <script src="orbit-backend.js"></script>
-    <link rel="stylesheet" href="account.css?v=20260914-codes">
-    <script src="members.js?v=20260914-popover"></script>
-    <script src="account.js?v=20260914-codes"></script>
-    <script src="account-panel.js?v=20260914-codes"></script>
+    <script src="orbit-backend.js?v=20260926-identity"></script>
+    <link rel="stylesheet" href="account.css?v=20260926-operator">
+    <script src="members.js?v=20260926-identity"></script>
+    <script src="account.js?v=20260927-funnel"></script>
+    <script src="account-panel.js?v=20260927-funnel"></script>
     <script src="board-media.js?v=20260912-board"></script>
-    <script src="board-writing.js?v=20260913-writing"></script>
+    <script src="board-writing.js?v=20260926-identity"></script>
     <script src="board-glossary.js?v=20260914-community"></script>
     <script src="board-activity.js?v=20260914-activity"></script>
     <script src="board-embed.js?v=20260914-community"></script>
-    <script src="lounge.js?v=20260914-focus"></script>
-    <script src="member-board.js?v=20260914-popover"></script>
+    <script src="lounge.js?v=20260927-funnel"></script>
+    <script src="member-board.js?v=20260926-operator"></script>
   </div></div>
 <script src="site-nav.js?v=20260914-community"></script>
 </body>
