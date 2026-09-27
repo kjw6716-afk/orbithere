@@ -1954,13 +1954,16 @@ try {
       (await page.locator('#newsList img').count()) === 0 &&
         (await page.getByText('Unsafe link', { exact: true }).count()) === 0,
     );
+    // Each fixture timestamp can differ by a millisecond. Check the named
+    // article's original link regardless of where date sorting places it.
     const original = await page
+      .locator('.news-article')
+      .filter({ has: page.getByRole('link', { name: '우주에서 새로운 별을 발견했습니다', exact: true }) })
       .getByRole('link', { name: '원문 읽기 ↗', exact: true })
-      .first()
       .getAttribute('href');
     ok(
       'news keeps direct official links without the broken translation proxy',
-      new URL(original).hostname === 'www.kasi.re.kr' &&
+      original === state.newsData.items[0].url &&
         (await page.getByRole('link', { name: '한국어 번역 ↗', exact: true }).count()) === 0,
     );
     await page.locator('[data-source=nasa]').click();
