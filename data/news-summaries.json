@@ -2,6 +2,21 @@
   "version": 1,
   "items": [
     {
+      "id": "21c224b7f1e72026",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Successful_Earth_flyby_improves_Juice_s_course_to_Jupiter",
+      "publishedAt": "2026-09-28T15:00:00Z",
+      "titleOriginal": "Successful Earth flyby improves Juice’s course to Jupiter",
+      "titleKo": "주스 탐사선, 지구 근접비행으로 목성행 궤도 조정 성공",
+      "summaryKo": [
+        "ESA의 주스(Juice) 탐사선은 2026년 9월 28일 11시 45분(UTC) 인도양 상공 8640km를 지나며 지구 중력으로 기존 경로를 20도 꺾고 속도를 초당 3.5km 높였다고 발표했습니다.",
+        "근접비행 전 네 주 동안 마련한 여섯 차례의 궤도 보정 기회 가운데 실제 기동은 한 차례만 필요했으며, ESA는 절약한 추진제를 목성의 얼음 위성 관측에 활용할 수 있다고 설명했습니다.",
+        "주스는 2029년 1월 지구를 한 번 더 스쳐 최종 항로에 오른 뒤 2031년 목성에 도착할 예정이며, 이번 비행 중 얻은 과학 장비 자료는 평가를 거쳐 몇 주 안에 공개될 예정입니다."
+      ],
+      "checkedAt": "2026-09-29",
+      "method": "source-checked"
+    },
+    {
       "id": "f94b2d016089a6f3",
       "source": "rocketlab",
       "url": "https://rocketlabcorp.com/updates/mission-success-rocket-lab-launches-97th-electron-mission/",
