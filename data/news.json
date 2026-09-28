@@ -90,7 +90,10 @@
       "title": "Successful Earth flyby improves Juice’s course to Jupiter",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Successful_Earth_flyby_improves_Juice_s_course_to_Jupiter",
       "publishedAt": "2026-09-28T15:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "성공적인 지구 비행은 Juice의 Jupiter 경로를 향상시킵니다.",
+      "titleKoDraftOriginal": "Successful Earth flyby improves Juice’s course to Jupiter",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "f94b2d016089a6f3",
