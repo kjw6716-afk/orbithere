@@ -97,6 +97,22 @@
         "generatedAt": "2026-09-28",
         "prompt": "Use case: illustration-story. Create an original finished editorial astronomy cover illustration for ORBIT. EXACT wide 16:9 canvas, 1536x864 pixels or another exact 16:9 size at least1200x675. Edge-to-edge raster illustration. Sophisticated science magazine style: deep midnight navy #0B1423, softly shaded naturalistic celestial forms, restrained mint/cyan, warm cream/amber, subtle texture, sparse pinprick stars. Beautiful clear composition at thumbnail scale with generous margins. No text, numbers, labels, logos, watermarks, frame, panels or UI. An artistic editorial concept, not an actual observation photograph or precise diagram. Article question: why do planets sometimes seem to move backward against the stars? Make an artistic time-composite of the night sky seen from Earth. Across the upper two thirds, a sequence of small warm orange Mars-like light points of slightly varying brightness traces a graceful shallow sideways loop against fixed sparse ivory background stars; one central orange point is subtly brighter. A very faint thin mint trace gently connects this sequence as a conceptual long-term observation overlay, not a physical orbit, ending openly on both sides. Along the bottom only a thin silhouette of a calm mountain ridge grounds the viewpoint on Earth. Mars points must appear as distant lights, not repeated huge planet balls. No Sun, orbital circles around a central body, arrows, numbers, map grid, exact constellations, diagrams, clocks, labels, or large planets. Quiet elegant observational concept rather than an instructional chart. Centered loop and its endpoints stay safely inside the image."
       }
+    },
+    "why-space-telescopes-go-to-space": {
+      "alt": "얇은 푸른 대기층 위 궤도에서 지구와 별빛을 바라보는 금빛 우주망원경의 AI 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-09-28",
+        "prompt": "Use case: precise-object-edit. Asset type: final ORBIT astronomy story cover. Primary request: Refine this existing generated cover while preserving its overall composition, telescope, Earth limb, lighting, and 16:9 framing. Change only the outer-space background: remove every long diagonal line or ray and remove the large visible spiral galaxies. Replace them with a calm, sparse field of small pinprick stars in deep midnight navy (#0B1423). Reduce visual clutter and keep the space above Earth dark and elegant. Preserve exactly: the complete unbranded gold-and-cream space telescope, both solar arrays, the thin cyan atmospheric rim, curved Earth horizon, warm dawn glow, and all safe margins. Style: premium naturalistic science-magazine editorial illustration, slightly softened and illustrated rather than a literal mission photograph. Scientific constraints: the telescope remains clearly above a thin atmosphere; no giant barrier, no suggestion it is near stars, no beams or trajectories. Constraints: no text, labels, letters, numbers, logos, watermark, border, UI, panels, arrows, laser beams, orbit lines, or branded markings."
+      }
+    },
+    "why-polaris-seems-still": {
+      "alt": "북쪽 산 능선 위 북극성 가까운 한 점을 중심으로 별 궤적이 동심원을 그리는 AI 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-09-28",
+        "prompt": "Use case: scientific-educational. Asset type: original ORBIT astronomy story cover illustration. Primary request: Create a finished, original editorial cover for the Korean article ‘Why does Polaris seem to stay in the same place all night?’ Scene/backdrop: a serene northern night sky over a very low dark mountain horizon, with the sky filling about 85 percent of the frame. Subject: one modest warm-cream Polaris near the upper-center, close to the geometric center of many elegant concentric star trails. The surrounding stars form smooth circular arcs around that single point; arcs farther from Polaris are longer and wider, while Polaris itself has only a tiny subtle arc, clearly not a huge glowing star. Include a restrained suggestion of the Big Dipper at lower-left as seven slightly brighter stars, without drawn constellation lines. Style/medium: naturalistic premium science-magazine editorial illustration, refined and calm, subtle texture, not a literal observation photograph or a measurement diagram. Composition/framing: wide landscape 16:9, at least 1200×675, edge-to-edge raster art; generous dark margins; trails readable at thumbnail size; one clear center of rotation. Lighting/mood: quiet night observing mood; deep midnight navy #0B1423, restrained mint/cyan trails, warm cream/amber Polaris and a few stars. Scientific constraints: all trails share one center close to Polaris; Polaris traces only a very small circle because it lies near, not exactly on, the north celestial pole; no implication that Polaris is the brightest object in the sky; conceptual long-exposure editorial view. Constraints: no text, captions, letters, numbers, labels, arrows, logos, watermark, border, UI, panels, compass rose, or constellation lines. Avoid: Milky Way band, Moon, planets, aurora, meteors, city skyline, telescope, multiple trail centers, spiral galaxy appearance, fantasy swirls, oversaturated neon, cropped focal pattern."
+      }
     }
   },
   "articles": {
@@ -115,7 +131,9 @@
     "is-mars-all-red": "is-mars-all-red",
     "why-planets-go-retrograde": "why-planets-go-retrograde",
     "why-venus-is-hottest": "planets",
-    "how-gravity-assists-work": "spaceflight"
+    "how-gravity-assists-work": "spaceflight",
+    "why-space-telescopes-go-to-space": "why-space-telescopes-go-to-space",
+    "why-polaris-seems-still": "why-polaris-seems-still"
   },
   "categories": {
     "달과 행성": "planets",

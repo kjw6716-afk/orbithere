@@ -311,15 +311,29 @@ try {
     await f.page.clock.setFixedTime(new Date('2026-09-27T15:00:02Z'));
     await f.page.locator('#placeRow button').nth(1).click(); await settle(f.page);
     ok('KST midnight rotates despite only four seconds elapsed', events(f, 'session_start').length === 2);
+    privacy(f); await f.close();
+  }
+
+  {
+    // Keep malformed-input rejection separate from the asynchronous rollover
+    // batch. A late valid region event must not look like a privacy leak.
+    const f = await fixture();
+    await f.page.goto(origin + '/planets.html');
+    await waitEvent(f, 'session_start');
+    await waitEvent(f, 'feature_view', 'planets');
+    await waitEvent(f, 'tool_ready', 'planets');
+    assert.equal(f.state.events.length, 3, 'all initial planet observations have arrived');
     const before = f.state.events.length;
-    await f.page.evaluate(() => {
+    const unchanged = await f.page.evaluate(() => {
+      const before = sessionStorage.getItem('orbit_analytics_session_v1');
       OrbitAnalytics.use('SENSITIVE_TEXT', { isTrusted: true });
       OrbitAnalytics.authOpen('SENSITIVE_TEXT');
       OrbitAnalytics.authAttempt('SENSITIVE_TEXT', { isTrusted: true });
       OrbitAnalytics.write('SENSITIVE_TEXT', { isTrusted: true });
+      return sessionStorage.getItem('orbit_analytics_session_v1') === before;
     });
     await settle(f.page);
-    ok('client rejects arbitrary event detail and sensitive values', f.state.events.length === before);
+    ok('client rejects arbitrary event detail and sensitive values', unchanged && f.state.events.length === before);
     const storage = await f.page.evaluate(() => Object.keys(localStorage));
     ok('analytics adds no durable ID or event queue', !storage.some(key => /analytics|funnel/.test(key)));
     privacy(f); await f.close();
@@ -361,6 +375,8 @@ try {
     await blocked.page.frameLocator('#planetFrame').locator('#scrubRange').waitFor();
     await panel(blocked, 'sky'); await blocked.page.frameLocator('#skyFrame').locator('#filterRow button').nth(1).click();
     await panel(blocked, 'lounge'); await blocked.page.frameLocator('#loungeFrame').locator('#postList .empty-state a').waitFor();
+    assert.deepEqual(blocked.state.errors, [], 'missing analytics script must not cause page errors');
+    assert.deepEqual(blocked.state.events, [], 'missing analytics script must not send events');
     ok('missing analytics script leaves panels and board usable', !blocked.state.events.length && !blocked.state.errors.length);
     await blocked.close();
   }
