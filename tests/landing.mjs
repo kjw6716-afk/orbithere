@@ -26,6 +26,35 @@ async function open(width,height,mobile=false,reducedMotion='no-preference',prep
 }
 try{
  {
+  const ctx=await browser.newContext(),page=await ctx.newPage();
+  await page.setContent('<button>Click effect</button>');
+  await page.evaluate(()=>{
+   window.effectFrames=[];window.effectRadii=[];
+   window.requestAnimationFrame=callback=>window.effectFrames.push(callback);
+   Object.defineProperty(performance,'now',{value:()=>100});
+   const arc=CanvasRenderingContext2D.prototype.arc;
+   CanvasRenderingContext2D.prototype.arc=function(...args){window.effectRadii.push(args[2]);return arc.apply(this,args);};
+  });
+  await page.addScriptTag({path:resolve(root,'effects.js')});
+  const effect=await page.evaluate(()=>{
+   document.querySelector('button').click();
+   // A frame timestamp can precede performance.now() sampled during that frame.
+   window.effectFrames.shift()(50);
+   const firstRing=window.effectRadii[0];
+   window.effectRadii.length=0;
+   window.effectFrames.shift()(66.67);
+   const nextRing=window.effectRadii[0];
+   let frames=0,now=66.67;
+   while(window.effectFrames.length&&frames<200){now+=16.67;window.effectFrames.shift()(now);frames++;}
+   const drained=window.effectFrames.length===0;
+   document.querySelector('button').click();
+   return {firstRing,nextRing,drained,restarted:window.effectFrames.length===1,nonnegative:window.effectRadii.every(r=>r>=0)};
+  });
+  ok('click effects tolerate an earlier first frame timestamp',effect.firstRing===6&&Math.abs(effect.nextRing-9.2)<1e-8&&effect.nonnegative);
+  ok('click effects finish and restart after the earlier timestamp',effect.drained&&effect.restarted);
+  await ctx.close();
+ }
+ {
   const {ctx,page,errors}=await open(390,844,true,'no-preference',async page=>{
    await page.clock.install();await page.clock.pauseAt(new Date(Date.now()+1000));
    await page.addInitScript(()=>{Math.random=()=>0;});

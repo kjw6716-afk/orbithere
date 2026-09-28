@@ -150,7 +150,8 @@
     }
 
     function tick(now) {
-        var dt = Math.min((now - last) / 16.67, 2); // 프레임 드랍 시에도 속도 일정
+        // 첫 rAF 타임스탬프는 burst의 performance.now()보다 앞설 수 있다.
+        var dt = Math.max(0, Math.min((now - last) / 16.67, 2)); // 역행 방지, 프레임 드랍 시에도 속도 일정
         last = now;
         // 캔버스 전체를 지운다 — 보이는 영역이 바뀌어도 잔상이 남지 않는다
         clearAll();
