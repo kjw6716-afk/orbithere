@@ -127,6 +127,14 @@
   function render(preserve) {
     if (!data) return;
     preserve = preserve === true;
+    // Status notices sit above the list. Capture the reader's position before
+    // changing them, even when the articles themselves will not be replaced.
+    var active = document.activeElement,
+      activeArticle = active && active.closest(".news-article"),
+      anchor = preserve && Array.from(list.children).find(function (row) {
+        return row.getBoundingClientRect().bottom > 0;
+      }),
+      anchorTop = anchor && anchor.getBoundingClientRect().top;
     var filter = location.hash.slice(1);
     if (!["all", "science", "commercial"].includes(filter) && !Object.hasOwn(sources, filter)) filter = "all";
     document.querySelectorAll("[data-source]").forEach(function (a) {
@@ -216,13 +224,7 @@
           .join("")
       : '<div class="empty-state"><p>아직 가져온 소식이 없어요.<br>아래 공식 사이트에서 최신 소식을 확인해주세요.</p></div>';
     if (!preserve || markup !== renderedMarkup) {
-      var active = document.activeElement,
-        activeArticle = active && active.closest(".news-article"),
-        anchor = preserve && Array.from(list.children).find(function (row) {
-          return row.getBoundingClientRect().bottom > 0;
-        }),
-        anchorTop = anchor && anchor.getBoundingClientRect().top,
-        states = new Map();
+      var states = new Map();
       if (preserve) list.querySelectorAll(".news-article").forEach(function (row) {
         states.set(row.id, {
           expanded: !!row.querySelector('.news-summary-toggle[aria-expanded="true"]'),
@@ -251,10 +253,6 @@
         });
         if (target) target.focus({ preventScroll: true });
       }
-      if (anchor) {
-        var restored = document.getElementById(anchor.id);
-        if (restored) window.scrollBy(0, restored.getBoundingClientRect().top - anchorTop);
-      }
     }
     var selected = location.hash.slice(1);
     if (selected.startsWith("article-")) {
@@ -270,6 +268,10 @@
           " 선택한 기사가 최신 목록에서 빠졌어요. 아래 출처 링크에서 이전 소식을 확인할 수 있어요.";
       }
     } else lastFocused = "";
+    if (anchor) {
+      var restored = document.getElementById(anchor.id);
+      if (restored) window.scrollBy(0, restored.getBoundingClientRect().top - anchorTop);
+    }
   }
   async function load(background) {
     if (loading) return;
