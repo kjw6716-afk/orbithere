@@ -49,7 +49,7 @@
     if (code === "23505")
       return "이미 사용 중인 닉네임이에요. 다른 이름을 정해주세요.";
     if (/nickname_cooldown/.test(message))
-      return "닉네임은 마지막 저장 후 30일이 지나야 바꿀 수 있어요.";
+      return "닉네임은 처음 정하거나 마지막으로 바꾼 뒤 24시간이 지나야 다시 바꿀 수 있어요.";
     if (code === "otp_expired")
       return "인증번호가 다르거나 만료됐어요. 번호를 확인하거나 다시 받아주세요.";
     if (code === "weak_password")
@@ -103,7 +103,11 @@
     return !!p && Date.parse(p.nickname_change_available_at) > Date.now();
   }
   function updateControls() {
-    $("editProfile").disabled = pending || nicknameLocked();
+    var locked = nicknameLocked();
+    $("editProfile").disabled = pending || locked;
+    show("nicknameChangeHelp", locked);
+    if (locked)
+      $("nicknameChangeHelp").textContent = "닉네임 변경 가능: " + new Date(member.state.profile.nickname_change_available_at).toLocaleString("ko-KR", {timeZone:"Asia/Seoul",year:"numeric",month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
     if (!verification) return;
     var left = Math.max(0, Math.ceil((verification.expiresAt - Date.now()) / 1000));
     $("verifyExpiry").textContent = left
@@ -204,9 +208,6 @@
         ? "Google로 본인 확인"
         : "내 계정과 활동 삭제";
     show("editProfile", !!s.profile);
-    show("nicknameChangeHelp", !!s.profile && nicknameLocked());
-    if (s.profile && nicknameLocked())
-      $("nicknameChangeHelp").textContent = "닉네임 변경 가능: " + new Date(s.profile.nickname_change_available_at).toLocaleString("ko-KR", {timeZone:"Asia/Seoul",year:"numeric",month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
     var accepted =
       !!s.profile ||
       (u.user_metadata &&

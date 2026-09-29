@@ -127,6 +127,14 @@
   function render(preserve) {
     if (!data) return;
     preserve = preserve === true;
+    // Status notices sit above the list. Capture the reader's position before
+    // changing them, even when the articles themselves will not be replaced.
+    var active = document.activeElement,
+      activeArticle = active && active.closest(".news-article"),
+      anchor = preserve && Array.from(list.children).find(function (row) {
+        return row.getBoundingClientRect().bottom > 0;
+      }),
+      anchorTop = anchor && anchor.getBoundingClientRect().top;
     var filter = location.hash.slice(1);
     if (!["all", "science", "commercial"].includes(filter) && !Object.hasOwn(sources, filter)) filter = "all";
     document.querySelectorAll("[data-source]").forEach(function (a) {
@@ -146,16 +154,18 @@
         sources[s.id] && news.matches({source: s.id, title: ""}, filter) && news.stale(s)
       );
     });
-    var notices = [];
-    if (unavailable.length) notices.push(unavailable
+    var notices = [], health = news.health(data);
+    if (health.allFailed) notices.push("모든 출처의 새 소식을 확인하지 못했어요. 저장된 목록을 표시해요.");
+    else if (unavailable.length) notices.push(unavailable
           .map(function (s) {
             return sources[s.id].name;
           })
           .join(" · ") +
         "의 새 소식을 확인하지 못했어요. 저장된 목록을 표시하며, 공식 사이트에서 최신 소식을 확인할 수 있어요.");
-    var lastChecked = Date.parse(data.checkedAt);
-    if (Number.isFinite(lastChecked) && Date.now() - lastChecked > 4 * 60 * 60 * 1000) {
-      notices.push("마지막 목록 확인 후 4시간이 지났어요. 최신 소식은 각 기사의 공식 원문에서도 확인해주세요.");
+    if (!health.valid) {
+      notices.push("마지막 목록 확인 시각을 검증하지 못했어요. 최신 소식은 공식 원문에서도 확인해주세요.");
+    } else if (health.stale) {
+      notices.push("마지막 목록 확인 후 " + news.health.staleAfterHours + "시간이 지났어요. 최신 소식은 각 기사의 공식 원문에서도 확인해주세요.");
     }
     status.hidden = !notices.length;
     status.textContent = notices.join(" ");
@@ -214,13 +224,7 @@
           .join("")
       : '<div class="empty-state"><p>아직 가져온 소식이 없어요.<br>아래 공식 사이트에서 최신 소식을 확인해주세요.</p></div>';
     if (!preserve || markup !== renderedMarkup) {
-      var active = document.activeElement,
-        activeArticle = active && active.closest(".news-article"),
-        anchor = preserve && Array.from(list.children).find(function (row) {
-          return row.getBoundingClientRect().bottom > 0;
-        }),
-        anchorTop = anchor && anchor.getBoundingClientRect().top,
-        states = new Map();
+      var states = new Map();
       if (preserve) list.querySelectorAll(".news-article").forEach(function (row) {
         states.set(row.id, {
           expanded: !!row.querySelector('.news-summary-toggle[aria-expanded="true"]'),
@@ -249,10 +253,6 @@
         });
         if (target) target.focus({ preventScroll: true });
       }
-      if (anchor) {
-        var restored = document.getElementById(anchor.id);
-        if (restored) window.scrollBy(0, restored.getBoundingClientRect().top - anchorTop);
-      }
     }
     var selected = location.hash.slice(1);
     if (selected.startsWith("article-")) {
@@ -268,6 +268,10 @@
           " 선택한 기사가 최신 목록에서 빠졌어요. 아래 출처 링크에서 이전 소식을 확인할 수 있어요.";
       }
     } else lastFocused = "";
+    if (anchor) {
+      var restored = document.getElementById(anchor.id);
+      if (restored) window.scrollBy(0, restored.getBoundingClientRect().top - anchorTop);
+    }
   }
   async function load(background) {
     if (loading) return;

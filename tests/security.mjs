@@ -54,7 +54,7 @@ await db.exec(sql('migration_011_authenticated_ownership.sql'));
 await db.exec(sql('migration_011_authenticated_ownership.sql'));
 for (const name of readdirSync(new URL('../supabase/migrations/', import.meta.url))
   // Build pre-membership activity first, then verify the upgrade boundary below.
-  .filter((n) => n.endsWith('.sql') && !n.endsWith('_member_only_writing.sql') && !n.endsWith('_nickname_change_cooldown.sql') && !n.endsWith('_operator_display_badge.sql') && !n.endsWith('_author_post_edit.sql'))
+  .filter((n) => n.endsWith('.sql') && !n.endsWith('_member_only_writing.sql') && !n.endsWith('_nickname_change_cooldown.sql') && !n.endsWith('_nickname_change_24_hours.sql') && !n.endsWith('_operator_display_badge.sql') && !n.endsWith('_author_post_edit.sql') && !n.endsWith('_post_edit_conflicts.sql'))
   .sort()) {
   if (name.endsWith('_single_reaction_per_post.sql')) {
     await db.query(`select set_config('request.jwt.claim.sub',$1,false)`,[A]);
@@ -907,6 +907,57 @@ const roleCards=(await as('anon',null,`select member_cards(array['${ADMIN}','${N
 check('public cards expose only safe display fields including the protected role flag',roleCards.length===3&&roleCards.every(c=>Object.keys(c).sort().join(',')==='badge,is_admin,level,nickname,user_id')&&roleCards.find(c=>c.user_id===ADMIN).is_admin===true&&roleCards.filter(c=>c.user_id!==ADMIN).every(c=>c.is_admin===false));
 check('public card role flag does not expose the administrator registry',(await as('anon',null,'select * from admins')).rows.length===0);
 await denied('ordinary members cannot add themselves to the administrator registry','authenticated',N,`insert into admins(user_id) values('${N}')`);
+
+// Upgrade actual stored change histories without restarting anyone's wait.
+await db.exec(`reset role; update orbit_members_private.profiles set nickname_changed_at=now()-interval '25 hours' where user_id='${U}';
+ update orbit_members_private.profiles set nickname_changed_at=now()-interval '23 hours' where user_id='${N}'`);
+const nicknameHistoryBefore=(await db.query('select * from orbit_members_private.profiles order by user_id')).rows;
+const nicknameAcls=async()=>JSON.stringify((await db.query(`select oid,proacl from pg_proc where oid in (
+ 'orbit_members_private.profile()'::regprocedure,'orbit_members_private.save_profile(text,text)'::regprocedure)`)).rows);
+const nicknameAclsBefore=await nicknameAcls();
+const nickname24Migration=readdirSync(new URL('../supabase/migrations/',import.meta.url)).find(n=>n.endsWith('_nickname_change_24_hours.sql'));
+await db.exec(sql('migrations/'+nickname24Migration));
+await db.exec(sql('migrations/'+nickname24Migration));
+check('24-hour migration and rerun preserve every existing profile and change timestamp',JSON.stringify((await db.query('select * from orbit_members_private.profiles order by user_id')).rows)===JSON.stringify(nicknameHistoryBefore));
+check('24-hour migration keeps private-function access controls',await nicknameAcls()===nicknameAclsBefore);
+const shorterProfile=(await as('authenticated',N,'select member_profile() as p')).rows[0].p;
+const previousChange=nicknameHistoryBefore.find(p=>p.user_id===N).nickname_changed_at;
+check('existing members receive last actual change plus exactly 24 hours',Date.parse(shorterProfile.nickname_change_available_at)-new Date(previousChange).getTime()===86400000);
+await denied('an existing 23-hour wait still blocks a rename','authenticated',N,`select member_save_profile('아직한시간','2026-09-14-members')`);
+check('members waiting more than 24 hours can rename immediately after upgrade',(await as('authenticated',U,`select member_save_profile('하루지난별','2026-09-14-members') as p`)).rows[0].p.nickname==='하루지난별');
+check('nickname upgrade preserves protected operator display',(await as('authenticated',ADMIN,'select member_profile() as p')).rows[0].p.is_admin===true&&shorterProfile.is_admin===false);
+
+// A transaction fixes now() so these test the exact boundary, not elapsed test time.
+await db.exec(`reset role; begin; update orbit_members_private.profiles set nickname_changed_at=now()-interval '24 hours'+interval '1 microsecond' where user_id='${U}'`);
+await denied('24-hour boundary blocks changes even one microsecond early','authenticated',U,`select member_save_profile('경계이전','2026-09-14-members')`);
+await db.exec('rollback; reset role');
+await db.exec(`begin; update orbit_members_private.profiles set nickname_changed_at=now()-interval '24 hours' where user_id='${U}'`);
+const exactNickname=(await as('authenticated',U,`select member_save_profile('하루경계별','2026-09-14-members') as p`)).rows[0].p;
+await db.exec('reset role');
+const boundaryNow=(await db.query('select now() as current_time')).rows[0].current_time;
+check('rename succeeds at exactly 24 hours and starts a fresh 24-hour wait',exactNickname.nickname==='하루경계별'&&Date.parse(exactNickname.nickname_change_available_at)-new Date(boundaryNow).getTime()===86400000);
+await db.exec('commit');
+await denied('a second rename cannot bypass the new 24-hour cooldown','authenticated',U,`select member_save_profile('연속변경','2026-09-14-members')`);
+const sameNickname=(await as('authenticated',U,`select member_save_profile('하루경계별','2026-09-14-members') as p`)).rows[0].p;
+check('same-name save still preserves the original 24-hour expiry',sameNickname.nickname_change_available_at===exactNickname.nickname_change_available_at);
+await denied('members cannot change their server nickname timestamp','authenticated',U,`update orbit_members_private.profiles set nickname_changed_at=now()-interval '25 hours' where user_id='${U}'`);
+
+await db.exec(`reset role; begin; set local timezone='America/New_York'; update orbit_members_private.profiles set nickname_changed_at='2026-03-07T17:00:00Z' where user_id='${U}'`);
+const dstNickname=(await as('authenticated',U,'select member_profile() as p')).rows[0].p;
+check('24-hour interval remains exact across a daylight-saving calendar boundary',Date.parse(dstNickname.nickname_change_available_at)-Date.parse('2026-03-07T17:00:00Z')===86400000);
+await db.exec('rollback; reset role');
+await db.exec(`update orbit_members_private.profiles set nickname_changed_at=now()-interval '25 hours' where user_id='${U}'`);
+const beforeDuplicate=(await db.query(`select nickname,nickname_changed_at from orbit_members_private.profiles where user_id='${U}'`)).rows[0];
+await denied('24-hour eligibility does not bypass case-insensitive nickname uniqueness','authenticated',U,`select member_save_profile('second','2026-09-14-members')`);
+await db.exec('reset role');
+check('failed 24-hour rename preserves both nickname and timestamp',JSON.stringify((await db.query(`select nickname,nickname_changed_at from orbit_members_private.profiles where user_id='${U}'`)).rows[0])===JSON.stringify(beforeDuplicate));
+const N24='77777777-7777-4777-8777-777777777780';
+await db.exec(`insert into auth.users(id,is_anonymous,email_confirmed_at) values('${N24}',false,now())`);
+const firstNickname24=(await as('authenticated',N24,`select member_save_profile('첫하루별','2026-09-14-members') as p`)).rows[0].p;
+check('new members can save immediately and wait exactly 24 hours afterwards',firstNickname24.nickname==='첫하루별'&&Date.parse(firstNickname24.nickname_change_available_at)-Date.parse(firstNickname24.joined_at)===86400000);
+await denied('new members cannot immediately rename under the 24-hour policy','authenticated',N24,`select member_save_profile('두번째하루별','2026-09-14-members')`);
+check('24-hour change history stays out of public member cards',!(await as('anon',null,`select member_cards(array['${N24}']::uuid[]) as p`)).rows[0].p[0].nickname_change_available_at);
+
 const deliverySQL = `select record_delivery_event('evt-test','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','user@example.test','email.bounced','Permanent',now())`;
 await denied('anonymous callers cannot forge email delivery alerts','anon',null,deliverySQL);
 await denied('members cannot forge email delivery alerts','authenticated',U,deliverySQL);
@@ -948,14 +999,19 @@ const updatePermissionsBefore = await postUpdatePermissions();
 const editMigration = readdirSync(new URL('../supabase/migrations/',import.meta.url)).find(n=>n.endsWith('_author_post_edit.sql'));
 await db.exec(sql('migrations/'+editMigration));
 await db.exec(sql('migrations/'+editMigration));
+const editConflictMigration = readdirSync(new URL('../supabase/migrations/',import.meta.url)).find(n=>n.endsWith('_post_edit_conflicts.sql'));
+await db.exec(sql('migrations/'+editConflictMigration));
+await db.exec(sql('migrations/'+editConflictMigration));
 check('edit migration leaves every posts policy and UPDATE column grant unchanged',JSON.stringify(await postUpdatePermissions())===JSON.stringify(updatePermissionsBefore));
 check('existing posts are not marked edited during migration',(await db.query('select count(*) as n from posts where edited_at is not null')).rows[0].n===0);
 const editFunctions = (await db.query(`select n.nspname,p.proname,p.prosecdef,p.proconfig,p.proargnames from pg_proc p join pg_namespace n on n.oid=p.pronamespace
  where (n.nspname='public' and p.proname='board_edit_post') or (n.nspname='orbit_post_edit_private' and p.proname='edit_post') order by n.nspname`)).rows;
-check('edit API is an invoker wrapper with one private definer and an empty search path',editFunctions.length===2&&editFunctions[0].prosecdef&&!editFunctions[1].prosecdef&&editFunctions.every(f=>f.proconfig.includes('search_path=""')));
-check('edit functions accept only post identity and the four permitted content fields',editFunctions.every(f=>f.proargnames.join(',')==='p_id,p_title,p_text,p_orbit,p_observation'));
-check('unauthenticated roles have no edit execute grant',(await db.query(`select has_function_privilege('anon','public.board_edit_post(uuid,text,text,text,jsonb)','execute') or has_function_privilege('anon','orbit_post_edit_private.edit_post(uuid,text,text,text,jsonb)','execute') as allowed`)).rows[0].allowed===false);
-check('unrelated roles cannot inherit a PUBLIC edit execute grant',(await db.query(`select has_function_privilege('service_role','public.board_edit_post(uuid,text,text,text,jsonb)','execute') or has_function_privilege('service_role','orbit_post_edit_private.edit_post(uuid,text,text,text,jsonb)','execute') as allowed`)).rows[0].allowed===false);
+check('edit APIs retain invoker wrappers, private definers and empty search paths',editFunctions.length===4&&editFunctions.every(f=>f.prosecdef===(f.nspname==='orbit_post_edit_private')&&f.proconfig.includes('search_path=""')));
+check('versioned edit functions require the baseline as well as permitted content fields',editFunctions.filter(f=>f.proargnames.length===6).length===2&&editFunctions.every(f=>['p_id,p_title,p_text,p_orbit,p_observation','p_id,p_title,p_text,p_orbit,p_observation,p_expected_edited_at'].includes(f.proargnames.join(','))));
+for(const signature of ['uuid,text,text,text,jsonb','uuid,text,text,text,jsonb,timestamptz']) {
+ check('unauthenticated roles have no edit execute grant: '+signature,(await db.query(`select has_function_privilege('anon','public.board_edit_post(${signature})','execute') or has_function_privilege('anon','orbit_post_edit_private.edit_post(${signature})','execute') as allowed`)).rows[0].allowed===false);
+ check('unrelated roles cannot inherit a PUBLIC edit execute grant: '+signature,(await db.query(`select has_function_privilege('service_role','public.board_edit_post(${signature})','execute') or has_function_privilege('service_role','orbit_post_edit_private.edit_post(${signature})','execute') as allowed`)).rows[0].allowed===false);
+}
 
 const editPost='dddddddd-dddd-4ddd-8ddd-000000000001';
 const editPhotos=(await as('authenticated',U,`select reserve_board_images('${editPost}',2) as paths`)).rows[0].paths;
@@ -985,8 +1041,12 @@ const relatedEditSnapshot=async () => (await db.query(`select jsonb_build_object
  'reservations',(select jsonb_agg(to_jsonb(u) order by path) from orbit_private.board_uploads u),
  'post_count',(select count(*) from posts)) as snapshot`)).rows[0].snapshot;
 const relatedBefore=await relatedEditSnapshot();
-const editCall=(id=editPost,title="'수정후 검색별'",body="'수정후 본문별'",orbit="'gear'",observation=`'{"method":"telescope","target":"목성","camera":"새관측카메라"}'::jsonb`,fn='board_edit_post') =>
- `select ${fn}('${id}',${title},${body},${orbit},${observation}) as id`;
+const editCall=(id=editPost,title="'수정후 검색별'",body="'수정후 본문별'",orbit="'gear'",observation=`'{"method":"telescope","target":"목성","camera":"새관측카메라"}'::jsonb`,fn='board_edit_post',expected='null') =>
+ `select ${fn}('${id}',${title},${body},${orbit},${observation},${expected}::timestamptz) as id`;
+for(const fn of ['board_edit_post','orbit_post_edit_private.edit_post']) {
+ await denied('legacy edit entry point cannot bypass version checks: '+fn,'authenticated',U,
+   `select ${fn}('${editPost}','옛 클라이언트','오래된 내용','free','{}'::jsonb)`);
+}
 for(const [role,id,label] of [['anon',null,'visitor'],['authenticated',null,'missing session'],['authenticated',A,'anonymous Auth'],['authenticated',M2,'other member'],['authenticated',ADMIN,'administrator editing another author']]) {
  await denied(label+' cannot call the edit RPC',role,id,editCall());
  await denied(label+' cannot bypass the edit wrapper',role,id,editCall(editPost,undefined,undefined,undefined,undefined,'orbit_post_edit_private.edit_post'));
@@ -1020,6 +1080,12 @@ const editAfter=(await as('anon',null,`select title,text,orbit,observation,edite
 check('saved detail has all edited content and a server edit timestamp',editAfter.title==='수정후 검색별'&&editAfter.text==='수정후 본문별'&&editAfter.orbit==='gear'&&editAfter.observation.target==='목성'&&editAfter.edited_at instanceof Date);
 await as('authenticated',U,editCall());
 check('retrying the same edit keeps its timestamp',(await as('anon',null,`select edited_at from posts where id='${editPost}'`)).rows[0].edited_at.getTime()===editAfter.edited_at.getTime());
+for(const fn of ['board_edit_post','orbit_post_edit_private.edit_post']) {
+ await denied('stale editor cannot overwrite saved content through '+fn,'authenticated',U,
+   editCall(editPost,"'다른 탭의 오래된 제목'",undefined,undefined,undefined,fn));
+}
+const versionAfter=(await as('anon',null,`select edited_at::text as version from posts where id='${editPost}'`)).rows[0].version;
+check('stale rejection keeps the first edit intact',JSON.stringify((await as('anon',null,`select title,text,orbit,observation,edited_at from posts where id='${editPost}'`)).rows[0])===JSON.stringify(editAfter));
 await db.exec('reset role');
 const wholeEditAfter=(await db.query(`select * from posts where id='${editPost}'`)).rows[0];
 const protectedPost=row=>Object.fromEntries(Object.entries(row).filter(([key])=>!['title','text','orbit','observation','edited_at'].includes(key)));
@@ -1035,9 +1101,10 @@ check('activity retains post identity and unread state with the new title',activ
 check('activity search uses edited content',(await as('authenticated',U,"select id from board_activity_posts(p_query:='새관측카메라')")).rows.some(p=>p.id===editPost));
 const editProfileAfter=(await as('authenticated',U,'select member_visit() as p')).rows[0].p;
 check('post-save member refresh cannot grant another first-post or writing reward',editProfileAfter.xp===editProfileBefore.xp&&JSON.stringify(editProfileAfter.history)===JSON.stringify(editProfileBefore.history));
-await as('authenticated',U,editCall(editPost,"'  공백정리 제목  '","'  공백정리 본문  '","'ask'","'{}'::jsonb"));
+await as('authenticated',U,editCall(editPost,"'  공백정리 제목  '","'  공백정리 본문  '","'ask'","'{}'::jsonb",undefined,"'"+versionAfter+"'"));
 const clearedObservation=(await as('anon',null,`select title,text,observation from posts where id='${editPost}'`)).rows[0];
 check('edit trims title/body and allows clearing optional metadata',clearedObservation.title==='공백정리 제목'&&clearedObservation.text==='공백정리 본문'&&Object.keys(clearedObservation.observation).length===0);
+await denied('an old response-loss retry cannot restore content after a newer edit','authenticated',U,editCall());
 await as('authenticated',ADMIN,`update posts set is_pinned=false where id='${editPost}'`);
 check('administrator retains unpin permission',(await as('anon',null,`select is_pinned,pinned_at from posts where id='${editPost}'`)).rows.every(p=>!p.is_pinned&&p.pinned_at===null));
 const adminOwn=(await as('authenticated',ADMIN,`select id from posts where author_id='${ADMIN}' limit 1`)).rows[0].id;

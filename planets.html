@@ -1045,7 +1045,8 @@
         for (var i = 0; i < bodies.length; i++) {
             for (var j = i + 1; j < bodies.length; j++) {
                 var a = bodies[i], b = bodies[j];
-                if (a.o.alt < MIN_ALT && b.o.alt < MIN_ALT) continue;
+                // 지도에 함께 표시되는 높이의 천체끼리만 찾는 법을 안내한다.
+                if (a.o.alt <= MIN_ALT || b.o.alt <= MIN_ALT) continue;
                 var dg = sep(a.o, b.o);
                 if (dg < 8) list.push({ a: a, b: b, d: dg });
             }

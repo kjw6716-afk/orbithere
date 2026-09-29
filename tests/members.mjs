@@ -238,6 +238,8 @@ async function fixture({
       return json(state.profile);
     }
     if (rpc === "member_save_profile") {
+      if (state.nicknameCooldown)
+        return json({ code: "P0001", message: "nickname_cooldown" }, 400);
       state.profile = { ...profile(), nickname: body.p_nickname };
       return json(state.profile);
     }
@@ -337,7 +339,9 @@ try {
     await f.close();
   }
   {
-    const f = await fixture({auth:session(),p:{...profile(),nickname_change_available_at:new Date(Date.now()+86400000).toISOString()}});
+    const availableAt = Date.now() + 86400000;
+    const f = await fixture({auth:session(),p:{...profile(),nickname_change_available_at:new Date(availableAt).toISOString()}});
+    await f.page.clock.setFixedTime(availableAt - 86400000);
     await f.page.goto(base+'/account.html');
     await f.page.locator('#profileCard').waitFor();
     ok('nickname cooldown disables editing and shows the next date',await f.page.locator('#editProfile').isDisabled()&&await f.page.locator('#nicknameChangeHelp').isVisible());
@@ -347,6 +351,21 @@ try {
     await f.page.locator('#newPasswordForm button').click();
     await f.page.locator('#profileCard').waitFor();
     ok('other account actions cannot re-enable a locked nickname',await f.page.locator('#editProfile').isDisabled());
+    await f.page.clock.setFixedTime(availableAt - 1);
+    await f.page.waitForTimeout(1100);
+    ok('nickname is still locked one millisecond before the server expiry',await f.page.locator('#editProfile').isDisabled());
+    await f.page.clock.setFixedTime(availableAt);
+    await f.page.waitForFunction(()=>!document.querySelector('#editProfile').disabled);
+    ok('nickname unlocks at exactly 24 hours and clears the date hint without reload',await f.page.locator('#nicknameChangeHelp').isHidden());
+    await f.page.locator('#editProfile').click();
+    ok('nickname setup explains the rolling 24-hour restriction',(await f.page.locator('#setupCard').textContent()).includes('24시간'));
+    // The server remains authoritative when another tab changed the nickname
+    // or the device clock is ahead of the server clock.
+    f.state.nicknameCooldown = true;
+    await f.page.locator('#memberNickname').fill('다른별');
+    await f.page.locator('#profileForm button').click();
+    await f.page.waitForFunction(()=>document.querySelector('#accountStatus').textContent.includes('24시간'));
+    ok('a server cooldown rejection explains 24 hours and keeps the entered name',await f.page.locator('#memberNickname').inputValue()==='다른별');
     await f.close();
   }
   let oauthFixture = await fixture({ google: false });

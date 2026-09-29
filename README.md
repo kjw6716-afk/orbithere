@@ -60,7 +60,7 @@ PR #42의 검사·Pages 배포 성공, 기존 콘텐츠 보존, 공개 조회 �
 사진 접근·정리·재시도 및 복원 절차는 [운영 안내](docs/community-operations.md)를 확인하세요.
 
 `news.html`은 한국천문연구원·NASA/JPL·ESA와 우주기업의 공식 소식·한국어 핵심 요약·원문 링크를 모읍니다.
-`.github/workflows/news.yml`이 1시간마다 `data/news.json`을 갱신하고 Pages 빌드를 요청합니다.
+`.github/workflows/news.yml`은 1시간 간격으로 수집을 예약하고, 수집 후 `data/news.json`의 검사·배포를 요청합니다. GitHub 예약 실행은 지연될 수 있으며, 마지막 확인 후 2시간이 지나거나 모든 출처가 실패하면 저장된 뉴스와 지연 안내를 표시합니다. 감시도 같은 예약 실행에 의존하므로 정확한 1시간 갱신을 보장하지 않습니다.
 수집기는 Python 3 표준 라이브러리만 사용하며 별도 번역 API 키가 필요하지 않습니다.
 
 ## 검사

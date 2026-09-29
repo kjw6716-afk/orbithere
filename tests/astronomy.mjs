@@ -12,6 +12,7 @@ import { dirname, join } from 'node:path';
 
 // Run through the existing astronomy CI entry point as well as npm test.
 await import('./planet-time-boundaries.mjs');
+await import('./planet-conjunction-visibility.mjs');
 await import('./sky-time-boundaries.mjs');
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');

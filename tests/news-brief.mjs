@@ -448,6 +448,33 @@ try {
     await f.close();
   }
   {
+    const now = new Date(Date.now() + 2000);
+    const data = structuredClone(fixture);
+    data.checkedAt = now.toISOString();
+    data.sources.forEach(source => { source.status = 'ok'; source.lastSuccessfulAt = now.toISOString(); });
+    const f = await open(1440, 'reduce', {data}), p = f.page;
+    await p.clock.pauseAt(now);
+    for (const scenario of ['healthy', 'delayed', 'all-failed']) {
+      f.state.data.checkedAt = new Date(now.getTime() - (scenario === 'delayed' ? 2 * 3600000 + 1 : 0)).toISOString();
+      f.state.data.sources.forEach(source => { source.status = scenario === 'all-failed' ? 'unavailable' : 'ok'; });
+      await p.goto(base + '/news.html');
+      await p.locator('.news-article').first().waitFor();
+      const fullCount = await p.locator('.news-article').count();
+      const listNotice = p.locator('#newsStatus');
+      const expected = scenario === 'delayed' ? '2시간' : '모든 출처';
+      ok(scenario + ': news list discloses freshness and keeps cached articles',
+        fullCount === fixture.items.length && (scenario === 'healthy' ? await listNotice.isHidden() :
+          await listNotice.isVisible() && (await listNotice.textContent()).includes(expected)));
+      await p.goto(base + '/main.html#planets');
+      await p.locator('.news-brief-title').first().waitFor();
+      const briefNotice = p.locator('.news-brief-notice');
+      ok(scenario + ': sidebar uses the same freshness policy without dropping headlines',
+        await p.locator('.news-brief-item').count() > 0 && (scenario === 'healthy' ? await briefNotice.isHidden() :
+          await briefNotice.isVisible() && (await briefNotice.textContent()).includes(expected)));
+    }
+    await f.close();
+  }
+  {
     const data = structuredClone(fixture);
     data.items = [
       null,
@@ -540,7 +567,13 @@ try {
   {
     const f = await open(1440, "reduce"), p = f.page;
     // Freeze before navigation so the five-minute boundary is deterministic.
-    await p.clock.pauseAt(new Date(Date.now() + 1000));
+    const initialTime = new Date(Date.now() + 1000);
+    await p.clock.pauseAt(initialTime);
+    f.state.data.checkedAt = initialTime.toISOString();
+    f.state.data.sources.forEach(source => {
+      source.status = 'ok';
+      source.lastSuccessfulAt = initialTime.toISOString();
+    });
     await p.goto(base + "/news.html#rocketlab");
     const article = p.locator(".news-article").first();
     await article.locator(".news-summary-toggle").waitFor();
@@ -552,7 +585,7 @@ try {
     const originalChecked = await p.locator("#newsChecked").textContent();
     const originalScroll = await p.evaluate(() => scrollY);
     const initialRequests = f.state.requests;
-    f.state.data.checkedAt = new Date(Date.parse(f.state.data.checkedAt) + 3600000).toISOString();
+    f.state.data.checkedAt = new Date(initialTime.getTime() + 300000).toISOString();
     await p.clock.runFor(299999);
     ok("news does not refetch before five minutes", f.state.requests === initialRequests);
     await p.clock.runFor(1);
@@ -576,7 +609,9 @@ try {
       publishedAt: new Date(Date.parse(f.state.data.items[0].publishedAt) + 86400000).toISOString(),
     };
     f.state.data.items.unshift(added);
-    f.state.data.checkedAt = new Date(Date.parse(f.state.data.checkedAt) + 3600000).toISOString();
+    // A delayed cache adds a notice above the list during the same refresh.
+    // This must preserve the article position, not just compensate new rows.
+    f.state.data.checkedAt = new Date(initialTime.getTime() - 3 * 3600000).toISOString();
     await p.clock.runFor(300000);
     await p.locator("#article-" + added.id).waitFor();
     ok("new headlines retain the selected source and the reader's expanded article and focus",
@@ -588,8 +623,18 @@ try {
           row.querySelector(".news-original").open &&
           document.activeElement === row.querySelector(".news-summary-toggle");
       }, articleId));
-    ok("inserting a headline preserves the reading position",
-      Math.abs(await p.locator("#" + articleId).evaluate(el => el.getBoundingClientRect().top) - beforeTop) < 3);
+    const afterTop = await p.locator("#" + articleId).evaluate(el => el.getBoundingClientRect().top);
+    ok("inserting a headline and a delay notice preserves the reading position (" + beforeTop + " → " + afterTop + ")",
+      await p.locator('#newsStatus').isVisible() && Math.abs(afterTop - beforeTop) < 3);
+
+    await p.locator('#' + articleId).evaluate(el => { window.refreshArticle = el; });
+    f.state.data.checkedAt = new Date(initialTime.getTime() + 900000).toISOString();
+    await p.clock.runFor(300000);
+    await p.waitForFunction(() => document.querySelector('#newsStatus').hidden);
+    const recoveredTop = await p.locator('#' + articleId).evaluate(el => el.getBoundingClientRect().top);
+    ok('clearing the delay notice preserves unchanged articles and reading position (' + afterTop + ' → ' + recoveredTop + ')',
+      Math.abs(recoveredTop - afterTop) < 3 &&
+      await p.evaluate(id => window.refreshArticle === document.getElementById(id), articleId));
 
     const healthyChecked = await p.locator("#newsChecked").textContent();
     const healthyCount = await p.locator(".news-article").count();
@@ -600,7 +645,7 @@ try {
       await p.locator(".news-article").count() === healthyCount &&
       await p.locator("#newsChecked").textContent() === healthyChecked);
     f.state.fail = false;
-    f.state.data.checkedAt = new Date(Date.parse(f.state.data.checkedAt) + 3600000).toISOString();
+    f.state.data.checkedAt = new Date(initialTime.getTime() + 1500000).toISOString();
     await p.clock.runFor(300000);
     await p.waitForFunction(previous => document.querySelector("#newsChecked").textContent !== previous, healthyChecked);
     ok("the next five-minute refresh recovers without reloading the page",

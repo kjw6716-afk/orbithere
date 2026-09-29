@@ -150,12 +150,7 @@
     } finally { clearTimeout(timer); }
   }
   function stale(source) {
-    return (
-      !source ||
-      source.status !== "ok" ||
-      !Number.isFinite(Date.parse(source.lastSuccessfulAt)) ||
-      Date.now() - Date.parse(source.lastSuccessfulAt) > 48 * 3600000
-    );
+    return window.orbitNewsHealth.sourceStale(source);
   }
   async function load() {
     var controller = new AbortController();
@@ -228,6 +223,7 @@
     displayTitle: displayTitle,
     summaryFor: summaryFor,
     loadSummaries: loadSummaries,
+    health: window.orbitNewsHealth,
     stale: stale,
     load: load,
     autoRefresh: autoRefresh,

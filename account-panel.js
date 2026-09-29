@@ -16,7 +16,7 @@
     if (dialog && dialog.open) dialog.close();
   }
   async function prepare(initial) {
-    var response = await fetch('account.html?v=20260926-separated');
+    var response = await fetch('account.html?v=20260929-nickname-24h');
     if (!response.ok) throw new Error('account_unavailable');
     var parsed = new DOMParser().parseFromString(await response.text(), 'text/html');
     var template = parsed.getElementById('accountTemplate');
