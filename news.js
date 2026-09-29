@@ -146,16 +146,18 @@
         sources[s.id] && news.matches({source: s.id, title: ""}, filter) && news.stale(s)
       );
     });
-    var notices = [];
-    if (unavailable.length) notices.push(unavailable
+    var notices = [], health = news.health(data);
+    if (health.allFailed) notices.push("모든 출처의 새 소식을 확인하지 못했어요. 저장된 목록을 표시해요.");
+    else if (unavailable.length) notices.push(unavailable
           .map(function (s) {
             return sources[s.id].name;
           })
           .join(" · ") +
         "의 새 소식을 확인하지 못했어요. 저장된 목록을 표시하며, 공식 사이트에서 최신 소식을 확인할 수 있어요.");
-    var lastChecked = Date.parse(data.checkedAt);
-    if (Number.isFinite(lastChecked) && Date.now() - lastChecked > 4 * 60 * 60 * 1000) {
-      notices.push("마지막 목록 확인 후 4시간이 지났어요. 최신 소식은 각 기사의 공식 원문에서도 확인해주세요.");
+    if (!health.valid) {
+      notices.push("마지막 목록 확인 시각을 검증하지 못했어요. 최신 소식은 공식 원문에서도 확인해주세요.");
+    } else if (health.stale) {
+      notices.push("마지막 목록 확인 후 " + news.health.staleAfterHours + "시간이 지났어요. 최신 소식은 각 기사의 공식 원문에서도 확인해주세요.");
     }
     status.hidden = !notices.length;
     status.textContent = notices.join(" ");

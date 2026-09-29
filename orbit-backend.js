@@ -32,10 +32,14 @@
                 var timer = setTimeout(abort, config.requestTimeoutMs);
                 try {
                     var response = await fetch(input, Object.assign({}, init, {signal: controller.signal}));
+                    // fetch resolves on headers. Keep the deadline and caller's
+                    // abort signal active until the body is available to the SDK.
+                    // Drain a clone so the original response (including empty and
+                    // error responses) remains unchanged and unread for its caller.
+                    await response.clone().arrayBuffer();
                     if (anonymous) {
-                        // Keep the response body abortable too: Auth saves the returned
-                        // session only after parsing JSON, not when headers arrive.
-                        await response.clone().arrayBuffer();
+                        // Auth must not save a cancelled anonymous session after
+                        // an explicit member login starts while the body arrives.
                         if (generation !== anonymousGeneration || controller.signal.aborted)
                             throw new DOMException('Anonymous sign-in cancelled', 'AbortError');
                     }

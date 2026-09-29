@@ -32,6 +32,9 @@ jobs:
       - name: 링크 · 문서 검증
         run: node tests/links.mjs
 
+      - name: 응답 본문 시간제한 · 취소 검증
+        run: node tests/backend-timeout.mjs
+
       - name: 브라우저 설치
         run: |
           npm ci --no-audit --no-fund

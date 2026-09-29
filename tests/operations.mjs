@@ -35,7 +35,12 @@ for (const type of ['email.suppressed','email.failed','email.complained','email.
 }
 const now = Date.now(), fresh = {checkedAt:new Date(now-3600000).toISOString(),sources:[{status:'ok',lastSuccessfulAt:new Date(now-3600000).toISOString()}]};
 check('recent successful collection is healthy',!globalThis.orbitNewsHealth(fresh,now).stale&&!globalThis.orbitNewsHealth(fresh,now).allFailed);
-check('five hour old public cache is stale',globalThis.orbitNewsHealth({...fresh,checkedAt:new Date(now-5*3600000).toISOString()},now).stale);
+check('two hour freshness boundary is shared by cache and sources',
+  !globalThis.orbitNewsHealth({...fresh,checkedAt:new Date(now-2*3600000).toISOString()},now).stale &&
+  !globalThis.orbitNewsHealth.sourceStale({status:'ok',lastSuccessfulAt:new Date(now-2*3600000).toISOString()},now) &&
+  globalThis.orbitNewsHealth({...fresh,checkedAt:new Date(now-2*3600000-1).toISOString()},now).stale &&
+  globalThis.orbitNewsHealth.sourceStale({status:'ok',lastSuccessfulAt:new Date(now-2*3600000-1).toISOString()},now));
+check('a recent feed check cannot hide old source successes',globalThis.orbitNewsHealth({...fresh,sources:[{status:'ok',lastSuccessfulAt:new Date(now-3*3600000).toISOString()}]},now).allFailed);
 check('fresh timestamp cannot hide failed sources',globalThis.orbitNewsHealth({...fresh,sources:[{status:'unavailable',lastSuccessfulAt:new Date(now-9*3600000).toISOString()}]},now).allFailed);
 check('malformed or future cache timestamp is unhealthy',globalThis.orbitNewsHealth({},now).stale&&globalThis.orbitNewsHealth({...fresh,checkedAt:new Date(now+3600000).toISOString()},now).stale);
 check('malformed source rows are treated as failures',globalThis.orbitNewsHealth({...fresh,sources:[null]},now).allFailed);
@@ -47,7 +52,7 @@ const requestMock = async (url,options) => {
 };
 const run = () => recoverNews({repository:'owner/repo',token:'test-only-token',now,request:requestMock});
 check('watchdog skips healthy news',(await run()).action==='healthy'&&dispatches===0);
-feed = {...fresh,checkedAt:new Date(now-5*3600000).toISOString()};
+feed = {...fresh,checkedAt:new Date(now-2*3600000-1).toISOString()};
 check('stale cache dispatches the existing collector',(await run()).action==='dispatched'&&dispatches===1);
 runs = [{status:'queued',created_at:new Date(now-3600000).toISOString()}];
 check('queued collector prevents duplicate recovery',(await run()).action==='already_running'&&dispatches===1);

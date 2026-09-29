@@ -231,6 +231,10 @@
   }
   function hint(error) {
     var m = String((error && error.message) || '');
+    if (/orbit_post_edit_conflict/.test(m))
+      return '다른 탭이나 기기에서 이 글이 변경됐어요. 입력한 수정 내용은 유지했어요. 필요한 내용을 복사한 뒤 글로 돌아가 최신 내용을 확인하고 다시 수정해주세요.';
+    if (/orbit_post_edit_version_required/.test(m))
+      return '글 수정 기능이 업데이트됐어요. 입력한 내용을 복사한 뒤 새로고침하고 다시 수정해주세요.';
     if (/orbit_pin_limit/.test(m))
       return '상단 공지는 최대 3개예요. 기존 공지를 해제한 뒤 다시 시도해주세요.';
     if (/orbit_photo_rate_limit/.test(m))
@@ -655,10 +659,10 @@
       var ready = await refreshEditMember();
       if (token !== route) return;
       if (!canWrite(ready)) throw new Error('이 글을 수정하려면 작성한 계정으로 로그인해주세요.');
-      var p = checked(await sb.from('posts').select('id,title,text,orbit,observation,author_id').eq('id', id).maybeSingle());
+      var p = checked(await sb.from('posts').select('id,title,text,orbit,observation,author_id,edited_at').eq('id', id).maybeSingle());
       if (token !== route) return;
       if (!p || p.author_id !== userId) throw new Error('자신이 작성한 글만 수정할 수 있어요.');
-      editState = { id: p.id, actor: userId, original: null };
+      editState = { id: p.id, actor: userId, original: null, expectedEditedAt: p.edited_at || null };
       $('postForm').reset();
       $('postTitle').value = p.title;
       $('postInput').value = p.text;
@@ -1462,7 +1466,7 @@
       if (editState !== editing || route !== token) return;
       checked(await sb.rpc('board_edit_post', {
         p_id: editing.id, p_title: title, p_text: text, p_orbit: editedOrbit,
-        p_observation: observation,
+        p_observation: observation, p_expected_edited_at: editing.expectedEditedAt,
       }));
       if (!sameActor(identity, actor) || editState !== editing || token !== route) return;
       cache = null;

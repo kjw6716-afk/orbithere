@@ -61,7 +61,8 @@ jobs:
           echo 'changed=true' >> "$GITHUB_OUTPUT"
       - name: 검사 통과 후 공개 뉴스 배포 요청
         # GITHUB_TOKEN pushes do not emit another push workflow; dispatch explicitly.
-        if: steps.save.outputs.changed == 'true'
+        # A successful rerun must also recover a dispatch missed after an earlier push.
+        if: success()
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run checks.yml --ref main

@@ -448,6 +448,33 @@ try {
     await f.close();
   }
   {
+    const now = new Date(Date.now() + 2000);
+    const data = structuredClone(fixture);
+    data.checkedAt = now.toISOString();
+    data.sources.forEach(source => { source.status = 'ok'; source.lastSuccessfulAt = now.toISOString(); });
+    const f = await open(1440, 'reduce', {data}), p = f.page;
+    await p.clock.pauseAt(now);
+    for (const scenario of ['healthy', 'delayed', 'all-failed']) {
+      f.state.data.checkedAt = new Date(now.getTime() - (scenario === 'delayed' ? 2 * 3600000 + 1 : 0)).toISOString();
+      f.state.data.sources.forEach(source => { source.status = scenario === 'all-failed' ? 'unavailable' : 'ok'; });
+      await p.goto(base + '/news.html');
+      await p.locator('.news-article').first().waitFor();
+      const fullCount = await p.locator('.news-article').count();
+      const listNotice = p.locator('#newsStatus');
+      const expected = scenario === 'delayed' ? '2시간' : '모든 출처';
+      ok(scenario + ': news list discloses freshness and keeps cached articles',
+        fullCount === fixture.items.length && (scenario === 'healthy' ? await listNotice.isHidden() :
+          await listNotice.isVisible() && (await listNotice.textContent()).includes(expected)));
+      await p.goto(base + '/main.html#planets');
+      await p.locator('.news-brief-title').first().waitFor();
+      const briefNotice = p.locator('.news-brief-notice');
+      ok(scenario + ': sidebar uses the same freshness policy without dropping headlines',
+        await p.locator('.news-brief-item').count() > 0 && (scenario === 'healthy' ? await briefNotice.isHidden() :
+          await briefNotice.isVisible() && (await briefNotice.textContent()).includes(expected)));
+    }
+    await f.close();
+  }
+  {
     const data = structuredClone(fixture);
     data.items = [
       null,

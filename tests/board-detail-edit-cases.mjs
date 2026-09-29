@@ -38,6 +38,89 @@ export async function boardDetailEditRegressions({fixture,base,A,B,P,uid,now,ok}
   }
   for (const embedded of [false,true]) {
     const mode=embedded?'iframe':'direct';
+    for (const baseline of [null,'2026-09-28T12:34:56.123456+00:00']) {
+      const f=await fixture(),{state}=f;
+      Object.assign(state.posts[0],{author_id:A,edited_at:baseline});
+      try {
+        const board=await open(f,embedded);await detail(board);
+        await board.locator('[data-action=edit-post]').click();
+        await board.locator('#postTitle').fill('이 탭에서 보존할 수정 제목');
+        await board.locator('#postInput').fill('충돌해도 없어지면 안 되는 수정 본문');
+        const newer='2026-09-29T12:34:56.654321+00:00';
+        Object.assign(state.posts[0],{title:'다른 기기에서 먼저 저장한 제목',edited_at:newer});
+        const attempts=[];
+        const conflict=async route=>{
+          attempts.push(route.request().postDataJSON());
+          await route.fulfill({status:400,contentType:'application/json',body:JSON.stringify({code:'P0001',message:'orbit_post_edit_conflict'})});
+        };
+        await f.context.route('**/rpc/board_edit_post',conflict);
+        await board.locator('#btnTrace').click();
+        await board.locator('#writeStatus').filter({hasText:'다른 탭이나 기기에서 이 글이 변경됐어요'}).waitFor();
+        ok(`${mode}: conflict submits the exact loaded timestamp, including null=${baseline===null}`,
+          attempts.length===1&&Object.hasOwn(attempts[0],'p_expected_edited_at')&&attempts[0].p_expected_edited_at===baseline);
+        ok(`${mode}: conflict keeps typed edits editable and never falls back to an unversioned write`,
+          await board.locator('#postTitle').inputValue()==='이 탭에서 보존할 수정 제목'&&
+          await board.locator('#postInput').inputValue()==='충돌해도 없어지면 안 되는 수정 본문'&&
+          await board.locator('#postInput').isEnabled()&&state.edits.length===0&&
+          state.posts[0].title==='다른 기기에서 먼저 저장한 제목');
+        await f.context.unroute('**/rpc/board_edit_post',conflict);
+        await board.locator('#cancelWrite').click();
+        await board.locator('.detail-title').filter({hasText:'다른 기기에서 먼저 저장한 제목'}).waitFor();
+        await board.locator('[data-action=edit-post]').click();
+        await board.locator('#postInput').fill('최신 글을 확인한 뒤 수정한 본문');
+        await board.locator('#btnTrace').click();
+        await board.locator('.detail-title').waitFor();
+        ok(`${mode}: reopening the latest post obtains its new edit baseline`,
+          state.edits.length===1&&state.edits[0].p_expected_edited_at===newer);
+      } finally { await f.close(); }
+    }
+    {
+      const f=await fixture(),{state}=f;
+      const baseline='2026-09-28T09:00:00.123456+00:00',committed='2026-09-29T09:00:00.654321+00:00';
+      Object.assign(state.posts[0],{author_id:A,edited_at:baseline});
+      try {
+        const board=await open(f,embedded);await detail(board);
+        await board.locator('[data-action=edit-post]').click();
+        await board.locator('#postTitle').fill('응답이 끊겼어도 한 번만 저장');
+        const attempts=[];
+        await f.context.route('**/rpc/board_edit_post',async route=>{
+          const b=route.request().postDataJSON();attempts.push(b);
+          if(attempts.length===1) {
+            Object.assign(state.posts[0],{title:b.p_title,text:b.p_text,orbit:b.p_orbit,observation:b.p_observation,edited_at:committed});
+            await route.abort('connectionfailed');
+          } else {
+            assert.deepEqual(b,attempts[0],'retry must retain the original content and expected version');
+            await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(P)});
+          }
+        });
+        await board.locator('#btnTrace').click();
+        await board.locator('#writeStatus').filter({hasText:'수정 실패'}).waitFor();
+        ok(`${mode}: response-loss leaves edit input available for retry`,
+          await board.locator('#postTitle').inputValue()==='응답이 끊겼어도 한 번만 저장'&&await board.locator('#btnTrace').isEnabled());
+        await board.locator('#btnTrace').click();
+        await board.locator('.detail-title').filter({hasText:'응답이 끊겼어도 한 번만 저장'}).waitFor();
+        ok(`${mode}: retry of an already committed edit completes with the original baseline`,
+          attempts.length===2&&attempts.every(b=>b.p_expected_edited_at===baseline)&&state.posts[0].edited_at===committed);
+      } finally { await f.close(); }
+    }
+    {
+      const f=await fixture(),{state}=f;
+      state.posts[0].author_id=A;
+      try {
+        const board=await open(f,embedded);await detail(board);
+        await board.locator('[data-action=edit-post]').click();
+        await board.locator('#postTitle').fill('업데이트 중에도 보존할 제목');
+        let attempts=0;
+        await f.context.route('**/rpc/board_edit_post',async route=>{
+          attempts++;
+          await route.fulfill({status:404,contentType:'application/json',body:JSON.stringify({code:'PGRST202',message:'function not found in schema cache'})});
+        });
+        await board.locator('#btnTrace').click();
+        await board.locator('#writeStatus').filter({hasText:'수정 실패'}).waitFor();
+        ok(`${mode}: a missing versioned RPC preserves input without falling back to unsafe saves`,
+          attempts===1&&state.edits.length===0&&await board.locator('#postTitle').inputValue()==='업데이트 중에도 보존할 제목');
+      } finally { await f.close(); }
+    }
     {
       const f=await fixture();
       let release;

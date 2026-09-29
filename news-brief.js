@@ -206,7 +206,8 @@
     if (!updated.hidden) updated.textContent = checkedAt.toLocaleString("ko-KR", {
       timeZone: "Asia/Seoul", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false,
     }) + " 확인 · 한국 시간";
-    var stale = Object.keys(news.sources).some(function (id) {
+    var health = news.health(data);
+    var stale = health.stale || Object.keys(news.sources).some(function (id) {
       return news.stale(
         data.sources.find(function (s) {
           return s.id === id;
@@ -216,6 +217,9 @@
     notice.hidden = items.length > 0 && !stale;
     notice.textContent = !items.length
       ? "아직 가져온 소식이 없어요."
+      : health.allFailed ? "모든 출처의 새 소식을 확인하지 못해 저장된 소식을 표시해요."
+      : !health.valid ? "마지막 목록 확인 시각을 검증하지 못해 저장된 소식을 표시해요."
+      : health.stale ? "마지막 목록 확인 후 " + news.health.staleAfterHours + "시간이 지나 저장된 소식을 표시해요."
       : "일부 출처의 갱신이 늦어져 저장된 소식을 표시해요.";
     retry.hidden = true;
     if (changed) render(false);
