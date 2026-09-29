@@ -2,6 +2,21 @@
   "version": 1,
   "items": [
     {
+      "id": "76b22a2d59c961e9",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Happy_New_Year_on_Mars",
+      "publishedAt": "2026-09-30T06:00:00Z",
+      "titleOriginal": "Happy New Year on Mars",
+      "titleKo": "화성의 새해, 지구 시간 9월 30일 시작",
+      "summaryKo": [
+        "ESA는 화성이 2026년 9월 30일 08시 16분(UTC)에 태양을 도는 새 궤도를 시작하며, 1955년부터 세기 시작한 화성력으로 39번째 해에 들어설 예정이라고 설명했습니다.",
+        "화성의 하루인 솔은 24시간 39분이고 한 해는 지구의 687일 또는 668솔이며, 화성의 새해는 북반구의 봄과 남반구의 가을이 시작되는 북분점에 맞춰 시작합니다.",
+        "화성은 공전 궤도가 지구보다 더 타원형이어서 계절 길이가 서로 다르고, 화성년 후반에는 미세한 토양 입자가 대기로 떠올라 행성 전체를 덮을 수 있는 강한 먼지폭풍이 나타나기도 합니다."
+      ],
+      "checkedAt": "2026-09-30",
+      "method": "source-checked"
+    },
+    {
       "id": "4d018e88d74bd3f6",
       "source": "esa",
       "url": "https://www.esa.int/ESA_Multimedia/Images/2026/09/Galaxies_in_a_cosmic_house_of_mirrors",
