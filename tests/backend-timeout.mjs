@@ -28,7 +28,9 @@ function deferred() {
 
 function fixture(timeout = 1000) {
   const receivedHeaders = deferred();
-  const timers = new Set();
+  // Advance the wrapper's deadline explicitly. Starting a cold fetch must not
+  // consume a short wall-clock budget before the test receives its headers.
+  const timers = new Map();
   const listeners = new Set();
   const caller = new AbortController();
   const add = caller.signal.addEventListener.bind(caller.signal);
@@ -57,11 +59,11 @@ function fixture(timeout = 1000) {
       return originalResponse;
     },
     setTimeout(callback, delay) {
-      const id = setTimeout(() => { timers.delete(id); callback(); }, delay);
-      timers.add(id);
+      const id = {};
+      timers.set(id, { callback, delay });
       return id;
     },
-    clearTimeout(id) { timers.delete(id); clearTimeout(id); },
+    clearTimeout(id) { timers.delete(id); },
   });
   window.createOrbitBackend();
   return {
@@ -74,6 +76,13 @@ function fixture(timeout = 1000) {
     },
     get signal() { return requestSignal; },
     get response() { return originalResponse; },
+    expireDeadline() {
+      assert.equal(timers.size, 1, 'the deadline remains active while the body is incomplete');
+      const [id, timer] = timers.entries().next().value;
+      assert.equal(timer.delay, timeout, 'the deadline uses the configured request timeout');
+      timers.delete(id);
+      timer.callback();
+    },
     clean() {
       assert.equal(timers.size, 0, 'the deadline is removed after settlement');
       assert.equal(listeners.size, 0, 'the caller abort listener is removed after settlement');
@@ -94,11 +103,16 @@ function stalledBody() {
 }
 
 test('a stalled response body times out after headers and aborts its network request', { timeout: 3000 }, async () => {
-  const body = stalledBody(), f = fixture(100);
+  const body = stalledBody(), f = fixture(12000);
   const request = f.request();
-  const rejected = assert.rejects(request);
+  const outcome = request.then(response => ({ response }), error => ({ error }));
   await f.headers;
-  await rejected;
+  // Let the wrapper continue past fetch's headers. Without the production fix
+  // it returns here and removes its timer, so expireDeadline must fail.
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(f.signal.aborted, false);
+  f.expireDeadline();
+  assert.ok((await outcome).error, 'expiry rejects the request rather than returning an incomplete response');
   assert.equal(f.signal.aborted, true);
   await body.closed;
   f.clean();
