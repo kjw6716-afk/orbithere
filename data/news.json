@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-09-29T06:53:42Z",
+  "checkedAt": "2026-09-29T14:03:45Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-09-29T06:53:42Z",
+      "lastCheckedAt": "2026-09-29T14:03:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-29T06:53:42Z"
+      "lastSuccessfulAt": "2026-09-29T14:03:45Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-09-29T06:53:42Z",
+      "lastCheckedAt": "2026-09-29T14:03:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-29T06:53:42Z"
+      "lastSuccessfulAt": "2026-09-29T14:03:45Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-09-29T06:53:42Z",
+      "lastCheckedAt": "2026-09-29T14:03:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-29T06:53:42Z"
+      "lastSuccessfulAt": "2026-09-29T14:03:45Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-09-29T06:53:42Z",
+      "lastCheckedAt": "2026-09-29T14:03:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-29T06:53:42Z"
+      "lastSuccessfulAt": "2026-09-29T14:03:45Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-09-29T06:53:42Z",
+      "lastCheckedAt": "2026-09-29T14:03:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-29T06:53:42Z"
+      "lastSuccessfulAt": "2026-09-29T14:03:45Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-09-29T06:53:42Z",
+      "lastCheckedAt": "2026-09-29T14:03:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-29T06:53:42Z"
+      "lastSuccessfulAt": "2026-09-29T14:03:45Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-09-29T06:53:42Z",
+      "lastCheckedAt": "2026-09-29T14:03:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-29T06:53:42Z"
+      "lastSuccessfulAt": "2026-09-29T14:03:45Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,28 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-09-29T06:53:42Z",
+      "lastCheckedAt": "2026-09-29T14:03:45Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-09-29T06:53:42Z"
+      "lastSuccessfulAt": "2026-09-29T14:03:45Z"
     }
   ],
   "items": [
+    {
+      "id": "76b22a2d59c961e9",
+      "source": "esa",
+      "title": "Happy New Year on Mars",
+      "url": "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Happy_New_Year_on_Mars",
+      "publishedAt": "2026-09-30T06:00:00Z",
+      "language": "en"
+    },
+    {
+      "id": "4d018e88d74bd3f6",
+      "source": "esa",
+      "title": "Galaxies in a cosmic house of mirrors",
+      "url": "https://www.esa.int/ESA_Multimedia/Images/2026/09/Galaxies_in_a_cosmic_house_of_mirrors",
+      "publishedAt": "2026-09-29T08:00:00Z",
+      "language": "en"
+    },
     {
       "id": "21c224b7f1e72026",
       "source": "esa",
@@ -247,17 +263,6 @@
       "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
-      "id": "3df2eabd436d73bc",
-      "source": "esa",
-      "title": "Webb reveals stunning panorama of star formation",
-      "url": "https://www.esa.int/Science_Exploration/Space_Science/Webb/Webb_reveals_stunning_panorama_of_star_formation",
-      "publishedAt": "2026-09-15T14:00:00Z",
-      "language": "en",
-      "titleKoDraft": "Webb는 스타 형성의 놀라운 전망을 보여줍니다",
-      "titleKoDraftOriginal": "Webb reveals stunning panorama of star formation",
-      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
-    },
-    {
       "id": "0717cb78f1678f1b",
       "source": "kasi",
       "title": "은하 사이를 떠도는 희미한 별빛으로 암흑물질의 정체를 묻다",
@@ -353,17 +358,6 @@
       "language": "en",
       "titleKo": "베피콜롬보의 수성 도착 절차 시작 — 전체 영상 다시 보기",
       "titleKoOriginal": "BepiColombo’s Mercury arrival begins - full replay",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "6b99d3ba0cb19611",
-      "source": "esa",
-      "title": "Hubble's superbubble scene",
-      "url": "https://www.esa.int/ESA_Multimedia/Images/2026/09/Hubble_s_superbubble_scene",
-      "publishedAt": "2026-09-03T08:00:00Z",
-      "language": "en",
-      "titleKo": "허블이 포착한 거대한 초거품의 모습",
-      "titleKoOriginal": "Hubble's superbubble scene",
       "titleKoMethod": "reviewed"
     },
     {
