@@ -90,7 +90,10 @@
       "title": "Happy New Year on Mars",
       "url": "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Happy_New_Year_on_Mars",
       "publishedAt": "2026-09-30T06:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "행복한 새해 화성",
+      "titleKoDraftOriginal": "Happy New Year on Mars",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "4d018e88d74bd3f6",
@@ -98,7 +101,10 @@
       "title": "Galaxies in a cosmic house of mirrors",
       "url": "https://www.esa.int/ESA_Multimedia/Images/2026/09/Galaxies_in_a_cosmic_house_of_mirrors",
       "publishedAt": "2026-09-29T08:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "거울의 우주 집에 있는 은하",
+      "titleKoDraftOriginal": "Galaxies in a cosmic house of mirrors",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "21c224b7f1e72026",
