@@ -2,6 +2,21 @@
   "version": 1,
   "items": [
     {
+      "id": "4d018e88d74bd3f6",
+      "source": "esa",
+      "url": "https://www.esa.int/ESA_Multimedia/Images/2026/09/Galaxies_in_a_cosmic_house_of_mirrors",
+      "publishedAt": "2026-09-29T08:00:00Z",
+      "titleOriginal": "Galaxies in a cosmic house of mirrors",
+      "titleKo": "웹 망원경, 중력렌즈로 휘어지고 여러 겹으로 보이는 먼 은하 포착",
+      "summaryKo": [
+        "ESA가 공개한 제임스 웹 우주망원경 영상은 은하단 MACS J0454.1-0300의 중력이 뒤쪽 은하의 빛을 휘고 확대해, 먼 은하가 길게 늘어나거나 여러 모습으로 보이는 중력렌즈 현상을 보여줍니다.",
+        "영상에는 빅뱅 후 20억 년 무렵의 은하 무리와 8억 년 무렵의 은하가 담겼으며, 연구진은 렌즈로 확대된 영역에서 지름이 약 5광년에 불과한 밝은 덩어리도 식별했습니다.",
+        "이런 작은 영역은 일부 경우 300배 넘게 확대돼 보이며, 웹은 2014년 공개된 같은 은하단의 허블 영상에 드러나지 않았던 은하 수백 개를 더 포착했습니다."
+      ],
+      "checkedAt": "2026-09-29",
+      "method": "source-checked"
+    },
+    {
       "id": "21c224b7f1e72026",
       "source": "esa",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Successful_Earth_flyby_improves_Juice_s_course_to_Jupiter",
