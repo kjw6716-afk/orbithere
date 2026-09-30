@@ -90,7 +90,10 @@
       "title": "Science begins for Smile",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Smile/Science_begins_for_Smile",
       "publishedAt": "2026-09-30T07:05:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "과학은 미소로 시작한다.",
+      "titleKoDraftOriginal": "Science begins for Smile",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "76b22a2d59c961e9",
