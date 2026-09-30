@@ -187,9 +187,15 @@ export async function boardDetailEditRegressions({fixture,base,A,B,P,uid,now,ok}
         await pendingPage.entered;
         pageEntered=true;
         await board.locator('#post-'+uid(7214)).scrollIntoViewIfNeeded();
-        const scroll=await f.page.evaluate(()=>window.scrollY);
+        let scroll=await f.page.evaluate(()=>window.scrollY);
+        // Clicking a compact title inside an iframe can scroll it again after
+        // scrollIntoViewIfNeeded. Restore the viewport at the actual user click.
+        await board.evaluate(()=>document.addEventListener('click',event=>{
+          if(event.target.closest('.row-title')) window.__listClickScroll=parent.scrollY;
+        },{once:true,capture:true}));
         assert.ok(scroll>0,'the paginated list has a scroll position to restore');
         await detail(board,uid(7214));
+        scroll=await board.evaluate(()=>window.__listClickScroll);
         await board.locator('#backToFeed').click();
         await board.locator('#postList[aria-busy=false]').waitFor();
         ok(`${mode}: returning during pagination preserves all forty completed rows`,

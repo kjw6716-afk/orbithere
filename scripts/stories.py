@@ -498,7 +498,7 @@ def outputs(articles, ledger, root=ROOT):
     items = [(articles[item['id']], item['date']) for item in sorted(reversed(ledger['items']), key=lambda i: i['date'], reverse=True)]
     result = {'stories.html': render_list(items, images), 'rss.xml': render_rss(items)}
     result.update({f'stories/{a["id"]}.html': render_article(a, day, images, items) for a, day in items})
-    for filename in ('index.html', 'main.html'):
+    for filename in ('main.html',):
         src = (root / filename).read_text()
         pattern = r'<!-- orbit-story-teaser:start -->.*?<!-- orbit-story-teaser:end -->'
         if len(re.findall(pattern, src, re.S)) != 1:

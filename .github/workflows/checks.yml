@@ -59,7 +59,7 @@ jobs:
         run: node tests/render.mjs
 
       - name: 모바일 첫 화면 · 메뉴 검증
-        run: node tests/landing.mjs
+        run: npm run test:landing
 
       - name: 관측 가이드 · 광고 비활성 및 오류 검증
         run: node tests/content.mjs

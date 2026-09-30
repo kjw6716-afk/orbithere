@@ -418,14 +418,14 @@ try {
       p = f.page;
     await ready(p, "/lounge.html");
     ok(
-      "standalone desktop board also shows a four-item sidebar",
-      (await p.locator(".news-brief-item").count()) === 4,
+      "standalone community keeps a secondary rotating headline in its right sidebar",
+      (await p.locator(".community-sidebar .news-brief-item").count()) === 1,
     );
     await p.goto(base + "/lounge.html?write=1");
     await p.locator("#editorView").waitFor();
     ok(
-      "desktop editor keeps news below the menu outside the writing area",
-      await p.locator(".sidebar > .news-brief").isVisible(),
+      "desktop editor keeps a news destination without a competing feed",
+      await p.locator('#sideNav a[href="news.html"]').isVisible() && await p.locator('.news-brief').isHidden(),
     );
     await f.close();
   }

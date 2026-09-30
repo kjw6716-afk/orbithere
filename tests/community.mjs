@@ -397,6 +397,10 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
     }
     if (url.pathname === '/rest/v1/posts') {
       const id = (url.searchParams.get('id') || '').slice(3);
+      if (req.method() === 'GET' && url.searchParams.get('id')?.startsWith('in.'))
+        return json(state.posts.filter(p => url.searchParams.get('id').includes(p.id)));
+      if (req.method() === 'GET' && url.searchParams.has('image_paths'))
+        return json(ordered(state.posts.filter(p => p.image_paths?.length)).slice(0, 4));
       state.selects.push(url.searchParams.get('select'));
       if (req.method() === 'GET' && !state.observationColumn && url.searchParams.get('select').includes('observation'))
         return json({ code: '42703', message: 'column observation does not exist' }, 400);
@@ -418,9 +422,10 @@ async function fixture({ nickname = '관측자', version = 1, admin = false, sig
       }
     }
     if (url.pathname === '/rest/v1/comments') {
-      state.queries.push(url);
+      if (url.searchParams.has('post_id') || url.searchParams.has('id')) state.queries.push(url);
       if (req.method() === 'GET') {
         if (state.commentFail) return json({ message: 'comment outage' }, 503);
+        if (!url.searchParams.has('post_id') && !url.searchParams.has('id')) return json(ordered(state.comments).slice(0, 6));
         if (url.searchParams.get('id'))
           return json(
             state.comments.find((c) => c.id === url.searchParams.get('id').slice(3)) || null,
@@ -1145,7 +1150,7 @@ try {
     await page.getByRole('link', { name: '기존 관측 후기', exact: true }).waitFor();
     for (const width of [320, 390, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
-      await page.waitForFunction(()=>!!document.querySelector('.sidebar > .news-brief')===(innerWidth>860));
+      await page.locator('.community-sidebar .news-brief').waitFor({state:'attached'});
       const geometry = await page.evaluate(() => {
         const list = document.getElementById('postList').getBoundingClientRect();
         const news = document.querySelector('.news-brief--board').getBoundingClientRect();
@@ -1154,7 +1159,7 @@ try {
           fits: document.documentElement.scrollWidth <= innerWidth + 1 };
       });
       ok('community comes before news without overflow at ' + width + 'px', geometry.fits &&
-        (width <= 860 ? geometry.news.top >= Math.max(geometry.list.bottom, geometry.write) : geometry.news.right <= geometry.list.left));
+        (width <= 860 ? geometry.news.top >= Math.max(geometry.list.bottom, geometry.write) : geometry.news.left >= geometry.list.right));
     }
     await f.close();
   }
@@ -1468,7 +1473,7 @@ try {
     ok('complete counter outage never shows a fabricated zero',await page.locator('#postViews').textContent()==='조회 —');
     for(const width of [320,390,1440]) {
       await page.setViewportSize({width,height:900});
-      await page.waitForFunction(()=>!!document.querySelector('.sidebar > .news-brief')===(innerWidth>860));
+      await page.locator('.community-sidebar .news-brief').waitFor({state:'attached'});
       ok('detail views fit '+width+'px',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
     }
     await f.close();

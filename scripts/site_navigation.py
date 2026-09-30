@@ -32,7 +32,11 @@ PATTERN = r'<!-- orbit-navigation:start -->.*?<!-- orbit-navigation:end -->'
 def render(page, active, prefix=''):
     current = next((m for m in MENU if m[0] == active), ('', '☰', '메뉴', ''))
     rows = []
-    for key, icon, label, href in MENU:
+    community = page in ('lounge', 'index')
+    menu = sorted(MENU, key=lambda item: item[0] != 'lounge') if community else MENU
+    for key, icon, label, href in menu:
+        if community and key == 'lounge':
+            href = 'index.html'
         selected = ' on' if key == active else ''
         aria = ' aria-current="page"' if selected else ''
         content = f'<span class="ic" aria-hidden="true">{icon}</span><span class="lbl">{label}</span>'
@@ -52,7 +56,9 @@ def render(page, active, prefix=''):
         f'<span class="nt-ic" id="navToggleIc" aria-hidden="true">{current[1]}</span>',
         f'<span class="nt-lbl" id="navToggleLbl">{current[2]}</span><span class="nt-arrow" aria-hidden="true"></span></button>',
         '<nav class="side-nav" id="sideNav" aria-label="주요 메뉴">',
-        *rows, '</nav></aside>', '<div class="nav-scrim" id="navScrim" aria-hidden="true"></div>',
+        *rows,
+        ('</nav><div class="board-account-actions"><a class="account-entry-button" data-account-link href="main.html?account=login#lounge" data-account-open="login" aria-haspopup="dialog" aria-expanded="false">로그인</a><a class="account-signup-link" data-account-signup href="main.html?account=signup#lounge" data-account-open="signup" aria-haspopup="dialog" aria-expanded="false">회원가입</a></div></aside>' if community else '</nav></aside>'),
+        '<div class="nav-scrim" id="navScrim" aria-hidden="true"></div>',
         '<!-- orbit-navigation:end -->',
     ])
 
