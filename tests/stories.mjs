@@ -137,7 +137,12 @@ try{
    }
   }
   await page.goto(base+'/main.html');await page.locator('#panel-planets.on').waitFor();
-  const box=await page.locator('.story-teaser').boundingBox(),panel=await page.locator('#panel-planets').boundingBox();
+  // The planet iframe reports its height asynchronously. Capture both siblings
+  // in one layout snapshot so a resize between two RPCs cannot fake an overlap.
+  const {box,panel}=await page.evaluate(()=>({
+   box:document.querySelector('.story-teaser').getBoundingClientRect().toJSON(),
+   panel:document.querySelector('#panel-planets').getBoundingClientRect().toJSON(),
+  }));
   ok(`main teaser follows the tool at ${width}px`,panel.y+panel.height<=box.y+1);
   if(width===1440){
    await page.locator('.news-brief-title').first().waitFor();
