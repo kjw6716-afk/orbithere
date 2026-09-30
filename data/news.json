@@ -112,7 +112,10 @@
       "title": "Firefly Aerospace Signs Starcloud as Commercial Customer, Demonstrating Data Center Capabilities Around the Moon",
       "url": "https://fireflyspace.com/news/firefly-aerospace-signs-starcloud-as-commercial-customer-demonstrating-data-center-capabilities-around-the-moon/",
       "publishedAt": "2026-09-30T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "Firefly Aerospace는 Starcloud를 상업 고객으로 표시하며 달 주위의 데이터 센터 능력을 보여줍니다.",
+      "titleKoDraftOriginal": "Firefly Aerospace Signs Starcloud as Commercial Customer, Demonstrating Data Center Capabilities Around the Moon",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "4d018e88d74bd3f6",
