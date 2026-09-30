@@ -19,7 +19,7 @@
       window.OrbitMembers.decorate(document);
     }, 0);
   });
-  ["postList", "postDetail", "commentList"].forEach(function (id) {
+  ["postList", "postDetail", "commentList", "recentConversations", "recentPhotos"].forEach(function (id) {
     var el = document.getElementById(id);
     if (el) observer.observe(el, { childList: true, subtree: true });
   });

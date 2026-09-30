@@ -13,13 +13,13 @@
   function featureFor(url) {
     if (url.pathname === '/main.html') return url.hash === '#sky' ? 'calendar' : url.hash === '#lounge' ? 'board' : 'planets';
     if (/^\/stories\/[^/]+\.html$/.test(url.pathname)) return 'story';
-    return ({'/':'home','/index.html':'home','/planets.html':'planets','/sky.html':'calendar','/lounge.html':'board',
+    return ({'/':'board','/index.html':'board','/planets.html':'planets','/sky.html':'calendar','/lounge.html':'board',
       '/guide.html':'guide','/reading-sky.html':'guide','/stories.html':'stories','/news.html':'news',
       '/about.html':'about','/privacy.html':'policy','/terms.html':'policy'})[url.pathname] || 'other';
   }
   function pageFor(feature) {
     if (location.pathname === '/main.html') return 'main_' + (feature === 'board' ? 'board' : feature === 'calendar' ? 'calendar' : 'planets');
-    var pages = {'/':'home','/index.html':'home','/planets.html':'planets','/sky.html':'calendar','/lounge.html':'board',
+    var pages = {'/':'board','/index.html':'board','/planets.html':'planets','/sky.html':'calendar','/lounge.html':'board',
       '/guide.html':'guide','/reading-sky.html':'reading_sky','/stories.html':'stories','/news.html':'news',
       '/about.html':'about','/privacy.html':'policy','/terms.html':'terms'};
     if (pages[location.pathname]) return pages[location.pathname];
@@ -196,7 +196,7 @@
       if (!link || link.target === '_blank' || link.hasAttribute('download')) return;
       var destination = new URL(link.href, location.href);
       if (destination.origin !== location.origin || !destination.searchParams.has('write') || destination.searchParams.has('post')) return;
-      if (destination.pathname !== '/lounge.html' && !(destination.pathname === '/main.html' && destination.hash === '#lounge')) return;
+      if (!['/','/index.html','/lounge.html'].includes(destination.pathname) && !(destination.pathname === '/main.html' && destination.hash === '#lounge')) return;
       // A one-minute enum intent connects a same-tab explicit CTA to arrival.
       // It contains no destination URL or text and is consumed only on the board.
       state.writeIntent = Date.now(); save();

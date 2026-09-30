@@ -18,7 +18,7 @@ const base=`http://127.0.0.1:${server.address().port}`;
 const browser=await chromium.launch();
 let checks=0;
 function ok(name,value=true){assert.ok(value,name);checks++;console.log('✓ '+name);}
-const pages={main:'밤하늘',sky:'밤하늘',planets:'밤하늘',lounge:'자유게시판',news:'우주 뉴스',guide:'관측 가이드',notes:null,stories:'우주 이야기','stories/moon-face-and-phases':'우주 이야기','reading-sky':'관측 가이드',about:'소개·문의',terms:null,privacy:null,admin:null};
+const pages={index:'자유게시판',main:'밤하늘',sky:'밤하늘',planets:'밤하늘',lounge:'자유게시판',news:'우주 뉴스',guide:'관측 가이드',notes:null,stories:'우주 이야기','stories/moon-face-and-phases':'우주 이야기','reading-sky':'관측 가이드',about:'소개·문의',terms:null,privacy:null,admin:null};
 async function context(options={}){
   const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',...options});
   await ctx.route('**/*',async route=>{
@@ -55,9 +55,9 @@ try{
       const selected=page.locator('#sideNav [aria-current="page"]');
       ok(`${name} marks current section`,active?(await selected.locator('.lbl').textContent()).trim()===active:await selected.count()===0);
       const logo=await page.locator('.orbit-brand').evaluate(el=>{const s=getComputedStyle(el),r=el.getBoundingClientRect();return [r.x,r.y,r.width,r.height,s.fontSize,s.color,s.fontFamily];});
-      reference ??=logo;
-      assert.deepEqual(logo,reference,`${name} shared logo geometry`);
-      if(width<=860){
+      if(!['index','lounge'].includes(name)) reference ??=logo;
+      if(!['index','lounge'].includes(name)) assert.deepEqual(logo,reference,`${name} shared logo geometry`);
+      if(width<=860&&!['index','lounge'].includes(name)){
         await page.getByRole('button',{name:'메뉴 열기',exact:true}).click();
         const menu=page.locator('#sideNav');
         await menu.getByRole('link',{name:'소개·문의',exact:true}).focus();

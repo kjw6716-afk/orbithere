@@ -2,6 +2,11 @@
   "use strict";
   var sidebar = document.querySelector('.orbit-navigation');
   if (!sidebar) return;
+  // The community header keeps its menu and account actions visible at every size.
+  if (document.body.classList.contains('lounge-page')) {
+    sidebar.classList.add('enhanced');
+    return;
+  }
   // Keep one news widget: below the menu on desktop, in the document on mobile.
   var brief = document.querySelector('[data-news-brief]');
   if (brief && !document.documentElement.classList.contains('embed')) {

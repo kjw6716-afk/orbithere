@@ -1,184 +1,295 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>오빗 Orbit — 오늘 밤 행성 · 유성우 · 우주 이야기</title>
-    <meta name="description" content="우주·천체관측 커뮤니티 오빗(Orbit). 행성과 유성우 일정, 밤하늘 관측 정보, 별사진·출사 후기와 우주 소식을 함께 나눠요.">
+  <head>
+    <meta charset="UTF-8" />
     <meta name="naver-site-verification" content="e4f3202eda5baa4be1a44638c1dc6bbad37aed63">
-    <meta name="color-scheme" content="dark">
-    <meta name="theme-color" content="#0F172A">
-    <link rel="canonical" href="https://orbithere.com/">
-    <link rel="alternate" type="application/rss+xml" title="ORBIT 우주 이야기 RSS" href="https://orbithere.com/rss.xml">
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="/apple-touch-icon-precomposed.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Orbit">
-    <meta property="og:title" content="Orbit — 밤하늘을 같이 보는 사람들">
-    <meta property="og:description" content="우주·천체관측 커뮤니티 오빗(Orbit). 행성과 유성우 일정, 밤하늘 관측 정보, 별사진·출사 후기와 우주 소식을 함께 나눠요.">
-    <meta property="og:image" content="https://orbithere.com/images/og.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:url" content="https://orbithere.com/">
-    <meta name="twitter:card" content="summary_large_image">
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
-    <link rel="stylesheet" href="/orbit.css?v=20260912-brand">
-    <style>
-
-        html { color-scheme: dark; }
-        body {
-            margin: 0; width: 100%; min-height: 100vh; min-height: 100svh; min-height: 100dvh;
-            display: grid; grid-template-rows: auto 1fr auto;
-            background: #0F172A; color: #E2E8F0; overflow-x: hidden;
-            font-family: 'Pretendard', sans-serif; touch-action: manipulation;
-        }
-        /* Paint outside the screen must never become page width/height on mobile. */
-        .starfield { position: fixed; inset: 0; overflow: hidden; contain: strict; pointer-events: none; z-index: 0; }
-        .meteor {
-            position: absolute; width: clamp(48px, 9vw, 120px); height: 2px;
-            border-radius: 99px; opacity: 0; transform-origin: left center;
-            background: linear-gradient(90deg, #E6FFF9, #82DED5 12%, rgba(79,209,197,.3) 55%, transparent);
-        }
-        .landing-header, .landing-main, .quick-links { position: relative; z-index: 1; min-width: 0; }
-        .landing-header {
-            width: min(100%, 1120px); margin: 0 auto; padding: max(18px, env(safe-area-inset-top)) 28px 18px;
-            display: flex; justify-content: space-between; align-items: center; gap: 16px;
-        }
-        .landing-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; }
-        .landing-nav a { display: inline-flex; align-items: center; min-height: 44px; color: #CBD5E1; text-decoration: none; font-size: .875rem; }
-        .landing-nav a:hover, .quick-links a:hover { color: #4FD1C5; }
-        .landing-main { display: grid; place-items: center; padding: 32px 24px 48px; }
-        .content { width: min(100%, 680px); text-align: center; }
-        .star-system { position: relative; display: grid; place-items: center; width: 240px; max-width: 100%; height: 140px; margin: 0 auto 24px; }
-        .tilt-wrapper { position: relative; width: 200px; height: 60px; transform: rotate(-25deg); }
-        .orbit-ring { position: absolute; inset: 0; border: 1px solid rgba(79,209,197,.7); border-radius: 50%; z-index: 1; }
-        .gummy-star {
-            position: absolute; z-index: 2; width: 28px; height: 28px; top: 50%; left: 50%; margin: -14px 0 0 -14px;
-            fill: #4FD1C5; stroke: #4FD1C5; stroke-width: 14; stroke-linejoin: round; stroke-linecap: round;
-            --rx: 100px; --ry: 30px; animation: star-orbit 7.5s linear infinite;
-        }
-        .title { font-size: clamp(1.7rem, 3vw, 3rem); font-weight: 300; line-height: 1.35; letter-spacing: -.045em; margin: 0; text-wrap: balance; }
-        .highlight { color: #4FD1C5; font-weight: 600; }
-        .subtitle { color: #CBD5E1; font-size: 1rem; line-height: 1.8; max-width: 32rem; margin: 20px auto 0; text-wrap: balance; }
-        .entry-actions { display: flex; flex-direction: column; align-items: center; gap: 20px; margin-top: 30px; }
-        .click-hint { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 14px 26px; border-radius: 99px; background: #4FD1C5; color: #0F172A; text-decoration: none; font-size: 1rem; font-weight: 700; opacity: 1; }
-        .click-hint:hover { background: #99F6E4; }
-        .entry-secondary { color: #CBD5E1; font-size: .9rem; line-height: 1.5; text-underline-offset: 5px; }
-        .quick-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 20px; width: 100%; margin: 0; padding: 16px 24px max(22px, env(safe-area-inset-bottom)); text-align: center; }
-        .quick-links a { display: inline-flex; align-items: center; min-height: 36px; font-size: .8rem; color: #B5C2D4; text-decoration: none; }
-        .quick-links .foot-copy { display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%; margin-top: 8px; color: #94A3B8; font-size: .75rem; }
-        a:focus-visible { outline: 2px solid #4FD1C5; outline-offset: 5px; }
-        @media (max-width: 600px) {
-            .landing-header { flex-direction: column; gap: 4px; padding: max(14px, env(safe-area-inset-top)) 16px 6px; }
-            .landing-nav { gap: 0 16px; }
-            .landing-nav a { font-size: .8rem; }
-            .landing-main { padding: 20px 22px 32px; }
-            .star-system { margin-bottom: 16px; }
-        }
-        @media (max-height: 500px) and (min-width: 600px) {
-            .landing-header { padding-top: 10px; padding-bottom: 6px; }
-            .landing-main { padding-top: 8px; padding-bottom: 20px; }
-            .star-system { height: 90px; margin-bottom: 8px; }
-            .subtitle { margin-top: 10px; }
-            .entry-actions { flex-direction: row; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
-        }
-        @media (prefers-reduced-motion: reduce) { .gummy-star { animation: none; transform: translate(-86px, 15px); } }
-        @keyframes star-orbit {
-            0%    { transform: translate(calc(var(--rx)*1),   calc(var(--ry)*0))    rotate(0deg)    scale(1);     }
-            4.16% { transform: translate(calc(var(--rx)*0.966),calc(var(--ry)*-0.259)) rotate(-15deg)  scale(0.98);  }
-            8.33% { transform: translate(calc(var(--rx)*0.866),calc(var(--ry)*-0.5))   rotate(-30deg)  scale(0.96);  }
-            12.5% { transform: translate(calc(var(--rx)*0.707),calc(var(--ry)*-0.707)) rotate(-45deg)  scale(0.92);  }
-            16.66%{ transform: translate(calc(var(--rx)*0.5),  calc(var(--ry)*-0.866)) rotate(-60deg)  scale(0.89);  }
-            20.83%{ transform: translate(calc(var(--rx)*0.259),calc(var(--ry)*-0.966)) rotate(-75deg)  scale(0.86);  }
-            25%   { transform: translate(0px,                  calc(var(--ry)*-1))     rotate(-90deg)  scale(0.85);  }
-            29.16%{ transform: translate(calc(var(--rx)*-0.259),calc(var(--ry)*-0.966)) rotate(-105deg) scale(0.86);  }
-            33.33%{ transform: translate(calc(var(--rx)*-0.5),  calc(var(--ry)*-0.866)) rotate(-120deg) scale(0.89);  }
-            37.5% { transform: translate(calc(var(--rx)*-0.707),calc(var(--ry)*-0.707)) rotate(-135deg) scale(0.92);  }
-            41.66%{ transform: translate(calc(var(--rx)*-0.866),calc(var(--ry)*-0.5))   rotate(-150deg) scale(0.96);  }
-            45.83%{ transform: translate(calc(var(--rx)*-0.966),calc(var(--ry)*-0.259)) rotate(-165deg) scale(0.98);  }
-            49.99%{ transform: translate(calc(var(--rx)*-1),   0px)                     rotate(-180deg) scale(1);     }
-            50%   { transform: translate(calc(var(--rx)*-1),   0px)                     rotate(-180deg) scale(1);     }
-            54.16%{ transform: translate(calc(var(--rx)*-0.966),calc(var(--ry)*0.259))  rotate(-195deg) scale(1.02);  }
-            58.33%{ transform: translate(calc(var(--rx)*-0.866),calc(var(--ry)*0.5))    rotate(-210deg) scale(1.04);  }
-            62.5% { transform: translate(calc(var(--rx)*-0.707),calc(var(--ry)*0.707))  rotate(-225deg) scale(1.08);  }
-            66.66%{ transform: translate(calc(var(--rx)*-0.5),  calc(var(--ry)*0.866))  rotate(-240deg) scale(1.11);  }
-            70.83%{ transform: translate(calc(var(--rx)*-0.259),calc(var(--ry)*0.966))  rotate(-255deg) scale(1.14);  }
-            75%   { transform: translate(0px,                   calc(var(--ry)*1))       rotate(-270deg) scale(1.15);  }
-            79.16%{ transform: translate(calc(var(--rx)*0.259), calc(var(--ry)*0.966))  rotate(-285deg) scale(1.14);  }
-            83.33%{ transform: translate(calc(var(--rx)*0.5),   calc(var(--ry)*0.866))  rotate(-300deg) scale(1.11);  }
-            87.5% { transform: translate(calc(var(--rx)*0.707), calc(var(--ry)*0.707))  rotate(-315deg) scale(1.08);  }
-            91.66%{ transform: translate(calc(var(--rx)*0.866), calc(var(--ry)*0.5))    rotate(-330deg) scale(1.04);  }
-            95.83%{ transform: translate(calc(var(--rx)*0.966), calc(var(--ry)*0.259))  rotate(-345deg) scale(1.02);  }
-            99.99%{ transform: translate(calc(var(--rx)*1),     0px)                     rotate(-360deg) scale(1);     }
-            100%  { transform: translate(calc(var(--rx)*1),     0px)                     rotate(-360deg) scale(1);     }
-        }
-    </style>
-    <script src="effects.js?v=20260911-layout" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ORBIT — 밤하늘을 함께 나누는 커뮤니티</title>
+    <meta
+      name="description"
+      content="관측 이야기부터 일상의 수다와 궁금한 점까지 편하게 나누는 자유게시판."
+    />
+    <meta name="theme-color" content="#0F172A" />
+    <link rel="canonical" href="https://orbithere.com/" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon-precomposed"
+      sizes="180x180"
+      href="/apple-touch-icon-precomposed.png"
+    />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Orbit" />
+    <meta property="og:title" content="Orbit | 자유게시판" />
+    <meta
+      property="og:description"
+      content="관측 이야기부터 일상의 수다와 궁금한 점까지 편하게 나누는 자유게시판."
+    />
+    <meta property="og:image" content="https://orbithere.com/images/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://orbithere.com/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link
+      rel="stylesheet"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css"
+    />
+    <link rel="stylesheet" href="/orbit.css?v=20260912-brand" />
+    <link rel="stylesheet" href="board.css?v=20260927-board-colors" />
+    <script>
+      if (new URLSearchParams(location.search).get('embed'))
+        document.documentElement.classList.add('embed');
+    </script>
     <script src="orbit-config.js"></script>
-    <script src="orbit-analytics.js?v=20260927-funnel" defer></script>
+    <script src="orbit-analytics.js?v=20261001-community" defer></script>
     <script src="visits.js" defer></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "오빗", "alternateName": ["Orbit", "오빗 Orbit"], "url": "https://orbithere.com/", "inLanguage": "ko", "description": "우주·천체관측 커뮤니티 오빗(Orbit). 행성과 유성우 일정, 밤하늘 관측 정보, 별사진·출사 후기와 우주 소식을 함께 나눠요."}</script>
-<link rel="stylesheet" href="story-teaser.css?v=20260914-codes">
-<script src="story-carousel.js?v=20260912-ultrawide" defer></script>
-<link rel="stylesheet" href="landing-nebula.css?v=20260912-random-meteors">
-<script src="landing-meteors.js?v=20260912-random-meteors" defer></script>
+    <link rel="stylesheet" href="news-brief.css?v=20260914-community">
+    <script src="news-health.js?v=20260929-freshness" defer></script>
+    <script src="news-data.js?v=20260929-freshness" defer></script>
+    <script src="news-brief.js?v=20260929-freshness" defer></script>
+  <link rel="stylesheet" href="site-nav.css?v=20260926-mint">
+  <link rel="stylesheet" href="lounge-design.css?v=20261001-community">
 </head>
-<body>
-    <!-- object-fit:cover로 화면을 덮으므로 세로 화면에서는 100vw보다 훨씬 넓게 그려진다.
-         그래서 세로일 때만 sizes를 키워 더 큰 자산을 고르게 한다. -->
-    <picture class="landing-nebula" aria-hidden="true">
-        <source type="image/avif" sizes="(max-aspect-ratio: 1/1) 170vw, 100vw" srcset="images/nebula-landing-1200.avif 1200w, images/nebula-landing-1600.avif 1600w, images/nebula-landing-2000.avif 2000w, images/nebula-landing-2430.avif 2430w">
-        <source type="image/webp" sizes="(max-aspect-ratio: 1/1) 170vw, 100vw" srcset="images/nebula-landing-1200.webp 1200w, images/nebula-landing-1600.webp 1600w, images/nebula-landing-2000.webp 2000w, images/nebula-landing-2430.webp 2430w">
-        <img src="images/nebula-landing-1600.webp" alt="" width="2430" height="1457" fetchpriority="high" decoding="async">
-    </picture>
-    <div class="starfield" aria-hidden="true"></div>
-    <header class="landing-header">
-        <a class="landing-logo orbit-brand" href="index.html" aria-label="ORBIT 홈">ORBIT.</a>
-        <nav class="landing-nav" aria-label="주요 메뉴">
-            <a href="main.html#planets">밤하늘</a>
-            <a href="stories.html">우주 이야기</a><a href="guide.html">관측 가이드</a><a href="main.html#lounge">글 남기기</a>
-        </nav>
-    </header>
-    <main class="landing-main">
-    <div class="content">
-        <div class="star-system" aria-hidden="true">
-            <div class="tilt-wrapper">
-                <div class="orbit-ring ring-back"></div>
-                <svg class="gummy-star" viewBox="0 0 100 100">
-                    <path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" />
-                </svg>
-            </div>
+  <body class="lounge-page community-home">
+    <div class="bg-glow" aria-hidden="true"></div>
+    <a class="board-skip" href="#boardMain">본문으로 바로가기</a>
+    <div class="orbit-page-layout">
+<!-- orbit-navigation:start -->
+<aside class="sidebar orbit-navigation">
+<a class="side-logo orbit-brand" href="index.html" aria-label="ORBIT 홈">ORBIT.</a>
+<button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="sideNav" aria-label="메뉴 열기">
+<span class="nt-ic" id="navToggleIc" aria-hidden="true">💬</span>
+<span class="nt-lbl" id="navToggleLbl">자유게시판</span><span class="nt-arrow" aria-hidden="true"></span></button>
+<nav class="side-nav" id="sideNav" aria-label="주요 메뉴">
+<a class="nav-item nav-link on" href="index.html" aria-current="page"><span class="ic" aria-hidden="true">💬</span><span class="lbl">자유게시판</span></a>
+<a class="nav-item nav-link" href="main.html#planets"><span class="ic" aria-hidden="true">🔭</span><span class="lbl">밤하늘</span></a>
+<a class="nav-item nav-link" href="news.html"><span class="ic" aria-hidden="true">📰</span><span class="lbl">우주 뉴스</span></a>
+<a class="nav-item nav-link" href="stories.html"><span class="ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span><span class="lbl">우주 이야기</span></a>
+<a class="nav-item nav-link" href="guide.html"><span class="ic" aria-hidden="true">📖</span><span class="lbl">관측 가이드</span></a>
+<a class="nav-item nav-link" href="about.html"><span class="ic" aria-hidden="true">ⓘ</span><span class="lbl">소개·문의</span></a>
+</nav><div class="board-account-actions"><a class="account-entry-button" data-account-link href="main.html?account=login#lounge" data-account-open="login" aria-haspopup="dialog" aria-expanded="false">로그인</a><a class="account-signup-link" data-account-signup href="main.html?account=signup#lounge" data-account-open="signup" aria-haspopup="dialog" aria-expanded="false">회원가입</a></div></aside>
+<div class="nav-scrim" id="navScrim" aria-hidden="true"></div>
+<!-- orbit-navigation:end -->
+<div class="orbit-page-content">
+    <main class="board-shell" id="boardMain">
+      <div id="loungeStatus" class="board-status" role="status" aria-live="polite"></div>
+      <section id="listView">
+        <div class="community-grid">
+        <div class="community-board">
+        <header class="board-heading board-hero">
+          <picture class="board-hero-sky" aria-hidden="true">
+            <source type="image/avif" srcset="images/nebula-landing-1200.avif 1200w, images/nebula-landing-1600.avif 1600w, images/nebula-landing-2000.avif 2000w, images/nebula-landing-2430.avif 2430w" sizes="(min-width: 1680px) 1372px, 100vw">
+            <img src="images/nebula-landing-1600.webp" srcset="images/nebula-landing-1200.webp 1200w, images/nebula-landing-1600.webp 1600w, images/nebula-landing-2000.webp 2000w, images/nebula-landing-2430.webp 2430w" sizes="(min-width: 1680px) 1372px, 100vw" width="2430" height="1457" alt="" decoding="async">
+          </picture>
+          <div class="board-hero-copy">
+            <h1><a class="page-title-link" id="boardTitle" data-board-nav href="index.html#all">자유게시판</a></h1>
+            <p id="boardIntro">오늘 본 하늘부터, 아직 모르는 별까지.</p>
+          </div>
+          <div class="board-heading-actions">
+            <a class="button subtle" id="activityLink" data-board-nav href="index.html?activity=mine">내 활동 <span class="activity-badge" id="activityBadge" hidden></span></a>
+            <a class="button primary" id="writeTop" href="index.html?write=1"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5 4 4M4 20l4-1L20 7a2.8 2.8 0 0 0-4-4L4 15v5Z"/></svg>글쓰기</a>
+          </div>
+        </header>
+        <div class="activity-status" id="activityStatus" role="status" hidden>새 답글을 확인하지 못했어요. <button class="text-button" id="activityRetry" type="button">다시 확인</button></div>
+        <div class="activity-panel" id="activityPanel" hidden>
+          <nav class="activity-tabs" aria-label="내 활동 분류" id="activityTabs"></nav>
+          <p class="activity-note">로그인한 계정으로 남긴 글과 댓글을 모았어요. 다른 기기에서도 같은 계정으로 로그인하면 이어서 확인할 수 있어요. 예전 비회원 활동은 작성한 브라우저의 인증 상태가 유지되어야 확인할 수 있어요.</p>
         </div>
-        <h1 class="title">밤하늘에서 <span class="highlight">너를</span> 만나다</h1>
-        <p class="subtitle">오늘 볼 수 있는 행성을 찾고, 같은 하늘을 본 사람들과 기록을 나눠요.</p>
-        <div class="entry-actions"><a class="click-hint" href="main.html#planets">오늘 밤 하늘 보기 →</a><a class="entry-secondary" href="main.html#lounge">자유게시판 둘러보기</a></div>
-<!-- orbit-story-teaser:start -->
-<aside class="story-belt" aria-label="우주 이야기">
-<div class="story-belt-heading"><a class="story-teaser-all" href="stories.html">전체보기 →</a></div>
-<div class="story-belt-viewport"><div class="story-belt-track"><div class="story-belt-group" data-story-original><a class="story-belt-card" href="stories/moon-face-and-phases.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">달과 행성</span></span><span class="story-teaser-title">늘 같은 얼굴의 달은 왜 매일 모양이 달라질까?</span></a><a class="story-belt-card" href="stories/seasonal-constellations-camping.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">관측 이야기</span></span><span class="story-teaser-title">캠핑장의 밤하늘, 계절마다 어떤 별부터 찾을까요?</span></a><a class="story-belt-card" href="stories/cosmic-voids.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">별과 우주</span></span><span class="story-teaser-title">우주에도 텅 빈 동네가 있을까? 보이드 이야기</span></a><a class="story-belt-card" href="stories/is-mars-all-red.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">달과 행성</span></span><span class="story-teaser-title">화성은 정말 온통 빨간색일까?</span></a><a class="story-belt-card" href="stories/why-stars-twinkle.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">관측 이야기</span></span><span class="story-teaser-title">별은 왜 반짝이고 행성은 덜 반짝일까요?</span></a><a class="story-belt-card" href="stories/why-planets-go-retrograde.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">달과 행성</span></span><span class="story-teaser-title">행성은 왜 가끔 뒤로 걷는 것처럼 보일까요?</span></a><a class="story-belt-card" href="stories/are-shooting-stars-stars.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">관측 이야기</span></span><span class="story-teaser-title">별똥별은 정말 별이 떨어지는 걸까요?</span></a><a class="story-belt-card" href="stories/why-venus-is-hottest.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">달과 행성</span></span><span class="story-teaser-title">금성은 태양에서 두 번째인데 왜 가장 뜨거울까요?</span></a><a class="story-belt-card" href="stories/how-gravity-assists-work.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">우주 탐사</span></span><span class="story-teaser-title">우주선은 행성 옆을 스치며 어떻게 속도를 얻을까요?</span></a><a class="story-belt-card" href="stories/iss-visible-at-dawn-and-dusk.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">관측 이야기</span></span><span class="story-teaser-title">국제우주정거장은 왜 새벽과 저녁에 잘 보일까요?</span></a><a class="story-belt-card" href="stories/why-stars-have-different-colors.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">별과 우주</span></span><span class="story-teaser-title">별빛은 왜 파랗고 붉게 보일까요?</span></a><a class="story-belt-card" href="stories/how-moonlight-affects-stargazing.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">관측 이야기</span></span><span class="story-teaser-title">달이 밝은 밤에는 별 관측을 쉬어야 할까?</span></a><a class="story-belt-card" href="stories/what-is-a-light-year.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">별과 우주</span></span><span class="story-teaser-title">1광년은 시간일까요, 거리일까요?</span></a><a class="story-belt-card" href="stories/why-comet-tails-point-away.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">관측 이야기</span></span><span class="story-teaser-title">혜성의 꼬리는 왜 날아가는 뒤쪽만 향하지 않을까요?</span></a><a class="story-belt-card" href="stories/why-eyes-need-dark-adaptation.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">관측 이야기</span></span><span class="story-teaser-title">밤하늘을 보러 가면 왜 눈부터 기다려야 할까?</span></a><a class="story-belt-card" href="stories/why-saturn-has-rings.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">달과 행성</span></span><span class="story-teaser-title">토성의 고리는 하나의 거대한 얼음판일까요?</span></a><a class="story-belt-card" href="stories/why-polaris-seems-still.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">관측 이야기</span></span><span class="story-teaser-title">북극성은 왜 밤새 같은 자리에 있는 것처럼 보일까요?</span></a><a class="story-belt-card" href="stories/why-space-telescopes-go-to-space.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">우주 탐사</span></span><span class="story-teaser-title">우주망원경은 왜 굳이 우주로 갈까요?</span></a><a class="story-belt-card" href="stories/why-astronauts-float-in-orbit.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">우주 탐사</span></span><span class="story-teaser-title">우주비행사는 중력이 있는데 왜 둥둥 뜰까요?</span></a><a class="story-belt-card" href="stories/why-venus-appears-at-twilight.html"><span class="story-belt-card-head"><span class="story-teaser-meta">ORBIT 에디터<span class="story-editor-star" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span></span><span class="story-teaser-category">관측 이야기</span></span><span class="story-teaser-title">금성은 왜 새벽과 저녁에 모습을 보일까요?</span></a></div></div></div>
-</aside>
-<!-- orbit-story-teaser:end -->
-
-    </div>
-
+        <section id="pinnedPosts" class="pinned-posts" aria-label="상단 고정 공지" hidden></section>
+        <div class="board-controls">
+          <div class="board-filters" role="group" aria-label="게시글 필터">
+          <p class="board-filter-label" id="activeChannel">모든 이야기</p>
+          <div class="board-filter-actions">
+            <a class="text-button" id="clearChannel" data-board-nav href="index.html#all" hidden>전체 글 보기</a>
+            <label class="question-filter" for="questionFilter"><input type="checkbox" id="questionFilter">질문만 보기</label>
+          </div>
+          </div>
+          <form class="board-search" id="feedSearch" role="search">
+            <label class="sr-only" for="searchInput">게시글 찾기</label>
+            <input type="search" id="searchInput" maxlength="80" placeholder="제목과 내용으로 검색">
+            <button class="button" type="submit">검색</button>
+            <button class="button subtle" type="button" id="clearSearch" hidden>초기화</button>
+          </form>
+        </div>
+        <div class="list-toolbar">
+          <p id="feedContext" aria-live="polite"></p>
+          <button class="text-button btn-refresh" id="refreshList" type="button">새로고침</button>
+        </div>
+        <section id="postList" aria-label="게시글 목록" aria-busy="false"></section>
+        <div class="board-pagination">
+          <button class="button" id="loadMore" type="button" hidden>이전 글 더 보기</button>
+          <p id="pageStatus" role="status"></p>
+        </div>
+        <div class="board-bottom">
+        <a class="button primary bottom-write" id="writeBottom" href="index.html?write=1"
+          >글쓰기</a
+        >
+        </div>
+        </div>
+        <aside class="community-sidebar" aria-label="커뮤니티 소식">
+          <div class="community-tabs" role="tablist" aria-label="커뮤니티 소식">
+            <button id="recentTab" type="button" role="tab" aria-selected="true" aria-controls="recentPanel" tabindex="0">최근 대화</button>
+            <button id="photosTab" type="button" role="tab" aria-selected="false" aria-controls="photosPanel" tabindex="-1">관측 사진</button>
+          </div>
+          <section id="recentPanel" role="tabpanel" aria-labelledby="recentTab">
+            <div id="recentConversations" class="community-timeline" aria-live="polite"><p class="community-state">최근 대화를 불러오고 있어요…</p></div>
+          </section>
+          <section id="photosPanel" role="tabpanel" aria-labelledby="photosTab" hidden>
+            <div id="recentPhotos" class="community-photos" aria-live="polite"></div>
+          </section>
+          <button id="refreshCommunity" class="text-button community-refresh" type="button">새로고침</button>
+        <aside class="news-brief news-brief--board" data-news-brief aria-labelledby="newsBriefHeading">
+          <h2 class="news-brief-heading" id="newsBriefHeading">최신 우주 뉴스</h2>
+          <ul class="news-brief-list" aria-label="최신 뉴스 미리보기" aria-live="off"></ul>
+          <p class="news-brief-notice">공식 기관의 우주 소식을 모았어요.</p>
+          <div class="news-brief-footer">
+            <a class="news-brief-all" href="news.html" target="_top">우주 뉴스 전체보기 →</a>
+            <div class="news-brief-controls" role="group" aria-label="뉴스 넘기기" hidden>
+              <button type="button" data-news-prev aria-label="이전 뉴스">‹</button>
+              <span class="news-brief-count" aria-hidden="true"></span>
+              <button type="button" data-news-next aria-label="다음 뉴스">›</button>
+              <button type="button" data-news-toggle aria-label="뉴스 자동 전환 정지">정지</button>
+            </div>
+            <button class="text-button" type="button" data-news-retry hidden>다시 불러오기</button>
+          </div>
+          <span class="news-brief-sr" role="status" aria-live="polite"></span>
+        </aside>
+        </aside>
+        </div>
+      </section>
+      <section id="detailView" hidden>
+        <a id="backToFeed" class="back-link" href="index.html">← 목록</a>
+        <a id="detailActivityLink" class="back-link detail-activity-link" data-board-nav href="index.html?activity=mine">내 활동에서 다시 찾기 →</a>
+        <div id="readSyncStatus" class="activity-status" role="status" hidden>읽음 상태를 저장하지 못했어요. <button id="readSyncRetry" class="text-button" type="button">다시 저장</button></div>
+        <article id="postDetail" tabindex="-1"></article>
+      </section>
+      <section id="editorView" hidden>
+        <a class="back-link" id="cancelWriteLink" href="index.html">← 목록</a>
+        <h1 id="editorTitle">오늘 본 하늘을 들려주세요</h1>
+        <p class="editor-intro" id="editorIntro">한 줄도 좋아요. 별 이름이나 장비를 몰라도 괜찮아요.</p>
+        <div id="memberWriteGate" class="member-write-gate" hidden><p>먼저 적어보세요. 등록할 때 로그인하면 돼요.</p><button type="button" class="text-button" data-account-open="login">로그인</button> <button type="button" class="text-button" data-account-open="signup">회원가입</button></div>
+        <p class="field-hint" id="draftHelp">작성 중인 글은 이 기기에 7일간 임시 저장돼요.</p>
+        <div class="board-filter-actions" id="draftControls"><p class="field-hint" id="draftStatus" role="status"></p><button class="text-button" id="clearDraft" type="button" hidden>임시저장 지우기</button></div>
+        <p class="field-hint" id="draftPhotoNotice" hidden>사진 파일은 임시저장되지 않아요. 새로고침하거나 Google 인증으로 화면을 이동하면 사진을 다시 첨부해주세요.</p>
+        <p class="field-hint" id="editPhotoNotice" hidden>기존 첨부 사진은 그대로 유지돼요. 사진 변경은 지원하지 않아요.</p>
+        <form id="postForm" novalidate>
+          <label for="postTitle">제목 <span class="field-hint">선택 · 80자 이내</span></label
+          ><input
+            id="postTitle"
+            name="title"
+            maxlength="80"
+            aria-describedby="titleHelp"
+            placeholder="예: 집 앞에서 본 밝은 점, 별일까요?"
+          />
+          <p class="field-hint" id="titleHelp">비워두면 이야기의 첫 문장을 제목으로 써요.</p>
+          <label for="postInput">이야기나 궁금한 점</label
+          ><textarea
+            id="postInput"
+            name="text"
+            maxlength="5000"
+            rows="5"
+            required
+            placeholder="퇴근길에 밝은 점 하나를 봤어요. 이름은 모르지만 한참 바라봤네요."
+          ></textarea>
+          <p class="field-hint" id="charCount">0 / 5,000</p>
+          <label for="orbitSelect">어떤 글인가요?</label>
+          <select id="orbitSelect" name="orbit" required></select>
+          <div class="photo-heading" id="photoHeading">
+            <label for="photoInput" class="button">사진 첨부 <span class="optional-label">선택</span></label
+            ><span id="photoCount" class="field-hint">0 / 5장</span>
+          </div>
+          <input
+            type="file"
+            id="photoInput"
+            class="sr-only"
+            accept="image/jpeg,image/png,image/webp"
+            multiple
+            aria-describedby="photoHelp"
+          />
+          <p class="field-hint" id="photoHelp">
+            JPG·PNG·WebP, 한 장 15MB까지. 사진은 크기를 줄이고 촬영 위치 정보를 제거해 올립니다.
+            본인에게 게시 권한이 있는 사진만 첨부해주세요.
+          </p>
+          <div id="photoPreviews" class="photo-previews" aria-label="첨부할 사진"></div>
+          <details class="observation-fields" id="observationFields">
+            <summary>관측 정보 추가 <span>선택</span></summary>
+            <div class="observation-grid">
+              <div class="observation-wide">
+                <label for="observedMethod">어떻게 봤나요?</label>
+                <select id="observedMethod" data-observation="method">
+                  <option value="">선택하지 않아도 괜찮아요</option>
+                  <option value="naked-eye">맨눈</option><option value="phone">휴대폰</option>
+                  <option value="binoculars">쌍안경</option><option value="telescope">망원경</option>
+                </select>
+              </div>
+              <div><label for="observedAt">언제 봤나요?</label><input id="observedAt" data-observation="observed_at" maxlength="120" placeholder="예: 어젯밤 9시쯤"></div>
+              <div><label for="observedLocation">어디서 봤나요?</label><input id="observedLocation" data-observation="location" maxlength="120" placeholder="예: 서울, 집 창문에서"></div>
+              <div><label for="observedTarget">무엇을 봤나요?</label><input id="observedTarget" data-observation="target" maxlength="120" placeholder="예: 달 / 이름은 모르겠어요"></div>
+              <div><label for="observedDirection">어느 쪽이었나요?</label><input id="observedDirection" data-observation="direction" maxlength="120" placeholder="예: 서쪽, 건물 바로 위"></div>
+              <p class="field-hint observation-wide">이름이 궁금한 천체라면 본 날짜·시각과 방향이 답변에 도움이 돼요. 아는 만큼만 적어주세요.</p>
+            </div>
+          </details>
+          <details class="observation-fields" id="equipmentFields">
+            <summary>장비·촬영 정보 추가 <span>선택</span></summary>
+            <div class="observation-grid">
+              <div><label for="observedTelescope">망원경 본체 · 경통</label><input id="observedTelescope" data-observation="telescope" maxlength="120" placeholder="예: Nexstar 102GT"></div>
+              <div><label for="observedMount">망원경 받침 · 가대</label><input id="observedMount" data-observation="mount" maxlength="120" placeholder="예: 경위대"></div>
+              <div><label for="observedCamera">카메라</label><input id="observedCamera" data-observation="camera" maxlength="120" placeholder="모델명 또는 휴대폰 기종"></div>
+              <div><label for="observedFilter">필터</label><input id="observedFilter" data-observation="filter" maxlength="120" placeholder="사용했다면 적어주세요"></div>
+              <div><label for="observedExposure">노출 시간 · 촬영 장수</label><input id="observedExposure" data-observation="exposure" maxlength="120" placeholder="예: 30초씩 35장"></div>
+              <div><label for="observedProcessing">사진 보정 프로그램</label><input id="observedProcessing" data-observation="processing" maxlength="120" placeholder="예: DSS"></div>
+            </div>
+          </details>
+          <p class="field-hint" id="writerName" hidden></p>
+          <p class="field-hint">
+            등록한 글과 사진은 누구나 볼 수 있습니다. 상세 주소나 연락처는 적지 마세요.
+          </p>
+          <p id="writeStatus" role="status" aria-live="polite"></p>
+          <div class="editor-actions">
+            <button class="button subtle" type="button" id="cancelWrite">취소</button
+            ><button class="button primary" id="btnTrace" type="submit">글 남기기</button>
+          </div>
+        </form>
+      </section>
     </main>
-
-    <nav class="quick-links" aria-label="사이트 정보">
-        <a href="planets.html">오늘 밤 행성</a>
-        <a href="sky.html">밤하늘 달력</a>
-        <a href="reading-sky.html">별지도 읽는 법</a>
-        <a href="about.html">소개·문의</a>
+    <footer class="site-footer">
+      <div class="foot-links">
+        <a href="stories.html">우주 이야기</a>
         <a href="guide.html">관측 가이드</a>
+        <a href="about.html">소개·문의</a>
+        <a href="main.html">커뮤니티 홈</a>
+        <a href="sky.html">밤하늘 달력</a>
+        <a href="planets.html">오늘 밤 행성</a>
+        <a href="index.html">자유게시판</a>
+        <a href="news.html">우주 뉴스</a>
         <a href="terms.html">이용약관</a>
         <a href="privacy.html">개인정보처리방침</a>
-        <span class="foot-copy">© 2026 ORBIT · 같은 하늘, 함께 나누는 이야기</span>
-    </nav>
+      </div>
+      <div class="foot-sign">
+        © 2026 ORBIT · 같은 하늘, 함께 나누는 이야기
+      </div>
+    </footer>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
+    <script src="orbit-backend.js?v=20260929-body-timeout"></script>
+    <link rel="stylesheet" href="account.css?v=20260926-operator">
+    <script src="members.js?v=20260926-identity"></script>
+    <script src="account.js?v=20260929-nickname-24h"></script>
+    <script src="account-panel.js?v=20261001-community"></script>
+    <script src="board-media.js?v=20260912-board"></script>
+    <script src="board-writing.js?v=20260926-identity"></script>
+    <script src="board-glossary.js?v=20260914-community"></script>
+    <script src="board-activity.js?v=20260914-activity"></script>
+    <script src="board-embed.js?v=20260914-community"></script>
+    <script src="lounge.js?v=20261001-community"></script>
+    <script src="community-feed.js?v=20261001-community"></script>
+    <script src="member-board.js?v=20261001-community"></script>
+  </div></div>
+<script src="site-nav.js?v=20261001-community"></script>
 </body>
 </html>

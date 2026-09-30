@@ -55,7 +55,7 @@
     returnFocus = document.activeElement;
     // Keep only a same-origin, public page route. Authentication tokens never enter this record.
     var route = new URL(location.href); route.searchParams.delete('account');
-    if (['/main.html','/lounge.html','/index.html'].includes(route.pathname)) {
+    if (['/','/main.html','/lounge.html','/index.html'].includes(route.pathname)) {
       try { sessionStorage.setItem('orbit_account_return', JSON.stringify({path:route.pathname + route.search + route.hash, at:Date.now()})); } catch (_) { /* Email login can continue without a saved return route. */ }
     }
     try {

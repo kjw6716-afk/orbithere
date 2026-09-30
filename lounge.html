@@ -45,14 +45,14 @@
         document.documentElement.classList.add('embed');
     </script>
     <script src="orbit-config.js"></script>
-    <script src="orbit-analytics.js?v=20260927-funnel" defer></script>
+    <script src="orbit-analytics.js?v=20261001-community" defer></script>
     <script src="visits.js" defer></script>
     <link rel="stylesheet" href="news-brief.css?v=20260914-community">
     <script src="news-health.js?v=20260929-freshness" defer></script>
     <script src="news-data.js?v=20260929-freshness" defer></script>
     <script src="news-brief.js?v=20260929-freshness" defer></script>
   <link rel="stylesheet" href="site-nav.css?v=20260926-mint">
-  <link rel="stylesheet" href="lounge-design.css?v=20260927-badges-only">
+  <link rel="stylesheet" href="lounge-design.css?v=20261001-community">
 </head>
   <body class="lounge-page">
     <div class="bg-glow" aria-hidden="true"></div>
@@ -65,30 +65,27 @@
 <span class="nt-ic" id="navToggleIc" aria-hidden="true">💬</span>
 <span class="nt-lbl" id="navToggleLbl">자유게시판</span><span class="nt-arrow" aria-hidden="true"></span></button>
 <nav class="side-nav" id="sideNav" aria-label="주요 메뉴">
+<a class="nav-item nav-link on" href="index.html" aria-current="page"><span class="ic" aria-hidden="true">💬</span><span class="lbl">자유게시판</span></a>
 <a class="nav-item nav-link" href="main.html#planets"><span class="ic" aria-hidden="true">🔭</span><span class="lbl">밤하늘</span></a>
-<a class="nav-item nav-link on" href="main.html#lounge" aria-current="page"><span class="ic" aria-hidden="true">💬</span><span class="lbl">자유게시판</span></a>
 <a class="nav-item nav-link" href="news.html"><span class="ic" aria-hidden="true">📰</span><span class="lbl">우주 뉴스</span></a>
 <a class="nav-item nav-link" href="stories.html"><span class="ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="display:block"><path d="M 50 15 L 62 34 L 83 39 L 69 56 L 71 78 L 50 70 L 29 78 L 31 56 L 17 39 L 38 34 Z" fill="#FF9F43" stroke="#FF9F43" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/></svg></span><span class="lbl">우주 이야기</span></a>
 <a class="nav-item nav-link" href="guide.html"><span class="ic" aria-hidden="true">📖</span><span class="lbl">관측 가이드</span></a>
 <a class="nav-item nav-link" href="about.html"><span class="ic" aria-hidden="true">ⓘ</span><span class="lbl">소개·문의</span></a>
-</nav></aside>
+</nav><div class="board-account-actions"><a class="account-entry-button" data-account-link href="main.html?account=login#lounge" data-account-open="login" aria-haspopup="dialog" aria-expanded="false">로그인</a><a class="account-signup-link" data-account-signup href="main.html?account=signup#lounge" data-account-open="signup" aria-haspopup="dialog" aria-expanded="false">회원가입</a></div></aside>
 <div class="nav-scrim" id="navScrim" aria-hidden="true"></div>
 <!-- orbit-navigation:end -->
 <div class="orbit-page-content">
     <main class="board-shell" id="boardMain">
-      <div class="board-account-actions">
-        <a class="account-entry-button" data-account-link hidden href="main.html?account=login#lounge" data-account-open="login" aria-haspopup="dialog" aria-expanded="false">로그인</a>
-        <a class="account-signup-link" data-account-signup hidden href="main.html?account=signup#lounge" data-account-open="signup" aria-haspopup="dialog" aria-expanded="false">회원가입</a>
-      </div>
       <div id="loungeStatus" class="board-status" role="status" aria-live="polite"></div>
       <section id="listView">
+        <div class="community-grid">
+        <div class="community-board">
         <header class="board-heading board-hero">
           <picture class="board-hero-sky" aria-hidden="true">
             <source type="image/avif" srcset="images/nebula-landing-1200.avif 1200w, images/nebula-landing-1600.avif 1600w, images/nebula-landing-2000.avif 2000w, images/nebula-landing-2430.avif 2430w" sizes="(min-width: 1680px) 1372px, 100vw">
             <img src="images/nebula-landing-1600.webp" srcset="images/nebula-landing-1200.webp 1200w, images/nebula-landing-1600.webp 1600w, images/nebula-landing-2000.webp 2000w, images/nebula-landing-2430.webp 2430w" sizes="(min-width: 1680px) 1372px, 100vw" width="2430" height="1457" alt="" decoding="async">
           </picture>
           <div class="board-hero-copy">
-            <span class="board-eyebrow">SAME SKY, OUR STORIES</span>
             <h1><a class="page-title-link" id="boardTitle" data-board-nav href="lounge.html#all">자유게시판</a></h1>
             <p id="boardIntro">오늘 본 하늘부터, 아직 모르는 별까지.</p>
           </div>
@@ -132,6 +129,19 @@
           >글쓰기</a
         >
         </div>
+        </div>
+        <aside class="community-sidebar" aria-label="커뮤니티 소식">
+          <div class="community-tabs" role="tablist" aria-label="커뮤니티 소식">
+            <button id="recentTab" type="button" role="tab" aria-selected="true" aria-controls="recentPanel" tabindex="0">최근 대화</button>
+            <button id="photosTab" type="button" role="tab" aria-selected="false" aria-controls="photosPanel" tabindex="-1">관측 사진</button>
+          </div>
+          <section id="recentPanel" role="tabpanel" aria-labelledby="recentTab">
+            <div id="recentConversations" class="community-timeline" aria-live="polite"><p class="community-state">최근 대화를 불러오고 있어요…</p></div>
+          </section>
+          <section id="photosPanel" role="tabpanel" aria-labelledby="photosTab" hidden>
+            <div id="recentPhotos" class="community-photos" aria-live="polite"></div>
+          </section>
+          <button id="refreshCommunity" class="text-button community-refresh" type="button">새로고침</button>
         <aside class="news-brief news-brief--board" data-news-brief aria-labelledby="newsBriefHeading">
           <h2 class="news-brief-heading" id="newsBriefHeading">최신 우주 뉴스</h2>
           <ul class="news-brief-list" aria-label="최신 뉴스 미리보기" aria-live="off"></ul>
@@ -148,6 +158,8 @@
           </div>
           <span class="news-brief-sr" role="status" aria-live="polite"></span>
         </aside>
+        </aside>
+        </div>
       </section>
       <section id="detailView" hidden>
         <a id="backToFeed" class="back-link" href="lounge.html">← 목록</a>
@@ -267,15 +279,16 @@
     <link rel="stylesheet" href="account.css?v=20260926-operator">
     <script src="members.js?v=20260926-identity"></script>
     <script src="account.js?v=20260929-nickname-24h"></script>
-    <script src="account-panel.js?v=20260929-nickname-24h"></script>
+    <script src="account-panel.js?v=20261001-community"></script>
     <script src="board-media.js?v=20260912-board"></script>
     <script src="board-writing.js?v=20260926-identity"></script>
     <script src="board-glossary.js?v=20260914-community"></script>
     <script src="board-activity.js?v=20260914-activity"></script>
     <script src="board-embed.js?v=20260914-community"></script>
-    <script src="lounge.js?v=20260929-edit-conflicts"></script>
-    <script src="member-board.js?v=20260926-operator"></script>
+    <script src="lounge.js?v=20261001-community"></script>
+    <script src="community-feed.js?v=20261001-community"></script>
+    <script src="member-board.js?v=20261001-community"></script>
   </div></div>
-<script src="site-nav.js?v=20260914-community"></script>
+<script src="site-nav.js?v=20261001-community"></script>
 </body>
 </html>

@@ -9,7 +9,7 @@
   try {
     var saved = JSON.parse(sessionStorage.getItem('orbit_account_return'));
     var candidate = saved && new URL(saved.path, location.origin);
-    if (candidate && candidate.origin === location.origin && ['/main.html','/lounge.html','/index.html'].includes(candidate.pathname)
+    if (candidate && candidate.origin === location.origin && ['/','/main.html','/lounge.html','/index.html'].includes(candidate.pathname)
       && Number.isFinite(saved.at) && saved.at <= Date.now() && Date.now() - saved.at < 60 * 60 * 1000) route = candidate;
   } catch (_) {}
   // Existing email and Google callbacks stay valid. Consume tokens here before returning to the page.

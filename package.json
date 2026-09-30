@@ -13,7 +13,7 @@
     "test:render": "node tests/render.mjs",
     "test:security": "node tests/security.mjs",
     "test:community": "node tests/community.mjs",
-    "test:landing": "node tests/landing.mjs",
+    "test:landing": "python3 scripts/community_home.py --check && node tests/landing.mjs",
     "test:content": "node tests/content.mjs",
     "test:news": "python3 -m unittest discover -s tests -p 'test_news*.py' && python3 scripts/news_summaries.py && node tests/company-news.mjs && node tests/news-brief.mjs && node tests/news-images.mjs",
     "test:navigation": "python3 scripts/site_navigation.py --check && node tests/navigation.mjs && node tests/night-sky.mjs",

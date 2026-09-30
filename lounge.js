@@ -40,6 +40,8 @@
     attempt = null,
     detail = null,
     comments = [],
+    linkedComment = null,
+    commentTargetHandled = '',
     commentsMore = false,
     commentBusy = false,
     commentDrafts = {},
@@ -73,7 +75,7 @@
     error: function () { $('readSyncStatus').hidden = false; },
   });
   function activityURL(scope) {
-    var u = new URL('lounge.html', location.href);
+    var u = new URL(document.body.classList.contains('community-home') ? location.pathname : 'lounge.html', location.href);
     if (embed) u.searchParams.set('embed', '1');
     if (scope) u.searchParams.set('activity', scope);
     u.hash = 'all';
@@ -327,7 +329,7 @@
   }
   function join() { window.OrbitAccount.open(); }
   function url(options) {
-    var u = new URL('lounge.html', location.href);
+    var u = new URL(document.body.classList.contains('community-home') ? location.pathname : 'lounge.html', location.href);
     if (embed) u.searchParams.set('embed', '1');
     if (activity) u.searchParams.set('activity', activity);
     if (query) u.searchParams.set('q', query);
@@ -1035,9 +1037,19 @@
       if (append && comments.length) q = afterCursor(q, comments.at(-1));
       var data = checked(await q);
       if (token !== route || seq !== commentSeq) return;
+      var targetId = new URLSearchParams(location.search).get('comment');
+      if (!append && validId(targetId) && !data.slice(0, 20).some(function (c) { return c.id === targetId; })) {
+        // A saved timeline link may point beyond the first comment page.
+        var linked = checked(await sb.from('comments').select('id,post_id,nick,text,created_at,author_id')
+          .eq('id', targetId).eq('post_id', p.id).maybeSingle());
+        if (token !== route || seq !== commentSeq) return;
+        linkedComment = linked;
+      }
       commentsMore = data.length > 20;
       comments = (append ? comments : []).concat(data.slice(0, 20));
-      $('commentList').innerHTML = comments
+      var displayed = linkedComment && linkedComment.post_id === p.id && !comments.some(function (c) { return c.id === linkedComment.id; })
+        ? [linkedComment].concat(comments) : comments;
+      $('commentList').innerHTML = displayed
         .map(function (c) {
           var own = c.author_id && c.author_id === userId;
           return (
@@ -1067,11 +1079,23 @@
         })
         .join('');
       $('commentMessage').textContent = comments.length
-        ? '최근 댓글부터 ' + comments.length + '개 표시'
+        ? (displayed.length > comments.length ? '선택한 댓글 · 최근 댓글 ' : '최근 댓글부터 ') + comments.length + '개 표시'
         : '첫 댓글을 남겨보세요.';
       $('moreComments').hidden = !commentsMore;
       commentsLoaded = true;
-      activityReader.observe($('commentList'), p.id, comments);
+      activityReader.observe($('commentList'), p.id, displayed);
+      if (!append && validId(targetId) && commentTargetHandled !== p.id + '|' + targetId) {
+        var target = $('comment-' + targetId);
+        if (target) {
+          target.setAttribute('data-comment-target', '');
+          target.tabIndex = -1;
+          commentTargetHandled = p.id + '|' + targetId;
+          if (canFocusBoard()) {
+            target.focus({ preventScroll: true });
+            OrbitBoardEmbed.scrollTo(target.getBoundingClientRect().top + window.scrollY - 16);
+          }
+        }
+      }
     } catch (e) {
       if (token === route && seq === commentSeq)
         $('commentMessage').textContent =
@@ -1506,6 +1530,8 @@
     ++commentSeq;
     listBusy = false;
     detail = null;
+    linkedComment = null;
+    if (!nextParams.has('post')) commentTargetHandled = '';
     revokeImages();
     var params = new URLSearchParams(location.search),
       h = location.hash.slice(1);
@@ -1892,7 +1918,11 @@
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) { activityReader.reset(); return; }
     if (Date.now() - summaryTime > 60000) refreshActivity();
-    if (view === 'detail' && detail && commentsLoaded) activityReader.observe($('commentList'), detail.id, comments);
+    if (view === 'detail' && detail && commentsLoaded) {
+      var visibleComments = linkedComment && linkedComment.post_id === detail.id && !comments.some(function (c) { return c.id === linkedComment.id; })
+        ? [linkedComment].concat(comments) : comments;
+      activityReader.observe($('commentList'), detail.id, visibleComments);
+    }
   });
   window.addEventListener('message', function (ev) {
     if (embed && ev.origin === location.origin && ev.source === parent && ev.data &&

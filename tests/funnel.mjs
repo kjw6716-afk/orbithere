@@ -131,6 +131,15 @@ function privacy(f) {
 }
 
 try {
+  for (const path of ['/', '/index.html']) {
+    const f = await fixture();
+    await f.page.goto(origin + path); await waitEvent(f, 'board_enter', 'board');
+    ok(path + ' records one board visit with an accepted board page key',
+      events(f, 'feature_view', 'board').length === 1 && f.state.events.every(e => e.feature === 'board' && e.page_key === 'board'));
+    await f.page.locator('#writeTop').click(); await waitEvent(f, 'write_start', 'board');
+    ok(path + ' preserves explicit write intent without a second board visit', events(f, 'feature_view', 'board').length === 1);
+    privacy(f); await f.close();
+  }
   for (const [name, options, url] of [
     ['default webdriver', { webdriver: true }, origin + '/planets.html'],
     ['localhost', {}, 'http://localhost/planets.html'],
