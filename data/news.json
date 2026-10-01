@@ -112,7 +112,10 @@
       "title": "Rocket Lab Secures Largest-Ever Electron Commercial Deal: 20-Launch Contract for Synspective",
       "url": "https://rocketlabcorp.com/updates/rocket-lab-secures-largest-ever-electron-commercial-deal-20-launch-contract-for-synspective/",
       "publishedAt": "2026-09-30T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "Rocket Lab는 전 세계에서 가장 큰 전자 상업 거래를 보장합니다 : Synspective를위한 20 개의 시작 계약",
+      "titleKoDraftOriginal": "Rocket Lab Secures Largest-Ever Electron Commercial Deal: 20-Launch Contract for Synspective",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "89d8e89dfe0c8d72",
