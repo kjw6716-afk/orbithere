@@ -2,6 +2,21 @@
   "version": 1,
   "items": [
     {
+      "id": "3bf2aef00178636c",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Smile/Science_begins_for_Smile",
+      "publishedAt": "2026-09-30T07:05:00Z",
+      "titleOriginal": "Science begins for Smile",
+      "titleKo": "스마일 위성, 시운전 마치고 태양풍·지구 자기장 과학 관측 시작",
+      "summaryKo": [
+        "ESA와 중국과학원의 공동 임무 스마일(Smile)은 5월 19일 발사와 6월 20일 과학 궤도 도착 뒤 시운전을 거쳐 9월 23일 과학 운영 시작 승인을 받았습니다.",
+        "네 장비는 태양풍이 지구 자기권과 오로라, 우주기상에 미치는 영향을 함께 관측하며, 자외선 오로라 카메라는 북극권 전체를 최대 45시간 연속 기록하고 있습니다.",
+        "SXI X선 카메라는 정상 작동했지만 지구 방향 관측에서 산란광이 많아 설정과 소프트웨어를 조정 중이며, ESA는 10월 중순 산란광이 최소가 되면 자기권계면 또는 북극 첨두부의 첫 양질 영상을 기대한다고 설명했습니다."
+      ],
+      "checkedAt": "2026-10-03",
+      "method": "source-checked"
+    },
+    {
       "id": "76b22a2d59c961e9",
       "source": "esa",
       "url": "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Happy_New_Year_on_Mars",
@@ -14,6 +29,36 @@
         "화성은 공전 궤도가 지구보다 더 타원형이어서 계절 길이가 서로 다르고, 화성년 후반에는 미세한 토양 입자가 대기로 떠올라 행성 전체를 덮을 수 있는 강한 먼지폭풍이 나타나기도 합니다."
       ],
       "checkedAt": "2026-09-30",
+      "method": "source-checked"
+    },
+    {
+      "id": "787698302698e2c7",
+      "source": "rocketlab",
+      "url": "https://rocketlabcorp.com/updates/rocket-lab-secures-largest-ever-electron-commercial-deal-20-launch-contract-for-synspective/",
+      "publishedAt": "2026-09-30T00:00:00Z",
+      "titleOriginal": "Rocket Lab Secures Largest-Ever Electron Commercial Deal: 20-Launch Contract for Synspective",
+      "titleKo": "로켓랩, 신스펙티브와 일렉트론 20회 발사 계약",
+      "summaryKo": [
+        "로켓랩은 일본 지구관측 기업 신스펙티브와 StriX 합성개구레이더 위성 20기를 일렉트론으로 발사하는 다년 계약을 체결했다고 발표했습니다.",
+        "발사는 뉴질랜드 발사단지 1에서 2028년부터 2031년까지 매년 진행될 예정이며, 이번 계약으로 신스펙티브 대상 일렉트론 임무는 총 47회가 됩니다.",
+        "계약 금액 등 나머지 조건은 공개되지 않았고, 회사가 밝힌 100회 초과 수주잔고와 향후 발사 일정은 완료된 발사 실적이 아닙니다."
+      ],
+      "checkedAt": "2026-10-03",
+      "method": "source-checked"
+    },
+    {
+      "id": "89d8e89dfe0c8d72",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-signs-starcloud-as-commercial-customer-demonstrating-data-center-capabilities-around-the-moon/",
+      "publishedAt": "2026-09-30T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Signs Starcloud as Commercial Customer, Demonstrating Data Center Capabilities Around the Moon",
+      "titleKo": "파이어플라이, 스타클라우드 달 궤도 AI 연산 실증 탑재 계약",
+      "summaryKo": [
+        "파이어플라이는 스타클라우드의 SC-1L 연산 탑재체를 엘리트라 달 궤도선에 싣는 상업 계약을 체결했다고 발표했습니다.",
+        "SC-1L은 솔룩스 비전 시스템의 데이터를 달 궤도에서 AI로 처리해 지구로 전송하는 기술을 실증할 계획이며, 해당 세 번째 달 임무의 발사 목표는 2028년 이후입니다.",
+        "이 임무에서 엘리트라는 먼저 블루 고스트 착륙선의 달 그뤼트휘센 돔 착륙을 위한 수송과 통신 중계를 맡고, 이후 달 궤도에 5년간 남아 스타클라우드 실증을 포함한 고객 탑재체와 영상 운용을 지원할 예정입니다."
+      ],
+      "checkedAt": "2026-10-03",
       "method": "source-checked"
     },
     {
