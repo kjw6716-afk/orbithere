@@ -90,7 +90,10 @@
       "title": "NASA’s Curiosity Rover Catches Stunning Martian Dawn",
       "url": "https://www.nasa.gov/missions/mars-science-laboratory/curiosity-rover/nasas-curiosity-rover-catches-stunning-martian-dawn/",
       "publishedAt": "2026-10-06T15:30:07Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "NASA의 Curiosity Rover는 놀라운 화성 새벽을 잡습니다.",
+      "titleKoDraftOriginal": "NASA’s Curiosity Rover Catches Stunning Martian Dawn",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "189a59772523fe89",
