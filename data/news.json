@@ -90,7 +90,10 @@
       "title": "Webb captures commotion from nebula’s stellar jets",
       "url": "https://www.esa.int/ESA_Multimedia/Images/2026/10/Webb_captures_commotion_from_nebula_s_stellar_jets",
       "publishedAt": "2026-10-06T13:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "웹은 구름의 별자리에서 움직임을 캡처",
+      "titleKoDraftOriginal": "Webb captures commotion from nebula’s stellar jets",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "bcee81f77ecb1236",
