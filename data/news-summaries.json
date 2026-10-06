@@ -2,6 +2,21 @@
   "version": 1,
   "items": [
     {
+      "id": "66089d1385a5a0b1",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/missions/mars-science-laboratory/curiosity-rover/nasas-curiosity-rover-catches-stunning-martian-dawn/",
+      "publishedAt": "2026-10-06T15:30:07Z",
+      "titleOriginal": "NASA’s Curiosity Rover Catches Stunning Martian Dawn",
+      "titleKo": "큐리오시티, 푸른빛이 감도는 화성의 아침과 야르당 절벽 포착",
+      "summaryKo": [
+        "NASA의 큐리오시티 로버는 2026년 8월 11일 임무 4982번째 화성일 오전 8시 30분에 마스트캠으로 여섯 장을 촬영해 이어 붙인 파노라마에서, 푸른빛이 감도는 전경과 바람이 깎은 야르당 절벽을 포착했습니다.",
+        "야르당 지층은 높이 약 5km인 샤프산 북서부에 약 16km에 걸쳐 이어지며, 큐리오시티는 최근 게일 충돌구 바닥에서 고도 1km를 올라 화성 탐사 로버의 최고 등반 기록을 세웠습니다.",
+        "이 지층의 정확한 형성 원인은 아직 밝혀지지 않았고 고대 화산재가 쌓였을 가능성이 한 가설이며, 연구진은 2027년 중 야르당 기슭에 도달해 로봇팔로 조사하기를 기대하고 있습니다."
+      ],
+      "checkedAt": "2026-10-07",
+      "method": "source-checked"
+    },
+    {
       "id": "189a59772523fe89",
       "source": "esa",
       "url": "https://www.esa.int/ESA_Multimedia/Images/2026/10/Webb_captures_commotion_from_nebula_s_stellar_jets",
