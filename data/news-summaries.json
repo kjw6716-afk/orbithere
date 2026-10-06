@@ -2,6 +2,36 @@
   "version": 1,
   "items": [
     {
+      "id": "189a59772523fe89",
+      "source": "esa",
+      "url": "https://www.esa.int/ESA_Multimedia/Images/2026/10/Webb_captures_commotion_from_nebula_s_stellar_jets",
+      "publishedAt": "2026-10-06T13:00:00Z",
+      "titleOriginal": "Webb captures commotion from nebula’s stellar jets",
+      "titleKo": "웹 망원경, 별 탄생지 NGC 7129의 별·원시별 제트 활동 포착",
+      "summaryKo": [
+        "NASA·ESA·CSA의 제임스 웹 우주망원경은 지구에서 약 3300광년 떨어진 별 탄생지 NGC 7129를 적외선으로 관측해 먼지에 가려졌던 별과 원시별을 드러냈습니다.",
+        "중앙의 전주계열성 LkHα 234는 태양 질량의 약 5~8배이며, 과거 분출과 별빛이 만든 금빛 공동은 약 3.5광년에 걸쳐 수소 가스를 밀어내거나 압축해 새로운 별이 태어날 조건을 만듭니다.",
+        "오른쪽의 더 어린 원시별들이 뿜는 뜨거운 물질은 주변 분자 가스와 충격파를 만들며, 연구진은 이 자료로 별과 원시별이 주변 가스·먼지에 미치는 영향을 계속 연구할 예정입니다."
+      ],
+      "checkedAt": "2026-10-07",
+      "method": "source-checked"
+    },
+    {
+      "id": "bcee81f77ecb1236",
+      "source": "starlink",
+      "url": "https://starlink.com/kr/updates/space-safety",
+      "publishedAt": "2026-10-06T00:00:00Z",
+      "titleOriginal": "우주 안전: 저궤도 위성 운영사 간 더 나은 데이터 공유의 필요성",
+      "titleKo": "우주 안전: 저궤도 위성 운영사 간 더 나은 데이터 공유의 필요성",
+      "summaryKo": [
+        "SpaceX는 Starlink 운영 경험을 근거로, 저궤도 위성 운영사가 계획된 기동 전후의 고정밀 궤도 정보를 자주·공개적으로 공유해야 충돌 위험을 줄일 수 있다고 주장했습니다.",
+        "회사는 2026년 Starlink가 기동 중인 제3자 위성 약 650기와 근접했고 그중 약 절반만 궤도 정보를 공유했으며, 최근 6개월 동안 사전 공지 없는 기동 뒤 4시간 안에 최근접 시각이 도래한 접근을 약 16만4000건 관측했다고 밝혔습니다.",
+        "SpaceX가 운영하는 무료 Space-Safety.com과 위성 탑재 광학 추적망 Stargaze는 새 궤적 제출 후 약 60초 안에 충돌 자료를 만들 수 있지만, 회사는 이런 추적도 사전 정보 공유를 완전히 대신하지는 못한다고 설명했습니다."
+      ],
+      "checkedAt": "2026-10-07",
+      "method": "source-checked"
+    },
+    {
       "id": "3bf2aef00178636c",
       "source": "esa",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Smile/Science_begins_for_Smile",
