@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-06T10:48:09Z",
+  "checkedAt": "2026-10-06T15:09:08Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-10-06T10:48:09Z",
+      "lastCheckedAt": "2026-10-06T15:09:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-06T10:48:09Z"
+      "lastSuccessfulAt": "2026-10-06T15:09:08Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-10-06T10:48:09Z",
+      "lastCheckedAt": "2026-10-06T15:09:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-06T10:48:09Z"
+      "lastSuccessfulAt": "2026-10-06T15:09:08Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-10-06T10:48:09Z",
+      "lastCheckedAt": "2026-10-06T15:09:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-06T10:48:09Z"
+      "lastSuccessfulAt": "2026-10-06T15:09:08Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-10-06T10:48:09Z",
+      "lastCheckedAt": "2026-10-06T15:09:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-06T10:48:09Z"
+      "lastSuccessfulAt": "2026-10-06T15:09:08Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-10-06T10:48:09Z",
+      "lastCheckedAt": "2026-10-06T15:09:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-06T10:48:09Z"
+      "lastSuccessfulAt": "2026-10-06T15:09:08Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-10-06T10:48:09Z",
+      "lastCheckedAt": "2026-10-06T15:09:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-06T10:48:09Z"
+      "lastSuccessfulAt": "2026-10-06T15:09:08Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-10-06T10:48:09Z",
+      "lastCheckedAt": "2026-10-06T15:09:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-06T10:48:09Z"
+      "lastSuccessfulAt": "2026-10-06T15:09:08Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,28 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-10-06T10:48:09Z",
+      "lastCheckedAt": "2026-10-06T15:09:08Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-06T10:48:09Z"
+      "lastSuccessfulAt": "2026-10-06T15:09:08Z"
     }
   ],
   "items": [
+    {
+      "id": "189a59772523fe89",
+      "source": "esa",
+      "title": "Webb captures commotion from nebula’s stellar jets",
+      "url": "https://www.esa.int/ESA_Multimedia/Images/2026/10/Webb_captures_commotion_from_nebula_s_stellar_jets",
+      "publishedAt": "2026-10-06T13:00:00Z",
+      "language": "en"
+    },
+    {
+      "id": "bcee81f77ecb1236",
+      "source": "starlink",
+      "title": "우주 안전: 저궤도 위성 운영사 간 더 나은 데이터 공유의 필요성",
+      "url": "https://starlink.com/kr/updates/space-safety",
+      "publishedAt": "2026-10-06T00:00:00Z",
+      "language": "ko"
+    },
     {
       "id": "3bf2aef00178636c",
       "source": "esa",
@@ -375,17 +391,6 @@
       "language": "en",
       "titleKo": "로켓랩, 핵심 광물 의존도를 줄이는 고효율 태양전지 공개",
       "titleKoOriginal": "Rocket Lab Introduces High-Efficiency Solar Cell to Reduce Reliance on Supply-Constrained Critical Minerals",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "97dd2a41cad6fa63",
-      "source": "esa",
-      "title": "BepiColombo’s Mercury arrival begins - full replay",
-      "url": "https://www.esa.int/ESA_Multimedia/Videos/2026/09/BepiColombo_s_Mercury_arrival_begins_-_full_replay",
-      "publishedAt": "2026-09-03T15:00:00Z",
-      "language": "en",
-      "titleKo": "베피콜롬보의 수성 도착 절차 시작 — 전체 영상 다시 보기",
-      "titleKoOriginal": "BepiColombo’s Mercury arrival begins - full replay",
       "titleKoMethod": "reviewed"
     },
     {
@@ -686,14 +691,6 @@
       "title": "Starlink 지연 시간 개선",
       "url": "https://starlink.com/public-files/StarlinkLatency.pdf",
       "publishedAt": "2024-03-07T00:00:00Z",
-      "language": "ko"
-    },
-    {
-      "id": "690524d650b70063",
-      "source": "starlink",
-      "title": "우주 지속가능성을 위한 헌신",
-      "url": "https://starlink.com/public-files/Commitment%20to%20Space%20Sustainability.pdf",
-      "publishedAt": "2024-02-12T00:00:00Z",
       "language": "ko"
     }
   ]
