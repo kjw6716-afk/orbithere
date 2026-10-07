@@ -110,6 +110,16 @@
       "id": "why-auroras-have-colors",
       "date": "2026-10-07",
       "contentHash": "efe45d6dca5b2d1ffcf4202b902eb67949fd87cc35bc79c5ca69be94b151f3ec"
+    },
+    {
+      "id": "why-city-skies-hide-stars",
+      "date": "2026-10-07",
+      "contentHash": "971889a9dc4d5e3751c9dbd84e6378b381c16ab05911dfe2f4216eae0f9c8281"
+    },
+    {
+      "id": "why-planets-orbit-nearly-same-plane",
+      "date": "2026-10-07",
+      "contentHash": "01e4dcffad669295dd16e38413fc67e6ea25732cbe445b1295abdd25a13547e6"
     }
   ]
 }
