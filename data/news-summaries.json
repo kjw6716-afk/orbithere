@@ -2,6 +2,21 @@
   "version": 1,
   "items": [
     {
+      "id": "718e414f27ebb381",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Mars_s_oddest_cloud_may_be_even_odder_than_we_thought",
+      "publishedAt": "2026-10-07T15:00:00Z",
+      "titleOriginal": "Mars’s oddest cloud may be even odder than we thought",
+      "titleKo": "화성의 기묘한 구름, 먼지 없이 얼음이 생기는 희귀 과정 가능성",
+      "summaryKo": [
+        "화성 남반구의 봄과 여름이면 높이 약 20km인 아르시아산의 바람 아래쪽에서 흰 물얼음 구름이 매일 생겨나 최대 1800km까지 길어진 뒤 빠르게 사라집니다.",
+        "마스 익스프레스 관측을 활용한 새 모델은 보통 얼음 결정의 씨앗이 되는 먼지 없이 수증기가 곧바로 얼음 입자로 바뀌는 ‘균질 핵생성’을 포함해야 이 구름을 재현할 수 있어, 연구진은 행성 대기에서 아직 관측되지 않은 과정일 가능성을 제시했습니다.",
+        "모델에서는 바람이 습한 공기를 몇 분 만에 수km 끌어올리면서 기온이 10분 동안 약 30°C 떨어지고 습도가 급상승했지만, 구름의 일부 특성은 실제 관측과 정확히 일치하지 않아 추가 검증이 필요합니다."
+      ],
+      "checkedAt": "2026-10-08",
+      "method": "source-checked"
+    },
+    {
       "id": "66089d1385a5a0b1",
       "source": "nasa",
       "url": "https://www.nasa.gov/missions/mars-science-laboratory/curiosity-rover/nasas-curiosity-rover-catches-stunning-martian-dawn/",
