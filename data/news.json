@@ -90,7 +90,10 @@
       "title": "Mars’s oddest cloud may be even odder than we thought",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Mars_s_oddest_cloud_may_be_even_odder_than_we_thought",
       "publishedAt": "2026-10-07T15:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "화성의 가장 이상한 구름은 우리가 생각했던 것보다 더 크다.",
+      "titleKoDraftOriginal": "Mars’s oddest cloud may be even odder than we thought",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "66089d1385a5a0b1",
