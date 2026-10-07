@@ -120,6 +120,16 @@
       "id": "why-planets-orbit-nearly-same-plane",
       "date": "2026-10-07",
       "contentHash": "01e4dcffad669295dd16e38413fc67e6ea25732cbe445b1295abdd25a13547e6"
+    },
+    {
+      "id": "why-moon-visible-in-daytime",
+      "date": "2026-10-07",
+      "contentHash": "7e01858b866d2df3192bf0d77e4ee1f50bd0cb9d66cdd3538ece474b3501489b"
+    },
+    {
+      "id": "why-telescopes-use-lagrange-points",
+      "date": "2026-10-07",
+      "contentHash": "1480df218393d9b9880e9d0884564f25641166dd90d88effdd91e5a890e3597c"
     }
   ]
 }
