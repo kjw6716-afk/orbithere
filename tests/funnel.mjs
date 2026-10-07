@@ -70,6 +70,10 @@ async function fixture(options = {}) {
       if (state.failAnalytics) return route.abort('failed');
       return json(null);
     }
+    if (rpc === 'record_story_view') {
+      if (state.failAnalytics) return route.abort('failed');
+      return json(true);
+    }
     if (url.pathname === '/auth/v1/token') {
       if (state.loginFail) return json({ code: 'invalid_credentials', msg: 'Invalid login credentials' }, 400);
       state.auth = session(state.actor); return json(state.auth);
@@ -259,6 +263,24 @@ try {
     await waitEvent(story, 'session_start');
     assert.equal(events(story, 'session_start')[0].page_key, 'moon-face-and-phases');
     ok('story canonical allowlist identifies article without raw URL or query');
+    const storyCalls = () => story.state.calls.filter(c => c.path.endsWith('/record_story_view'));
+    for (let n = 0; n < 40 && storyCalls().length < 1; n++) await story.page.waitForTimeout(50);
+    assert.equal(storyCalls().length, 1);
+    assert.equal(storyCalls()[0].body.p_story_id, 'moon-face-and-phases');
+    await story.page.goto(origin + '/stories/why-stars-have-different-colors.html');
+    for (let n = 0; n < 40 && storyCalls().length < 2; n++) await story.page.waitForTimeout(50);
+    assert.equal(storyCalls().length, 2);
+    assert.equal(storyCalls()[1].body.p_story_id, 'why-stars-have-different-colors');
+    await story.page.reload(); await settle(story.page);
+    await story.page.goto(origin + '/stories/moon-face-and-phases.html'); await settle(story.page);
+    assert.equal(storyCalls().length, 2);
+    assert.equal(events(story, 'feature_view', 'story').length, 1);
+    for (const call of storyCalls()) {
+      assert.deepEqual(Object.keys(call.body).sort(), ['p_session_id', 'p_story_id']);
+      assert.equal(call.body.p_session_id, events(story, 'session_start')[0].session_id);
+      assert.ok(!call.headers.authorization && !call.headers.referer);
+    }
+    ok('rendered old/new stories each count once while refresh/back and original funnel remain deduplicated');
     privacy(story); await story.close();
   }
 

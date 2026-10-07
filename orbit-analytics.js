@@ -58,7 +58,7 @@
     // Preserve an authentication attempt after writing even if the same person
     // opened/attempted authentication earlier in this observation session.
     if (event === 'auth_open' || event === 'auth_attempt') key += state.seen.includes('write_start') ? ':post_write' : ':pre_write';
-    if (state.seen.includes(key) || state.sequence >= 128) return;
+    if (state.seen.includes(key) || state.seen.length >= 128 || state.sequence >= 128) return;
     state.seen.push(key);
     state.sequence++;
     save(); // If storage is blocked, stop here instead of inventing new IDs per page.
@@ -73,6 +73,30 @@
         keepalive: true, signal: controller.signal
       });
     }).catch(function () { /* No retries or user-facing error. */ }).finally(function () { clearTimeout(timer); });
+  }
+  function sendStoryView() {
+    if (embedded || !state || excluded() || document.hidden || !memberAllowed) return;
+    // Only a rendered public article can identify itself. Never send a URL,
+    // title, member/device identifier, or an arbitrary pathname to the server.
+    var article = document.querySelector('article.story-article[data-orbit-story-id]');
+    var ident = article && article.dataset.orbitStoryId;
+    if (typeof ident !== 'string' || ident.length > 70 || !/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/.test(ident) ||
+        location.pathname !== '/stories/' + ident + '.html') return;
+    var key = 'story_view:' + ident;
+    if (state.seen.includes(key) || state.seen.length >= 128) return;
+    state.seen.push(key);
+    save(); // Blocked storage must not turn each refresh into a new observation.
+    var payload = { p_story_id: ident, p_session_id: state.id };
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, 4000);
+    Promise.resolve().then(function () {
+      if (excluded() || document.hidden || !memberAllowed) return;
+      return fetch(config.url + '/rest/v1/rpc/record_story_view', {
+        method: 'POST', headers: { apikey: config.publishableKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload), credentials: 'omit', referrerPolicy: 'no-referrer',
+        keepalive: true, signal: controller.signal
+      });
+    }).catch(function () { /* Best effort; no retry queue or product errors. */ }).finally(function () { clearTimeout(timer); });
   }
   function session(feature, mode) {
     var now = Date.now();
@@ -122,6 +146,7 @@
       send('feature_view', feature, 'none', mode);
       if (feature === 'board' && previous !== 'board') send('board_enter', 'board', previous, mode);
       state.feature = feature;
+      if (feature === 'story') sendStoryView();
     }
     if (fresh && readyFeatures[feature] && event !== 'tool_ready') send('tool_ready', feature, 'none', mode);
     if (event !== 'feature_view') send(event, feature, detail, mode);

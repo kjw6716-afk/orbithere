@@ -158,6 +158,21 @@ class EditorialTests(unittest.TestCase):
         self.assertIn('stories/moon-face-and-phases.html', rendered)
         self.assertNotIn('notes.html</loc>', rendered['sitemap.xml'])
 
+    def test_public_articles_have_matching_view_markers_and_fresh_collector(self):
+        articles, ledger = stories.load()
+        rendered = stories.outputs(articles, ledger)
+        for item in ledger['items']:
+            ident = item['id']
+            page = PageElements(rendered[f'stories/{ident}.html'])
+            markers = page.matching('article', **{'data-orbit-story-id': ident})
+            self.assertEqual(len(markers), 1, ident)
+            collectors = page.matching('script', src='../orbit-analytics.js?v=20261007-story-views')
+            self.assertEqual(len(collectors), 1, ident)
+        self.assertNotIn('data-orbit-story-id', rendered['stories.html'])
+        future = self.make_article('new-future-story')
+        page = PageElements(stories.render_article(future, '2026-10-08'))
+        self.assertEqual(len(page.matching('article', **{'data-orbit-story-id': future['id']})), 1)
+
     def test_rss_contains_full_published_story_and_valid_dates(self):
         day = '2026-09-12'
         rss = stories.render_rss([(self.article, day)])

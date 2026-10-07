@@ -336,6 +336,7 @@ def json_script(value):
 
 def shell(title, description, path, body, prefix='', schema=None, noindex=False, script='stories.js', share_image=None):
     canonical = 'https://orbithere.com/' + path
+    analytics_version = '20261007-story-views' if schema else '20260927-funnel'
     image_url = share_image['url'] if share_image else 'https://orbithere.com/images/og.png'
     image_meta = ''
     if share_image:
@@ -371,7 +372,7 @@ def shell(title, description, path, body, prefix='', schema=None, noindex=False,
 {f'<script type="application/ld+json">{json_script(schema)}</script>' if schema else ''}
 <script src="{prefix}site-nav.js?v=20260914-community" defer></script>
 <script src="{prefix}{script}?v=20260927-reading-flow" defer></script>
-<script src="{prefix}orbit-config.js"></script>{'' if noindex else f'<script src="{prefix}orbit-analytics.js?v=20260927-funnel" defer></script>'}<script src="{prefix}visits.js" defer></script>
+<script src="{prefix}orbit-config.js"></script>{'' if noindex else f'<script src="{prefix}orbit-analytics.js?v={analytics_version}" defer></script>'}<script src="{prefix}visits.js" defer></script>
 </head>
 <body><a class="skip-link" href="#main-content">본문으로 바로가기</a>
 <div class="orbit-page-layout">
@@ -448,7 +449,7 @@ def render_related(article, published_items, images):
 def render_article(a, day, images=None, published_items=()):
     images = images if images is not None else load_images()
     ident = a['id']
-    body = f'<article class="story-article"><a class="story-breadcrumb" href="../stories.html">← 우주 이야기 전체보기</a><header>{meta(a, day)}<h1>{esc(a["title"])}</h1><p class="story-standfirst">{esc(a["summary"])}</p><div class="story-byline">{byline(disclose=True)}</div></header><figure class="story-article-cover">{render_cover(a, images, "../", featured=True)}<figcaption class="story-image-note">{esc(images["notice"])}</figcaption></figure><div class="story-body">'
+    body = f'<article class="story-article" data-orbit-story-id="{esc(ident)}"><a class="story-breadcrumb" href="../stories.html">← 우주 이야기 전체보기</a><header>{meta(a, day)}<h1>{esc(a["title"])}</h1><p class="story-standfirst">{esc(a["summary"])}</p><div class="story-byline">{byline(disclose=True)}</div></header><figure class="story-article-cover">{render_cover(a, images, "../", featured=True)}<figcaption class="story-image-note">{esc(images["notice"])}</figcaption></figure><div class="story-body">'
     for section in a['sections']:
         refs = ' '.join(f'<a href="#source-{n}" aria-label="출처 {n} 보기">[{n}]</a>' for n in section['sources'])
         paragraphs = ''
