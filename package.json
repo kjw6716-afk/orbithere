@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npm run test:astronomy && npm run test:links && npm run test:backend && npm run test:security && npm run test:funnel && npm run test:members && npm run test:operations && npm run test:render && npm run test:community && npm run test:landing && npm run test:content && npm run test:news && npm run test:navigation && npm run test:stories",
     "test:backend": "node tests/backend-timeout.mjs",
-    "test:funnel": "node tests/funnel-db.mjs && node tests/funnel.mjs",
+    "test:funnel": "node tests/funnel-db.mjs && node tests/story-views-db.mjs && node tests/story-views.mjs && node tests/funnel.mjs",
     "test:operations": "node tests/operations.mjs",
     "test:astronomy": "node tests/astronomy.mjs",
     "test:links": "node tests/links.mjs",
