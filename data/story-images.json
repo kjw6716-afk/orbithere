@@ -145,6 +145,22 @@
         "generatedAt": "2026-10-04",
         "prompt": "Use case: illustration-story. Create an original editorial astronomy cover illustration for ORBIT. Generate a wide landscape raster image exactly 2048x1152 pixels, true 16:9, at least 1200x675. Edge-to-edge premium science magazine painting with subtle paper grain and naturalistic lunar relief. Deep midnight navy #0B1423 background, warm cream and muted gray lunar terrain, restrained cool teal only in background. Article central question: Why are lunar craters easier to see near the day-night boundary? Show one complete large first-quarter Moon, centered slightly right with generous dark margins. Its RIGHT half is sunlit and LEFT half almost black, the nearly straight vertical day-night terminator crosses the middle. Along that boundary, a handful of readable irregular impact craters and ridges have bright right-facing rims and dark shadows extending LEFT, consistent with grazing sunlight coming from the RIGHT outside frame. As one moves toward the far right sunlit limb, relief becomes less strongly shadowed. Keep lunar surface muted gray-cream, no glowing fissures, no blue oceans. Do not outline the dark lunar hemisphere with a luminous rim. One Moon only, no phase sequence, no inset close-up, no beams, no drawn Sun, no arrows, no orbit lines, no landscape or telescope. Sparse tiny background stars only outside the lunar disk. This is a painted AI editorial concept, not an actual telescope image, not an exact lunar map or scale diagram. No text, labels, numbers, logo, watermark, border, panels or UI. Whole lunar disk stays inside the frame. Shadows must remain coherent from a single sunlight direction.\nCritical: actual output canvas must be exactly 2048 by 1152, not an approximate 1672 by 941. Strong painted editorial style: broad simplified matte shapes, soft brushed pigment, visible fine paper texture, reduced photographic detail. Use only a few sparse stars, no Milky Way. This must clearly look like a refined illustration, not a camera photograph."
       }
+    },
+    "why-city-skies-hide-stars": {
+      "alt": "어두운 산등성이의 관측자 왼쪽에는 많은 별이, 도시 하늘빛이 번지는 오른쪽에는 적은 별이 보이는 AI 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-10-05",
+        "prompt": "Use case: illustration-story. Create an original editorial astronomy cover illustration for ORBIT. Wide landscape exact 16:9, exactly 1536x864 pixels or another exact 16:9 size at least 1200x675, edge-to-edge raster art. Deep midnight navy (#0B1423), restrained mint/cyan accents, warm cream/amber, subtle texture and fine grain, naturalistic painted rendering with the clarity of a sophisticated science magazine. One readable focal scene, all subjects inside the frame with generous margins. No text, labels, numbers, logos, watermark, border, UI, panels, arrows or diagram annotations. This is a conceptual AI editorial illustration, not an observation photograph, satellite map or measured brightness chart. Article question: Why do stars seem to disappear from city skies? Subject and composition: one continuous quiet night landscape viewed from a low dark ridge. A compact distant city occupies the lower right quarter with small restrained warm amber street and window lights. Above it, a broad soft cream-amber dome of artificial skyglow fades naturally upward into muted teal and then deep navy. Toward the upper left and over the darker rural side, many modest pinprick stars become visible; toward the bright city dome, only a few brightest stars remain. A small solitary observer silhouette near the lower left looks across the same uninterrupted sky, clearly safe on an open overlook. Scientific constraints: the stars continue across the whole scene but low-contrast stars are visually masked by the bright sky background near the city; skyglow is diffuse scattered light, not a solid beam; no claim that stars physically vanish; no clouds or Moon as the main cause. Keep the city secondary and the gradient in visible-star contrast unmistakable at thumbnail size. Avoid: split screen or before-and-after panels, vertical searchlights, aurora, Milky Way band directly over the bright city, giant stars, meteor, telescope, observatory dome, satellite, planet, Earth from space, neon cyberpunk skyline, dense traffic, unsafe cliff pose or fantasy nebula."
+      }
+    },
+    "why-planets-orbit-nearly-same-plane": {
+      "alt": "젊은 별을 중심으로 가스와 먼지의 얇은 원반 안에서 암석 덩어리들이 함께 자라는 AI 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-10-05",
+        "prompt": "Use case: precise-object-edit. Preserve this protoplanetary-disk illustration's exact subject, composition, palette, lighting, negative space, and all scientific relationships. Change only the canvas geometry by regenerating the surrounding deep navy space so the ACTUAL OUTPUT FILE is a true exact 16:9 raster, preferably 1792 pixels wide by 1008 pixels high or 2048 by 1152. The current input file is 1672x941 and must not be returned at that size. Do not crop any part of the disk or stretch the art; keep the full disk and all embedded rocky clumps with generous margins, extending or regenerating only empty deep navy space if needed. Keep one young warm star and one flat continuous protoplanetary disk viewed obliquely. No mature planets, no orbit lines, no black-hole vortex, no galaxy, no text, labels, logos, watermark, border, UI or panels. Final deliverable is the same premium naturalistic science-magazine editorial illustration at exact 16:9."
+      }
     }
   },
   "articles": {
@@ -169,7 +185,9 @@
     "why-astronauts-float-in-orbit": "why-astronauts-float-in-orbit",
     "why-venus-appears-at-twilight": "why-venus-appears-at-twilight",
     "why-auroras-have-colors": "why-auroras-have-colors",
-    "moon-craters-near-terminator": "moon-craters-near-terminator"
+    "moon-craters-near-terminator": "moon-craters-near-terminator",
+    "why-city-skies-hide-stars": "why-city-skies-hide-stars",
+    "why-planets-orbit-nearly-same-plane": "why-planets-orbit-nearly-same-plane"
   },
   "categories": {
     "달과 행성": "planets",
