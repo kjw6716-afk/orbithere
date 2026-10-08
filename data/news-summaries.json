@@ -2,6 +2,21 @@
   "version": 1,
   "items": [
     {
+      "id": "5a9a117643219a5e",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/missions/spherex/nasas-spherex-telescope-sees-menagerie-of-brown-dwarfs/",
+      "publishedAt": "2026-10-08T18:22:48Z",
+      "titleOriginal": "NASA’s SPHEREx Telescope Sees Menagerie of Brown Dwarfs",
+      "titleKo": "스피어엑스, 갈색왜성 37개의 대기에서 물·이산화탄소·메탄 등 확인",
+      "summaryKo": [
+        "NASA의 적외선 우주망원경 스피어엑스가 온도 약 2200°C에서 영하 20°C까지 아우르는 가까운 갈색왜성 37개를 102개 파장대에서 관측해 물·이산화탄소·일산화탄소·메탄의 신호를 확인했습니다.",
+        "2025년 3월 발사된 스피어엑스는 하루 약 3600장의 고유 영상을 이어 전천 지도를 만들면서 수천 개의 갈색왜성을 처음 관측하고 있으며, 연구진은 이번 37개에 이어 더 많은 대상을 분석 중입니다.",
+        "연구진에 따르면 최신 모형은 전체적인 화학 변화는 재현하지만 구름이 얇아지고 메탄이 풍부해지는 전환 단계에서는 관측과 잘 맞지 않았고, 같은 온도에서도 갈색왜성마다 스펙트럼이 뚜렷이 달랐습니다."
+      ],
+      "checkedAt": "2026-10-09",
+      "method": "source-checked"
+    },
+    {
       "id": "f433a319fc4cd0e6",
       "source": "esa",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Solar_Orbiter/Solar_Orbiter_tracks_origin_of_mysterious_magnetic_switchbacks",
@@ -27,6 +42,21 @@
         "우주항공청은 NASA가 첫 준대형급(Probe급) 임무로 선정한 원적외선 우주망원경 프리마(PRIMA)에 한국천문연구원이 국제협력 파트너로 참여한다고 밝혔습니다.",
         "프리마는 지름 1.8m 주경과 원적외선 분광기·영상기를 탑재해 은하와 초대질량 블랙홀의 공동 진화, 별·행성계 형성과 물의 기원을 연구하며, 2033년 발사와 5년 과학 임무를 목표로 합니다.",
         "천문연은 스피어엑스에 사용한 극저온 성능시험 챔버를 개선해 프리마 분광 탑재체의 검교정·성능 검증을 지원할 계획이며, 약 12억 달러는 한국 측 수주액이 아니라 Probe급 임무의 예산 상한입니다."
+      ],
+      "checkedAt": "2026-10-09",
+      "method": "source-checked"
+    },
+    {
+      "id": "f72dae63e78ee490",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#starlink-mobile-spectrum",
+      "publishedAt": "2026-10-08T00:00:00Z",
+      "titleOriginal": "BUILDING THE WORLD’S MOST ADVANCED MOBILE NETWORK",
+      "titleKo": "SpaceX, 미국 800MHz 저대역 주파수 인수 합의…FCC는 위성 1만5000기 승인",
+      "summaryKo": [
+        "SpaceX는 미국 전역에서 쓸 수 있는 800MHz 대역의 쌍방향 주파수 면허를 최대 14MHz 폭까지 인수하는 계약을 체결했다고 밝혔습니다.",
+        "이 거래는 최종 FCC 승인이 필요한 단계이며, 회사는 기존 모바일 기기 대부분이 지원하는 이 저대역을 실내와 장애물 뒤까지 연결하는 커버리지 계층으로 활용할 계획입니다.",
+        "별도로 FCC는 2GHz 대역에 최적화된 스타링크 모바일 2세대 위성 1만5000기의 발사를 허가했는데, 이는 발사 완료가 아닌 승인이고 V2 위성이 현 세대보다 100배 넘는 대역폭을 제공한다는 설명도 SpaceX의 향후 성능 주장입니다."
       ],
       "checkedAt": "2026-10-09",
       "method": "source-checked"
