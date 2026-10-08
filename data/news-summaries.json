@@ -17,6 +17,36 @@
       "method": "source-checked"
     },
     {
+      "id": "28d3d8659198da22",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32470",
+      "publishedAt": "2026-10-08T00:00:00Z",
+      "titleOriginal": "미항공우주국(NASA) 차세대 원적외선 우주망원경 미션 ‘프리마(PRIMA)’ 참여",
+      "titleKo": "한국천문연구원, NASA 차세대 원적외선 우주망원경 ‘프리마’ 참여",
+      "summaryKo": [
+        "우주항공청은 NASA가 첫 준대형급(Probe급) 임무로 선정한 원적외선 우주망원경 프리마(PRIMA)에 한국천문연구원이 국제협력 파트너로 참여한다고 밝혔습니다.",
+        "프리마는 지름 1.8m 주경과 원적외선 분광기·영상기를 탑재해 은하와 초대질량 블랙홀의 공동 진화, 별·행성계 형성과 물의 기원을 연구하며, 2033년 발사와 5년 과학 임무를 목표로 합니다.",
+        "천문연은 스피어엑스에 사용한 극저온 성능시험 챔버를 개선해 프리마 분광 탑재체의 검교정·성능 검증을 지원할 계획이며, 약 12억 달러는 한국 측 수주액이 아니라 Probe급 임무의 예산 상한입니다."
+      ],
+      "checkedAt": "2026-10-09",
+      "method": "source-checked"
+    },
+    {
+      "id": "8feca0d1bd19a833",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/fireflys-scitec-expands-contract-with-u-s-air-force-to-add-counter-uas-data-in-advanced-battle-management-system/",
+      "publishedAt": "2026-10-08T00:00:00Z",
+      "titleOriginal": "Firefly’s SciTec Expands Contract with U.S. Air Force to Add Counter UAS Data in Advanced Battle Management System",
+      "titleKo": "SciTec, 미 공군 CBC2 계약에 대드론 센서 통합…150만 달러 증액",
+      "summaryKo": [
+        "파이어플라이 에어로스페이스의 자회사 SciTec은 미 공군의 클라우드 기반 지휘통제(CBC2) 계약을 연장해 첨단 전투관리체계에 승인된 대무인항공기(CUAS) 센서 자료를 추가로 통합한다고 발표했습니다.",
+        "이번 연장으로 150만 달러가 추가돼 계약 총액은 3100만 달러가 됐으며, 회사는 새 자료 계층이 무인항공 위협의 탐지·추적·특성 파악과 임무 파트너의 상황 인식을 돕는다고 설명했습니다.",
+        "3100만 달러는 사업 전체 상한이나 이번에 새로 받은 금액이 아니라 증액 뒤 기존 CBC2 계약의 총액이며, 향후 운용 효과에 관한 설명은 SciTec 측 계획입니다."
+      ],
+      "checkedAt": "2026-10-09",
+      "method": "source-checked"
+    },
+    {
       "id": "718e414f27ebb381",
       "source": "esa",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Mars_s_oddest_cloud_may_be_even_odder_than_we_thought",
