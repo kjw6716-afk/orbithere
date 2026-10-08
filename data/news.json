@@ -90,7 +90,10 @@
       "title": "Solar Orbiter tracks origin of mysterious magnetic switchbacks",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Solar_Orbiter/Solar_Orbiter_tracks_origin_of_mysterious_magnetic_switchbacks",
       "publishedAt": "2026-10-08T09:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "태양 궤도는 신비한 자기 스위치의 기원을 추적합니다.",
+      "titleKoDraftOriginal": "Solar Orbiter tracks origin of mysterious magnetic switchbacks",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "718e414f27ebb381",
