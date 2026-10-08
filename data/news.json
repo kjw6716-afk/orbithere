@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-08T09:29:19Z",
+  "checkedAt": "2026-10-08T15:34:23Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-10-08T09:29:19Z",
+      "lastCheckedAt": "2026-10-08T15:34:23Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T09:29:19Z"
+      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-10-08T09:29:19Z",
+      "lastCheckedAt": "2026-10-08T15:34:23Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T09:29:19Z"
+      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-10-08T09:29:19Z",
+      "lastCheckedAt": "2026-10-08T15:34:23Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T09:29:19Z"
+      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-10-08T09:29:19Z",
+      "lastCheckedAt": "2026-10-08T15:34:23Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T09:29:19Z"
+      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-10-08T09:29:19Z",
+      "lastCheckedAt": "2026-10-08T15:34:23Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T09:29:19Z"
+      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-10-08T09:29:19Z",
+      "lastCheckedAt": "2026-10-08T15:34:23Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T09:29:19Z"
+      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-10-08T09:29:19Z",
+      "lastCheckedAt": "2026-10-08T15:34:23Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T09:29:19Z"
+      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
     },
     {
       "id": "firefly",
@@ -78,9 +78,9 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-10-08T09:29:19Z",
+      "lastCheckedAt": "2026-10-08T15:34:23Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T09:29:19Z"
+      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
     }
   ],
   "items": [
@@ -94,6 +94,22 @@
       "titleKoDraft": "태양 궤도는 신비한 자기 스위치의 기원을 추적합니다.",
       "titleKoDraftOriginal": "Solar Orbiter tracks origin of mysterious magnetic switchbacks",
       "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
+    },
+    {
+      "id": "28d3d8659198da22",
+      "source": "kasi",
+      "title": "미항공우주국(NASA) 차세대 원적외선 우주망원경 미션 ‘프리마(PRIMA)’ 참여",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32470",
+      "publishedAt": "2026-10-08T00:00:00Z",
+      "language": "ko"
+    },
+    {
+      "id": "8feca0d1bd19a833",
+      "source": "firefly",
+      "title": "Firefly’s SciTec Expands Contract with U.S. Air Force to Add Counter UAS Data in Advanced Battle Management System",
+      "url": "https://fireflyspace.com/news/fireflys-scitec-expands-contract-with-u-s-air-force-to-add-counter-uas-data-in-advanced-battle-management-system/",
+      "publishedAt": "2026-10-08T00:00:00Z",
+      "language": "en"
     },
     {
       "id": "718e414f27ebb381",
@@ -493,17 +509,6 @@
       "titleKoMethod": "reviewed"
     },
     {
-      "id": "eb15a4aa556229aa",
-      "source": "firefly",
-      "title": "Firefly’s SciTec Awarded $94 Million U.S. Space Force Contract to Advance Ground-Based Radar Digitization Program",
-      "url": "https://fireflyspace.com/news/fireflys-scitec-awarded-94-million-u-s-space-force-contract-to-advance-ground-based-radar-digitization-program/",
-      "publishedAt": "2026-08-11T00:00:00Z",
-      "language": "en",
-      "titleKo": "파이어플라이 자회사 사이텍, 미 우주군의 9,400만 달러 레이더 디지털화 계약 수주",
-      "titleKoOriginal": "Firefly’s SciTec Awarded $94 Million U.S. Space Force Contract to Advance Ground-Based Radar Digitization Program",
-      "titleKoMethod": "reviewed"
-    },
-    {
       "id": "e3f8f543a27fc9bb",
       "source": "ast",
       "title": "AST SpaceMobile Provides Business Update and Second Quarter 2026 Results",
@@ -565,14 +570,6 @@
       "titleKo": "AST 스페이스모바일, 블루버드 11·12·13호 발사 일정 발표",
       "titleKoOriginal": "AST SpaceMobile Announces Launch Date for BlueBird Satellites 11, 12, and 13",
       "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "063e20b8d7eabd0c",
-      "source": "kasi",
-      "title": "천문연-연세대 항공우주전략연구원, 우주감시 및 우주안보 분야 협력 위한 업무협약 체결",
-      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32390",
-      "publishedAt": "2026-07-10T00:00:00Z",
-      "language": "ko"
     },
     {
       "id": "aec0a47720977d60",
