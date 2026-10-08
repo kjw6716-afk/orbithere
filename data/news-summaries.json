@@ -2,6 +2,21 @@
   "version": 1,
   "items": [
     {
+      "id": "5a9a117643219a5e",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/missions/spherex/nasas-spherex-telescope-sees-menagerie-of-brown-dwarfs/",
+      "publishedAt": "2026-10-08T18:22:48Z",
+      "titleOriginal": "NASA’s SPHEREx Telescope Sees Menagerie of Brown Dwarfs",
+      "titleKo": "스피어엑스, 갈색왜성 37개의 대기에서 물·이산화탄소·메탄 등 확인",
+      "summaryKo": [
+        "NASA의 적외선 우주망원경 스피어엑스가 온도 약 2200°C에서 영하 20°C까지 아우르는 가까운 갈색왜성 37개를 102개 파장대에서 관측해 물·이산화탄소·일산화탄소·메탄의 신호를 확인했습니다.",
+        "2025년 3월 발사된 스피어엑스는 하루 약 3600장의 고유 영상을 이어 전천 지도를 만들면서 수천 개의 갈색왜성을 처음 관측하고 있으며, 연구진은 이번 37개에 이어 더 많은 대상을 분석 중입니다.",
+        "연구진에 따르면 최신 모형은 전체적인 화학 변화는 재현하지만 구름이 얇아지고 메탄이 풍부해지는 전환 단계에서는 관측과 잘 맞지 않았고, 같은 온도에서도 갈색왜성마다 스펙트럼이 뚜렷이 달랐습니다."
+      ],
+      "checkedAt": "2026-10-09",
+      "method": "source-checked"
+    },
+    {
       "id": "f433a319fc4cd0e6",
       "source": "esa",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Solar_Orbiter/Solar_Orbiter_tracks_origin_of_mysterious_magnetic_switchbacks",
@@ -27,6 +42,21 @@
         "우주항공청은 NASA가 첫 준대형급(Probe급) 임무로 선정한 원적외선 우주망원경 프리마(PRIMA)에 한국천문연구원이 국제협력 파트너로 참여한다고 밝혔습니다.",
         "프리마는 지름 1.8m 주경과 원적외선 분광기·영상기를 탑재해 은하와 초대질량 블랙홀의 공동 진화, 별·행성계 형성과 물의 기원을 연구하며, 2033년 발사와 5년 과학 임무를 목표로 합니다.",
         "천문연은 스피어엑스에 사용한 극저온 성능시험 챔버를 개선해 프리마 분광 탑재체의 검교정·성능 검증을 지원할 계획이며, 약 12억 달러는 한국 측 수주액이 아니라 Probe급 임무의 예산 상한입니다."
+      ],
+      "checkedAt": "2026-10-09",
+      "method": "source-checked"
+    },
+    {
+      "id": "f72dae63e78ee490",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#starlink-mobile-spectrum",
+      "publishedAt": "2026-10-08T00:00:00Z",
+      "titleOriginal": "BUILDING THE WORLD’S MOST ADVANCED MOBILE NETWORK",
+      "titleKo": "SpaceX, 미국 800MHz 저대역 주파수 인수 합의…FCC는 위성 1만5000기 승인",
+      "summaryKo": [
+        "SpaceX는 미국 전역에서 쓸 수 있는 800MHz 대역의 쌍방향 주파수 면허를 최대 14MHz 폭까지 인수하는 계약을 체결했다고 밝혔습니다.",
+        "이 거래는 최종 FCC 승인이 필요한 단계이며, 회사는 기존 모바일 기기 대부분이 지원하는 이 저대역을 실내와 장애물 뒤까지 연결하는 커버리지 계층으로 활용할 계획입니다.",
+        "별도로 FCC는 2GHz 대역에 최적화된 스타링크 모바일 2세대 위성 1만5000기의 발사를 허가했으며, 이는 발사 완료가 아닌 승인입니다. V2 위성이 현 세대보다 100배 넘는 대역폭을 제공한다는 설명도 SpaceX의 향후 성능 주장입니다."
       ],
       "checkedAt": "2026-10-09",
       "method": "source-checked"
@@ -225,21 +255,6 @@
       "method": "source-checked"
     },
     {
-      "id": "c90de238e618819e",
-      "source": "esa",
-      "url": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo/Win_a_trip_to_ESA_to_witness_BepiColombo_arrive_at_Mercury",
-      "publishedAt": "2026-09-24T13:00:00Z",
-      "titleOriginal": "Win a trip to ESA to witness BepiColombo arrive at Mercury",
-      "titleKo": "ESA, 베피콜롬보 수성 도착 기념 공모전 개최",
-      "summaryKo": [
-        "ESA는 베피콜롬보의 수성 도착을 기념해 그림·노래·시 등 환영 메시지를 사진 또는 영상으로 제출하는 공모전을 열고, ESA 회원·협력·준회원국 거주자 가운데 18세 이상에게 2026년 10월 25일 자정(CET)까지 참가 기회를 제공합니다.",
-        "대상 1명은 12월 9일 독일 다름슈타트의 ESA 우주운영센터 행사에 초대되지만 여행·숙박은 먼저 직접 예약한 뒤 영수증 기준 최대 1,000유로를 환급받으며, ESA는 우주활동 일정이 마지막 순간에도 바뀔 수 있어 유연한 예약을 권고했습니다.",
-        "두 탐사선의 12월 9~10일 분리가 공식 수성 도착을 알리며, Mio는 이때 과학 궤도에 들어가고 MPO의 최종 과학 궤도 진입은 2027년 3월 19일로 예정돼 있습니다."
-      ],
-      "checkedAt": "2026-09-25",
-      "method": "source-checked"
-    },
-    {
       "id": "e0d18ca236384c5e",
       "source": "rocketlab",
       "url": "https://rocketlabcorp.com/updates/new-blog-post-43/",
@@ -297,20 +312,6 @@
       "method": "source-checked"
     },
     {
-      "id": "edde16df71748f22",
-      "source": "firefly",
-      "url": "https://fireflyspace.com/news/firefly-aerospace-completes-new-cleanroom-to-accelerate-spacecraft-production/",
-      "publishedAt": "2026-09-22T00:00:00Z",
-      "titleOriginal": "Firefly Aerospace Completes New Cleanroom to Accelerate Spacecraft Production",
-      "titleKo": "파이어플라이, 우주선 생산 확대 위한 새 클린룸 완공",
-      "summaryKo": [
-        "파이어플라이는 텍사스 시더파크의 14만 4천 제곱피트 캠퍼스에 기존 클린룸보다 네 배 큰 ISO 8 등급의 새 클린룸을 완공했다고 발표했습니다.",
-        "두 클린룸을 합치면 달 착륙선과 궤도선을 동시에 최대 12대 조립·통합·시험할 수 있으며, 회사는 블루 고스트 1호 이후 계약된 달 임무 5건과 미 국방혁신단 우주선 계약 2건을 수행할 생산 기반이라고 설명했습니다."
-      ],
-      "checkedAt": "2026-09-23",
-      "method": "source-checked"
-    },
-    {
       "id": "b2a1884d37063254",
       "source": "kasi",
       "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32461",
@@ -325,18 +326,17 @@
       "method": "source-checked"
     },
     {
-      "id": "89cffd08a80b28f1",
-      "source": "esa",
-      "url": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Juice_to_fly_past_Earth_for_third_gravity_assist",
-      "publishedAt": "2026-09-21T14:00:00Z",
-      "titleOriginal": "Juice to fly past Earth for third gravity assist",
-      "titleKo": "주스 탐사선, 세 번째 중력도움 위해 지구 근접비행 예정",
+      "id": "edde16df71748f22",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-completes-new-cleanroom-to-accelerate-spacecraft-production/",
+      "publishedAt": "2026-09-22T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Completes New Cleanroom to Accelerate Spacecraft Production",
+      "titleKo": "파이어플라이, 우주선 생산 확대 위한 새 클린룸 완공",
       "summaryKo": [
-        "ESA의 목성 얼음위성 탐사선 주스가 2026년 9월 28일 지구에서 8,640km까지 접근해 세 번째 중력도움을 받을 예정입니다.",
-        "이번 근접비행은 궤적을 약 20도 꺾고 속도를 초속 약 3.5km 높여, 2029년 1월 마지막 지구 근접비행과 2031년 7월 목성 도착 경로로 이어지게 합니다.",
-        "최접근은 인도양 상공에서 11:45 UTC로 계획됐으며, ESA는 9월 23일부터 10월 3일까지 지구와 달을 관측해 과학장비를 교정할 예정이라고 밝혔습니다."
+        "파이어플라이는 텍사스 시더파크의 14만 4천 제곱피트 캠퍼스에 기존 클린룸보다 네 배 큰 ISO 8 등급의 새 클린룸을 완공했다고 발표했습니다.",
+        "두 클린룸을 합치면 달 착륙선과 궤도선을 동시에 최대 12대 조립·통합·시험할 수 있으며, 회사는 블루 고스트 1호 이후 계약된 달 임무 5건과 미 국방혁신단 우주선 계약 2건을 수행할 생산 기반이라고 설명했습니다."
       ],
-      "checkedAt": "2026-09-22",
+      "checkedAt": "2026-09-23",
       "method": "source-checked"
     },
     {
@@ -378,34 +378,6 @@
         "NASA 제트추진연구소 연구진이 계절에 따라 물·얼음·공기가 재분배되면서 지구의 질량중심이 기하학적 중심 주위를 수 밀리미터씩 움직이는 현상을 분석했습니다.",
         "새 기법은 위성 레이저 거리측정에 GPS와 저궤도 위성 자료, 물과 얼음 하중에 따른 지각 변형을 함께 반영해 기준점의 불확실성을 줄이며 정밀 지도와 항법 개선에 활용될 수 있습니다.",
         "연구진은 3월 북반구 적설이 질량중심을 북극 쪽으로 약 3mm, 4월 아마존 유역의 물이 남아메리카 쪽으로 약 2.2mm 옮기는 것으로 추정했습니다."
-      ],
-      "checkedAt": "2026-09-19",
-      "method": "source-checked"
-    },
-    {
-      "id": "58b1e077a564609b",
-      "source": "esa",
-      "url": "https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Purple_swirls_on_the_Red_Planet",
-      "publishedAt": "2026-09-16T09:00:00Z",
-      "titleOriginal": "Purple swirls on the Red Planet",
-      "titleKo": "붉은 행성에 나타난 보랏빛 소용돌이",
-      "summaryKo": [
-        "ESA 마스 익스프레스가 화성 남극 부근의 얼음 절벽 틸레스 루페스를 촬영했으며, 장밋빛 아침 햇빛과 공중의 먼지·서리·얼음이 섞여 보랏빛으로 나타났습니다.",
-        "짙은 부분은 감람석과 휘석이 풍부한 화산 물질, 옅고 푸른 부분은 이산화탄소 서리이며, 일부 절벽은 높이 1km를 넘어 화성 내부가 식고 수축하던 고대 지각 변형의 흔적으로 해석됩니다."
-      ],
-      "checkedAt": "2026-09-19",
-      "method": "source-checked"
-    },
-    {
-      "id": "3df2eabd436d73bc",
-      "source": "esa",
-      "url": "https://www.esa.int/Science_Exploration/Space_Science/Webb/Webb_reveals_stunning_panorama_of_star_formation",
-      "publishedAt": "2026-09-15T14:00:00Z",
-      "titleOriginal": "Webb reveals stunning panorama of star formation",
-      "titleKo": "웹, 별 탄생 지역 IC 348의 거대한 파노라마 공개",
-      "summaryKo": [
-        "제임스 웹 우주망원경이 약 1,000광년 떨어진 페르세우스자리의 별 탄생 지역 IC 348을 관측해 목성 질량의 두 배에 불과한 갈색왜성을 발견했습니다.",
-        "이는 알려진 갈색왜성 가운데 가장 가벼운 수준으로 별 형성 모형에 도전하며, 그중 하나에서는 원반 징후도 보여 행성이 만들어질 가능성을 시사합니다."
       ],
       "checkedAt": "2026-09-19",
       "method": "source-checked"
@@ -537,6 +509,414 @@
       "method": "source-checked"
     },
     {
+      "id": "be1799cedcc10449",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/news-release/nasas-dark-universe-seeking-nancy-grace-roman-space-telescope-launches/",
+      "publishedAt": "2026-08-30T13:18:06Z",
+      "titleOriginal": "NASA’s Dark Universe-Seeking Nancy Grace Roman Space Telescope Launches",
+      "titleKo": "어두운 우주를 탐사할 NASA 낸시 그레이스 로먼 우주망원경 발사",
+      "summaryKo": [
+        "NASA의 낸시 그레이스 로먼 우주망원경이 2026년 8월 30일 Falcon Heavy 로켓으로 발사됐습니다.",
+        "넓은 시야의 적외선 관측으로 암흑에너지·암흑물질과 외계행성을 연구하며, 최종 관측 궤도까지 이동한 뒤 임무를 수행합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "32ed9e7d11d21de1",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32438",
+      "publishedAt": "2026-08-27T00:00:00Z",
+      "titleOriginal": "천문연 박종욱 책임연구원, COSPAR 집행위원 선출",
+      "titleKo": "천문연 박종욱 책임연구원, COSPAR 집행위원 선출",
+      "summaryKo": [
+        "한국천문연구원 박종욱 책임연구원이 국제우주연구위원회 COSPAR 집행위원으로 선출됐습니다.",
+        "한국인으로서는 첫 선출이며, 2026년 8월부터 4년간 정책 논의와 국제협력·학술 교류에 참여할 예정입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "f3ac3655bf675d20",
+      "source": "nasa",
+      "url": "https://www.nasa.gov/technology/space-comms/deep-space-network/new-next-gen-dish-adds-muscle-to-nasas-deep-space-network/",
+      "publishedAt": "2026-08-25T22:28:34Z",
+      "titleOriginal": "New Next-Gen Dish Adds Muscle to NASA’s Deep Space Network",
+      "titleKo": "새 차세대 안테나로 NASA 심우주 통신망 역량 강화",
+      "summaryKo": [
+        "NASA가 캘리포니아 골드스톤 심우주통신단지에 지름 34m 안테나 DSS-23을 추가했습니다.",
+        "이번 증설은 태양계 안팎을 탐사하는 우주선들의 통신과 항법을 지원하는 심우주통신망 확장 사업의 일부입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "8b30a6e4ebb9eeae",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-onboards-zeno-power-on-blue-ghost-mission-to-demonstrate-radioisotope-technologies-to-survive-the-lunar-night/",
+      "publishedAt": "2026-08-19T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Onboards Zeno Power on Blue Ghost Mission to Demonstrate Radioisotope Technologies to Survive the Lunar Night",
+      "titleKo": "파이어플라이, 달의 밤 생존 기술 실증에 제노파워 참여",
+      "summaryKo": [
+        "Firefly가 Blue Ghost 달 착륙선에 Zeno Power의 방사성동위원소 가열 장치를 싣는 계약을 발표했습니다.",
+        "빨라도 2028년 발사를 목표로 하며, 약 14일간 이어지는 차가운 달의 밤을 견디는 기술을 실증하려 합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "cd965c2c5979943e",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-onboarded-to-nasa-spacecraft-processing-operations-contract/",
+      "publishedAt": "2026-08-17T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Onboarded to NASA Spacecraft Processing Operations Contract",
+      "titleKo": "파이어플라이, NASA 우주선 처리 운영 계약 참여",
+      "summaryKo": [
+        "Firefly가 NASA의 우주선 처리 운영 계약 참여 업체로 선정됐습니다.",
+        "이를 통해 반덴버그에서 발사되는 NASA 임무의 탑재체 처리 시설과 서비스에 관한 개별 과업 수주 경쟁에 참여할 수 있습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "7f2673ce3f65bde3",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-awarded-contract-to-design-elytra-deorbit-system-for-defense-innovation-unit/",
+      "publishedAt": "2026-08-13T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Awarded Contract to Design Elytra Deorbit System for Defense Innovation Unit",
+      "titleKo": "파이어플라이, 미 국방혁신단의 엘리트라 궤도 이탈 시스템 설계 계약 수주",
+      "summaryKo": [
+        "Firefly가 Elytra 우주선으로 궤도 이탈 서비스를 제공하는 임무의 예비설계검토 계약을 체결했습니다.",
+        "설계검토를 마치면 발사와 우주선 운용을 포함한 다음 단계 사업의 수주 경쟁에 참여할 수 있습니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "50141f7fb1c495d5",
+      "source": "firefly",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-announces-extension-of-multi-launch-agreement-with-lockheed-martin-through-2031/",
+      "publishedAt": "2026-08-11T00:00:00Z",
+      "titleOriginal": "Firefly Aerospace Announces Extension of Multi-Launch Agreement with Lockheed Martin Through 2031",
+      "titleKo": "파이어플라이, 록히드마틴과 다회 발사 계약 2031년까지 연장",
+      "summaryKo": [
+        "Firefly와 Lockheed Martin이 Alpha 로켓 다회 발사 계약을 2031년까지 연장했습니다.",
+        "개량형 Alpha Block II를 활용해 최대 25회의 전용 발사를 지원하는 내용입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "e3f8f543a27fc9bb",
+      "source": "ast",
+      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=6958873302542032&symbol=ASTS",
+      "publishedAt": "2026-08-10T20:30:00Z",
+      "titleOriginal": "AST SpaceMobile Provides Business Update and Second Quarter 2026 Results",
+      "titleKo": "AST 스페이스모바일, 2026년 2분기 실적과 사업 진행 상황 발표",
+      "summaryKo": [
+        "AST SpaceMobile은 2분기 사업 발표에서 궤도상 위성이 13기로 늘었으며 블루버드 17~46호를 생산·조립 중이라고 밝혔습니다.",
+        "회사는 일부 통신사 파트너와 2026년 베타 서비스를 준비하고 있다고 설명했으며, 이는 서비스 개시를 완료했다는 발표는 아닙니다."
+      ],
+      "checkedAt": "2026-09-14",
+      "method": "source-checked"
+    },
+    {
+      "id": "56aa5799997983bf",
+      "source": "ast",
+      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=8860215372754512&symbol=ASTS",
+      "publishedAt": "2026-08-06T12:50:00Z",
+      "titleOriginal": "AST SpaceMobile Accelerates Presence Across Europe with Leading Mobile Network Operators",
+      "titleKo": "AST 스페이스모바일, 유럽 주요 통신사와 위성통신 연동 시험 확대",
+      "summaryKo": [
+        "AST SpaceMobile은 보다폰·오렌지·텔레포니카 등과 유럽 여러 국가에서 위성통신과 지상 이동통신망의 연동 시험을 진행한다고 발표했습니다.",
+        "별도 개조 없이 일반 스마트폰을 연결하는 서비스를 목표로 하며, 시험과 향후 서비스 전개에는 각국의 규제 승인이 필요합니다."
+      ],
+      "checkedAt": "2026-09-14",
+      "method": "source-checked"
+    },
+    {
+      "id": "e6c998265f6c7ce4",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#terafab",
+      "publishedAt": "2026-08-06T00:00:00Z",
+      "titleOriginal": "Breaking Ground on Terafab in Texas",
+      "titleKo": "텍사스에서 테라팹 건설 시작",
+      "summaryKo": [
+        "SpaceX와 Tesla가 텍사스에 반도체 공장 테라팹을 건설한다고 발표했습니다.",
+        "초기 투자 약 168억 달러와 최소 3,000명 고용을 계획했습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "347fc4155258efc1",
+      "source": "ast",
+      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=7160159586249128&symbol=ASTS",
+      "publishedAt": "2026-08-05T12:00:00Z",
+      "titleOriginal": "AST SpaceMobile Announces Successful Orbital Launch of BlueBirds 11, 12, and 13",
+      "titleKo": "AST 스페이스모바일, 블루버드 11·12·13호 궤도 발사 성공",
+      "summaryKo": [
+        "AST SpaceMobile은 2026년 8월 5일 팰컨 9으로 블루버드 11·12·13호를 궤도에 발사했다고 발표했습니다.",
+        "일반 스마트폰에 직접 연결하는 위성통신망을 확대하는 임무로, 회사는 차세대 위성의 최고 전송속도가 약 200Mbps에 이를 것으로 기대한다고 설명했습니다."
+      ],
+      "checkedAt": "2026-09-14",
+      "method": "source-checked"
+    },
+    {
+      "id": "322e33d604bb9b7a",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32417",
+      "publishedAt": "2026-07-29T00:00:00Z",
+      "titleOriginal": "“우주+AI 기술로 지구 도달 태양풍의 속도를 예측하라!”",
+      "titleKo": "“우주+AI 기술로 지구 도달 태양풍의 속도를 예측하라!”",
+      "summaryKo": [
+        "한국천문연구원과 KAIST가 대학생·대학원생을 대상으로 제3회 천문우주 AI 경진대회 개최를 안내했습니다.",
+        "태양 관측 영상으로 지구에 도달하는 태양풍 속도를 예측하는 주제로, 2026년 8월 예선과 본선을 진행하는 일정입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "49c7835168fa5bcf",
+      "source": "ast",
+      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=5582238976711971&symbol=ASTS",
+      "publishedAt": "2026-07-28T11:05:00Z",
+      "titleOriginal": "AST SpaceMobile Announces Launch Date for BlueBird Satellites 11, 12, and 13",
+      "titleKo": "AST 스페이스모바일, 블루버드 11·12·13호 발사 일정 발표",
+      "summaryKo": [
+        "AST SpaceMobile이 7월 28일 공개한 발사 예고로, 당시 블루버드 11·12·13호의 발사 목표일은 2026년 8월 5일이었습니다.",
+        "팰컨 9을 이용해 위성통신망을 확대한다는 계획을 담았으며, 이 기사는 발사 성공을 보고한 후속 발표와 구분됩니다."
+      ],
+      "checkedAt": "2026-09-14",
+      "method": "source-checked"
+    },
+    {
+      "id": "aec0a47720977d60",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#first-starship-interplanetary-mission",
+      "publishedAt": "2026-05-21T00:00:00Z",
+      "titleOriginal": "FIRST STARSHIP INTERPLANETARY HUMAN SPACEFLIGHT MISSION",
+      "titleKo": "스타십의 첫 유인 행성 간 우주비행 임무 발표",
+      "summaryKo": [
+        "SpaceX가 춘 왕의 스타십 유인 화성 근접 비행 계획을 소개했습니다.",
+        "약 2년간 비행한 뒤 지구로 돌아오는 구상이며, 앞서 달 근접 비행에도 참여할 예정입니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "7f1eb04ef1cbf17d",
+      "source": "starlink",
+      "url": "https://starlink.com/kr/updates/space-safety-web-interface",
+      "publishedAt": "2026-05-21T00:00:00Z",
+      "titleOriginal": "우주 안전 웹 도구",
+      "titleKo": "우주 안전 웹 도구",
+      "summaryKo": [
+        "Starlink가 참여 위성 운용사에 무료로 제공하는 우주 안전 웹 도구를 소개했습니다.",
+        "궤적을 주고받고 위성 간 근접 위험을 살펴보며, 정기적으로 궤도 정보를 제출하면 예측 정확도에 대한 피드백도 받을 수 있습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "a28764a16b78c2ac",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#starship-v3",
+      "publishedAt": "2026-05-12T00:00:00Z",
+      "titleOriginal": "Introducing Starship V3",
+      "titleKo": "스타십 V3 소개",
+      "summaryKo": [
+        "SpaceX가 랩터 3 엔진을 사용하는 스타십·슈퍼헤비 V3의 설계 변경을 공개했습니다.",
+        "추진계와 도킹 장치를 개선해 재사용과 우주에서의 추진제 이송을 지원하도록 설계했습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "d937fb9b8f2dfd16",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#xai-joins-spacex",
+      "publishedAt": "2026-02-02T00:00:00Z",
+      "titleOriginal": "xAI joins SpaceX to Accelerate Humanity’s Future",
+      "titleKo": "xAI, SpaceX에 합류",
+      "summaryKo": [
+        "SpaceX가 인공지능 기업 xAI를 인수했다고 발표했습니다.",
+        "스타십을 활용한 궤도 데이터센터 구상을 제시했으며, 비용 절감 전망은 회사 측 추정입니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "7fc56caf5a65604d",
+      "source": "starlink",
+      "url": "https://starlink.com/kr/updates/stargaze",
+      "publishedAt": "2026-01-29T00:00:00Z",
+      "titleOriginal": "Stargaze: SpaceX의 우주 상황 인식 시스템",
+      "titleKo": "Stargaze: SpaceX의 우주 상황 인식 시스템",
+      "summaryKo": [
+        "SpaceX가 위성에 탑재한 별 추적기의 관측을 이용해 주변 물체의 궤도를 추정하는 Stargaze를 소개했습니다.",
+        "2026년 1월 발표 당시, 궤도 정보를 공유하는 운용사에 충돌 위험 분석 자료를 그해 봄부터 무료로 제공할 계획이라고 밝혔습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "522111233c7d9298",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#moon-and-beyond",
+      "publishedAt": "2025-10-30T00:00:00Z",
+      "titleOriginal": "To the Moon and Beyond",
+      "titleKo": "달을 넘어 더 먼 우주로",
+      "summaryKo": [
+        "SpaceX가 아르테미스용 스타십 달 착륙선 개발 진척과 남은 시험을 설명했습니다.",
+        "2025년 발표 당시 장기 비행과 기체 간 추진제 이송 시험을 2026년 목표로 제시했습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "28b871d66d4c0ff5",
+      "source": "spacex",
+      "url": "https://www.spacex.com/updates#multiuser-spaceport",
+      "publishedAt": "2025-09-18T00:00:00Z",
+      "titleOriginal": "Evolving the Multi-User Spaceport",
+      "titleKo": "여러 사용자가 함께 쓰는 우주항의 발전",
+      "summaryKo": [
+        "SpaceX가 여러 발사업체의 잦은 발사를 지원할 우주항 운영 방안을 제안했습니다.",
+        "추진제 공급시설 투자와 시험자료에 기반한 위험구역 조정, 관계기관 협력을 강조했습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "cfb5f58ca87d63c4",
+      "source": "starlink",
+      "url": "https://starlink.com/kr/updates/starlink-beam-switching",
+      "publishedAt": "2025-07-30T00:00:00Z",
+      "titleOriginal": "Starlink 빔 전환",
+      "titleKo": "Starlink 빔 전환",
+      "summaryKo": [
+        "Starlink는 나무나 건물에 신호가 가려질 때 연결할 위성을 바꾸는 빔 전환 방식을 설명했습니다.",
+        "고정 단말기는 장애물 지도로 미리 연결을 고르고, 이동 중 갑작스러운 가림에는 0.1초 미만으로 전환한다고 밝혔습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "008c9ea74800563b",
+      "source": "starlink",
+      "url": "https://starlink.com/kr/updates/network-update",
+      "publishedAt": "2025-07-14T00:00:00Z",
+      "titleOriginal": "Starlink 네트워크 업데이트",
+      "titleKo": "Starlink 네트워크 업데이트",
+      "summaryKo": [
+        "Starlink는 미국 피크 시간대 다운로드 속도 중앙값이 2025년 7월 약 200Mbps, 왕복 지연시간 중앙값이 같은 해 6월 25.7ms였다고 발표했습니다.",
+        "위성 추가와 지상망 확충을 개선 요인으로 들었으며, 이 수치는 당시 미국 측정값으로 모든 지역의 속도를 뜻하지 않습니다."
+      ],
+      "checkedAt": "2026-09-13",
+      "method": "source-checked"
+    },
+    {
+      "id": "1c8694a860773db4",
+      "source": "starlink",
+      "url": "https://starlink.com/public-files/Starlink_Approach_to_Satellite_Demisability.pdf",
+      "publishedAt": "2025-02-27T00:00:00Z",
+      "titleOriginal": "Starlink 위성 소멸성",
+      "titleKo": "Starlink 위성 소멸성",
+      "summaryKo": [
+        "SpaceX가 Starlink 위성의 궤도 이탈과 재진입 시 소멸을 고려한 설계·운용 방식을 설명한 자료입니다.",
+        "고장 위험이 높아진 초기 위성을 선제적으로 하강시키고, 그 과정에서도 충돌 회피와 궤도 정보 공유를 유지한다고 설명합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "eb61e6a3d6f3d33b",
+      "source": "starlink",
+      "url": "https://starlink.com/public-files/Telescope_Boresight_Avoidance.pdf",
+      "publishedAt": "2024-08-09T00:00:00Z",
+      "titleOriginal": "실시간 협력을 통한 전파천문학 보호",
+      "titleKo": "실시간 협력을 통한 전파천문학 보호",
+      "summaryKo": [
+        "SpaceX와 미국 국립전파천문대가 Starlink 통신이 전파망원경 관측에 미치는 간섭을 줄이는 기술을 소개했습니다.",
+        "망원경의 관측 방향과 주파수 정보를 실시간 공유하고, 위성의 전파 빔이 그 방향을 피하도록 조정하는 방식입니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "b85c75592b89889b",
+      "source": "starlink",
+      "url": "https://starlink.com/public-files/StarlinkLatency.pdf",
+      "publishedAt": "2024-03-07T00:00:00Z",
+      "titleOriginal": "Starlink 지연 시간 개선",
+      "titleKo": "Starlink 지연 시간 개선",
+      "summaryKo": [
+        "Starlink가 통신 지연 시간을 줄이기 위해 진행한 네트워크 개선 결과를 설명했습니다.",
+        "발표 당시 미국의 혼잡 시간대 지연 중앙값을 48.5ms에서 33ms로 낮췄다고 보고했으며, 지연 시간의 측정 방식도 소개합니다."
+      ],
+      "checkedAt": "2026-09-12",
+      "method": "source-checked"
+    },
+    {
+      "id": "c90de238e618819e",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo/Win_a_trip_to_ESA_to_witness_BepiColombo_arrive_at_Mercury",
+      "publishedAt": "2026-09-24T13:00:00Z",
+      "titleOriginal": "Win a trip to ESA to witness BepiColombo arrive at Mercury",
+      "titleKo": "ESA, 베피콜롬보 수성 도착 기념 공모전 개최",
+      "summaryKo": [
+        "ESA는 베피콜롬보의 수성 도착을 기념해 그림·노래·시 등 환영 메시지를 사진 또는 영상으로 제출하는 공모전을 열고, ESA 회원·협력·준회원국 거주자 가운데 18세 이상에게 2026년 10월 25일 자정(CET)까지 참가 기회를 제공합니다.",
+        "대상 1명은 12월 9일 독일 다름슈타트의 ESA 우주운영센터 행사에 초대되지만 여행·숙박은 먼저 직접 예약한 뒤 영수증 기준 최대 1,000유로를 환급받으며, ESA는 우주활동 일정이 마지막 순간에도 바뀔 수 있어 유연한 예약을 권고했습니다.",
+        "두 탐사선의 12월 9~10일 분리가 공식 수성 도착을 알리며, Mio는 이때 과학 궤도에 들어가고 MPO의 최종 과학 궤도 진입은 2027년 3월 19일로 예정돼 있습니다."
+      ],
+      "checkedAt": "2026-09-25",
+      "method": "source-checked"
+    },
+    {
+      "id": "89cffd08a80b28f1",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Juice_to_fly_past_Earth_for_third_gravity_assist",
+      "publishedAt": "2026-09-21T14:00:00Z",
+      "titleOriginal": "Juice to fly past Earth for third gravity assist",
+      "titleKo": "주스 탐사선, 세 번째 중력도움 위해 지구 근접비행 예정",
+      "summaryKo": [
+        "ESA의 목성 얼음위성 탐사선 주스가 2026년 9월 28일 지구에서 8,640km까지 접근해 세 번째 중력도움을 받을 예정입니다.",
+        "이번 근접비행은 궤적을 약 20도 꺾고 속도를 초속 약 3.5km 높여, 2029년 1월 마지막 지구 근접비행과 2031년 7월 목성 도착 경로로 이어지게 합니다.",
+        "최접근은 인도양 상공에서 11:45 UTC로 계획됐으며, ESA는 9월 23일부터 10월 3일까지 지구와 달을 관측해 과학장비를 교정할 예정이라고 밝혔습니다."
+      ],
+      "checkedAt": "2026-09-22",
+      "method": "source-checked"
+    },
+    {
+      "id": "58b1e077a564609b",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Purple_swirls_on_the_Red_Planet",
+      "publishedAt": "2026-09-16T09:00:00Z",
+      "titleOriginal": "Purple swirls on the Red Planet",
+      "titleKo": "붉은 행성에 나타난 보랏빛 소용돌이",
+      "summaryKo": [
+        "ESA 마스 익스프레스가 화성 남극 부근의 얼음 절벽 틸레스 루페스를 촬영했으며, 장밋빛 아침 햇빛과 공중의 먼지·서리·얼음이 섞여 보랏빛으로 나타났습니다.",
+        "짙은 부분은 감람석과 휘석이 풍부한 화산 물질, 옅고 푸른 부분은 이산화탄소 서리이며, 일부 절벽은 높이 1km를 넘어 화성 내부가 식고 수축하던 고대 지각 변형의 흔적으로 해석됩니다."
+      ],
+      "checkedAt": "2026-09-19",
+      "method": "source-checked"
+    },
+    {
+      "id": "3df2eabd436d73bc",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Webb/Webb_reveals_stunning_panorama_of_star_formation",
+      "publishedAt": "2026-09-15T14:00:00Z",
+      "titleOriginal": "Webb reveals stunning panorama of star formation",
+      "titleKo": "웹, 별 탄생 지역 IC 348의 거대한 파노라마 공개",
+      "summaryKo": [
+        "제임스 웹 우주망원경이 약 1,000광년 떨어진 페르세우스자리의 별 탄생 지역 IC 348을 관측해 목성 질량의 두 배에 불과한 갈색왜성을 발견했습니다.",
+        "이는 알려진 갈색왜성 가운데 가장 가벼운 수준으로 별 형성 모형에 도전하며, 그중 하나에서는 원반 징후도 보여 행성이 만들어질 가능성을 시사합니다."
+      ],
+      "checkedAt": "2026-09-19",
+      "method": "source-checked"
+    },
+    {
       "id": "be0297cb0c112b00",
       "source": "esa",
       "url": "https://www.esa.int/Enabling_Support/Operations/BepiColombo_begins_Mercury_arrival_with_MTM_separation_success",
@@ -649,20 +1029,6 @@
       "method": "source-checked"
     },
     {
-      "id": "be1799cedcc10449",
-      "source": "nasa",
-      "url": "https://www.nasa.gov/news-release/nasas-dark-universe-seeking-nancy-grace-roman-space-telescope-launches/",
-      "publishedAt": "2026-08-30T13:18:06Z",
-      "titleOriginal": "NASA’s Dark Universe-Seeking Nancy Grace Roman Space Telescope Launches",
-      "titleKo": "어두운 우주를 탐사할 NASA 낸시 그레이스 로먼 우주망원경 발사",
-      "summaryKo": [
-        "NASA의 낸시 그레이스 로먼 우주망원경이 2026년 8월 30일 Falcon Heavy 로켓으로 발사됐습니다.",
-        "넓은 시야의 적외선 관측으로 암흑에너지·암흑물질과 외계행성을 연구하며, 최종 관측 궤도까지 이동한 뒤 임무를 수행합니다."
-      ],
-      "checkedAt": "2026-09-12",
-      "method": "source-checked"
-    },
-    {
       "id": "ef24cd7d701cef7b",
       "source": "esa",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Expedition_Sound_podcast_series",
@@ -686,34 +1052,6 @@
       "summaryKo": [
         "베피콜롬보의 수성 전이 모듈 분리를 앞두고 ESA가 공개한 2026년 9월 3일 생중계 안내입니다.",
         "약 8년의 항해 뒤 시작되는 수성 도착 단계와 임무 관제팀의 작업을 소개합니다."
-      ],
-      "checkedAt": "2026-09-12",
-      "method": "source-checked"
-    },
-    {
-      "id": "32ed9e7d11d21de1",
-      "source": "kasi",
-      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32438",
-      "publishedAt": "2026-08-27T00:00:00Z",
-      "titleOriginal": "천문연 박종욱 책임연구원, COSPAR 집행위원 선출",
-      "titleKo": "천문연 박종욱 책임연구원, COSPAR 집행위원 선출",
-      "summaryKo": [
-        "한국천문연구원 박종욱 책임연구원이 국제우주연구위원회 COSPAR 집행위원으로 선출됐습니다.",
-        "한국인으로서는 첫 선출이며, 2026년 8월부터 4년간 정책 논의와 국제협력·학술 교류에 참여할 예정입니다."
-      ],
-      "checkedAt": "2026-09-12",
-      "method": "source-checked"
-    },
-    {
-      "id": "f3ac3655bf675d20",
-      "source": "nasa",
-      "url": "https://www.nasa.gov/technology/space-comms/deep-space-network/new-next-gen-dish-adds-muscle-to-nasas-deep-space-network/",
-      "publishedAt": "2026-08-25T22:28:34Z",
-      "titleOriginal": "New Next-Gen Dish Adds Muscle to NASA’s Deep Space Network",
-      "titleKo": "새 차세대 안테나로 NASA 심우주 통신망 역량 강화",
-      "summaryKo": [
-        "NASA가 캘리포니아 골드스톤 심우주통신단지에 지름 34m 안테나 DSS-23을 추가했습니다.",
-        "이번 증설은 태양계 안팎을 탐사하는 우주선들의 통신과 항법을 지원하는 심우주통신망 확장 사업의 일부입니다."
       ],
       "checkedAt": "2026-09-12",
       "method": "source-checked"
@@ -761,20 +1099,6 @@
       "method": "source-checked"
     },
     {
-      "id": "8b30a6e4ebb9eeae",
-      "source": "firefly",
-      "url": "https://fireflyspace.com/news/firefly-aerospace-onboards-zeno-power-on-blue-ghost-mission-to-demonstrate-radioisotope-technologies-to-survive-the-lunar-night/",
-      "publishedAt": "2026-08-19T00:00:00Z",
-      "titleOriginal": "Firefly Aerospace Onboards Zeno Power on Blue Ghost Mission to Demonstrate Radioisotope Technologies to Survive the Lunar Night",
-      "titleKo": "파이어플라이, 달의 밤 생존 기술 실증에 제노파워 참여",
-      "summaryKo": [
-        "Firefly가 Blue Ghost 달 착륙선에 Zeno Power의 방사성동위원소 가열 장치를 싣는 계약을 발표했습니다.",
-        "빨라도 2028년 발사를 목표로 하며, 약 14일간 이어지는 차가운 달의 밤을 견디는 기술을 실증하려 합니다."
-      ],
-      "checkedAt": "2026-09-12",
-      "method": "source-checked"
-    },
-    {
       "id": "5c1f5820a61819bf",
       "source": "rocketlab",
       "url": "https://rocketlabcorp.com/updates/new-blog-posrocket-lab-onboarded-to-u-s-space-forces-981m-nite-star-program-to-advance-space-test-and-training-infrastructure-program/",
@@ -817,20 +1141,6 @@
       "method": "source-checked"
     },
     {
-      "id": "cd965c2c5979943e",
-      "source": "firefly",
-      "url": "https://fireflyspace.com/news/firefly-aerospace-onboarded-to-nasa-spacecraft-processing-operations-contract/",
-      "publishedAt": "2026-08-17T00:00:00Z",
-      "titleOriginal": "Firefly Aerospace Onboarded to NASA Spacecraft Processing Operations Contract",
-      "titleKo": "파이어플라이, NASA 우주선 처리 운영 계약 참여",
-      "summaryKo": [
-        "Firefly가 NASA의 우주선 처리 운영 계약 참여 업체로 선정됐습니다.",
-        "이를 통해 반덴버그에서 발사되는 NASA 임무의 탑재체 처리 시설과 서비스에 관한 개별 과업 수주 경쟁에 참여할 수 있습니다."
-      ],
-      "checkedAt": "2026-09-12",
-      "method": "source-checked"
-    },
-    {
       "id": "4a143897cbe1f8cc",
       "source": "rocketlab",
       "url": "https://rocketlabcorp.com/updates/rocket-lab-satellite-platforms-built-for-mda-space-successfully-reach-orbit-supporting-globalstar-direct-to-device-communications-services/",
@@ -859,20 +1169,6 @@
       "method": "source-checked"
     },
     {
-      "id": "7f2673ce3f65bde3",
-      "source": "firefly",
-      "url": "https://fireflyspace.com/news/firefly-aerospace-awarded-contract-to-design-elytra-deorbit-system-for-defense-innovation-unit/",
-      "publishedAt": "2026-08-13T00:00:00Z",
-      "titleOriginal": "Firefly Aerospace Awarded Contract to Design Elytra Deorbit System for Defense Innovation Unit",
-      "titleKo": "파이어플라이, 미 국방혁신단의 엘리트라 궤도 이탈 시스템 설계 계약 수주",
-      "summaryKo": [
-        "Firefly가 Elytra 우주선으로 궤도 이탈 서비스를 제공하는 임무의 예비설계검토 계약을 체결했습니다.",
-        "설계검토를 마치면 발사와 우주선 운용을 포함한 다음 단계 사업의 수주 경쟁에 참여할 수 있습니다."
-      ],
-      "checkedAt": "2026-09-12",
-      "method": "source-checked"
-    },
-    {
       "id": "8d1ebe0560ebacc3",
       "source": "blueorigin",
       "url": "https://www.blueorigin.com/news/returning-launch-complex-36-to-two-pads",
@@ -882,20 +1178,6 @@
       "summaryKo": [
         "Blue Origin이 New Glenn 9x4 기체를 위한 케이프커내버럴 LC-36B 발사대 건설에 착수했습니다.",
         "기존 LC-36A는 7x2 기체용으로 유지하고, 추가 조립·탑재체 처리 시설과 함께 발사 역량을 확대할 계획입니다."
-      ],
-      "checkedAt": "2026-09-12",
-      "method": "source-checked"
-    },
-    {
-      "id": "50141f7fb1c495d5",
-      "source": "firefly",
-      "url": "https://fireflyspace.com/news/firefly-aerospace-announces-extension-of-multi-launch-agreement-with-lockheed-martin-through-2031/",
-      "publishedAt": "2026-08-11T00:00:00Z",
-      "titleOriginal": "Firefly Aerospace Announces Extension of Multi-Launch Agreement with Lockheed Martin Through 2031",
-      "titleKo": "파이어플라이, 록히드마틴과 다회 발사 계약 2031년까지 연장",
-      "summaryKo": [
-        "Firefly와 Lockheed Martin이 Alpha 로켓 다회 발사 계약을 2031년까지 연장했습니다.",
-        "개량형 Alpha Block II를 활용해 최대 25회의 전용 발사를 지원하는 내용입니다."
       ],
       "checkedAt": "2026-09-12",
       "method": "source-checked"
@@ -966,20 +1248,6 @@
       "summaryKo": [
         "NASA가 로먼 우주망원경에 세계 각지에서 제출된 135만 144명의 이름을 담은 메모리카드를 설치했습니다.",
         "카드는 기념 명판의 일부로 실리며, 망원경과 함께 태양·지구 라그랑주점 L2 부근으로 향하도록 준비됐습니다."
-      ],
-      "checkedAt": "2026-09-12",
-      "method": "source-checked"
-    },
-    {
-      "id": "322e33d604bb9b7a",
-      "source": "kasi",
-      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32417",
-      "publishedAt": "2026-07-29T00:00:00Z",
-      "titleOriginal": "“우주+AI 기술로 지구 도달 태양풍의 속도를 예측하라!”",
-      "titleKo": "“우주+AI 기술로 지구 도달 태양풍의 속도를 예측하라!”",
-      "summaryKo": [
-        "한국천문연구원과 KAIST가 대학생·대학원생을 대상으로 제3회 천문우주 AI 경진대회 개최를 안내했습니다.",
-        "태양 관측 영상으로 지구에 도달하는 태양풍 속도를 예측하는 주제로, 2026년 8월 예선과 본선을 진행하는 일정입니다."
       ],
       "checkedAt": "2026-09-12",
       "method": "source-checked"
@@ -1111,48 +1379,6 @@
       "method": "source-checked"
     },
     {
-      "id": "1c8694a860773db4",
-      "source": "starlink",
-      "url": "https://starlink.com/public-files/Starlink_Approach_to_Satellite_Demisability.pdf",
-      "publishedAt": "2025-02-27T00:00:00Z",
-      "titleOriginal": "Starlink 위성 소멸성",
-      "titleKo": "Starlink 위성 소멸성",
-      "summaryKo": [
-        "SpaceX가 Starlink 위성의 궤도 이탈과 재진입 시 소멸을 고려한 설계·운용 방식을 설명한 자료입니다.",
-        "고장 위험이 높아진 초기 위성을 선제적으로 하강시키고, 그 과정에서도 충돌 회피와 궤도 정보 공유를 유지한다고 설명합니다."
-      ],
-      "checkedAt": "2026-09-12",
-      "method": "source-checked"
-    },
-    {
-      "id": "eb61e6a3d6f3d33b",
-      "source": "starlink",
-      "url": "https://starlink.com/public-files/Telescope_Boresight_Avoidance.pdf",
-      "publishedAt": "2024-08-09T00:00:00Z",
-      "titleOriginal": "실시간 협력을 통한 전파천문학 보호",
-      "titleKo": "실시간 협력을 통한 전파천문학 보호",
-      "summaryKo": [
-        "SpaceX와 미국 국립전파천문대가 Starlink 통신이 전파망원경 관측에 미치는 간섭을 줄이는 기술을 소개했습니다.",
-        "망원경의 관측 방향과 주파수 정보를 실시간 공유하고, 위성의 전파 빔이 그 방향을 피하도록 조정하는 방식입니다."
-      ],
-      "checkedAt": "2026-09-12",
-      "method": "source-checked"
-    },
-    {
-      "id": "b85c75592b89889b",
-      "source": "starlink",
-      "url": "https://starlink.com/public-files/StarlinkLatency.pdf",
-      "publishedAt": "2024-03-07T00:00:00Z",
-      "titleOriginal": "Starlink 지연 시간 개선",
-      "titleKo": "Starlink 지연 시간 개선",
-      "summaryKo": [
-        "Starlink가 통신 지연 시간을 줄이기 위해 진행한 네트워크 개선 결과를 설명했습니다.",
-        "발표 당시 미국의 혼잡 시간대 지연 중앙값을 48.5ms에서 33ms로 낮췄다고 보고했으며, 지연 시간의 측정 방식도 소개합니다."
-      ],
-      "checkedAt": "2026-09-12",
-      "method": "source-checked"
-    },
-    {
       "id": "690524d650b70063",
       "source": "starlink",
       "url": "https://starlink.com/public-files/Commitment%20to%20Space%20Sustainability.pdf",
@@ -1164,118 +1390,6 @@
         "이 자료에서는 일부 초기 Starlink 위성을 선제적으로 궤도에서 이탈시키면서 하강 중에도 충돌 회피 기능을 유지하는 계획을 소개합니다."
       ],
       "checkedAt": "2026-09-12",
-      "method": "source-checked"
-    },
-    {
-      "id": "e6c998265f6c7ce4",
-      "source": "spacex",
-      "url": "https://www.spacex.com/updates#terafab",
-      "publishedAt": "2026-08-06T00:00:00Z",
-      "titleOriginal": "Breaking Ground on Terafab in Texas",
-      "titleKo": "텍사스에서 테라팹 건설 시작",
-      "summaryKo": [
-        "SpaceX와 Tesla가 텍사스에 반도체 공장 테라팹을 건설한다고 발표했습니다.",
-        "초기 투자 약 168억 달러와 최소 3,000명 고용을 계획했습니다."
-      ],
-      "checkedAt": "2026-09-13",
-      "method": "source-checked"
-    },
-    {
-      "id": "aec0a47720977d60",
-      "source": "spacex",
-      "url": "https://www.spacex.com/updates#first-starship-interplanetary-mission",
-      "publishedAt": "2026-05-21T00:00:00Z",
-      "titleOriginal": "FIRST STARSHIP INTERPLANETARY HUMAN SPACEFLIGHT MISSION",
-      "titleKo": "스타십의 첫 유인 행성 간 우주비행 임무 발표",
-      "summaryKo": [
-        "SpaceX가 춘 왕의 스타십 유인 화성 근접 비행 계획을 소개했습니다.",
-        "약 2년간 비행한 뒤 지구로 돌아오는 구상이며, 앞서 달 근접 비행에도 참여할 예정입니다."
-      ],
-      "checkedAt": "2026-09-13",
-      "method": "source-checked"
-    },
-    {
-      "id": "7f1eb04ef1cbf17d",
-      "source": "starlink",
-      "url": "https://starlink.com/kr/updates/space-safety-web-interface",
-      "publishedAt": "2026-05-21T00:00:00Z",
-      "titleOriginal": "우주 안전 웹 도구",
-      "titleKo": "우주 안전 웹 도구",
-      "summaryKo": [
-        "Starlink가 참여 위성 운용사에 무료로 제공하는 우주 안전 웹 도구를 소개했습니다.",
-        "궤적을 주고받고 위성 간 근접 위험을 살펴보며, 정기적으로 궤도 정보를 제출하면 예측 정확도에 대한 피드백도 받을 수 있습니다."
-      ],
-      "checkedAt": "2026-09-13",
-      "method": "source-checked"
-    },
-    {
-      "id": "a28764a16b78c2ac",
-      "source": "spacex",
-      "url": "https://www.spacex.com/updates#starship-v3",
-      "publishedAt": "2026-05-12T00:00:00Z",
-      "titleOriginal": "Introducing Starship V3",
-      "titleKo": "스타십 V3 소개",
-      "summaryKo": [
-        "SpaceX가 랩터 3 엔진을 사용하는 스타십·슈퍼헤비 V3의 설계 변경을 공개했습니다.",
-        "추진계와 도킹 장치를 개선해 재사용과 우주에서의 추진제 이송을 지원하도록 설계했습니다."
-      ],
-      "checkedAt": "2026-09-13",
-      "method": "source-checked"
-    },
-    {
-      "id": "d937fb9b8f2dfd16",
-      "source": "spacex",
-      "url": "https://www.spacex.com/updates#xai-joins-spacex",
-      "publishedAt": "2026-02-02T00:00:00Z",
-      "titleOriginal": "xAI joins SpaceX to Accelerate Humanity’s Future",
-      "titleKo": "xAI, SpaceX에 합류",
-      "summaryKo": [
-        "SpaceX가 인공지능 기업 xAI를 인수했다고 발표했습니다.",
-        "스타십을 활용한 궤도 데이터센터 구상을 제시했으며, 비용 절감 전망은 회사 측 추정입니다."
-      ],
-      "checkedAt": "2026-09-13",
-      "method": "source-checked"
-    },
-    {
-      "id": "7fc56caf5a65604d",
-      "source": "starlink",
-      "url": "https://starlink.com/kr/updates/stargaze",
-      "publishedAt": "2026-01-29T00:00:00Z",
-      "titleOriginal": "Stargaze: SpaceX의 우주 상황 인식 시스템",
-      "titleKo": "Stargaze: SpaceX의 우주 상황 인식 시스템",
-      "summaryKo": [
-        "SpaceX가 위성에 탑재한 별 추적기의 관측을 이용해 주변 물체의 궤도를 추정하는 Stargaze를 소개했습니다.",
-        "2026년 1월 발표 당시, 궤도 정보를 공유하는 운용사에 충돌 위험 분석 자료를 그해 봄부터 무료로 제공할 계획이라고 밝혔습니다."
-      ],
-      "checkedAt": "2026-09-13",
-      "method": "source-checked"
-    },
-    {
-      "id": "522111233c7d9298",
-      "source": "spacex",
-      "url": "https://www.spacex.com/updates#moon-and-beyond",
-      "publishedAt": "2025-10-30T00:00:00Z",
-      "titleOriginal": "To the Moon and Beyond",
-      "titleKo": "달을 넘어 더 먼 우주로",
-      "summaryKo": [
-        "SpaceX가 아르테미스용 스타십 달 착륙선 개발 진척과 남은 시험을 설명했습니다.",
-        "2025년 발표 당시 장기 비행과 기체 간 추진제 이송 시험을 2026년 목표로 제시했습니다."
-      ],
-      "checkedAt": "2026-09-13",
-      "method": "source-checked"
-    },
-    {
-      "id": "28b871d66d4c0ff5",
-      "source": "spacex",
-      "url": "https://www.spacex.com/updates#multiuser-spaceport",
-      "publishedAt": "2025-09-18T00:00:00Z",
-      "titleOriginal": "Evolving the Multi-User Spaceport",
-      "titleKo": "여러 사용자가 함께 쓰는 우주항의 발전",
-      "summaryKo": [
-        "SpaceX가 여러 발사업체의 잦은 발사를 지원할 우주항 운영 방안을 제안했습니다.",
-        "추진제 공급시설 투자와 시험자료에 기반한 위험구역 조정, 관계기관 협력을 강조했습니다."
-      ],
-      "checkedAt": "2026-09-13",
       "method": "source-checked"
     },
     {
@@ -1304,90 +1418,6 @@
         "연료 공급·가압 계통과 압력용기의 문제를 지목하고 설계 변경과 검사를 강화한다고 설명했습니다."
       ],
       "checkedAt": "2026-09-13",
-      "method": "source-checked"
-    },
-    {
-      "id": "cfb5f58ca87d63c4",
-      "source": "starlink",
-      "url": "https://starlink.com/kr/updates/starlink-beam-switching",
-      "publishedAt": "2025-07-30T00:00:00Z",
-      "titleOriginal": "Starlink 빔 전환",
-      "titleKo": "Starlink 빔 전환",
-      "summaryKo": [
-        "Starlink는 나무나 건물에 신호가 가려질 때 연결할 위성을 바꾸는 빔 전환 방식을 설명했습니다.",
-        "고정 단말기는 장애물 지도로 미리 연결을 고르고, 이동 중 갑작스러운 가림에는 0.1초 미만으로 전환한다고 밝혔습니다."
-      ],
-      "checkedAt": "2026-09-13",
-      "method": "source-checked"
-    },
-    {
-      "id": "008c9ea74800563b",
-      "source": "starlink",
-      "url": "https://starlink.com/kr/updates/network-update",
-      "publishedAt": "2025-07-14T00:00:00Z",
-      "titleOriginal": "Starlink 네트워크 업데이트",
-      "titleKo": "Starlink 네트워크 업데이트",
-      "summaryKo": [
-        "Starlink는 미국 피크 시간대 다운로드 속도 중앙값이 2025년 7월 약 200Mbps, 왕복 지연시간 중앙값이 같은 해 6월 25.7ms였다고 발표했습니다.",
-        "위성 추가와 지상망 확충을 개선 요인으로 들었으며, 이 수치는 당시 미국 측정값으로 모든 지역의 속도를 뜻하지 않습니다."
-      ],
-      "checkedAt": "2026-09-13",
-      "method": "source-checked"
-    },
-    {
-      "id": "e3f8f543a27fc9bb",
-      "source": "ast",
-      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=6958873302542032&symbol=ASTS",
-      "publishedAt": "2026-08-10T20:30:00Z",
-      "titleOriginal": "AST SpaceMobile Provides Business Update and Second Quarter 2026 Results",
-      "titleKo": "AST 스페이스모바일, 2026년 2분기 실적과 사업 진행 상황 발표",
-      "summaryKo": [
-        "AST SpaceMobile은 2분기 사업 발표에서 궤도상 위성이 13기로 늘었으며 블루버드 17~46호를 생산·조립 중이라고 밝혔습니다.",
-        "회사는 일부 통신사 파트너와 2026년 베타 서비스를 준비하고 있다고 설명했으며, 이는 서비스 개시를 완료했다는 발표는 아닙니다."
-      ],
-      "checkedAt": "2026-09-14",
-      "method": "source-checked"
-    },
-    {
-      "id": "56aa5799997983bf",
-      "source": "ast",
-      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=8860215372754512&symbol=ASTS",
-      "publishedAt": "2026-08-06T12:50:00Z",
-      "titleOriginal": "AST SpaceMobile Accelerates Presence Across Europe with Leading Mobile Network Operators",
-      "titleKo": "AST 스페이스모바일, 유럽 주요 통신사와 위성통신 연동 시험 확대",
-      "summaryKo": [
-        "AST SpaceMobile은 보다폰·오렌지·텔레포니카 등과 유럽 여러 국가에서 위성통신과 지상 이동통신망의 연동 시험을 진행한다고 발표했습니다.",
-        "별도 개조 없이 일반 스마트폰을 연결하는 서비스를 목표로 하며, 시험과 향후 서비스 전개에는 각국의 규제 승인이 필요합니다."
-      ],
-      "checkedAt": "2026-09-14",
-      "method": "source-checked"
-    },
-    {
-      "id": "347fc4155258efc1",
-      "source": "ast",
-      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=7160159586249128&symbol=ASTS",
-      "publishedAt": "2026-08-05T12:00:00Z",
-      "titleOriginal": "AST SpaceMobile Announces Successful Orbital Launch of BlueBirds 11, 12, and 13",
-      "titleKo": "AST 스페이스모바일, 블루버드 11·12·13호 궤도 발사 성공",
-      "summaryKo": [
-        "AST SpaceMobile은 2026년 8월 5일 팰컨 9으로 블루버드 11·12·13호를 궤도에 발사했다고 발표했습니다.",
-        "일반 스마트폰에 직접 연결하는 위성통신망을 확대하는 임무로, 회사는 차세대 위성의 최고 전송속도가 약 200Mbps에 이를 것으로 기대한다고 설명했습니다."
-      ],
-      "checkedAt": "2026-09-14",
-      "method": "source-checked"
-    },
-    {
-      "id": "49c7835168fa5bcf",
-      "source": "ast",
-      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=5582238976711971&symbol=ASTS",
-      "publishedAt": "2026-07-28T11:05:00Z",
-      "titleOriginal": "AST SpaceMobile Announces Launch Date for BlueBird Satellites 11, 12, and 13",
-      "titleKo": "AST 스페이스모바일, 블루버드 11·12·13호 발사 일정 발표",
-      "summaryKo": [
-        "AST SpaceMobile이 7월 28일 공개한 발사 예고로, 당시 블루버드 11·12·13호의 발사 목표일은 2026년 8월 5일이었습니다.",
-        "팰컨 9을 이용해 위성통신망을 확대한다는 계획을 담았으며, 이 기사는 발사 성공을 보고한 후속 발표와 구분됩니다."
-      ],
-      "checkedAt": "2026-09-14",
       "method": "source-checked"
     }
   ]
