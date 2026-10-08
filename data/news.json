@@ -109,7 +109,10 @@
       "title": "Firefly’s SciTec Expands Contract with U.S. Air Force to Add Counter UAS Data in Advanced Battle Management System",
       "url": "https://fireflyspace.com/news/fireflys-scitec-expands-contract-with-u-s-air-force-to-add-counter-uas-data-in-advanced-battle-management-system/",
       "publishedAt": "2026-10-08T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "Firefly의 SciTec는 고급 전투 관리 시스템에 UAS 데이터를 추가하기 위해 미국 공군과 계약을 확장합니다.",
+      "titleKoDraftOriginal": "Firefly’s SciTec Expands Contract with U.S. Air Force to Add Counter UAS Data in Advanced Battle Management System",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "718e414f27ebb381",
