@@ -2,6 +2,21 @@
   "version": 1,
   "items": [
     {
+      "id": "f433a319fc4cd0e6",
+      "source": "esa",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Solar_Orbiter/Solar_Orbiter_tracks_origin_of_mysterious_magnetic_switchbacks",
+      "publishedAt": "2026-10-08T09:00:00Z",
+      "titleOriginal": "Solar Orbiter tracks origin of mysterious magnetic switchbacks",
+      "titleKo": "솔라 오비터, 태양풍 자기장 ‘스위치백’의 기원을 태양 표면까지 추적",
+      "summaryKo": [
+        "ESA 주도 솔라 오비터가 지구와 태양 사이의 약 중간 지점에서 태양풍 자기장이 S자형으로 꺾이는 대형 ‘스위치백’을 직접 통과해 입자를 분석했습니다.",
+        "태양풍 분석기(SWA)가 검출한 산소·탄소 이온 조합은 뜨거운 태양 표면의 닫힌 자기장 고리에서 나온 흔적으로, 열린 자기장과 닫힌 자기장이 다시 이어지며 갇힌 플라스마가 빠져나오는 ‘상호교환 재연결’이 형성의 출발점임을 가리킵니다.",
+        "연구진은 이후 우주 공간에서는 파동과 난류가 스위치백의 움직임을 지배한다는 신호도 확인해, 재연결과 파동·난류가 서로 배타적인 설명이 아니라 생애의 다른 단계에서 작동한다고 결론지었습니다."
+      ],
+      "checkedAt": "2026-10-08",
+      "method": "source-checked"
+    },
+    {
       "id": "718e414f27ebb381",
       "source": "esa",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Mars_s_oddest_cloud_may_be_even_odder_than_we_thought",
