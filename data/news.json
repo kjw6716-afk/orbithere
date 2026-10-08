@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-08T15:34:23Z",
+  "checkedAt": "2026-10-08T21:18:20Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-10-08T15:34:23Z",
+      "lastCheckedAt": "2026-10-08T21:18:20Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
+      "lastSuccessfulAt": "2026-10-08T21:18:20Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-10-08T15:34:23Z",
+      "lastCheckedAt": "2026-10-08T21:18:20Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
+      "lastSuccessfulAt": "2026-10-08T21:18:20Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-10-08T15:34:23Z",
+      "lastCheckedAt": "2026-10-08T21:18:20Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
+      "lastSuccessfulAt": "2026-10-08T21:18:20Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-10-08T15:34:23Z",
+      "lastCheckedAt": "2026-10-08T21:18:20Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
+      "lastSuccessfulAt": "2026-10-08T21:18:20Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-10-08T15:34:23Z",
+      "lastCheckedAt": "2026-10-08T21:18:20Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
+      "lastSuccessfulAt": "2026-10-08T21:18:20Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-10-08T15:34:23Z",
+      "lastCheckedAt": "2026-10-08T21:18:20Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
+      "lastSuccessfulAt": "2026-10-08T21:18:20Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-10-08T15:34:23Z",
+      "lastCheckedAt": "2026-10-08T21:18:20Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
+      "lastSuccessfulAt": "2026-10-08T21:18:20Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,20 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-10-08T15:34:23Z",
+      "lastCheckedAt": "2026-10-08T21:18:20Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-08T15:34:23Z"
+      "lastSuccessfulAt": "2026-10-08T21:18:20Z"
     }
   ],
   "items": [
+    {
+      "id": "5a9a117643219a5e",
+      "source": "nasa",
+      "title": "NASA’s SPHEREx Telescope Sees Menagerie of Brown Dwarfs",
+      "url": "https://www.nasa.gov/missions/spherex/nasas-spherex-telescope-sees-menagerie-of-brown-dwarfs/",
+      "publishedAt": "2026-10-08T18:22:48Z",
+      "language": "en"
+    },
     {
       "id": "f433a319fc4cd0e6",
       "source": "esa",
@@ -102,6 +110,14 @@
       "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32470",
       "publishedAt": "2026-10-08T00:00:00Z",
       "language": "ko"
+    },
+    {
+      "id": "f72dae63e78ee490",
+      "source": "spacex",
+      "title": "BUILDING THE WORLD’S MOST ADVANCED MOBILE NETWORK",
+      "url": "https://www.spacex.com/updates#starlink-mobile-spectrum",
+      "publishedAt": "2026-10-08T00:00:00Z",
+      "language": "en"
     },
     {
       "id": "8feca0d1bd19a833",
@@ -457,17 +473,6 @@
       "titleKoMethod": "reviewed"
     },
     {
-      "id": "0370b5d96bd90098",
-      "source": "nasa",
-      "title": "NASA Sets Coverage for Roman Space Telescope Launch from Florida",
-      "url": "https://www.nasa.gov/news-release/nasa-sets-coverage-for-roman-space-telescope-launch-from-florida/",
-      "publishedAt": "2026-08-24T20:44:58Z",
-      "language": "en",
-      "titleKo": "NASA, 플로리다에서 진행할 로먼 우주망원경 발사 중계 일정 공개",
-      "titleKoOriginal": "NASA Sets Coverage for Roman Space Telescope Launch from Florida",
-      "titleKoMethod": "reviewed"
-    },
-    {
       "id": "8b30a6e4ebb9eeae",
       "source": "firefly",
       "title": "Firefly Aerospace Onboards Zeno Power on Blue Ghost Mission to Demonstrate Radioisotope Technologies to Survive the Lunar Night",
@@ -643,17 +648,6 @@
       "language": "en",
       "titleKo": "여러 사용자가 함께 쓰는 우주항의 발전",
       "titleKoOriginal": "Evolving the Multi-User Spaceport",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "01a860a08d851d70",
-      "source": "spacex",
-      "title": "THE FUTURE OF STARLINK DIRECT TO CELL",
-      "url": "https://www.spacex.com/updates#dtc-gen2-spectrum",
-      "publishedAt": "2025-09-08T00:00:00Z",
-      "language": "en",
-      "titleKo": "스타링크 다이렉트 투 셀의 미래",
-      "titleKoOriginal": "THE FUTURE OF STARLINK DIRECT TO CELL",
       "titleKoMethod": "reviewed"
     },
     {
