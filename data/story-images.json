@@ -193,6 +193,22 @@
         "generatedAt": "2026-10-07",
         "prompt": "Use case: illustration-story. Create an original editorial astronomy cover illustration for ORBIT. Wide landscape exact 16:9, 1536x864 or larger, at least 1200x675; edge-to-edge raster art. Deep midnight navy #0B1423, restrained mint/cyan, warm cream/amber, soft painted texture and sparse stars; premium naturalistic science-magazine editorial illustration, clearly painted and conceptual rather than a real observation photograph or precise diagram. Article question: why can a neutron star hold a star's mass inside a city-sized sphere? Subject: one compact luminous pale-cream neutron star in central dark space, modest-sized smooth rounded sphere with a thin subtle cyan halo. Two very delicate translucent narrow blue-white radiation cones extend in opposite directions along one diagonal from the star's opposite magnetic poles, giving the recognizable concept of a pulsar; the star remains the clear focal point. Farther behind it, a broad extremely faint sparse amber-and-teal wispy supernova-remnant shell evokes the exploded progenitor but does not form Saturn-like rings or a bright accretion disk. Generous navy negative space, complete central sphere with safe margins, quiet restrained energy and exquisite soft paint detail. Scientific constraints: the compact remnant is a neutron star, not a black hole; no black central void; beams are a conceptual depiction of radiation, not solid rods or rocket exhaust; no literal scale comparison or claim to depict the unknown stellar interior. Avoid city buildings, planets, spacecraft, cutaway layers, atom diagrams, solid rings, spiral vortex, lava surface, crowded stars, explosive fireballs, arrows, text, labels, numbers, logos, watermarks, border, panels, or UI."
       }
+    },
+    "how-we-find-invisible-black-holes": {
+      "alt": "휘어진 밝은 강착원반에 둘러싸인 검은 그림자와 주변 별의 움직임을 그린 AI 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-10-09",
+        "prompt": "Use case: scientific-educational editorial illustration. Create one original final ORBIT astronomy story cover for the Korean article ‘보이지 않는 블랙홀은 어떻게 찾아낼까요?’ Wide landscape raster, exact 16:9, preferably 2048x1152 or 1792x1008, at least 1200x675, edge-to-edge. Premium hand-painted science-magazine editorial style, matte naturalistic shading, delicate paper grain, deep midnight navy #0B1423, restrained mint/teal, warm cream and amber. Composition: one complete black-hole shadow slightly left of center with generous dark margins; a thin hot accretion disk passes horizontally in front of it and, through gravitational lensing, the far side appears as restrained curved light above and below the dark shadow. The disk is brighter cream-amber on one approaching side and dimmer muted red-amber on the other, but elegant and not neon. To the right, one small pale star follows a subtle curved orbit indicated only by two or three faint separated position echoes, not a solid arrow or diagram; this is a poetic visual clue that astronomers infer an invisible mass from nearby light and motion. Sparse tiny background stars. The dark central region must remain clearly distinct at thumbnail size. Scientific constraints: black hole itself emits and reflects no light; all visible light comes from matter outside the event horizon; show a warped accretion-disk appearance consistent with gravitational lensing; no material stream crossing outward through the event horizon; no vacuum-cleaner suction, no spiral galaxy mistaken for the disk, no wormhole, no fantasy portal, no giant jets, no exact scale claim. Conceptual AI editorial illustration, not an observation photograph or literal measured diagram. No text, labels, letters, numbers, arrows, grid, logo, watermark, border, UI, panels, telescope or spacecraft. Ensure every subject is fully inside frame with safe margins and the actual output file is a true exact 16:9 canvas, not approximate 1672x941."
+      }
+    },
+    "why-moon-looks-large-near-horizon": {
+      "alt": "겹겹의 산과 나무를 배경으로 지평선 가까이 떠오른 둥근 달을 바라보는 관측자의 AI 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-10-09",
+        "prompt": "Use case: illustration-story scientific editorial cover. Create one original final ORBIT astronomy story cover for the Korean article ‘지평선의 달은 왜 유난히 커 보일까요?’ Wide landscape raster, exact 16:9, preferably 2048x1152 or 1792x1008, at least 1200x675, edge-to-edge. Premium hand-painted science-magazine illustration with broad matte shapes, naturalistic soft shading, delicate paper grain, deep midnight navy #0B1423, restrained mint/teal, warm cream and amber. Scene: one complete warm cream full Moon low above a distant dark mountain ridge, placed slightly right of center and fully inside the frame. The lunar disk is round, modest but clearly readable at thumbnail size, with simplified painted maria and subtle crater hints. A few receding mountain layers and sparse tree silhouettes create strong foreground distance cues; one tiny safely placed observer silhouette at lower left looks toward the Moon with naked eyes. The Moon is softly yellow-amber near the horizon because its light travels through more atmosphere. Generous dark sky and safe margins. Scientific concept: this illustrates the Moon illusion caused by visual context, not real atmospheric magnification. Keep the Moon a single round disk; do not make it physically impossible or monstrous. Do not show comparison panels, a second Moon, measurement marks, fingers, a telescope, camera, giant telephoto lens, Earth's curvature, or an eclipse. No claim of exact scale or a specific date/place. No flattened or stretched Moon, no glowing atmosphere around the Moon, no stars inside the lunar disk, no fantasy planet, no oversized city. Conceptual AI editorial illustration, not an observation photograph or literal measured diagram. No text, labels, letters, numbers, arrows, grid, logo, watermark, border, UI or panels. Ensure actual output file is a true exact 16:9 canvas, not approximate 1672x941."
+      }
     }
   },
   "articles": {
@@ -223,7 +239,9 @@
     "why-moon-visible-in-daytime": "why-moon-visible-in-daytime",
     "why-telescopes-use-lagrange-points": "why-telescopes-use-lagrange-points",
     "why-total-lunar-eclipses-turn-red": "why-total-lunar-eclipses-turn-red",
-    "why-neutron-stars-are-so-dense": "why-neutron-stars-are-so-dense"
+    "why-neutron-stars-are-so-dense": "why-neutron-stars-are-so-dense",
+    "how-we-find-invisible-black-holes": "how-we-find-invisible-black-holes",
+    "why-moon-looks-large-near-horizon": "why-moon-looks-large-near-horizon"
   },
   "categories": {
     "달과 행성": "planets",
