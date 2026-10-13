@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-12T22:57:12Z",
+  "checkedAt": "2026-10-13T03:32:04Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-10-12T22:57:12Z",
+      "lastCheckedAt": "2026-10-13T03:32:04Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-12T22:57:12Z"
+      "lastSuccessfulAt": "2026-10-13T03:32:04Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-10-12T22:57:12Z",
+      "lastCheckedAt": "2026-10-13T03:32:04Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-12T22:57:12Z"
+      "lastSuccessfulAt": "2026-10-13T03:32:04Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-10-12T22:57:12Z",
+      "lastCheckedAt": "2026-10-13T03:32:04Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-12T22:57:12Z"
+      "lastSuccessfulAt": "2026-10-13T03:32:04Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-10-12T22:57:12Z",
+      "lastCheckedAt": "2026-10-13T03:32:04Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-12T22:57:12Z"
+      "lastSuccessfulAt": "2026-10-13T03:32:04Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-10-12T22:57:12Z",
+      "lastCheckedAt": "2026-10-13T03:32:04Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-12T22:57:12Z"
+      "lastSuccessfulAt": "2026-10-13T03:32:04Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-10-12T22:57:12Z",
+      "lastCheckedAt": "2026-10-13T03:32:04Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-12T22:57:12Z"
+      "lastSuccessfulAt": "2026-10-13T03:32:04Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-10-12T22:57:12Z",
+      "lastCheckedAt": "2026-10-13T03:32:04Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-12T22:57:12Z"
+      "lastSuccessfulAt": "2026-10-13T03:32:04Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,20 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-10-12T22:57:12Z",
+      "lastCheckedAt": "2026-10-13T03:32:04Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-12T22:57:12Z"
+      "lastSuccessfulAt": "2026-10-13T03:32:04Z"
     }
   ],
   "items": [
+    {
+      "id": "e6d0af61b91b8d38",
+      "source": "kasi",
+      "title": "천문연, 유럽과 손잡고 목성 탐사선 정밀 추적 나선다",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32472",
+      "publishedAt": "2026-10-13T00:00:00Z",
+      "language": "ko"
+    },
     {
       "id": "5a9a117643219a5e",
       "source": "nasa",
@@ -565,14 +573,6 @@
       "titleKo": "AST 스페이스모바일, 블루버드 11·12·13호 궤도 발사 성공",
       "titleKoOriginal": "AST SpaceMobile Announces Successful Orbital Launch of BlueBirds 11, 12, and 13",
       "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "322e33d604bb9b7a",
-      "source": "kasi",
-      "title": "“우주+AI 기술로 지구 도달 태양풍의 속도를 예측하라!”",
-      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32417",
-      "publishedAt": "2026-07-29T00:00:00Z",
-      "language": "ko"
     },
     {
       "id": "49c7835168fa5bcf",
