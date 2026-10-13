@@ -2,6 +2,21 @@
   "version": 1,
   "items": [
     {
+      "id": "e6d0af61b91b8d38",
+      "source": "kasi",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32472",
+      "publishedAt": "2026-10-13T00:00:00Z",
+      "titleOriginal": "천문연, 유럽과 손잡고 목성 탐사선 정밀 추적 나선다",
+      "titleKo": "천문연, 유럽 연구기관과 협력해 목성 탐사선 주스 정밀 추적",
+      "summaryKo": [
+        "한국천문연구원은 유럽 VLBI 연합연구소(JIVE)와 2026년 10월 13일 15시 30분 업무협약을 체결할 예정이며, 이를 바탕으로 유럽우주국(ESA)의 목성 탐사선 주스(JUICE) 정밀 위치 추적에 참여할 계획입니다.",
+        "천문연은 서울·울산·제주·평창에 있는 직경 21m 전파망원경 4기로 구성된 한국우주전파관측망(KVN)으로 탐사선 신호를 수신하고, 여러 망원경의 신호 차이를 분석하는 초장기선 전파간섭계(VLBI) 관측과 자료 전송을 지원합니다.",
+        "주스는 2023년 4월 발사됐으며 2031년 7월 목성 도착이 예정돼 있습니다. 이번 협력의 관측 참여는 2026년 하반기 계획으로, 이미 완료된 추적 관측 성과와는 구분됩니다."
+      ],
+      "checkedAt": "2026-10-13",
+      "method": "source-checked"
+    },
+    {
       "id": "5a9a117643219a5e",
       "source": "nasa",
       "url": "https://www.nasa.gov/missions/spherex/nasas-spherex-telescope-sees-menagerie-of-brown-dwarfs/",
