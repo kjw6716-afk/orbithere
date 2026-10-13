@@ -241,6 +241,22 @@
         "generatedAt": "2026-10-11",
         "prompt": "Use case: illustration-story.\nAsset type: final original ORBIT astronomy story cover illustration.\nPrimary request: Create a premium hand-painted editorial cover for the Korean article “유성우는 왜 자정 뒤부터 새벽에 더 잘 보이는 경우가 많을까요?” Make the relation between a rising meteor-shower radiant and a wide pre-dawn sky visually clear without labels or a literal diagram.\nScene/backdrop: a quiet dark-sky observing landscape just before dawn, deep midnight navy #0B1423 overhead grading subtly toward muted teal near a very low horizon, no bright sunrise.\nSubject: a wide open sky containing six to nine slender cream-and-mint meteor streaks of varied lengths. Their paths, if extended backward, should only appear to converge toward one subtle low-to-mid-height point in the upper-right sky; do not draw a visible dot, target, burst, arrows, or connecting lines. The longer meteor streaks cross the broad central and left sky, while the apparent radiant remains off-center. A tiny seated observer silhouette at the lower-left looks upward with naked eyes on a safe flat clearing; a folded blanket and very low mountain silhouette may be present, but no telescope or camera.\nStyle/medium: sophisticated science-magazine gouache and digital painting, matte broad shapes, delicate paper grain, restrained mint/cyan and warm cream/amber, naturalistic editorial illustration, clearly not a long-exposure photograph or glossy fantasy scene.\nComposition/framing: exact wide 16:9 landscape, at least 1200x675, edge-to-edge raster art, generous dark negative space, all streaks and horizon safely inside frame, strong readable thumbnail. The sky dominates at least 80 percent of the canvas.\nLighting/mood: serene, patient, cool pre-dawn darkness with restrained meteor glow.\nScientific constraints: meteors are atmospheric luminous paths, not stars falling to the ground; streaks should be straight and radiate only by perspective from a common apparent direction; do not show a comet in the sky, meteorites striking the ground, fireballs exploding, curved orbit trails, star trails, or one synchronized shower burst. This is conceptual AI editorial art, not an observation photograph, exposure simulation, or exact sky map.\nConstraints: no text, labels, letters, numbers, arrows, constellation lines, grid, logos, watermark, border, UI, panels, Moon, city lights, campfire, telescope, binoculars, camera, spacecraft, or cropped observer.\nAvoid: fireworks, aurora, lightning, rain, fantasy portals, excessive neon, dense Milky Way band, curved streaks, all meteors identical, ground impacts, and any readable writing."
       }
+    },
+    "why-apollo-photos-have-no-stars": {
+      "alt": "햇빛을 받은 달 표면과 우주비행사·착륙선이 밝게 드러나고 하늘은 검게 보이는 AI 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-10-14",
+        "prompt": "A cinematic, photorealistic widescreen depiction of a silent lunar night: a vast black-blue, starless sky dominates above a cool gray, cratered landscape, where a lone Apollo-era astronaut stands in the left foreground and casts a long, sharp shadow across the dusty regolith. Slightly behind to the right, a sunlit lunar module gleams with gold foil, pale panels, struts, antennas, and landing legs, while distant ridges, scattered rocks, and a foreground boulder enrich the terrain; crisp directional light, deep contrast, reflective bronze visor highlights, and richly rendered textures create a clean, dramatic, filmic composition with no text, logos, or additional figures."
+      }
+    },
+    "why-solar-corona-is-hotter": {
+      "alt": "태양의 밝은 가장자리에서 민트빛 코로나와 황금색 플라스마 고리가 퍼지는 AI 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-10-14",
+        "prompt": "Wide cinematic view of the Sun’s glowing limb fills the lower-right, revealing richly textured golden-orange plasma, sunspots, hotspots, and a brilliant rim surrounded by looping prominences and sweeping teal-blue coronal streamers. A vast, nearly empty navy-black starfield with sparse warm and cool stars stretches across the left, creating dramatic contrast in this high-detail, photorealistic CGI-style space scene."
+      }
     }
   },
   "articles": {
@@ -277,7 +293,9 @@
     "how-we-find-exoplanets-from-starlight": "how-we-find-exoplanets-from-starlight",
     "why-milky-way-looks-like-a-band": "why-milky-way-looks-like-a-band",
     "why-massive-stars-live-shorter": "why-massive-stars-live-shorter",
-    "why-meteor-showers-best-before-dawn": "why-meteor-showers-best-before-dawn"
+    "why-meteor-showers-best-before-dawn": "why-meteor-showers-best-before-dawn",
+    "why-apollo-photos-have-no-stars": "why-apollo-photos-have-no-stars",
+    "why-solar-corona-is-hotter": "why-solar-corona-is-hotter"
   },
   "categories": {
     "달과 행성": "planets",

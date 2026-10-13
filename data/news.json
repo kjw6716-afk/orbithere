@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-11T23:39:58Z",
+  "checkedAt": "2026-10-13T23:16:59Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-10-11T23:39:58Z",
+      "lastCheckedAt": "2026-10-13T23:16:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-11T23:39:58Z"
+      "lastSuccessfulAt": "2026-10-13T23:16:59Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-10-11T23:39:58Z",
+      "lastCheckedAt": "2026-10-13T23:16:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-11T23:39:58Z"
+      "lastSuccessfulAt": "2026-10-13T23:16:59Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-10-11T23:39:58Z",
+      "lastCheckedAt": "2026-10-13T23:16:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-11T23:39:58Z"
+      "lastSuccessfulAt": "2026-10-13T23:16:59Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-10-11T23:39:58Z",
+      "lastCheckedAt": "2026-10-13T23:16:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-11T23:39:58Z"
+      "lastSuccessfulAt": "2026-10-13T23:16:59Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-10-11T23:39:58Z",
+      "lastCheckedAt": "2026-10-13T23:16:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-11T23:39:58Z"
+      "lastSuccessfulAt": "2026-10-13T23:16:59Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-10-11T23:39:58Z",
+      "lastCheckedAt": "2026-10-13T23:16:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-11T23:39:58Z"
+      "lastSuccessfulAt": "2026-10-13T23:16:59Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-10-11T23:39:58Z",
+      "lastCheckedAt": "2026-10-13T23:16:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-11T23:39:58Z"
+      "lastSuccessfulAt": "2026-10-13T23:16:59Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,42 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-10-11T23:39:58Z",
+      "lastCheckedAt": "2026-10-13T23:16:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-11T23:39:58Z"
+      "lastSuccessfulAt": "2026-10-13T23:16:59Z"
     }
   ],
   "items": [
+    {
+      "id": "9bbfc0f84ff7a182",
+      "source": "nasa",
+      "title": "NASA JPL Testing Readies Voyager Technologies Lander for Moon Mission",
+      "url": "https://www.nasa.gov/missions/moon-base/nasa-jpl-testing-readies-voyager-technologies-lander-for-moon-mission/",
+      "publishedAt": "2026-10-13T13:00:00Z",
+      "language": "en",
+      "titleKoDraft": "NASA JPL 테스트 Readies Voyager 기술 달 임무 착륙",
+      "titleKoDraftOriginal": "NASA JPL Testing Readies Voyager Technologies Lander for Moon Mission",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
+    },
+    {
+      "id": "9216e6cae5d0a88a",
+      "source": "esa",
+      "title": "Mars moon lander set to launch on 19 October",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Mars_moon_lander_set_to_launch_on_19_October",
+      "publishedAt": "2026-10-13T12:00:00Z",
+      "language": "en",
+      "titleKoDraft": "화성 달 착륙기(Mars Moon Lander)는 10월 19일에 출시될 예정이다.",
+      "titleKoDraftOriginal": "Mars moon lander set to launch on 19 October",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
+    },
+    {
+      "id": "e6d0af61b91b8d38",
+      "source": "kasi",
+      "title": "천문연, 유럽과 손잡고 목성 탐사선 정밀 추적 나선다",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32472",
+      "publishedAt": "2026-10-13T00:00:00Z",
+      "language": "ko"
+    },
     {
       "id": "5a9a117643219a5e",
       "source": "nasa",
@@ -230,17 +260,6 @@
       "language": "en",
       "titleKoDraft": "거울의 우주 집에 있는 은하",
       "titleKoDraftOriginal": "Galaxies in a cosmic house of mirrors",
-      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
-    },
-    {
-      "id": "21c224b7f1e72026",
-      "source": "esa",
-      "title": "Successful Earth flyby improves Juice’s course to Jupiter",
-      "url": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Successful_Earth_flyby_improves_Juice_s_course_to_Jupiter",
-      "publishedAt": "2026-09-28T15:00:00Z",
-      "language": "en",
-      "titleKoDraft": "성공적인 지구 비행은 Juice의 Jupiter 경로를 향상시킵니다.",
-      "titleKoDraftOriginal": "Successful Earth flyby improves Juice’s course to Jupiter",
       "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
@@ -468,17 +487,6 @@
       "language": "ko"
     },
     {
-      "id": "f3ac3655bf675d20",
-      "source": "nasa",
-      "title": "New Next-Gen Dish Adds Muscle to NASA’s Deep Space Network",
-      "url": "https://www.nasa.gov/technology/space-comms/deep-space-network/new-next-gen-dish-adds-muscle-to-nasas-deep-space-network/",
-      "publishedAt": "2026-08-25T22:28:34Z",
-      "language": "en",
-      "titleKo": "새 차세대 안테나로 NASA 심우주 통신망 역량 강화",
-      "titleKoOriginal": "New Next-Gen Dish Adds Muscle to NASA’s Deep Space Network",
-      "titleKoMethod": "reviewed"
-    },
-    {
       "id": "8b30a6e4ebb9eeae",
       "source": "firefly",
       "title": "Firefly Aerospace Onboards Zeno Power on Blue Ghost Mission to Demonstrate Radioisotope Technologies to Survive the Lunar Night",
@@ -565,14 +573,6 @@
       "titleKo": "AST 스페이스모바일, 블루버드 11·12·13호 궤도 발사 성공",
       "titleKoOriginal": "AST SpaceMobile Announces Successful Orbital Launch of BlueBirds 11, 12, and 13",
       "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "322e33d604bb9b7a",
-      "source": "kasi",
-      "title": "“우주+AI 기술로 지구 도달 태양풍의 속도를 예측하라!”",
-      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32417",
-      "publishedAt": "2026-07-29T00:00:00Z",
-      "language": "ko"
     },
     {
       "id": "49c7835168fa5bcf",
