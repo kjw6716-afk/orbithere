@@ -90,7 +90,10 @@
       "title": "NASA JPL Testing Readies Voyager Technologies Lander for Moon Mission",
       "url": "https://www.nasa.gov/missions/moon-base/nasa-jpl-testing-readies-voyager-technologies-lander-for-moon-mission/",
       "publishedAt": "2026-10-13T13:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "NASA JPL 테스트 Readies Voyager 기술 달 임무 착륙",
+      "titleKoDraftOriginal": "NASA JPL Testing Readies Voyager Technologies Lander for Moon Mission",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "9216e6cae5d0a88a",
@@ -98,7 +101,10 @@
       "title": "Mars moon lander set to launch on 19 October",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Mars_moon_lander_set_to_launch_on_19_October",
       "publishedAt": "2026-10-13T12:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "화성 달 착륙기(Mars Moon Lander)는 10월 19일에 출시될 예정이다.",
+      "titleKoDraftOriginal": "Mars moon lander set to launch on 19 October",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "e6d0af61b91b8d38",
