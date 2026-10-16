@@ -241,6 +241,14 @@
         "generatedAt": "2026-10-11",
         "prompt": "Use case: illustration-story.\nAsset type: final original ORBIT astronomy story cover illustration.\nPrimary request: Create a premium hand-painted editorial cover for the Korean article “유성우는 왜 자정 뒤부터 새벽에 더 잘 보이는 경우가 많을까요?” Make the relation between a rising meteor-shower radiant and a wide pre-dawn sky visually clear without labels or a literal diagram.\nScene/backdrop: a quiet dark-sky observing landscape just before dawn, deep midnight navy #0B1423 overhead grading subtly toward muted teal near a very low horizon, no bright sunrise.\nSubject: a wide open sky containing six to nine slender cream-and-mint meteor streaks of varied lengths. Their paths, if extended backward, should only appear to converge toward one subtle low-to-mid-height point in the upper-right sky; do not draw a visible dot, target, burst, arrows, or connecting lines. The longer meteor streaks cross the broad central and left sky, while the apparent radiant remains off-center. A tiny seated observer silhouette at the lower-left looks upward with naked eyes on a safe flat clearing; a folded blanket and very low mountain silhouette may be present, but no telescope or camera.\nStyle/medium: sophisticated science-magazine gouache and digital painting, matte broad shapes, delicate paper grain, restrained mint/cyan and warm cream/amber, naturalistic editorial illustration, clearly not a long-exposure photograph or glossy fantasy scene.\nComposition/framing: exact wide 16:9 landscape, at least 1200x675, edge-to-edge raster art, generous dark negative space, all streaks and horizon safely inside frame, strong readable thumbnail. The sky dominates at least 80 percent of the canvas.\nLighting/mood: serene, patient, cool pre-dawn darkness with restrained meteor glow.\nScientific constraints: meteors are atmospheric luminous paths, not stars falling to the ground; streaks should be straight and radiate only by perspective from a common apparent direction; do not show a comet in the sky, meteorites striking the ground, fireballs exploding, curved orbit trails, star trails, or one synchronized shower burst. This is conceptual AI editorial art, not an observation photograph, exposure simulation, or exact sky map.\nConstraints: no text, labels, letters, numbers, arrows, constellation lines, grid, logos, watermark, border, UI, panels, Moon, city lights, campfire, telescope, binoculars, camera, spacecraft, or cropped observer.\nAvoid: fireworks, aurora, lightning, rain, fantasy portals, excessive neon, dense Milky Way band, curved streaks, all meteors identical, ground impacts, and any readable writing."
       }
+    },
+    "how-to-observe-jupiters-moons": {
+      "alt": "목성의 줄무늬 원반 양옆에 작은 갈릴레이 위성 네 개가 늘어서고 아래에 망원경 실루엣이 있는 AI 편집 삽화",
+      "generation": {
+        "tool": "image_gen",
+        "generatedAt": "2026-10-17",
+        "prompt": "A wide cinematic night-sky space scene: a richly banded Jupiter dominates the right half, creamy ochre and muted amber cloud belts with soft teal shadows, while exactly four tiny Galilean moons appear as distinct points along a nearly straight line across the planet's equatorial plane, two on either side. On the left, a small silhouetted backyard telescope and observer rest under a deep navy (#0B1423) sky with sparse stars. Sophisticated science-magazine editorial illustration, painterly naturalistic rendering, restrained mint/cyan accents, warm cream and amber, clear focal subject at thumbnail size, generous margins. No text, labels, logos, watermark, UI, or border. The moons are small points, not oversized worlds; do not add rings to Jupiter."
+      }
     }
   },
   "articles": {
@@ -277,7 +285,8 @@
     "how-we-find-exoplanets-from-starlight": "how-we-find-exoplanets-from-starlight",
     "why-milky-way-looks-like-a-band": "why-milky-way-looks-like-a-band",
     "why-massive-stars-live-shorter": "why-massive-stars-live-shorter",
-    "why-meteor-showers-best-before-dawn": "why-meteor-showers-best-before-dawn"
+    "why-meteor-showers-best-before-dawn": "why-meteor-showers-best-before-dawn",
+    "how-to-observe-jupiters-moons": "how-to-observe-jupiters-moons"
   },
   "categories": {
     "달과 행성": "planets",
