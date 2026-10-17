@@ -241,22 +241,6 @@
         "generatedAt": "2026-10-11",
         "prompt": "Use case: illustration-story.\nAsset type: final original ORBIT astronomy story cover illustration.\nPrimary request: Create a premium hand-painted editorial cover for the Korean article “유성우는 왜 자정 뒤부터 새벽에 더 잘 보이는 경우가 많을까요?” Make the relation between a rising meteor-shower radiant and a wide pre-dawn sky visually clear without labels or a literal diagram.\nScene/backdrop: a quiet dark-sky observing landscape just before dawn, deep midnight navy #0B1423 overhead grading subtly toward muted teal near a very low horizon, no bright sunrise.\nSubject: a wide open sky containing six to nine slender cream-and-mint meteor streaks of varied lengths. Their paths, if extended backward, should only appear to converge toward one subtle low-to-mid-height point in the upper-right sky; do not draw a visible dot, target, burst, arrows, or connecting lines. The longer meteor streaks cross the broad central and left sky, while the apparent radiant remains off-center. A tiny seated observer silhouette at the lower-left looks upward with naked eyes on a safe flat clearing; a folded blanket and very low mountain silhouette may be present, but no telescope or camera.\nStyle/medium: sophisticated science-magazine gouache and digital painting, matte broad shapes, delicate paper grain, restrained mint/cyan and warm cream/amber, naturalistic editorial illustration, clearly not a long-exposure photograph or glossy fantasy scene.\nComposition/framing: exact wide 16:9 landscape, at least 1200x675, edge-to-edge raster art, generous dark negative space, all streaks and horizon safely inside frame, strong readable thumbnail. The sky dominates at least 80 percent of the canvas.\nLighting/mood: serene, patient, cool pre-dawn darkness with restrained meteor glow.\nScientific constraints: meteors are atmospheric luminous paths, not stars falling to the ground; streaks should be straight and radiate only by perspective from a common apparent direction; do not show a comet in the sky, meteorites striking the ground, fireballs exploding, curved orbit trails, star trails, or one synchronized shower burst. This is conceptual AI editorial art, not an observation photograph, exposure simulation, or exact sky map.\nConstraints: no text, labels, letters, numbers, arrows, constellation lines, grid, logos, watermark, border, UI, panels, Moon, city lights, campfire, telescope, binoculars, camera, spacecraft, or cropped observer.\nAvoid: fireworks, aurora, lightning, rain, fantasy portals, excessive neon, dense Milky Way band, curved streaks, all meteors identical, ground impacts, and any readable writing."
       }
-    },
-    "why-apollo-photos-have-no-stars": {
-      "alt": "햇빛이 비치는 달 표면의 우주비행사와 착륙선, 별이 드러나지 않는 검은 하늘을 담은 AI 편집 삽화",
-      "generation": {
-        "tool": "image_gen",
-        "generatedAt": "2026-10-17",
-        "prompt": "A cinematic panoramic concept-art scene shows a stark, cratered Moon beneath a deep, starless navy sky, with a small astronaut and Apollo-style lander on the left and a glowing blue-and-white Earth suspended high on the right. The astronaut, seen from behind in a white PLSS-equipped suit, stands near the gold-foil, metallic lander amid rocky regolith, long shadows, and painterly textures that create a quiet, contemplative mood."
-      }
-    },
-    "why-solar-corona-is-hotter": {
-      "alt": "금빛 태양 원반 주위로 희미한 코로나와 자기장 고리가 퍼지는 모습을 그린 AI 편집 삽화",
-      "generation": {
-        "tool": "image_gen",
-        "generatedAt": "2026-10-17",
-        "prompt": "Create a cinematic wide-format space illustration of the Sun's blazing golden-white disk seen close-up, with delicate pale-gold and muted mint plasma streamers curling outward into a deep navy (#0B1423) corona. Include subtle magnetic-field arcs, a few dark sunspots on the disk, and a rich but restrained contrast between the bright photosphere and the wispy outer atmosphere. Naturalistic high-end science magazine art, no text, no labels, no logos, no watermark, no UI, no border. The corona is a thin, diffuse outer atmosphere extending far beyond the visible surface; do not depict it as solid flames or a separate planet. Wide 16:9 composition with generous dark negative space."
-      }
     }
   },
   "articles": {
@@ -293,9 +277,7 @@
     "how-we-find-exoplanets-from-starlight": "how-we-find-exoplanets-from-starlight",
     "why-milky-way-looks-like-a-band": "why-milky-way-looks-like-a-band",
     "why-massive-stars-live-shorter": "why-massive-stars-live-shorter",
-    "why-meteor-showers-best-before-dawn": "why-meteor-showers-best-before-dawn",
-    "why-apollo-photos-have-no-stars": "why-apollo-photos-have-no-stars",
-    "why-solar-corona-is-hotter": "why-solar-corona-is-hotter"
+    "why-meteor-showers-best-before-dawn": "why-meteor-showers-best-before-dawn"
   },
   "categories": {
     "달과 행성": "planets",
