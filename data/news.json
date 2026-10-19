@@ -112,7 +112,10 @@
       "title": "Where winds blow and lava flows",
       "url": "https://www.esa.int/ESA_Multimedia/Images/2026/10/Where_winds_blow_and_lava_flows",
       "publishedAt": "2026-10-14T09:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "바람이 흐르고 라바가 흐르는 곳",
+      "titleKoDraftOriginal": "Where winds blow and lava flows",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "9bbfc0f84ff7a182",
