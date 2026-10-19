@@ -90,7 +90,10 @@
       "title": "Euclid discovers new comet",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Euclid/Euclid_discovers_new_comet",
       "publishedAt": "2026-10-19T12:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "유클리드가 새로운 코메트를 발견했다.",
+      "titleKoDraftOriginal": "Euclid discovers new comet",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "71e3666d6ea1cda6",
@@ -98,7 +101,10 @@
       "title": "AST SpaceMobile Advances Space-Based Cellular Broadband in Europe in Collaboration with European Mobile Network Operator Partners",
       "url": "https://feeds.issuerdirect.com/news-release.html?newsid=5338244343722955&symbol=ASTS",
       "publishedAt": "2026-10-19T11:25:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "AST SpaceMobile은 유럽 모바일 네트워크 운영 파트너와 협력하여 우주 기반 세포 광대역을 유럽에서 발전시킵니다.",
+      "titleKoDraftOriginal": "AST SpaceMobile Advances Space-Based Cellular Broadband in Europe in Collaboration with European Mobile Network Operator Partners",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "9bbfc0f84ff7a182",
