@@ -90,7 +90,10 @@
       "title": "AST SpaceMobile Advances Service Readiness Ahead of Initial Space-Based Cellular Broadband Coverage in Key Global Markets",
       "url": "https://feeds.issuerdirect.com/news-release.html?newsid=6945446155364589&symbol=ASTS",
       "publishedAt": "2026-10-20T11:30:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "AST SpaceMobile은 핵심 글로벌 시장에서 초기 공간 기반 세포 광대역 커버를 앞두고 서비스 준비를 향상시킵니다.",
+      "titleKoDraftOriginal": "AST SpaceMobile Advances Service Readiness Ahead of Initial Space-Based Cellular Broadband Coverage in Key Global Markets",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "96e26a5e582ff203",
