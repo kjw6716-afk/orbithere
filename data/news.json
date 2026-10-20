@@ -90,7 +90,10 @@
       "title": "MMX lifts off to Mars’s moon Phobos",
       "url": "https://www.esa.int/ESA_Multimedia/Images/2026/10/MMX_lifts_off_to_Mars_s_moon_Phobos",
       "publishedAt": "2026-10-20T07:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "MMX는 화성의 달 Phobos에 올라갑니다.",
+      "titleKoDraftOriginal": "MMX lifts off to Mars’s moon Phobos",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "0502a592ce1ff45a",
@@ -98,7 +101,10 @@
       "title": "Celebrating BepiColombo, three words at a time",
       "url": "https://www.esa.int/ESA_Multimedia/Videos/2026/10/Celebrating_BepiColombo_three_words_at_a_time",
       "publishedAt": "2026-10-19T15:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "BepiColombo 축하, 한 번에 세 단어",
+      "titleKoDraftOriginal": "Celebrating BepiColombo, three words at a time",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "3f74e87dc29c538b",
