@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-21T17:40:40Z",
+  "checkedAt": "2026-10-21T18:36:21Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-10-21T17:40:40Z",
+      "lastCheckedAt": "2026-10-21T18:36:21Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T17:40:40Z"
+      "lastSuccessfulAt": "2026-10-21T18:36:21Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-10-21T17:40:40Z",
+      "lastCheckedAt": "2026-10-21T18:36:21Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T17:40:40Z"
+      "lastSuccessfulAt": "2026-10-21T18:36:21Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-10-21T17:40:40Z",
-      "status": "unavailable",
-      "lastSuccessfulAt": "2026-10-21T13:45:36Z"
+      "lastCheckedAt": "2026-10-21T18:36:21Z",
+      "status": "ok",
+      "lastSuccessfulAt": "2026-10-21T18:36:21Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-10-21T17:40:40Z",
+      "lastCheckedAt": "2026-10-21T18:36:21Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T17:40:40Z"
+      "lastSuccessfulAt": "2026-10-21T18:36:21Z"
     },
     {
       "id": "starlink",
@@ -48,8 +48,8 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-10-21T17:40:40Z",
-      "status": "ok",
+      "lastCheckedAt": "2026-10-21T18:36:21Z",
+      "status": "unavailable",
       "lastSuccessfulAt": "2026-10-21T17:40:40Z"
     },
     {
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-10-21T17:40:40Z",
+      "lastCheckedAt": "2026-10-21T18:36:21Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T17:40:40Z"
+      "lastSuccessfulAt": "2026-10-21T18:36:21Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-10-21T17:40:40Z",
+      "lastCheckedAt": "2026-10-21T18:36:21Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T17:40:40Z"
+      "lastSuccessfulAt": "2026-10-21T18:36:21Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,20 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-10-21T17:40:40Z",
+      "lastCheckedAt": "2026-10-21T18:36:21Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T17:40:40Z"
+      "lastSuccessfulAt": "2026-10-21T18:36:21Z"
     }
   ],
   "items": [
+    {
+      "id": "a51b31652d0be7c6",
+      "source": "nasa",
+      "title": "NASA JPL Looks to Next 90 Years of Innovation, Exploration",
+      "url": "https://www.nasa.gov/centers-and-facilities/jpl/nasa-jpl-looks-to-next-90-years-of-innovation-exploration/",
+      "publishedAt": "2026-10-21T18:35:56Z",
+      "language": "en"
+    },
     {
       "id": "5eed0490d52e00fd",
       "source": "firefly",
@@ -498,17 +506,6 @@
       "language": "en",
       "titleKo": "로켓랩, 핵심 광물 의존도를 줄이는 고효율 태양전지 공개",
       "titleKoOriginal": "Rocket Lab Introduces High-Efficiency Solar Cell to Reduce Reliance on Supply-Constrained Critical Minerals",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "be1799cedcc10449",
-      "source": "nasa",
-      "title": "NASA’s Dark Universe-Seeking Nancy Grace Roman Space Telescope Launches",
-      "url": "https://www.nasa.gov/news-release/nasas-dark-universe-seeking-nancy-grace-roman-space-telescope-launches/",
-      "publishedAt": "2026-08-30T13:18:06Z",
-      "language": "en",
-      "titleKo": "어두운 우주를 탐사할 NASA 낸시 그레이스 로먼 우주망원경 발사",
-      "titleKoOriginal": "NASA’s Dark Universe-Seeking Nancy Grace Roman Space Telescope Launches",
       "titleKoMethod": "reviewed"
     },
     {
