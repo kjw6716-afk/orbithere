@@ -90,7 +90,10 @@
       "title": "Firefly Aerospace Completes Preliminary Design Review for NASA MoonFall Mission",
       "url": "https://fireflyspace.com/news/firefly-aerospace-completes-preliminary-design-review-for-nasa-moonfall-mission/",
       "publishedAt": "2026-10-21T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "Firefly Aerospace, NASA MoonFall 임무에 대한 프리미엄 디자인 검토 완료",
+      "titleKoDraftOriginal": "Firefly Aerospace Completes Preliminary Design Review for NASA MoonFall Mission",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "c05a702675bb0b2e",
