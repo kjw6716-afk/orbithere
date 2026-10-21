@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-21T12:26:50Z",
+  "checkedAt": "2026-10-21T13:45:36Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-10-21T12:26:50Z",
+      "lastCheckedAt": "2026-10-21T13:45:36Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T12:26:50Z"
+      "lastSuccessfulAt": "2026-10-21T13:45:36Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-10-21T12:26:50Z",
+      "lastCheckedAt": "2026-10-21T13:45:36Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T12:26:50Z"
+      "lastSuccessfulAt": "2026-10-21T13:45:36Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-10-21T12:26:50Z",
+      "lastCheckedAt": "2026-10-21T13:45:36Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T12:26:50Z"
+      "lastSuccessfulAt": "2026-10-21T13:45:36Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-10-21T12:26:50Z",
+      "lastCheckedAt": "2026-10-21T13:45:36Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T12:26:50Z"
+      "lastSuccessfulAt": "2026-10-21T13:45:36Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-10-21T12:26:50Z",
+      "lastCheckedAt": "2026-10-21T13:45:36Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T12:26:50Z"
+      "lastSuccessfulAt": "2026-10-21T13:45:36Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-10-21T12:26:50Z",
+      "lastCheckedAt": "2026-10-21T13:45:36Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T12:26:50Z"
+      "lastSuccessfulAt": "2026-10-21T13:45:36Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-10-21T12:26:50Z",
+      "lastCheckedAt": "2026-10-21T13:45:36Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T12:26:50Z"
+      "lastSuccessfulAt": "2026-10-21T13:45:36Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,20 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-10-21T12:26:50Z",
+      "lastCheckedAt": "2026-10-21T13:45:36Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-21T12:26:50Z"
+      "lastSuccessfulAt": "2026-10-21T13:45:36Z"
     }
   ],
   "items": [
+    {
+      "id": "5eed0490d52e00fd",
+      "source": "firefly",
+      "title": "Firefly Aerospace Completes Preliminary Design Review for NASA MoonFall Mission",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-completes-preliminary-design-review-for-nasa-moonfall-mission/",
+      "publishedAt": "2026-10-21T00:00:00Z",
+      "language": "en"
+    },
     {
       "id": "c05a702675bb0b2e",
       "source": "ast",
@@ -539,17 +547,6 @@
       "language": "en",
       "titleKo": "파이어플라이, 미 국방혁신단의 엘리트라 궤도 이탈 시스템 설계 계약 수주",
       "titleKoOriginal": "Firefly Aerospace Awarded Contract to Design Elytra Deorbit System for Defense Innovation Unit",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "50141f7fb1c495d5",
-      "source": "firefly",
-      "title": "Firefly Aerospace Announces Extension of Multi-Launch Agreement with Lockheed Martin Through 2031",
-      "url": "https://fireflyspace.com/news/firefly-aerospace-announces-extension-of-multi-launch-agreement-with-lockheed-martin-through-2031/",
-      "publishedAt": "2026-08-11T00:00:00Z",
-      "language": "en",
-      "titleKo": "파이어플라이, 록히드마틴과 다회 발사 계약 2031년까지 연장",
-      "titleKoOriginal": "Firefly Aerospace Announces Extension of Multi-Launch Agreement with Lockheed Martin Through 2031",
       "titleKoMethod": "reviewed"
     },
     {
