@@ -90,7 +90,10 @@
       "title": "NASA JPL Looks to Next 90 Years of Innovation, Exploration",
       "url": "https://www.nasa.gov/centers-and-facilities/jpl/nasa-jpl-looks-to-next-90-years-of-innovation-exploration/",
       "publishedAt": "2026-10-21T18:35:56Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "NASA JPL은 다음 90 년의 혁신, 탐험을 기대합니다.",
+      "titleKoDraftOriginal": "NASA JPL Looks to Next 90 Years of Innovation, Exploration",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "5eed0490d52e00fd",
