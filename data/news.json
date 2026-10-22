@@ -90,7 +90,10 @@
       "title": "Stars brewing in a nebulous cauldron",
       "url": "https://www.esa.int/ESA_Multimedia/Images/2026/10/Stars_brewing_in_a_nebulous_cauldron",
       "publishedAt": "2026-10-22T08:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "별들이 구름 속에서 술을 마신다",
+      "titleKoDraftOriginal": "Stars brewing in a nebulous cauldron",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "a51b31652d0be7c6",
