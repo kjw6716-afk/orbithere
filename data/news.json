@@ -90,7 +90,10 @@
       "title": "NASA’s Perseverance Offers Clues to Protect Crews From Mars Dust",
       "url": "https://www.nasa.gov/missions/mars-2020-perseverance/nasas-perseverance-offers-clues-to-protect-crews-from-mars-dust/",
       "publishedAt": "2026-10-26T21:07:28Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "NASA의 지속성은 화성 먼지로부터 승무원을 보호하기위한 클루어를 제공합니다.",
+      "titleKoDraftOriginal": "NASA’s Perseverance Offers Clues to Protect Crews From Mars Dust",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "5d073bc476f9bd7d",
