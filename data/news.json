@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-26T20:09:57Z",
+  "checkedAt": "2026-10-26T23:09:07Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-10-26T20:09:57Z",
+      "lastCheckedAt": "2026-10-26T23:09:07Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-26T20:09:57Z"
+      "lastSuccessfulAt": "2026-10-26T23:09:07Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-10-26T20:09:57Z",
+      "lastCheckedAt": "2026-10-26T23:09:07Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-26T20:09:57Z"
+      "lastSuccessfulAt": "2026-10-26T23:09:07Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-10-26T20:09:57Z",
+      "lastCheckedAt": "2026-10-26T23:09:07Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-26T20:09:57Z"
+      "lastSuccessfulAt": "2026-10-26T23:09:07Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-10-26T20:09:57Z",
+      "lastCheckedAt": "2026-10-26T23:09:07Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-26T20:09:57Z"
+      "lastSuccessfulAt": "2026-10-26T23:09:07Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-10-26T20:09:57Z",
+      "lastCheckedAt": "2026-10-26T23:09:07Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-26T20:09:57Z"
+      "lastSuccessfulAt": "2026-10-26T23:09:07Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-10-26T20:09:57Z",
+      "lastCheckedAt": "2026-10-26T23:09:07Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-26T20:09:57Z"
+      "lastSuccessfulAt": "2026-10-26T23:09:07Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-10-26T20:09:57Z",
+      "lastCheckedAt": "2026-10-26T23:09:07Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-26T20:09:57Z"
+      "lastSuccessfulAt": "2026-10-26T23:09:07Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,20 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-10-26T20:09:57Z",
+      "lastCheckedAt": "2026-10-26T23:09:07Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-26T20:09:57Z"
+      "lastSuccessfulAt": "2026-10-26T23:09:07Z"
     }
   ],
   "items": [
+    {
+      "id": "dfc519dd5290724c",
+      "source": "nasa",
+      "title": "NASA’s Perseverance Offers Clues to Protect Crews From Mars Dust",
+      "url": "https://www.nasa.gov/missions/mars-2020-perseverance/nasas-perseverance-offers-clues-to-protect-crews-from-mars-dust/",
+      "publishedAt": "2026-10-26T21:07:28Z",
+      "language": "en"
+    },
     {
       "id": "5d073bc476f9bd7d",
       "source": "ast",
@@ -483,17 +491,6 @@
       "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32453",
       "publishedAt": "2026-09-10T00:00:00Z",
       "language": "ko"
-    },
-    {
-      "id": "430b8c54b35508e5",
-      "source": "nasa",
-      "title": "How 2 US, European Satellites Are Studying Hurricanes During El Niño",
-      "url": "https://www.nasa.gov/missions/jason-cs-sentinel-6/how-2-us-european-satellites-are-studying-hurricanes-during-el-nino/",
-      "publishedAt": "2026-09-09T16:00:00Z",
-      "language": "en",
-      "titleKo": "미국·유럽의 위성 2대, 엘니뇨 시기 허리케인을 관측하다",
-      "titleKoOriginal": "How 2 US, European Satellites Are Studying Hurricanes During El Niño",
-      "titleKoMethod": "reviewed"
     },
     {
       "id": "7dea421284cd9a42",
