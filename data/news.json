@@ -90,7 +90,10 @@
       "title": "AST SpaceMobile Advances Brazil Expansion with Anatel's Approval for S-band Spectrum and Secondary Use of the 700 MHz Band, Agreements with Four Regional Operators and Planned Ground Infrastructure",
       "url": "https://feeds.issuerdirect.com/news-release.html?newsid=7720616327386948&symbol=ASTS",
       "publishedAt": "2026-10-26T11:30:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "AST SpaceMobile은 S-band 스펙트럼 및 700 MHz 밴드의 초기 사용에 대한 Anatel의 승인, 4 개의 지역 운영자와 계획된 토양 인프라와의 계약으로 브라질 확장을 진행합니다.",
+      "titleKoDraftOriginal": "AST SpaceMobile Advances Brazil Expansion with Anatel's Approval for S-band Spectrum and Secondary Use of the 700 MHz Band, Agreements with Four Regional Operators and Planned Ground Infrastructure",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "67d6de5860416d19",
