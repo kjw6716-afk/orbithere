@@ -145,7 +145,10 @@
       "title": "Rocket Lab-built spacecraft successfully launched for Viasat mission to advance NASA Communications Services Project demonstration",
       "url": "https://rocketlabcorp.com/updates/rocket-lab-built-spacecraft-successfully-launched-for-viasat-mission-to-advance-nasa-communications-services-project-demonstration/",
       "publishedAt": "2026-10-21T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "로켓 실험실 건설 우주선은 NASA 통신 서비스 프로젝트 시연을 진행하기 위해 비아사트 임무를 성공적으로 시작했습니다.",
+      "titleKoDraftOriginal": "Rocket Lab-built spacecraft successfully launched for Viasat mission to advance NASA Communications Services Project demonstration",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "5eed0490d52e00fd",
