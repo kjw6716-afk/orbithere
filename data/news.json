@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-28T05:37:22Z",
+  "checkedAt": "2026-10-28T12:48:58Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-10-28T05:37:22Z",
+      "lastCheckedAt": "2026-10-28T12:48:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-28T05:37:22Z"
+      "lastSuccessfulAt": "2026-10-28T12:48:58Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-10-28T05:37:22Z",
+      "lastCheckedAt": "2026-10-28T12:48:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-28T05:37:22Z"
+      "lastSuccessfulAt": "2026-10-28T12:48:58Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-10-28T05:37:22Z",
+      "lastCheckedAt": "2026-10-28T12:48:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-28T05:37:22Z"
+      "lastSuccessfulAt": "2026-10-28T12:48:58Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-10-28T05:37:22Z",
+      "lastCheckedAt": "2026-10-28T12:48:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-28T05:37:22Z"
+      "lastSuccessfulAt": "2026-10-28T12:48:58Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-10-28T05:37:22Z",
+      "lastCheckedAt": "2026-10-28T12:48:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-28T05:37:22Z"
+      "lastSuccessfulAt": "2026-10-28T12:48:58Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-10-28T05:37:22Z",
+      "lastCheckedAt": "2026-10-28T12:48:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-28T05:37:22Z"
+      "lastSuccessfulAt": "2026-10-28T12:48:58Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-10-28T05:37:22Z",
+      "lastCheckedAt": "2026-10-28T12:48:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-28T05:37:22Z"
+      "lastSuccessfulAt": "2026-10-28T12:48:58Z"
     },
     {
       "id": "firefly",
@@ -78,9 +78,9 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-10-28T05:37:22Z",
+      "lastCheckedAt": "2026-10-28T12:48:58Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-28T05:37:22Z"
+      "lastSuccessfulAt": "2026-10-28T12:48:58Z"
     }
   ],
   "items": [
@@ -91,6 +91,14 @@
       "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32486",
       "publishedAt": "2026-10-28T00:00:00Z",
       "language": "ko"
+    },
+    {
+      "id": "07562064ca6afc66",
+      "source": "firefly",
+      "title": "Firefly’s SciTec Achieves Operational Milestone for U.S. Space Force FORGE System",
+      "url": "https://fireflyspace.com/news/fireflys-scitec-achieves-operational-milestone-for-u-s-space-force-forge-system/",
+      "publishedAt": "2026-10-28T00:00:00Z",
+      "language": "en"
     },
     {
       "id": "dfc519dd5290724c",
@@ -550,17 +558,6 @@
       "language": "en",
       "titleKo": "파이어플라이, NASA 우주선 처리 운영 계약 참여",
       "titleKoOriginal": "Firefly Aerospace Onboarded to NASA Spacecraft Processing Operations Contract",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "7f2673ce3f65bde3",
-      "source": "firefly",
-      "title": "Firefly Aerospace Awarded Contract to Design Elytra Deorbit System for Defense Innovation Unit",
-      "url": "https://fireflyspace.com/news/firefly-aerospace-awarded-contract-to-design-elytra-deorbit-system-for-defense-innovation-unit/",
-      "publishedAt": "2026-08-13T00:00:00Z",
-      "language": "en",
-      "titleKo": "파이어플라이, 미 국방혁신단의 엘리트라 궤도 이탈 시스템 설계 계약 수주",
-      "titleKoOriginal": "Firefly Aerospace Awarded Contract to Design Elytra Deorbit System for Defense Innovation Unit",
       "titleKoMethod": "reviewed"
     },
     {
