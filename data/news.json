@@ -98,7 +98,10 @@
       "title": "Firefly’s SciTec Achieves Operational Milestone for U.S. Space Force FORGE System",
       "url": "https://fireflyspace.com/news/fireflys-scitec-achieves-operational-milestone-for-u-s-space-force-forge-system/",
       "publishedAt": "2026-10-28T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "Firefly의 SciTec는 미국 우주군 포지 시스템에 대한 운영 미스터리를 달성했습니다.",
+      "titleKoDraftOriginal": "Firefly’s SciTec Achieves Operational Milestone for U.S. Space Force FORGE System",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "dfc519dd5290724c",
