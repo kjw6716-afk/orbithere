@@ -90,7 +90,10 @@
       "title": "NASA-funded Study Details One of Oldest Mars Meteorites Ever Found",
       "url": "https://www.nasa.gov/solar-system/planets/mars/nasa-funded-study-details-one-of-oldest-mars-meteorites-ever-found/",
       "publishedAt": "2026-10-29T18:18:09Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "NASA에 의해 자금을 지원하는 연구 세부 사항 가장 오래된 화성 지진 중 하나 발견",
+      "titleKoDraftOriginal": "NASA-funded Study Details One of Oldest Mars Meteorites Ever Found",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "e0d9543d681c95d9",
