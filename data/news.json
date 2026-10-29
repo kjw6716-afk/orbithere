@@ -90,7 +90,10 @@
       "title": "Caltech Names Artemis II Commander Reid Wiseman as NASA JPL Deputy",
       "url": "https://www.nasa.gov/centers-and-facilities/jpl/caltech-names-artemis-ii-commander-reid-wiseman-as-nasa-jpl-deputy/",
       "publishedAt": "2026-10-29T02:49:59Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "칼테크 이름 아르테미스 II 지휘관 리드 위스만 NASA JPL 부사장",
+      "titleKoDraftOriginal": "Caltech Names Artemis II Commander Reid Wiseman as NASA JPL Deputy",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "4e3b9215d1b4e7d0",
