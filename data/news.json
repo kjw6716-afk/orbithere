@@ -90,7 +90,10 @@
       "title": "Ghostly Cat’s Head Nebula lurks within sight of Hubble and Webb",
       "url": "https://www.esa.int/Science_Exploration/Space_Science/Webb/Ghostly_Cat_s_Head_Nebula_lurks_within_sight_of_Hubble_and_Webb",
       "publishedAt": "2026-10-29T14:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "영적 고양이의 머리 구름이 허블과 웨브의 시선 속에서 흐르고 있다.",
+      "titleKoDraftOriginal": "Ghostly Cat’s Head Nebula lurks within sight of Hubble and Webb",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "2d88ce8f7f5eb856",
