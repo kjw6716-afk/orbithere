@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-29T09:54:21Z",
+  "checkedAt": "2026-10-29T16:55:19Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-10-29T09:54:21Z",
+      "lastCheckedAt": "2026-10-29T16:55:19Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T09:54:21Z"
+      "lastSuccessfulAt": "2026-10-29T16:55:19Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-10-29T09:54:21Z",
+      "lastCheckedAt": "2026-10-29T16:55:19Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T09:54:21Z"
+      "lastSuccessfulAt": "2026-10-29T16:55:19Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-10-29T09:54:21Z",
+      "lastCheckedAt": "2026-10-29T16:55:19Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T09:54:21Z"
+      "lastSuccessfulAt": "2026-10-29T16:55:19Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-10-29T09:54:21Z",
+      "lastCheckedAt": "2026-10-29T16:55:19Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T09:54:21Z"
+      "lastSuccessfulAt": "2026-10-29T16:55:19Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-10-29T09:54:21Z",
+      "lastCheckedAt": "2026-10-29T16:55:19Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T09:54:21Z"
+      "lastSuccessfulAt": "2026-10-29T16:55:19Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-10-29T09:54:21Z",
+      "lastCheckedAt": "2026-10-29T16:55:19Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T09:54:21Z"
+      "lastSuccessfulAt": "2026-10-29T16:55:19Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-10-29T09:54:21Z",
+      "lastCheckedAt": "2026-10-29T16:55:19Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T09:54:21Z"
+      "lastSuccessfulAt": "2026-10-29T16:55:19Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,20 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-10-29T09:54:21Z",
+      "lastCheckedAt": "2026-10-29T16:55:19Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T09:54:21Z"
+      "lastSuccessfulAt": "2026-10-29T16:55:19Z"
     }
   ],
   "items": [
+    {
+      "id": "e0d9543d681c95d9",
+      "source": "esa",
+      "title": "Ghostly Cat’s Head Nebula lurks within sight of Hubble and Webb",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Webb/Ghostly_Cat_s_Head_Nebula_lurks_within_sight_of_Hubble_and_Webb",
+      "publishedAt": "2026-10-29T14:00:00Z",
+      "language": "en"
+    },
     {
       "id": "2d88ce8f7f5eb856",
       "source": "nasa",
@@ -337,17 +345,6 @@
       "language": "en",
       "titleKoDraft": "Firefly의 SciTec는 고급 전투 관리 시스템에 UAS 데이터를 추가하기 위해 미국 공군과 계약을 확장합니다.",
       "titleKoDraftOriginal": "Firefly’s SciTec Expands Contract with U.S. Air Force to Add Counter UAS Data in Advanced Battle Management System",
-      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
-    },
-    {
-      "id": "718e414f27ebb381",
-      "source": "esa",
-      "title": "Mars’s oddest cloud may be even odder than we thought",
-      "url": "https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Mars_s_oddest_cloud_may_be_even_odder_than_we_thought",
-      "publishedAt": "2026-10-07T15:00:00Z",
-      "language": "en",
-      "titleKoDraft": "화성의 가장 이상한 구름은 우리가 생각했던 것보다 더 크다.",
-      "titleKoDraftOriginal": "Mars’s oddest cloud may be even odder than we thought",
       "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
