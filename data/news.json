@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-29T21:47:35Z",
+  "checkedAt": "2026-10-30T01:56:59Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-10-29T21:47:35Z",
+      "lastCheckedAt": "2026-10-30T01:56:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T21:47:35Z"
+      "lastSuccessfulAt": "2026-10-30T01:56:59Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-10-29T21:47:35Z",
+      "lastCheckedAt": "2026-10-30T01:56:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T21:47:35Z"
+      "lastSuccessfulAt": "2026-10-30T01:56:59Z"
     },
     {
       "id": "esa",
@@ -28,9 +28,9 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-10-29T21:47:35Z",
+      "lastCheckedAt": "2026-10-30T01:56:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T21:47:35Z"
+      "lastSuccessfulAt": "2026-10-30T01:56:59Z"
     },
     {
       "id": "spacex",
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-10-29T21:47:35Z",
+      "lastCheckedAt": "2026-10-30T01:56:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T21:47:35Z"
+      "lastSuccessfulAt": "2026-10-30T01:56:59Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-10-29T21:47:35Z",
+      "lastCheckedAt": "2026-10-30T01:56:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T21:47:35Z"
+      "lastSuccessfulAt": "2026-10-30T01:56:59Z"
     },
     {
       "id": "rocketlab",
@@ -58,9 +58,9 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-10-29T21:47:35Z",
+      "lastCheckedAt": "2026-10-30T01:56:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T21:47:35Z"
+      "lastSuccessfulAt": "2026-10-30T01:56:59Z"
     },
     {
       "id": "ast",
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-10-29T21:47:35Z",
+      "lastCheckedAt": "2026-10-30T01:56:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T21:47:35Z"
+      "lastSuccessfulAt": "2026-10-30T01:56:59Z"
     },
     {
       "id": "firefly",
@@ -78,9 +78,9 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-10-29T21:47:35Z",
+      "lastCheckedAt": "2026-10-30T01:56:59Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-10-29T21:47:35Z"
+      "lastSuccessfulAt": "2026-10-30T01:56:59Z"
     }
   ],
   "items": [
@@ -116,6 +116,14 @@
       "titleKoDraft": "칼테크 이름 아르테미스 II 지휘관 리드 위스만 NASA JPL 부사장",
       "titleKoDraftOriginal": "Caltech Names Artemis II Commander Reid Wiseman as NASA JPL Deputy",
       "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
+    },
+    {
+      "id": "584cdcbdd270cd90",
+      "source": "rocketlab",
+      "title": "A Robotic Arm That Can Walk Across Spacecraft? Rocket Lab Built It",
+      "url": "https://rocketlabcorp.com/updates/a-robotic-arm-that-can-walk-across-spacecraft-rocket-lab-built-it/",
+      "publishedAt": "2026-10-29T00:00:00Z",
+      "language": "en"
     },
     {
       "id": "4e3b9215d1b4e7d0",
@@ -474,17 +482,6 @@
       "language": "en",
       "titleKoDraft": "Firefly Aerospace는 우주선 생산을 가속화하기 위해 새로운 청소실을 완성합니다.",
       "titleKoDraftOriginal": "Firefly Aerospace Completes New Cleanroom to Accelerate Spacecraft Production",
-      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
-    },
-    {
-      "id": "71143b4ee12d6ffe",
-      "source": "rocketlab",
-      "title": "MISSION SUCCESS: Rocket Lab Launches 96th Electron Mission",
-      "url": "https://rocketlabcorp.com/updates/mission-success-rocket-lab-launches-96th-electron-mission/",
-      "publishedAt": "2026-09-19T00:00:00Z",
-      "language": "en",
-      "titleKoDraft": "미션 성공 : 로켓 실험실은 96번째 전자 임무를 시작합니다.",
-      "titleKoDraftOriginal": "MISSION SUCCESS: Rocket Lab Launches 96th Electron Mission",
       "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
