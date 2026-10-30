@@ -123,7 +123,10 @@
       "title": "A Robotic Arm That Can Walk Across Spacecraft? Rocket Lab Built It",
       "url": "https://rocketlabcorp.com/updates/a-robotic-arm-that-can-walk-across-spacecraft-rocket-lab-built-it/",
       "publishedAt": "2026-10-29T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "우주선을 통과 할 수있는 로봇 팔? 로켓 실험실 건설",
+      "titleKoDraftOriginal": "A Robotic Arm That Can Walk Across Spacecraft? Rocket Lab Built It",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "4e3b9215d1b4e7d0",
