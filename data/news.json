@@ -90,7 +90,10 @@
       "title": "AST SpaceMobile Awarded U.S. Space Force Contract Through STR to Advance Space-Based Sensing Capabilities",
       "url": "https://feeds.issuerdirect.com/news-release.html?newsid=4672109256000902&symbol=ASTS",
       "publishedAt": "2026-11-05T14:25:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "AST SpaceMobile는 우주 기반 감지 능력을 향상시키기 위해 STR를 통해 미국 우주군 계약을 수상했습니다.",
+      "titleKoDraftOriginal": "AST SpaceMobile Awarded U.S. Space Force Contract Through STR to Advance Space-Based Sensing Capabilities",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "c014f58b891e8201",
