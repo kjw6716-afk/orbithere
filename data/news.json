@@ -90,7 +90,10 @@
       "title": "AST SpaceMobile to Build Own 20-Ton Rocket to Deploy BlueBird Satellites in Low Earth Orbit Using Miranda Engines from Firefly Aerospace",
       "url": "https://feeds.issuerdirect.com/news-release.html?newsid=5517763843308925&symbol=ASTS",
       "publishedAt": "2026-11-06T12:30:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "AST SpaceMobile은 Firefly Aerospace의 Miranda 엔진을 사용하여 낮은 지구 궤도에 BlueBird 위성을 배치하기 위해 자신의 20톤 로켓을 구축합니다.",
+      "titleKoDraftOriginal": "AST SpaceMobile to Build Own 20-Ton Rocket to Deploy BlueBird Satellites in Low Earth Orbit Using Miranda Engines from Firefly Aerospace",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "93585e97ad8e2b53",
@@ -98,7 +101,10 @@
       "title": "Firefly Aerospace Signs Rocket Engine Deal Valued at More Than $1.3 Billion with AST SpaceMobile",
       "url": "https://fireflyspace.com/news/firefly-aerospace-signs-rocket-engine-deal-valued-at-more-than-1-3-billion-with-ast-spacemobile/",
       "publishedAt": "2026-11-06T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "Firefly Aerospace는 AST SpaceMobile과 함께 1.3 억 달러 이상의 로켓 엔진 거래를 발표했습니다.",
+      "titleKoDraftOriginal": "Firefly Aerospace Signs Rocket Engine Deal Valued at More Than $1.3 Billion with AST SpaceMobile",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "32911a2e4570556a",
