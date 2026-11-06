@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-11-06T07:26:01Z",
+  "checkedAt": "2026-11-06T14:59:54Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-11-06T07:26:01Z",
+      "lastCheckedAt": "2026-11-06T14:59:54Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-06T07:26:01Z"
+      "lastSuccessfulAt": "2026-11-06T14:59:54Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-11-06T07:26:01Z",
+      "lastCheckedAt": "2026-11-06T14:59:54Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-06T07:26:01Z"
+      "lastSuccessfulAt": "2026-11-06T14:59:54Z"
     },
     {
       "id": "esa",
@@ -28,7 +28,7 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-11-06T07:26:01Z",
+      "lastCheckedAt": "2026-11-06T14:59:54Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-04T16:36:15Z"
     },
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-11-06T07:26:01Z",
+      "lastCheckedAt": "2026-11-06T14:59:54Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-06T07:26:01Z"
+      "lastSuccessfulAt": "2026-11-06T14:59:54Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-11-06T07:26:01Z",
+      "lastCheckedAt": "2026-11-06T14:59:54Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-06T07:26:01Z"
+      "lastSuccessfulAt": "2026-11-06T14:59:54Z"
     },
     {
       "id": "rocketlab",
@@ -58,7 +58,7 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-11-06T07:26:01Z",
+      "lastCheckedAt": "2026-11-06T14:59:54Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-02T00:41:21Z"
     },
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-11-06T07:26:01Z",
+      "lastCheckedAt": "2026-11-06T14:59:54Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-06T07:26:01Z"
+      "lastSuccessfulAt": "2026-11-06T14:59:54Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,28 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-11-06T07:26:01Z",
+      "lastCheckedAt": "2026-11-06T14:59:54Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-06T07:26:01Z"
+      "lastSuccessfulAt": "2026-11-06T14:59:54Z"
     }
   ],
   "items": [
+    {
+      "id": "281c7f8d1c323e34",
+      "source": "ast",
+      "title": "AST SpaceMobile to Build Own 20-Ton Rocket to Deploy BlueBird Satellites in Low Earth Orbit Using Miranda Engines from Firefly Aerospace",
+      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=5517763843308925&symbol=ASTS",
+      "publishedAt": "2026-11-06T12:30:00Z",
+      "language": "en"
+    },
+    {
+      "id": "93585e97ad8e2b53",
+      "source": "firefly",
+      "title": "Firefly Aerospace Signs Rocket Engine Deal Valued at More Than $1.3 Billion with AST SpaceMobile",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-signs-rocket-engine-deal-valued-at-more-than-1-3-billion-with-ast-spacemobile/",
+      "publishedAt": "2026-11-06T00:00:00Z",
+      "language": "en"
+    },
     {
       "id": "32911a2e4570556a",
       "source": "ast",
@@ -564,17 +580,6 @@
       "titleKoMethod": "reviewed"
     },
     {
-      "id": "cd965c2c5979943e",
-      "source": "firefly",
-      "title": "Firefly Aerospace Onboarded to NASA Spacecraft Processing Operations Contract",
-      "url": "https://fireflyspace.com/news/firefly-aerospace-onboarded-to-nasa-spacecraft-processing-operations-contract/",
-      "publishedAt": "2026-08-17T00:00:00Z",
-      "language": "en",
-      "titleKo": "파이어플라이, NASA 우주선 처리 운영 계약 참여",
-      "titleKoOriginal": "Firefly Aerospace Onboarded to NASA Spacecraft Processing Operations Contract",
-      "titleKoMethod": "reviewed"
-    },
-    {
       "id": "e3f8f543a27fc9bb",
       "source": "ast",
       "title": "AST SpaceMobile Provides Business Update and Second Quarter 2026 Results",
@@ -605,17 +610,6 @@
       "language": "en",
       "titleKo": "텍사스에서 테라팹 건설 시작",
       "titleKoOriginal": "Breaking Ground on Terafab in Texas",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "347fc4155258efc1",
-      "source": "ast",
-      "title": "AST SpaceMobile Announces Successful Orbital Launch of BlueBirds 11, 12, and 13",
-      "url": "https://feeds.issuerdirect.com/news-release.html?newsid=7160159586249128&symbol=ASTS",
-      "publishedAt": "2026-08-05T12:00:00Z",
-      "language": "en",
-      "titleKo": "AST 스페이스모바일, 블루버드 11·12·13호 궤도 발사 성공",
-      "titleKoOriginal": "AST SpaceMobile Announces Successful Orbital Launch of BlueBirds 11, 12, and 13",
       "titleKoMethod": "reviewed"
     },
     {
