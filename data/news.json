@@ -90,7 +90,10 @@
       "title": "Returning Starship to the Launch Site",
       "url": "https://www.spacex.com/updates#starship-catch",
       "publishedAt": "2026-11-07T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "출발 사이트로 돌아오는 스타트업",
+      "titleKoDraftOriginal": "Returning Starship to the Launch Site",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "281c7f8d1c323e34",
