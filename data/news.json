@@ -101,7 +101,10 @@
       "title": "Firefly Aerospace Selected as a Vendor for NASA’s $10 Billion CLPS 2 Initiative",
       "url": "https://fireflyspace.com/news/firefly-aerospace-selected-as-a-vendor-for-nasas-10-billion-clps-2-initiative/",
       "publishedAt": "2026-11-07T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "Firefly Aerospace는 NASA의 10 억 달러 CLPS 2 이니셔티브의 판매자로 선정되었습니다.",
+      "titleKoDraftOriginal": "Firefly Aerospace Selected as a Vendor for NASA’s $10 Billion CLPS 2 Initiative",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "281c7f8d1c323e34",
