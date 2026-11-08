@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-11-07T22:43:09Z",
+  "checkedAt": "2026-11-08T02:26:38Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-11-07T22:43:09Z",
+      "lastCheckedAt": "2026-11-08T02:26:38Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-07T22:43:09Z"
+      "lastSuccessfulAt": "2026-11-08T02:26:38Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-11-07T22:43:09Z",
+      "lastCheckedAt": "2026-11-08T02:26:38Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-07T22:43:09Z"
+      "lastSuccessfulAt": "2026-11-08T02:26:38Z"
     },
     {
       "id": "esa",
@@ -28,7 +28,7 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-11-07T22:43:09Z",
+      "lastCheckedAt": "2026-11-08T02:26:38Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-04T16:36:15Z"
     },
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-11-07T22:43:09Z",
+      "lastCheckedAt": "2026-11-08T02:26:38Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-07T22:43:09Z"
+      "lastSuccessfulAt": "2026-11-08T02:26:38Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-11-07T22:43:09Z",
+      "lastCheckedAt": "2026-11-08T02:26:38Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-07T22:43:09Z"
+      "lastSuccessfulAt": "2026-11-08T02:26:38Z"
     },
     {
       "id": "rocketlab",
@@ -58,7 +58,7 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-11-07T22:43:09Z",
+      "lastCheckedAt": "2026-11-08T02:26:38Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-02T00:41:21Z"
     },
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-11-07T22:43:09Z",
+      "lastCheckedAt": "2026-11-08T02:26:38Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-07T22:43:09Z"
+      "lastSuccessfulAt": "2026-11-08T02:26:38Z"
     },
     {
       "id": "firefly",
@@ -78,9 +78,9 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-11-07T22:43:09Z",
+      "lastCheckedAt": "2026-11-08T02:26:38Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-07T22:43:09Z"
+      "lastSuccessfulAt": "2026-11-08T02:26:38Z"
     }
   ],
   "items": [
@@ -94,6 +94,14 @@
       "titleKoDraft": "출발 사이트로 돌아오는 스타트업",
       "titleKoDraftOriginal": "Returning Starship to the Launch Site",
       "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
+    },
+    {
+      "id": "b6aded57425b84a7",
+      "source": "firefly",
+      "title": "Firefly Aerospace Selected as a Vendor for NASA’s $10 Billion CLPS 2 Initiative",
+      "url": "https://fireflyspace.com/news/firefly-aerospace-selected-as-a-vendor-for-nasas-10-billion-clps-2-initiative/",
+      "publishedAt": "2026-11-07T00:00:00Z",
+      "language": "en"
     },
     {
       "id": "281c7f8d1c323e34",
@@ -583,17 +591,6 @@
       "language": "en",
       "titleKo": "파이어플라이, 에스레인지에서 알파 2회 발사 계약 체결",
       "titleKoOriginal": "Firefly Aerospace Signs Contract with SSC Space for Two Alpha Launches from Esrange Space Center",
-      "titleKoMethod": "reviewed"
-    },
-    {
-      "id": "8b30a6e4ebb9eeae",
-      "source": "firefly",
-      "title": "Firefly Aerospace Onboards Zeno Power on Blue Ghost Mission to Demonstrate Radioisotope Technologies to Survive the Lunar Night",
-      "url": "https://fireflyspace.com/news/firefly-aerospace-onboards-zeno-power-on-blue-ghost-mission-to-demonstrate-radioisotope-technologies-to-survive-the-lunar-night/",
-      "publishedAt": "2026-08-19T00:00:00Z",
-      "language": "en",
-      "titleKo": "파이어플라이, 달의 밤 생존 기술 실증에 제노파워 참여",
-      "titleKoOriginal": "Firefly Aerospace Onboards Zeno Power on Blue Ghost Mission to Demonstrate Radioisotope Technologies to Survive the Lunar Night",
       "titleKoMethod": "reviewed"
     },
     {
