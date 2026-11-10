@@ -90,7 +90,10 @@
       "title": "Firefly Aerospace Signs Multi-Launch Agreement with Synspective for up to 10 Alpha Missions Through 2030",
       "url": "https://fireflyspace.com/news/firefly-aerospace-signs-multi-launch-agreement-with-synspective-for-up-to-10-alpha-missions-through-2030/",
       "publishedAt": "2026-11-10T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "Firefly Aerospace는 Synspective와 2030 년까지 최대 10 개의 알파 미션에 대한 다중 출발 계약을 체결했습니다.",
+      "titleKoDraftOriginal": "Firefly Aerospace Signs Multi-Launch Agreement with Synspective for up to 10 Alpha Missions Through 2030",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "0fce62835c20f0d6",
