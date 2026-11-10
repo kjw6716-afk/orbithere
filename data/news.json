@@ -90,7 +90,10 @@
       "title": "AST SpaceMobile Provides Business Update and Third Quarter 2026 Results",
       "url": "https://feeds.issuerdirect.com/news-release.html?newsid=7492534759712978&symbol=ASTS",
       "publishedAt": "2026-11-09T21:30:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "AST SpaceMobile은 비즈니스 업데이트 및 3 분기 2026 결과를 제공합니다.",
+      "titleKoDraftOriginal": "AST SpaceMobile Provides Business Update and Third Quarter 2026 Results",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "9d91ed5396e79043",
