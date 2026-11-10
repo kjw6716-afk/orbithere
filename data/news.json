@@ -90,7 +90,10 @@
       "title": "NASA Invites Media, Public to Join Voyager 1 One-Light Day Activities",
       "url": "https://www.nasa.gov/news-release/nasa-invites-media-public-to-join-voyager-1-one-light-day-activities/",
       "publishedAt": "2026-11-10T19:22:45Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "NASA, 미디어, 대중이 Voyager 1 One-Light Day 활동에 참여하도록 초대",
+      "titleKoDraftOriginal": "NASA Invites Media, Public to Join Voyager 1 One-Light Day Activities",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "b1a4c2f35051f41d",
