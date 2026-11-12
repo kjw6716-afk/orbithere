@@ -90,7 +90,10 @@
       "title": "Building the Future",
       "url": "https://www.spacex.com/updates#building-the-future",
       "publishedAt": "2026-11-12T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "미래를 건설하기",
+      "titleKoDraftOriginal": "Building the Future",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "7b10e9232fe65cdc",
