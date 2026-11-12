@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-11-12T09:47:14Z",
+  "checkedAt": "2026-11-12T17:44:55Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-11-12T09:47:14Z",
+      "lastCheckedAt": "2026-11-12T17:44:55Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-12T09:47:14Z"
+      "lastSuccessfulAt": "2026-11-12T17:44:55Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-11-12T09:47:14Z",
+      "lastCheckedAt": "2026-11-12T17:44:55Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-12T09:47:14Z"
+      "lastSuccessfulAt": "2026-11-12T17:44:55Z"
     },
     {
       "id": "esa",
@@ -28,7 +28,7 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-11-12T09:47:14Z",
+      "lastCheckedAt": "2026-11-12T17:44:55Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-04T16:36:15Z"
     },
@@ -38,9 +38,9 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-11-12T09:47:14Z",
+      "lastCheckedAt": "2026-11-12T17:44:55Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-12T09:47:14Z"
+      "lastSuccessfulAt": "2026-11-12T17:44:55Z"
     },
     {
       "id": "starlink",
@@ -48,9 +48,9 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-11-12T09:47:14Z",
+      "lastCheckedAt": "2026-11-12T17:44:55Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-12T09:47:14Z"
+      "lastSuccessfulAt": "2026-11-12T17:44:55Z"
     },
     {
       "id": "rocketlab",
@@ -58,7 +58,7 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-11-12T09:47:14Z",
+      "lastCheckedAt": "2026-11-12T17:44:55Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-02T00:41:21Z"
     },
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-11-12T09:47:14Z",
+      "lastCheckedAt": "2026-11-12T17:44:55Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-12T09:47:14Z"
+      "lastSuccessfulAt": "2026-11-12T17:44:55Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,20 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-11-12T09:47:14Z",
+      "lastCheckedAt": "2026-11-12T17:44:55Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-12T09:47:14Z"
+      "lastSuccessfulAt": "2026-11-12T17:44:55Z"
     }
   ],
   "items": [
+    {
+      "id": "f74c140dc73dd99a",
+      "source": "spacex",
+      "title": "Building the Future",
+      "url": "https://www.spacex.com/updates#building-the-future",
+      "publishedAt": "2026-11-12T00:00:00Z",
+      "language": "en"
+    },
     {
       "id": "7b10e9232fe65cdc",
       "source": "nasa",
@@ -677,17 +685,6 @@
       "url": "https://starlink.com/kr/updates/stargaze",
       "publishedAt": "2026-01-29T00:00:00Z",
       "language": "ko"
-    },
-    {
-      "id": "522111233c7d9298",
-      "source": "spacex",
-      "title": "To the Moon and Beyond",
-      "url": "https://www.spacex.com/updates#moon-and-beyond",
-      "publishedAt": "2025-10-30T00:00:00Z",
-      "language": "en",
-      "titleKo": "달을 넘어 더 먼 우주로",
-      "titleKoOriginal": "To the Moon and Beyond",
-      "titleKoMethod": "reviewed"
     },
     {
       "id": "cfb5f58ca87d63c4",
