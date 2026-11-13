@@ -90,7 +90,10 @@
       "title": "Restoring Boca Chica Beach",
       "url": "https://www.spacex.com/updates#boca-chica-beach",
       "publishedAt": "2026-11-13T00:00:00Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "Boca Chica Beach의 숙소",
+      "titleKoDraftOriginal": "Restoring Boca Chica Beach",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "f74c140dc73dd99a",
