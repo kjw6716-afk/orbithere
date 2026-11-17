@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-11-17T03:49:21Z",
+  "checkedAt": "2026-11-17T04:47:38Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-11-17T03:49:21Z",
+      "lastCheckedAt": "2026-11-17T04:47:38Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-17T03:49:21Z"
+      "lastSuccessfulAt": "2026-11-17T04:47:38Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-11-17T03:49:21Z",
+      "lastCheckedAt": "2026-11-17T04:47:38Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-17T03:49:21Z"
+      "lastSuccessfulAt": "2026-11-17T04:47:38Z"
     },
     {
       "id": "esa",
@@ -28,7 +28,7 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-11-17T03:49:21Z",
+      "lastCheckedAt": "2026-11-17T04:47:38Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-04T16:36:15Z"
     },
@@ -38,7 +38,7 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-11-17T03:49:21Z",
+      "lastCheckedAt": "2026-11-17T04:47:38Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-14T14:31:40Z"
     },
@@ -48,7 +48,7 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-11-17T03:49:21Z",
+      "lastCheckedAt": "2026-11-17T04:47:38Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-14T14:31:40Z"
     },
@@ -58,7 +58,7 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-11-17T03:49:21Z",
+      "lastCheckedAt": "2026-11-17T04:47:38Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-02T00:41:21Z"
     },
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-11-17T03:49:21Z",
+      "lastCheckedAt": "2026-11-17T04:47:38Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-17T03:49:21Z"
+      "lastSuccessfulAt": "2026-11-17T04:47:38Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,20 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-11-17T03:49:21Z",
+      "lastCheckedAt": "2026-11-17T04:47:38Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-14T14:31:40Z"
     }
   ],
   "items": [
+    {
+      "id": "8c123140e7f2d610",
+      "source": "kasi",
+      "title": "대전시와 함께하는 스페이스 아카데미 개최",
+      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32498",
+      "publishedAt": "2026-11-17T00:00:00Z",
+      "language": "ko"
+    },
     {
       "id": "2b917afa2ae0bb72",
       "source": "spacex",
@@ -619,14 +627,6 @@
       "title": "2026년 ‘올해의 KASI인상’ 수상자로 박병곤 책임연구원 선정",
       "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32453",
       "publishedAt": "2026-09-10T00:00:00Z",
-      "language": "ko"
-    },
-    {
-      "id": "7dea421284cd9a42",
-      "source": "kasi",
-      "title": "우주에서 역대 가장 먼 원시 초은하단 발견",
-      "url": "https://www.kasi.re.kr/kor/post/newsMaterial/32449",
-      "publishedAt": "2026-09-09T00:00:00Z",
       "language": "ko"
     },
     {
