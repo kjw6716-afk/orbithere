@@ -90,7 +90,10 @@
       "title": "NASA’s Voyager 1 Makes History Reaching One Light-Day From Earth",
       "url": "https://www.nasa.gov/news-release/nasas-voyager-1-makes-history-reaching-one-light-day-from-earth/",
       "publishedAt": "2026-11-19T14:31:15Z",
-      "language": "en"
+      "language": "en",
+      "titleKoDraft": "NASA의 Voyager 1은 지구에서 1 일간의 빛에 도달하는 역사를 만듭니다.",
+      "titleKoDraftOriginal": "NASA’s Voyager 1 Makes History Reaching One Light-Day From Earth",
+      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
       "id": "8c123140e7f2d610",
