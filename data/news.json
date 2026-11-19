@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-11-19T12:59:06Z",
+  "checkedAt": "2026-11-19T20:58:57Z",
   "sources": [
     {
       "id": "kasi",
@@ -8,9 +8,9 @@
       "language": "ko",
       "feed": "https://www.kasi.re.kr/rss/newsMaterial",
       "home": "https://www.kasi.re.kr/kor/publication/post/newsMaterial",
-      "lastCheckedAt": "2026-11-19T12:59:06Z",
+      "lastCheckedAt": "2026-11-19T20:58:57Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-19T12:59:06Z"
+      "lastSuccessfulAt": "2026-11-19T20:58:57Z"
     },
     {
       "id": "nasa",
@@ -18,9 +18,9 @@
       "language": "en",
       "feed": "https://www.nasa.gov/centers-and-facilities/jpl/feed/",
       "home": "https://www.nasa.gov/centers-and-facilities/jpl/",
-      "lastCheckedAt": "2026-11-19T12:59:06Z",
+      "lastCheckedAt": "2026-11-19T20:58:57Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-19T12:59:06Z"
+      "lastSuccessfulAt": "2026-11-19T20:58:57Z"
     },
     {
       "id": "esa",
@@ -28,7 +28,7 @@
       "language": "en",
       "feed": "https://www.esa.int/rssfeed/Our_Activities/Space_Science",
       "home": "https://www.esa.int/Science_Exploration/Space_Science",
-      "lastCheckedAt": "2026-11-19T12:59:06Z",
+      "lastCheckedAt": "2026-11-19T20:58:57Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-04T16:36:15Z"
     },
@@ -38,7 +38,7 @@
       "language": "en",
       "feed": "https://www.spacex.com/updates",
       "home": "https://www.spacex.com/updates",
-      "lastCheckedAt": "2026-11-19T12:59:06Z",
+      "lastCheckedAt": "2026-11-19T20:58:57Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-14T14:31:40Z"
     },
@@ -48,7 +48,7 @@
       "language": "ko",
       "feed": "https://starlink.com/kr/updates",
       "home": "https://starlink.com/kr/updates",
-      "lastCheckedAt": "2026-11-19T12:59:06Z",
+      "lastCheckedAt": "2026-11-19T20:58:57Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-14T14:31:40Z"
     },
@@ -58,7 +58,7 @@
       "language": "en",
       "feed": "https://rocketlabcorp.com/updates/",
       "home": "https://rocketlabcorp.com/updates/",
-      "lastCheckedAt": "2026-11-19T12:59:06Z",
+      "lastCheckedAt": "2026-11-19T20:58:57Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-02T00:41:21Z"
     },
@@ -68,9 +68,9 @@
       "language": "en",
       "feed": "https://investors.ast-science.com/press-releases",
       "home": "https://investors.ast-science.com/press-releases",
-      "lastCheckedAt": "2026-11-19T12:59:06Z",
+      "lastCheckedAt": "2026-11-19T20:58:57Z",
       "status": "ok",
-      "lastSuccessfulAt": "2026-11-19T12:59:06Z"
+      "lastSuccessfulAt": "2026-11-19T20:58:57Z"
     },
     {
       "id": "firefly",
@@ -78,12 +78,20 @@
       "language": "en",
       "feed": "https://fireflyspace.com/news/",
       "home": "https://fireflyspace.com/news/",
-      "lastCheckedAt": "2026-11-19T12:59:06Z",
+      "lastCheckedAt": "2026-11-19T20:58:57Z",
       "status": "unavailable",
       "lastSuccessfulAt": "2026-11-14T14:31:40Z"
     }
   ],
   "items": [
+    {
+      "id": "b71681db2cca441f",
+      "source": "nasa",
+      "title": "NASA’s Voyager 1 Makes History Reaching One Light-Day From Earth",
+      "url": "https://www.nasa.gov/news-release/nasas-voyager-1-makes-history-reaching-one-light-day-from-earth/",
+      "publishedAt": "2026-11-19T14:31:15Z",
+      "language": "en"
+    },
     {
       "id": "8c123140e7f2d610",
       "source": "kasi",
@@ -496,17 +504,6 @@
       "language": "en",
       "titleKoDraft": "Firefly의 SciTec는 고급 전투 관리 시스템에 UAS 데이터를 추가하기 위해 미국 공군과 계약을 확장합니다.",
       "titleKoDraftOriginal": "Firefly’s SciTec Expands Contract with U.S. Air Force to Add Counter UAS Data in Advanced Battle Management System",
-      "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
-    },
-    {
-      "id": "66089d1385a5a0b1",
-      "source": "nasa",
-      "title": "NASA’s Curiosity Rover Catches Stunning Martian Dawn",
-      "url": "https://www.nasa.gov/missions/mars-science-laboratory/curiosity-rover/nasas-curiosity-rover-catches-stunning-martian-dawn/",
-      "publishedAt": "2026-10-06T15:30:07Z",
-      "language": "en",
-      "titleKoDraft": "NASA의 Curiosity Rover는 놀라운 화성 새벽을 잡습니다.",
-      "titleKoDraftOriginal": "NASA’s Curiosity Rover Catches Stunning Martian Dawn",
       "titleKoDraftModel": "facebook/m2m100_418M@55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
     },
     {
